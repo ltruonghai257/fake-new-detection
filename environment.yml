@@ -1,0 +1,4 @@
+name: fake_news_detection
+dependencies:
+    - numpy
+    - pandas
