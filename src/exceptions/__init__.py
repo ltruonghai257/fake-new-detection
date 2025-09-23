@@ -1,1 +1,1 @@
-from StringException import *
+from .string_exception import *

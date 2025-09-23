@@ -6,6 +6,10 @@ class TxtFileHandler(FileHandler):
     Handles reading and writing TXT files.
     """
 
+    def __init__(self):
+        super().__init__()
+        self.supported_extensions = (".txt", ".text", ".md", ".markdown")
+
     def read_file(self, file_path: str) -> dict:
         if not self.is_valid_file(file_path):
             raise FileNotFoundError(f"The file {file_path} does not exist.")
@@ -18,8 +22,3 @@ class TxtFileHandler(FileHandler):
         content = data.get("content", "")
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(content)
-
-    def is_valid_file(self, file_path: str) -> bool:
-        import os
-
-        return os.path.isfile(file_path) and file_path.endswith(".txt")

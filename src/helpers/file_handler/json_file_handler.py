@@ -1,11 +1,14 @@
 import json
-import os
 
 from .file_handler import FileHandler
 
 
 class JsonFileHandler(FileHandler):
     """Handles reading and writing JSON files."""
+
+    def __init__(self):
+        super().__init__()
+        self.supported_extensions = (".json",)
 
     def read_file(self, file_path: str) -> dict:
         if not self.is_valid_file(file_path):
@@ -18,7 +21,3 @@ class JsonFileHandler(FileHandler):
 
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
-
-    def is_valid_file(self, file_path: str) -> bool:
-
-        return os.path.isfile(file_path) and file_path.endswith(".json")

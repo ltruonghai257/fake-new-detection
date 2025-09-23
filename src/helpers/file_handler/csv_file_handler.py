@@ -1,11 +1,14 @@
 import csv
-import os
 
 from .file_handler import FileHandler
 
 
 class CSVFileHandler(FileHandler):
     """Handles reading and writing CSV files."""
+
+    def __init__(self):
+        super().__init__()
+        self.supported_extensions = (".csv",)
 
     def read_file(self, file_path: str) -> list[dict]:
 
@@ -25,7 +28,3 @@ class CSVFileHandler(FileHandler):
             writer = csv.DictWriter(f, fieldnames=data[0].keys())
             writer.writeheader()
             writer.writerows(data)
-
-    def is_valid_file(self, file_path: str) -> bool:
-
-        return os.path.isfile(file_path) and file_path.endswith(".csv")

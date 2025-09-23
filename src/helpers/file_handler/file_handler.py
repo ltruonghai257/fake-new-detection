@@ -1,6 +1,7 @@
+import os
 from typing import Union, TypedDict, Optional
 
-from exceptions import InvalidExtensionException
+from src.exceptions import InvalidExtensionException
 
 
 class FileHandler:
@@ -8,6 +9,17 @@ class FileHandler:
 
     def __init__(self, file_path: str = "") -> None:
         self.file_path = file_path
+        self.supported_extensions = tuple(
+            [".txt", ".text", ".md", ".markdown", ".json", ".csv"]
+        )
+
+    def mkdir_if_not_exists(self, directory: str) -> None:
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+            print(f"Directory {directory} created.")
+        else:
+            print(f"Directory {directory} already exists.")
 
     def read_file(self, file_path: str) -> dict:
         raise NotImplementedError("Subclasses must implement this method.")
@@ -16,11 +28,12 @@ class FileHandler:
         raise NotImplementedError("Subclasses must implement this method.")
 
     def is_valid_file(self, file_path: str) -> bool:
-        import os
 
-        return os.path.isfile(file_path)
+        return os.path.isfile(file_path) and file_path.endswith(
+            self.supported_extensions
+        )
 
-    def read(self, file_path: Optional[str]) -> Union[str, dict, list | TypedDict]:
+    def read(self, file_path: Optional[str]) -> Union[str, dict, list, TypedDict]:
         """
           Read the content from a file.
         Args:
@@ -34,22 +47,22 @@ class FileHandler:
         if not file_path:
             file_path = self.file_path
         ext = file_path.split(".")[-1].lower()
-        if ext == "txt":
+        if ext in ("txt", "text", "md", "markdown"):
             from .txt_file_handler import TxtFileHandler
 
-            return TxtFileHandler.read_file(file_path)
+            return TxtFileHandler().read_file(file_path)
         elif ext == "json":
             from .json_file_handler import JsonFileHandler
 
-            return JsonFileHandler.read_file(file_path)
+            return JsonFileHandler().read_file(file_path=file_path)
         elif ext == "csv":
             from .csv_file_handler import CSVFileHandler
 
-            return CSVFileHandler.read_file(file_path)
+            return CSVFileHandler().read_file(file_path)
         else:
             raise InvalidExtensionException(ext=ext)
 
-    def write(self, file_path: Optional[str], data: Union[str, dict, list | TypedDict]):
+    def write(self, file_path: Optional[str], data: Union[str, dict, list, TypedDict]):
         """
         Write the content to a file.
         Args:
@@ -69,18 +82,18 @@ class FileHandler:
         if not file_path:
             file_path = self.file_path
         ext = file_path.split(".")[-1].lower()
-        if ext == "txt":
+        if ext in ("txt", "text", "md", "markdown"):
             from .txt_file_handler import TxtFileHandler
 
             if isinstance(data, str):
                 data = {"content": data}
-            TxtFileHandler.write_file(file_path, data)
+            TxtFileHandler().write_file(file_path, data)
         elif ext == "json":
             from .json_file_handler import JsonFileHandler
 
             if not isinstance(data, dict):
                 raise ValueError("Data must be a dictionary for JSON files.")
-            JsonFileHandler.write_file(file_path, data)
+            JsonFileHandler().write_file(file_path, data)
         elif ext == "csv":
             from .csv_file_handler import CSVFileHandler
 
@@ -88,6 +101,6 @@ class FileHandler:
                 isinstance(item, dict) for item in data
             ):
                 raise ValueError("Data must be a list of dictionaries for CSV files.")
-            CSVFileHandler.write_file(file_path, data=data)
+            CSVFileHandler().write_file(file_path, data=data)
         else:
             raise InvalidExtensionException(ext=ext)
