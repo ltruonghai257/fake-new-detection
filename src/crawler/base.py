@@ -1,7 +1,10 @@
 from os.path import join
 from typing import TypedDict, Optional
+from urllib import parse as urllib
 
 from crawl4ai import BrowserConfig, CrawlerRunConfig, AsyncWebCrawler
+from crawl4ai.content_scraping_strategy import LXMLWebScrapingStrategy
+from crawl4ai.deep_crawling import BFSDeepCrawlStrategy
 
 from .typings import (
     BrowserConfigType,
@@ -20,15 +23,17 @@ class BaseCrawler:
         url: str = "",
         name: Optional[str] = None,
     ) -> None:
+        self.browser_config = None
+        self.crawler_run_config = None
         if url and not StringHandler.is_url(url):
             raise URLFormatException(url=url)
         self.url = url
-        self.browser_config = BrowserConfig()
         self.folder_path = folder_path
-        self.crawler_run_config = CrawlerRunConfig()
         self.name = self.__class__.__name__ if not name else name
         self.file_handler = FileHandler()
         self.file_handler.mkdir_if_not_exists(folder_path)
+        self.config_browser()
+        self.config_crawler_run()
 
     def _generate_file_path(
         self, folder_path: str, extension: ExtensionReturnCrawlerType
@@ -38,18 +43,41 @@ class BaseCrawler:
         )
         return join(folder_path, f"{standard_file_name}")
 
-    def config_browser(self, **kwargs: BrowserConfigType) -> None:
-        self.browser_config = BrowserConfig(**kwargs)
+    def config_browser(
+        self, config: Optional[BrowserConfigType] = None, can_return: bool = True
+    ) -> None:
+        self.browser_config = BrowserConfig(**config) if config else BrowserConfig()
 
-    def config_crawler_run(self, **kwargs: CrawlerRunConfigType) -> None:
-        self.crawler_run_config = CrawlerRunConfig(**kwargs)
+    def config_crawler_run(self, config: Optional[CrawlerRunConfigType] = None) -> None:
+        self.crawler_run_config = (
+            CrawlerRunConfig(**config) if config else CrawlerRunConfig()
+        )
 
-    async def simple_crawling(self, url: Optional[str] = None):
+    async def deep_crawling(
+        self, url: Optional[str] = None, max_depth: Optional[int] = 2
+    ):
+
+        self.config_crawler_run(
+            CrawlerRunConfigType(
+                deep_crawl_strategy=BFSDeepCrawlStrategy(max_depth=max_depth),
+                scraping_strategy=LXMLWebScrapingStrategy(),
+                verbose=True,
+            )
+        )
+
+        return await self.simple_crawling(url=url, is_deep=True)
+
+    async def simple_crawling(self, url: Optional[str] = None, is_deep: bool = False):
         if not url:
             url = self.url
+        else:
+            url = urllib.urljoin(self.url, url)
         if not StringHandler.is_url(url):
             raise URLFormatException(url=url)
-        async with AsyncWebCrawler(config=self.browser_config) as crawler:
+
+        async with AsyncWebCrawler(
+            config=self.browser_config if not is_deep else None
+        ) as crawler:
             result = await crawler.arun(url=url, config=self.crawler_run_config)
             return result
 

@@ -1,6 +1,8 @@
 from typing import Literal, Optional, List
 from typing import TypedDict, Union
 
+from crawl4ai.types import BFSDeepCrawlStrategy, LXMLWebScrapingStrategy
+
 
 class BrowserConfigType(TypedDict, total=False):
     """
@@ -81,6 +83,11 @@ class VirtualScrollConfig(TypedDict, total=False):
     ]  # nested config allowed
 
 
+class DeepCrawlerConfigType(TypedDict, total=False):
+    deep_crawl_strategy: BFSDeepCrawlStrategy
+    scraping_strategy: LXMLWebScrapingStrategy
+
+
 # --- Final combined config ---
 class CrawlerRunConfigType(
     ExtractionConfig,
@@ -89,6 +96,7 @@ class CrawlerRunConfigType(
     LinkFilterConfig,
     DebugConfig,
     VirtualScrollConfig,
+    DeepCrawlerConfigType,
     total=False,
 ):
     """Final crawler config type combining all sections"""
