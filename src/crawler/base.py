@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from os.path import join
 from typing import TypedDict, Optional
 from urllib import parse as urllib
@@ -16,7 +17,9 @@ from ..helpers import StringHandler
 from ..helpers.file_handler.file_handler import FileHandler
 
 
-class BaseCrawler:
+class BaseCrawler(ABC):
+    schema_extra = None
+
     def __init__(
         self,
         folder_path: str,
@@ -34,6 +37,10 @@ class BaseCrawler:
         self.file_handler.mkdir_if_not_exists(folder_path)
         self.config_browser()
         self.config_crawler_run()
+
+    @abstractmethod
+    async def arun(self):
+        pass
 
     def _generate_file_path(
         self, folder_path: str, extension: ExtensionReturnCrawlerType
