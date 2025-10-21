@@ -7,11 +7,12 @@ from src.exceptions import InvalidExtensionException
 class FileHandler:
     """Base class for file handling operations."""
 
-    def __init__(self, file_path: str = "") -> None:
-        self.file_path = file_path
-        self.supported_extensions = tuple(
-            [".txt", ".text", ".md", ".markdown", ".json", ".csv"]
-        )
+    def __init__(self, root_folder: str = "data") -> None:
+        self.root_folder = root_folder
+        self.supported_extensions = tuple([
+            ".txt", ".text", ".md", ".markdown", ".json", ".csv",
+            ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"
+        ])
 
     def mkdir_if_not_exists(self, directory: str) -> None:
 
@@ -20,6 +21,11 @@ class FileHandler:
             print(f"Directory {directory} created.")
         else:
             print(f"Directory {directory} already exists.")
+
+    def generate_file_path(self, format_name: str, class_name: str, file_name: str) -> str:
+        folder_path = os.path.join(self.root_folder, format_name, class_name)
+        self.mkdir_if_not_exists(folder_path)
+        return os.path.join(folder_path, file_name)
 
     def read_file(self, file_path: str) -> dict:
         raise NotImplementedError("Subclasses must implement this method.")
@@ -33,7 +39,7 @@ class FileHandler:
             self.supported_extensions
         )
 
-    def read(self, file_path: Optional[str]) -> Union[str, dict, list, TypedDict]:
+    def read(self, file_path: str) -> Union[str, dict, list, TypedDict]:
         """
           Read the content from a file.
         Args:
@@ -44,8 +50,6 @@ class FileHandler:
         Returns:
                Union[str, dict, list | TypedDict] - The content of the file.
         """
-        if not file_path:
-            file_path = self.file_path
         ext = file_path.split(".")[-1].lower()
         if ext in ("txt", "text", "md", "markdown"):
             from .txt_file_handler import TxtFileHandler
@@ -59,14 +63,19 @@ class FileHandler:
             from .csv_file_handler import CSVFileHandler
 
             return CSVFileHandler().read_file(file_path)
+        elif ext in ("jpg", "jpeg", "png", "gif", "bmp", "svg"):
+            from .image_file_handler import ImageFileHandler
+            return ImageFileHandler().read_file(file_path)
         else:
             raise InvalidExtensionException(ext=ext)
 
-    def write(self, file_path: Optional[str], data: Union[str, dict, list, TypedDict]):
+    def write(self, format_name: str, class_name: str, file_name: str, data: Union[str, dict, list, TypedDict]):
         """
         Write the content to a file.
         Args:
-            file_path: str - The path to the file.
+            format_name: str - The format of the file (e.g., 'json', 'txt').
+            class_name: str - The name of the class using the file handler.
+            file_name: str - The name of the file.
             data: Union[str, dict, list | TypedDict] - The content to write to the file.
 
         Returns:
@@ -74,14 +83,9 @@ class FileHandler:
         Raises:
             InvalidExtensionException: If the file extension is not supported.
             Exception: If there is an error writing to the file.
-        Example:
-            file_handler = FileHandler("example.txt")
-            file_handler.write("example.txt", "Hello, World!")
-
         """
-        if not file_path:
-            file_path = self.file_path
-        ext = file_path.split(".")[-1].lower()
+        file_path = self.generate_file_path(format_name, class_name, file_name)
+        ext = file_name.split(".")[-1].lower()
         if ext in ("txt", "text", "md", "markdown"):
             from .txt_file_handler import TxtFileHandler
 
@@ -91,8 +95,8 @@ class FileHandler:
         elif ext == "json":
             from .json_file_handler import JsonFileHandler
 
-            if not isinstance(data, dict):
-                raise ValueError("Data must be a dictionary for JSON files.")
+            if not isinstance(data, (dict, list)):
+                raise ValueError("Data must be a dictionary or a list for JSON files.")
             JsonFileHandler().write_file(file_path, data)
         elif ext == "csv":
             from .csv_file_handler import CSVFileHandler
@@ -102,5 +106,10 @@ class FileHandler:
             ):
                 raise ValueError("Data must be a list of dictionaries for CSV files.")
             CSVFileHandler().write_file(file_path, data=data)
+        elif ext in ("jpg", "jpeg", "png", "gif", "bmp", "svg"):
+            from .image_file_handler import ImageFileHandler
+            if isinstance(data, bytes):
+                data = {"content": data}
+            ImageFileHandler().write_file(file_path, data)
         else:
             raise InvalidExtensionException(ext=ext)

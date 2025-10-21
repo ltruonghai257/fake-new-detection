@@ -39,6 +39,8 @@ class StringHandler:
         Returns:
             bool: True if the string is a URL, False otherwise.
         """
+        if not isinstance(ori_str, str):
+            return False
         return bool(re.match(r"^https?://[^\s/$.?#].\S*$", ori_str))
 
     @staticmethod
@@ -58,7 +60,7 @@ class StringHandler:
         base, ext_ = os.path.splitext(filename)
         if not ext:
             ext = ext_
-        if StringHandler.is_valid_extension(ext):
+        if ext and StringHandler.is_valid_extension(ext):
             # Remove invalid characters for filenames (extended set)
             sanitized = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "", base)
 
@@ -66,7 +68,7 @@ class StringHandler:
             sanitized = re.sub(r"[\s.]+", "_", sanitized)
 
             # Remove leading/trailing underscores
-            sanitized = re.sub(r"^_+|_+$", "", sanitized)
+            sanitized = re.sub(r"^_|_+", "", sanitized)
 
             # Replace multiple consecutive underscores with single one
             sanitized = re.sub(r"_+", "_", sanitized)
@@ -84,7 +86,17 @@ class StringHandler:
                 return sanitized[: (255 - ext_len)] + ext
 
             return final_name
-        return filename
+        
+        # If no valid extension, sanitize the whole filename
+        sanitized = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "", filename)
+        sanitized = re.sub(r"[\s.]+", "_", sanitized)
+        sanitized = re.sub(r"^_|_+", "", sanitized)
+        sanitized = re.sub(r"_+", "_", sanitized)
+        if not sanitized:
+            sanitized = ""
+        if len(sanitized) > 255:
+            return sanitized[:255]
+        return sanitized
 
     @staticmethod
     def class_name_to_snake_case(class_name_str: str) -> str:
@@ -148,3 +160,19 @@ class StringHandler:
         words = text.split()
 
         return len(words)
+    @staticmethod
+    def is_valid_url_path(url_path: str) -> bool:
+        """
+        Check if the given string is a valid URL path for crawling.
+        It allows absolute URLs (http, https), relative paths, and protocol-relative URLs.
+        It excludes javascript:, mailto:, tel: links.
+        """
+        if not isinstance(url_path, str) or not url_path.strip():
+            return False
+
+        # Exclude javascript, mailto, tel links
+        if url_path.startswith(("javascript:", "mailto:", "tel:")):
+            return False
+            
+        # Allow relative paths, absolute paths, and protocol-relative URLs
+        return True
