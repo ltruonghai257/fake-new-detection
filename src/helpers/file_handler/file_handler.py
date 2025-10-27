@@ -1,7 +1,7 @@
 import os
 from typing import Union, TypedDict, Optional
 
-from src.exceptions import InvalidExtensionException
+from exceptions import InvalidExtensionException
 
 
 class FileHandler:

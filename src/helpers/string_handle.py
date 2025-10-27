@@ -2,7 +2,7 @@ import os
 import re
 from typing import Optional
 
-from ..exceptions import InvalidExtensionException
+from exceptions import InvalidExtensionException
 
 
 class StringHandler:
@@ -44,59 +44,11 @@ class StringHandler:
         return bool(re.match(r"^https?://[^\s/$.?#].\S*$", ori_str))
 
     @staticmethod
-    def sanitize_filename(filename: str, ext: Optional[str] = None) -> str:
+    def sanitize_filename(filename: str) -> str:
         """
         Sanitize a string to be used as a valid filename.
-        Args:
-            filename (str): The original filename string.
-            ext (Optional[str]): The file extension, including the dot (e.g., ".txt").
-        Returns:
-            str: A sanitized filename string.
-        Example:
-            "my document: version 1.txt" -> "my_document_version_1.txt"
-            "XMLHttpRequest.js" -> "XMLHttpRequest.js"
         """
-        # Split filename and extension
-        base, ext_ = os.path.splitext(filename)
-        if not ext:
-            ext = ext_
-        if ext and StringHandler.is_valid_extension(ext):
-            # Remove invalid characters for filenames (extended set)
-            sanitized = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "", base)
-
-            # Replace spaces and dots with underscores, preserving case
-            sanitized = re.sub(r"[\s.]+", "_", sanitized)
-
-            # Remove leading/trailing underscores
-            sanitized = re.sub(r"^_|_+", "", sanitized)
-
-            # Replace multiple consecutive underscores with single one
-            sanitized = re.sub(r"_+", "_", sanitized)
-
-            # If name becomes empty after sanitization
-            if not sanitized:
-                sanitized = ""
-
-            # Recombine with extension and limit length
-            final_name = sanitized + ext
-
-            # Ensure total length is within limits (255 chars)
-            if len(final_name) > 255:
-                ext_len = len(ext)
-                return sanitized[: (255 - ext_len)] + ext
-
-            return final_name
-        
-        # If no valid extension, sanitize the whole filename
-        sanitized = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "", filename)
-        sanitized = re.sub(r"[\s.]+", "_", sanitized)
-        sanitized = re.sub(r"^_|_+", "", sanitized)
-        sanitized = re.sub(r"_+", "_", sanitized)
-        if not sanitized:
-            sanitized = ""
-        if len(sanitized) > 255:
-            return sanitized[:255]
-        return sanitized
+        return "".join(c if c.isalnum() else "_" for c in filename)
 
     @staticmethod
     def class_name_to_snake_case(class_name_str: str) -> str:

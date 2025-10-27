@@ -25,3 +25,4 @@ dist/
 
 # Visual code files
 .vscode/
+/src/data/

@@ -2,26 +2,38 @@ from abc import ABC, abstractmethod
 import json
 import os
 import uuid
-import requests
+
 from os.path import join
 from typing import Dict, List, Optional, Union
 from urllib import parse
-
-from crawl4ai import BrowserConfig, CrawlerRunConfig, AsyncWebCrawler
-from crawl4ai.content_scraping_strategy import LXMLWebScrapingStrategy
-from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
-from crawl4ai.deep_crawling import BFSDeepCrawlStrategy, FilterChain
+from bs4 import BeautifulSoup
 
 from .typings import (
-    BrowserConfigType,
-    CrawlerRunConfigType,
     ExtensionReturnCrawlerType,
     ModeCrawlerType,
+    ImageType,
+    SelectorType
 )
-from ..exceptions import URLFormatException
-from ..helpers import StringHandler
-from ..helpers.file_handler.file_handler import FileHandler
-from ..parser.html_tag_parser import HTMLTagParser
+from exceptions import URLFormatException
+from helpers import StringHandler
+from helpers.httpx_client import BaseClient
+from helpers.file_handler.file_handler import FileHandler
+
+
+class CrawlResult:
+    def __init__(self, url, html, success=True, error=None):
+        self.url = url
+        self.html = html
+        self.success = success
+        self.error = error
+        self.title = ""
+        self.images = []
+        self.links = []
+        self.contents = []
+        self.markdown = ""
+
+    def to_markdown(self):
+        return self.html
 
 
 class BaseCrawler(ABC):
@@ -32,8 +44,6 @@ class BaseCrawler(ABC):
         url: str = "",
         name: Optional[str] = None,
     ) -> None:
-        self.browser_config = None
-        self.crawler_run_config = None
         if url and not StringHandler.is_url(url):
             raise URLFormatException(url=url)
         self.url = url
@@ -42,8 +52,7 @@ class BaseCrawler(ABC):
         else:
             self.name = name
         self.file_handler = FileHandler()
-        self.config_browser()
-        self.config_crawler_run()
+        self.client = BaseClient(base_url=url)
 
     async def arun(
         self,
@@ -51,224 +60,199 @@ class BaseCrawler(ABC):
         mode: ModeCrawlerType = "simple",
         save_to_file: bool = True,
         max_depth: Optional[int] = 1,
-        save_format: ExtensionReturnCrawlerType = ".md",
+        save_format: ExtensionReturnCrawlerType = ".json",
         deep_crawl_config: Optional[dict] = None,
     ):
         url_to_crawl = url or self.url
         if mode == "simple":
             results = [await self.simple_crawling(url=url_to_crawl)]
-        else: # mode == "deep"
-            results = await self.deep_crawling(url=url_to_crawl, max_depth=max_depth, deep_crawl_config=deep_crawl_config)
+        else:  # mode == "deep"
+            results = await self.deep_crawling(url=url_to_crawl, max_depth=max_depth)
 
         if results:
-            processed_results = []
+            processed_data = []
             for result in results:
-                if result:
-                    self._parse_html_content(result)
-                    processed_results.append(result)
+                if result and result.html:
+                    parsed_data = self._parse_html_content(result.html, result.url)
+                    for key, value in parsed_data.items():
+                        setattr(result, key, value)
+                    
+                    if save_to_file and result.images:
+                        saved_images = await self._save_images(result, ".jpg") # Assuming jpg for now
+                        result.images = saved_images
+                    
+                    processed_data.append(self._prepare_data_for_saving(result))
 
             if save_to_file:
                 if save_format == ".json":
-                    all_data = [self._prepare_data_for_saving(res, save_format) for res in processed_results]
-                    file_name = StringHandler.sanitize_filename(
-                        StringHandler.class_name_to_snake_case(f"{self.name}{save_format}")
-                    )
-                    self.file_handler.write(save_format.strip('.'), self.name, file_name, all_data)
+                    filtered_data = [data for data in processed_data if data['source_url'].startswith(self.url_prefix) and data['source_url'].endswith(self.url_suffix)]
+                    file_name = f"{self.name}.json"
+                    self.file_handler.write(save_format.strip('.'), self.name, file_name, filtered_data)
                 else:
-                    for res in processed_results:
-                        await self.save_to_file(res, ext=save_format)
+                    # For other formats, we save one file per result
+                    for i, result in enumerate(results):
+                        if result.success:
+                            file_name = StringHandler.sanitize_filename(result.url) + save_format
+                            await self.save_to_file(result, ext=save_format, file_name=file_name)
 
+        print(f"Crawling completed for URL: {url_to_crawl} in {mode} mode. With Results: {results}")
         return results
 
-    def _parse_html_content(self, result):
-        if result and result.html:
-            parser = HTMLTagParser(result.html)
-            result.title = parser.get_title(selector=self.title_selector)
-            result.images = parser.get_images(selector=self.image_selector)
-            result.links = parser.get_links(selector=self.link_selector)
-            result.contents = parser.get_content(selector=self.content_selector)
+    def _parse_html_content(self, html: str, base_url: str) -> dict:
+        if not html:
+            return {}
+        soup = BeautifulSoup(html, "html.parser")
 
-    async def _process_result(self, result, save_to_file: bool, save_format: ExtensionReturnCrawlerType):
-        self._parse_html_content(result)
-        if save_to_file:
-            await self.save_to_file(result, ext=save_format)
+        title = soup.select_one(self.title_selector['css_selector'][0]).get_text(strip=True) if soup.select_one(self.title_selector['css_selector'][0]) else ""
 
-    @property
-    @abstractmethod
-    def title_selector(self) -> Union[str, List[str]]:
-        pass
-
-    @property
-    @abstractmethod
-    def image_selector(self) -> Union[str, List[str]]:
-        pass
-
-    @property
-    @abstractmethod
-    def link_selector(self) -> Union[str, List[str]]:
-        pass
-
-    @property
-    @abstractmethod
-    def content_selector(self) -> Union[str, List[str]]:
-        pass
-
-    @property
-    @abstractmethod
-    def extraction_schema(self) -> dict:
-        pass
-
-    @property
-    @abstractmethod
-    def filter_chain(self) -> "FilterChain":
-        pass
-
-    @abstractmethod
-    async def _process_deep_crawl_result(self, result):
-        pass
-
-
-
-    async def extract_with_schema(self, url: Optional[str] = None, config: Optional[CrawlerRunConfigType] = None):
-        if not config:
-            config = {}
+        images = []
+        for figure in soup.select(self.image_selector['css_selector'][0]):
+            img_tag = figure.find('img')
+            caption_tag = figure.find('figcaption')
             
-        config['extraction_strategy'] = JsonCssExtractionStrategy(self.extraction_schema)
-        
-        self.config_crawler_run(config)
-        
-        url_to_crawl = url or self.url
-        result = await self.simple_crawling(url=url_to_crawl)
-        
-        if result and result.success and hasattr(result, 'extracted_content') and result.extracted_content:
-            try:
-                return json.loads(result.extracted_content)
-            except json.JSONDecodeError:
-                return None
-        return None
+            if img_tag and 'data-src' in img_tag.attrs:
+                image_src = img_tag['data-src']
+                caption = caption_tag.get_text(strip=True) if caption_tag else ""
+                images.append({'src_url': image_src, 'caption': caption})
 
-    async def _save_images(self, result, save_format: ExtensionReturnCrawlerType) -> List[str]:
+        links = []
+        for a in soup.select(self.link_selector['css_selector'][0]):
+            href = a.get('href')
+            if href and href.startswith(self.url_prefix) and href.endswith(self.url_suffix):
+                links.append(parse.urljoin(base_url, href))
+        
+        contents = [p.get_text(strip=True) for p in soup.select(self.content_selector['css_selector'][0])]
+
+        return {
+            "title": title,
+            "images": images,
+            "other_urls": links,
+            "content": "\n".join(contents),
+        }
+
+    async def simple_crawling(self, url: Optional[str] = None):
+        url_to_crawl = url or self.url
+        try:
+            response = await self.client.get(url_to_crawl)
+            return CrawlResult(url=url_to_crawl, html=response.text)
+        except httpx.RequestError as e:
+            return CrawlResult(url=url_to_crawl, html="", success=False, error=str(e))
+
+    async def deep_crawling(self, url: Optional[str] = None, max_depth: int = 2):
+        url_to_crawl = url or self.url
+        results = []
+        queue = [(url_to_crawl, 0)]
+        visited = {url_to_crawl}
+
+        while queue:
+            current_url, depth = queue.pop(0)
+
+            if depth > max_depth:
+                continue
+
+            try:
+                response = await self.client.get(current_url)
+                result = CrawlResult(url=current_url, html=response.text)
+                results.append(result)
+
+                if depth < max_depth:
+                    soup = BeautifulSoup(response.text, "html.parser")
+                    for link in soup.select(self.link_selector['css_selector'][0]):
+                        href = link.get("href")
+                        if href:
+                            absolute_url = parse.urljoin(current_url, href)
+                            if parse.urlparse(absolute_url).netloc == parse.urlparse(url_to_crawl).netloc and absolute_url not in visited:
+                                visited.add(absolute_url)
+                                queue.append((absolute_url, depth + 1))
+            except httpx.RequestError as e:
+                results.append(CrawlResult(url=current_url, html="", success=False, error=str(e)))
+        
+        return results
+
+    @property
+    @abstractmethod
+    def title_selector(self) -> SelectorType:
+        pass
+
+    @property
+    @abstractmethod
+    def image_selector(self) -> SelectorType:
+        pass
+
+    @property
+    @abstractmethod
+    def link_selector(self) -> SelectorType:
+        pass
+
+    @property
+    @abstractmethod
+    def url_prefix(self) -> str:
+        pass
+
+    @property
+    def url_suffix(self) -> str:
+        return ".html"
+    
+
+
+    async def _save_images(self, result, save_format: ExtensionReturnCrawlerType) -> List[Dict[str, str]]:
         saved_image_paths = []
         if hasattr(result, 'images') and result.images:
             format_name = save_format.strip('.')
-            
-            for image_url in result.images:
+            folder_path = os.path.join(self.file_handler.root_folder, format_name, self.name)
+            self.file_handler.mkdir_if_not_exists(folder_path)
+
+            for image in result.images:
+                image_url = image.get('src_url')
+                caption = image.get('caption')
                 if not image_url or not isinstance(image_url, str) or image_url.startswith("data:"):
                     continue
 
-                # Make sure the URL is absolute
                 if not image_url.startswith('http'):
                     image_url = parse.urljoin(self.url, image_url)
 
                 try:
-                    # Download the image
-                    response = requests.get(image_url)
-                    response.raise_for_status()
+                    response = await self.client.get(image_url)
                     image_data = response.content
                     
-                    # Create a file path for the image
                     image_filename = os.path.basename(parse.urlparse(image_url).path)
                     if not image_filename:
-                        # create a random name
                         image_filename = f"{uuid.uuid4()}{save_format}"
 
-                    # Add extension if missing
                     if not os.path.splitext(image_filename)[1]:
                         image_filename += save_format
 
                     self.file_handler.write(format_name, self.name, image_filename, image_data)
-                    image_path = self.file_handler.generate_file_path(format_name, self.name, image_filename)
-                    saved_image_paths.append(image_path)
                     
-                except requests.exceptions.RequestException as e:
+                    saved_image_paths.append({
+                        'folder_path': os.path.join(format_name, self.name, image_filename),
+                        'src_url': image_url,
+                        'caption': caption
+                    })
+                    
+                except httpx.RequestError as e:
                     print(f"Error downloading image: {e}")
                 except Exception as e:
                     print(f"An error occurred while saving the image: {e}")
         return saved_image_paths
 
-    def _prepare_data_for_saving(self, result, save_format: ExtensionReturnCrawlerType) -> Optional[Dict]:
-        if save_format == ".md" and hasattr(result, "to_markdown"):
-            return {"content": result.to_markdown()}
-        elif save_format == ".json":
-            return {
-                "title": result.title,
-                "url": result.url,
-                "links": result.links,
-                "images": result.images,
-                "contents": result.contents,
-                "html": result.html,
-            }
-        elif save_format == ".txt":
-            if hasattr(result, "markdown") and hasattr(result.markdown, "raw_markdown"):
-                return {"content": result.markdown.raw_markdown}
-            else:
-                return {"content": ""}
-        return None
+    def _prepare_data_for_saving(self, result) -> Optional[Dict]:
+        return {
+            "title": result.title,
+            "content": result.contents,
+            "source_url": result.url,
+            "other_urls": result.links,
+            "images": result.images,
+        }
 
     async def save_to_file(self, result, ext: ExtensionReturnCrawlerType = ".txt", file_name: Optional[str] = None):
-        if ext in (".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"):
-            await self._save_images(result, ext)
-        else:
-            data_to_save = self._prepare_data_for_saving(result, ext)
-            if data_to_save:
-                if not file_name:
-                    file_name = StringHandler.sanitize_filename(
-                        StringHandler.class_name_to_snake_case(f"{self.name}{ext}")
-                    )
-                self.file_handler.write(ext.strip('.'), self.name, file_name, data_to_save)
-
-    def config_browser(
-        self, config: Optional[BrowserConfigType] = None
-    ) -> None:
-        self.browser_config = BrowserConfig(**config) if config else BrowserConfig()
-
-    def config_crawler_run(self, config: Optional[CrawlerRunConfigType] = None) -> None:
-        self.crawler_run_config = (
-            CrawlerRunConfig(**config) if config else CrawlerRunConfig()
-        )
-
-    async def deep_crawling(self, url: Optional[str] = None, max_depth: int = 2, verbose: bool = False, deep_crawl_config: Optional[dict] = None):
-        url_to_crawl = url or self.url
-        
-        if deep_crawl_config:
-            strategy = BFSDeepCrawlStrategy(
-                max_depth=deep_crawl_config.get("max_depth", 2),
-                include_external=deep_crawl_config.get("include_external", False),
-                max_pages=deep_crawl_config.get("max_pages", 50),
-                filter_chain=self.filter_chain
-            )
-            config = {
-                "deep_crawl_strategy": strategy,
-                "stream": False,
-                "verbose": True,
-            }
-            self.config_crawler_run(config)
-        else:
-            self.config_crawler_run(
-                CrawlerRunConfigType(
-                    deep_crawl_strategy=BFSDeepCrawlStrategy(max_depth=max_depth),
-                    scraping_strategy=LXMLWebScrapingStrategy(),
-                    verbose=verbose,
+        data_to_save = self._prepare_data_for_saving(result)
+        if data_to_save:
+            if not file_name:
+                file_name = StringHandler.sanitize_filename(
+                    StringHandler.class_name_to_snake_case(f"{self.name}{ext}")
                 )
-            )
-
-        return await self._execute_crawl(url=url_to_crawl, is_deep=True)
-
-    async def simple_crawling(self, url: Optional[str] = None):
-        url_to_crawl = url or self.url
-        return await self._execute_crawl(url=url_to_crawl)
-
-    async def _execute_crawl(self, url: str, is_deep: bool = False):
-        # Ensure the URL is absolute
-        final_url = parse.urljoin(self.url, url)
-        if not StringHandler.is_url(final_url):
-            raise URLFormatException(url=final_url)
-        
-        async with AsyncWebCrawler(
-            config=self.browser_config if not is_deep else None
-        ) as crawler:
-            result = await crawler.arun(url=final_url, config=self.crawler_run_config)
-            return result
+            self.file_handler.write(ext.strip('.'), self.name, file_name, data_to_save)
 
     def read_from_file(self, ext: ExtensionReturnCrawlerType = ".txt", file_name: Optional[str] = None) -> Dict:
         if not file_name:
