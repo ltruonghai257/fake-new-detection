@@ -14,7 +14,8 @@ class BaseClient:
         self.client = httpx.AsyncClient(
             base_url=self.base_url,
             headers=self.headers,
-            timeout=self.timeout
+            timeout=self.timeout,
+            follow_redirects=True  # Automatically follow redirects
         )
 
     async def get(self, url: str, params: Optional[Dict[str, Any]] = None, **kwargs) -> httpx.Response:

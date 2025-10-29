@@ -1,2 +1,4 @@
-from .base import *
-from .news import *
+from .base_crawler import BaseCrawler
+from .crawl_result import CrawlResult
+
+__all__ = ["BaseCrawler", "CrawlResult"]

@@ -2,13 +2,13 @@ from crawler.base_crawler import BaseCrawler
 from crawler.typings import SelectorType
 
 
-class VnExpressCrawler(BaseCrawler):
+class BaoChinhPhuCrawler(BaseCrawler):
     def __init__(self) -> None:
-        super().__init__(url="https://vnexpress.net/")
+        super().__init__(url="https://baochinhphu.vn/")
 
     @property
     def title_selector(self) -> SelectorType:
-        return {"css_selector": ["h1.title-detail"]}
+        return {"css_selector": ["h1.detail-title"]}
 
     @property
     def image_selector(self) -> SelectorType:
@@ -16,7 +16,7 @@ class VnExpressCrawler(BaseCrawler):
             "css_selector": ["figure"],
             "image_tag_selector": "img",
             "caption_tag_selector": "figcaption",
-            "image_tag_attr": "data-src",
+            "image_tag_attr": "src",
         }
 
     @property
@@ -25,10 +25,8 @@ class VnExpressCrawler(BaseCrawler):
 
     @property
     def content_selector(self) -> SelectorType:
-        return {
-            "css_selector": ["p.Normal", "p.description", "section#article_content > p"]
-        }
+        return {"css_selector": ["div.detail-content > p"]}
 
     @property
     def url_prefix(self) -> str:
-        return "https://vnexpress.net"
+        return "https://baochinhphu.vn"
