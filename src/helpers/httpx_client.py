@@ -15,6 +15,7 @@ class BaseClient:
         base_url: str = "",
         headers: Optional[Dict[str, str]] = None,
         timeout: float = 30.0,
+        verify: bool = True,
     ):
         self.base_url = base_url
         self.headers = headers or {}
@@ -22,16 +23,20 @@ class BaseClient:
 
         # Create a custom SSL context to allow legacy renegotiation and lower security level
         # This is necessary to connect to older, misconfigured servers.
-        context = ssl.create_default_context()
-        context.options |= getattr(ssl, "OP_UNSAFE_LEGACY_RENEGOTIATION", 0)
-        context.set_ciphers("DEFAULT@SECLEVEL=1")
+        if not verify:
+            self.verify = False
+        else:
+            context = ssl.create_default_context()
+            context.options |= getattr(ssl, "OP_UNSAFE_LEGACY_RENEGOTIATION", 0)
+            context.set_ciphers("DEFAULT@SECLEVEL=1")
+            self.verify = context
 
         self.client = httpx.AsyncClient(
             base_url=self.base_url,
             headers=self.headers,
             timeout=self.timeout,
             follow_redirects=True,  # Automatically follow redirects
-            verify=context,
+            verify=self.verify,
         )
 
     async def get(

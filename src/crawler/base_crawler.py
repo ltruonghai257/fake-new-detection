@@ -64,7 +64,7 @@ class BaseCrawler(ABC):
         else:
             self.name = name
         self.file_handler = FileHandler()
-        self.client = BaseClient(base_url=url)
+        self.client = BaseClient(base_url=url, verify=False)
 
     async def arun(
         self,
@@ -315,14 +315,13 @@ class BaseCrawler(ABC):
         return saved_image_paths
 
     def _prepare_data_for_saving(self, result: CrawlResult) -> Optional[Dict]:
-        return {
-            "title": result.title,
-            "content": result.content_text,
-            "source_url": result.url,
-            "other_urls": result.links,
-            "images": result.images,
-            "contents": result.contents,
-        }
+        """Prepare data for saving using the configured output format"""
+        from .output_formats import OutputFormatter
+        
+        # Get the format name from schema_extra or use default
+        format_name = getattr(self, 'output_format', 'default')
+        formatter = OutputFormatter.get_formatter(format_name)
+        return formatter(result)
 
     async def save_to_file(
         self,

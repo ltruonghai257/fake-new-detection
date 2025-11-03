@@ -1,7 +1,7 @@
 import asyncio
 from typing import List
 
-from crawler.crawler_factory import crawl_and_save_all
+from crawler.crawler_factory import CrawlerFactory
 
 
 def get_urls_from_dataset(
@@ -47,14 +47,20 @@ async def main():
     url_column = "Url"
     output_filename = "news_data.json"
     # Set a limit for testing. Set to None to crawl all URLs.
-    url_limit = 25
+    url_limit = None
+
+    crawler_factory = CrawlerFactory()
+
+    clear_cache_input = input("Do you want to clear the cache? (y/n): ")
+    if clear_cache_input.lower() == "y":
+        crawler_factory.clear_cache()
 
     urls_to_crawl = get_urls_from_dataset(
         dataset_name=dataset_name, split=split, url_column=url_column, limit=url_limit
     )
 
     if urls_to_crawl:
-        await crawl_and_save_all(urls_to_crawl, output_filename)
+        await crawler_factory.crawl_and_save_all(urls_to_crawl, output_filename, format_name="custom")
     else:
         print("--- No URLs to crawl. Exiting. ---")
 
