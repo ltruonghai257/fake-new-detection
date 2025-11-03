@@ -15,10 +15,10 @@ class TienPhongCrawler(BaseCrawler):
     def image_selector(self) -> SelectorType:
         # Placeholder: Please inspect the website and update this selector
         return {
-            "css_selector": ["figure.article__figure"],
+            "css_selector": ["figure"],
             "image_tag_selector": "img",
             "caption_tag_selector": "figcaption",
-            "image_tag_attr": "src",
+            "image_tag_attr": "data-src",
         }
 
     @property

@@ -1,36 +1,66 @@
+import ssl
+from typing import Optional, Dict, Any
 
 import httpx
-from typing import Optional, Dict, Any
+from tqdm import tqdm
+
 
 class BaseClient:
     """
     A wrapper around httpx.AsyncClient to provide robust functions for all methods.
     """
 
-    def __init__(self, base_url: str = "", headers: Optional[Dict[str, str]] = None, timeout: float = 30.0):
+    def __init__(
+        self,
+        base_url: str = "",
+        headers: Optional[Dict[str, str]] = None,
+        timeout: float = 30.0,
+    ):
         self.base_url = base_url
         self.headers = headers or {}
         self.timeout = timeout
+
+        # Create a custom SSL context to allow legacy renegotiation and lower security level
+        # This is necessary to connect to older, misconfigured servers.
+        context = ssl.create_default_context()
+        context.options |= getattr(ssl, "OP_UNSAFE_LEGACY_RENEGOTIATION", 0)
+        context.set_ciphers("DEFAULT@SECLEVEL=1")
+
         self.client = httpx.AsyncClient(
             base_url=self.base_url,
             headers=self.headers,
             timeout=self.timeout,
-            follow_redirects=True  # Automatically follow redirects
+            follow_redirects=True,  # Automatically follow redirects
+            verify=context,
         )
 
-    async def get(self, url: str, params: Optional[Dict[str, Any]] = None, **kwargs) -> httpx.Response:
+    async def get(
+        self, url: str, params: Optional[Dict[str, Any]] = None, **kwargs
+    ) -> httpx.Response:
         """
         Sends a GET request.
         """
         return await self._request("GET", url, params=params, **kwargs)
 
-    async def post(self, url: str, data: Optional[Dict[str, Any]] = None, json: Optional[Any] = None, **kwargs) -> httpx.Response:
+    async def post(
+        self,
+        url: str,
+        data: Optional[Dict[str, Any]] = None,
+        json: Optional[Any] = None,
+        **kwargs,
+    ) -> httpx.Response:
         """
         Sends a POST request.
         """
         return await self._request("POST", url, data=data, json=json, **kwargs)
 
-    async def put(self, url: str, data: Optional[Dict[str, Any]] = None, json: Optional[Any] = None, **kwargs) -> httpx.Response:
+    async def put(
+        self,
+        url: str,
+        data: Optional[Dict[str, Any]] = None,
+        json: Optional[Any] = None,
+        **kwargs,
+    ) -> httpx.Response:
         """
         Sends a PUT request.
         """
@@ -51,10 +81,13 @@ class BaseClient:
             response.raise_for_status()
             return response
         except httpx.HTTPStatusError as e:
-            print(f"HTTP error occurred: {e}")
-            raise
+            # Do not raise for redirects, as they are handled by the client
+            if e.response.status_code not in (301, 302, 307, 308):
+                tqdm.write(f"HTTP error occurred: {e}")
+                raise
+            return e.response  # Return the response for redirects
         except httpx.RequestError as e:
-            print(f"An error occurred while requesting {e.request.url!r}: {e}")
+            tqdm.write(f"An error occurred while requesting {e.request.url!r}: {e}")
             raise
 
     async def __aenter__(self):
