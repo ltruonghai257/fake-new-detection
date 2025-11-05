@@ -23,6 +23,7 @@ class FileHandler:
                 ".gif",
                 ".bmp",
                 ".svg",
+                ".webp",
             ]
         )
 
@@ -77,7 +78,7 @@ class FileHandler:
             from .csv_file_handler import CSVFileHandler
 
             return CSVFileHandler().read_file(file_path)
-        elif ext in ("jpg", "jpeg", "png", "gif", "bmp", "svg"):
+        elif ext in ("jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"):
             from .image_file_handler import ImageFileHandler
 
             return ImageFileHandler().read_file(file_path)
@@ -130,7 +131,7 @@ class FileHandler:
             ):
                 raise ValueError("Data must be a list of dictionaries for CSV files.")
             CSVFileHandler().write_file(file_path, data=data)
-        elif ext in ("jpg", "jpeg", "png", "gif", "bmp", "svg"):
+        elif ext in ("jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"):
             from .image_file_handler import ImageFileHandler
 
             if isinstance(data, bytes):

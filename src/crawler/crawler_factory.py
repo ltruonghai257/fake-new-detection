@@ -33,7 +33,19 @@ class CrawlerFactory:
     }
 
     def __init__(self, cache_filename: str = "crawling_status.json"):
+        
         self.cache_filename = cache_filename
+        self.folder_path = self.validate_path(cache_filename)
+    def validate_path(self, path: str) -> str:
+        folder_path = os.path.dirname(path)
+        print(f"Validating folder path: {folder_path}")
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            print(f"Created missing folder path: {folder_path}")
+            return folder_path
+        print(f"Folder path already exists: {folder_path}")
+        return folder_path
+
 
     def get_crawler(self, url: str) -> Optional[BaseCrawler]:
         """
@@ -55,7 +67,13 @@ class CrawlerFactory:
             tqdm.write(f"Error finding crawler for url {url}: {e}")
         
         return None
-
+    def check_cache_file_exists(self) -> bool:
+        """
+        Check if the cache file exists.
+        Returns:
+            bool: True if the cache file exists, False otherwise.
+        """
+        return os.path.exists(self.cache_filename)
     def clear_cache(self):
         """
         Deletes the cache file if it exists.
@@ -88,6 +106,7 @@ class CrawlerFactory:
                         if result.success:
                             pbar.set_description(f"Saving images for {url}")
                             saved_images = await crawler._save_images(result, ".jpg")
+                            result.images = saved_images
 
                             prepared_data = formatter(result)
                             all_results_data.append(prepared_data)
