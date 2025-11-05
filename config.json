@@ -1,5 +1,42 @@
 {
-  "title": "title",
-  "text": "text",
-  "images": "images"
+    "crawling": {
+        "max_depth": 3,
+        "max_articles_per_site": 1000,
+        "timeout": 30,
+        "retry_attempts": 3,
+        "concurrent_requests": 5
+    },
+    "output": {
+        "format": "json",
+        "data_dir": "data",
+        "json_output": "data/json/news_data.json",
+        "image_dir": "data/jpg",
+        "fields": {
+            "title": "title",
+            "text": "text",
+            "images": "images"
+        }
+    },
+    "sites": {
+        "vnexpress.net": {
+            "enabled": true,
+            "article_pattern": "https?://vnexpress.net/[^/]+\\d+.html",
+            "selectors": {
+                "title": { "css_selector": ["h1.title-detail"] },
+                "content": { "css_selector": ["article.fck_detail"] },
+                "image": {
+                    "css_selector": ["figure.image"],
+                    "image_tag_selector": "img",
+                    "caption_tag_selector": "figcaption",
+                    "image_tag_attr": "data-src"
+                }
+            }
+        }
+    },
+    "http_client": {
+        "timeout": 30,
+        "max_redirects": 5,
+        "verify_ssl": false,
+        "user_agent_rotation": true
+    }
 }
