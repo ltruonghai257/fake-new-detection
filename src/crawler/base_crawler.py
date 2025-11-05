@@ -3,6 +3,8 @@ import os
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Set, Union
 from urllib import parse
+from PIL import Image
+import io
 
 import httpx
 from bs4 import BeautifulSoup, Tag
@@ -283,13 +285,17 @@ class BaseCrawler(ABC):
                     response = await self.client.get(image_url)
                     image_data = response.content
 
-                    # Determine the file extension
-                    _, ext = os.path.splitext(parse.urlparse(image_url).path)
-                    if not ext:
-                        ext = save_format
+                    # Open the image and convert to JPG
+                    img = Image.open(io.BytesIO(image_data))
+                    if img.mode != 'RGB':
+                        img = img.convert('RGB')
+                    
+                    output_buffer = io.BytesIO()
+                    img.save(output_buffer, format="JPEG")
+                    image_data = output_buffer.getvalue()
 
                     hash_id = hashlib.sha256(image_url.encode()).hexdigest()[:10]
-                    image_filename = f"{self.name}_{hash_id}{ext}"
+                    image_filename = f"{self.name}_{hash_id}.jpg"
 
                     self.file_handler.write(
                         format_name=format_name,
