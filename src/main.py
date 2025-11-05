@@ -1,9 +1,11 @@
-import asyncio
 import os
+
+# Set OPENSSL_CONF environment variable at the very top
+os.environ["OPENSSL_CONF"] = "openssl.cnf"
+
+import asyncio
 
 from test_crawler import main
 
 if __name__ == "__main__":
-    # Set OPENSSL_CONF environment variable
-    os.environ["OPENSSL_CONF"] = "openssl.cnf"
     asyncio.run(main())
