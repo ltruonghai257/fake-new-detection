@@ -33,19 +33,7 @@ class CrawlerFactory:
     }
 
     def __init__(self, cache_filename: str = "crawling_status.json"):
-        
         self.cache_filename = cache_filename
-        self.folder_path = self.validate_path(cache_filename)
-    def validate_path(self, path: str) -> str:
-        folder_path = os.path.dirname(path)
-        print(f"Validating folder path: {folder_path}")
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-            print(f"Created missing folder path: {folder_path}")
-            return folder_path
-        print(f"Folder path already exists: {folder_path}")
-        return folder_path
-
 
     def get_crawler(self, url: str) -> Optional[BaseCrawler]:
         """
@@ -67,6 +55,7 @@ class CrawlerFactory:
             tqdm.write(f"Error finding crawler for url {url}: {e}")
         
         return None
+
     def check_cache_file_exists(self) -> bool:
         """
         Check if the cache file exists.
@@ -74,6 +63,7 @@ class CrawlerFactory:
             bool: True if the cache file exists, False otherwise.
         """
         return os.path.exists(self.cache_filename)
+
     def clear_cache(self):
         """
         Deletes the cache file if it exists.
@@ -122,22 +112,23 @@ class CrawlerFactory:
                 pbar.update(1)
 
         if all_results_data:
-            tqdm.write(f"\nAppending {len(all_results_data)} new results to {output_filename}...")
+            output_path = os.path.join("data", "json", output_filename)
+            tqdm.write(f"\nAppending {len(all_results_data)} new results to {output_path}...")
             existing_data = []
-            if os.path.exists(output_filename):
-                with open(output_filename, 'r') as f:
+            if os.path.exists(output_path):
+                with open(output_path, 'r') as f:
                     try:
                         existing_data = json.load(f)
                     except json.JSONDecodeError:
-                        tqdm.write(f"Warning: Could not decode JSON from {output_filename}. Starting with a new file.")
+                        tqdm.write(f"Warning: Could not decode JSON from {output_path}. Starting with a new file.")
             
             existing_data.extend(all_results_data)
 
             file_handler.write(
                 format_name="json",
                 data=existing_data,
-                file_name=output_filename,
+                file_name=output_filename, # Use output_filename directly
             )
-            tqdm.write(f"--- All results saved to {output_filename} ---")
+            tqdm.write(f"--- All results saved to {output_path} ---")
         else:
             tqdm.write("\n--- No new results to save. ---")

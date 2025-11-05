@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import List
 
 from crawler.crawler_factory import CrawlerFactory
@@ -15,7 +16,7 @@ async def main():
     for split in splits:
         output_filename = f"news_data_{dataset_name.split('/')[-1]}_{split}.json"
         # Set a limit for testing. Set to None to crawl all URLs.
-        url_limit = 20
+        url_limit = 15
 
         crawler_factory = CrawlerFactory(cache_filename=f"data/caches/crawling_status_{split}.json")
 
@@ -39,4 +40,6 @@ async def main():
 
 
 if __name__ == "__main__":
+    # Set OPENSSL_CONF environment variable
+    os.environ["OPENSSL_CONF"] = "openssl.cnf"
     asyncio.run(main())
