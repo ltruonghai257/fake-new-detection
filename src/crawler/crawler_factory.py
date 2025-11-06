@@ -133,9 +133,14 @@ class CrawlerFactory:
                                 json.dump(cache_to_save, f, indent=4)
 
                         else:
-                            logger.error(f"  Failed to crawl {url}: {result.error}")
+                            if "SSL Error: Unsafe legacy renegotiation disabled" in result.error:
+                                logger.warning(f"  Skipping {url} due to SSL configuration issue: {result.error}")
+                                reason = "SSL_ERROR_LEGACY_RENEGOTIATION"
+                            else:
+                                logger.error(f"  Failed to crawl {url}: {result.error}")
+                                reason = result.error
                             timestamp = datetime.now().isoformat()
-                            failed_urls_data[url] = {'url': url, 'reason': result.error, 'timestamp': timestamp, 'duration': duration}
+                            failed_urls_data[url] = {'url': url, 'reason': reason, 'timestamp': timestamp, 'duration': duration}
                 else:
                     end_time = time.time()
                     duration = round(end_time - start_time, 2)

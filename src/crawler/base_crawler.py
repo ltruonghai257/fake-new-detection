@@ -67,7 +67,7 @@ class BaseCrawler(ABC):
         else:
             self.name = name
         self.file_handler = FileHandler()
-        self.client = BaseClient(base_url=url, verify=False)
+        self.client = BaseClient(base_url=url, verify=True) # Original: verify=True
 
     async def arun(
         self,
@@ -203,7 +203,13 @@ class BaseCrawler(ABC):
             response = await self.client.get(url)
             return CrawlResult(url=url, html=response.text)
         except httpx.RequestError as e:
-            return CrawlResult(url=url, html="", success=False, error=str(e))
+            # Check for the specific SSL error
+            if "UNSAFE_LEGACY_RENEGOTIATION_DISABLED" in str(e):
+                error_message = f"SSL Error: Unsafe legacy renegotiation disabled. This server uses an outdated SSL configuration. Original error: {e}"
+                logger.error(error_message)
+                return CrawlResult(url=url, html="", success=False, error=error_message)
+            else:
+                return CrawlResult(url=url, html="", success=False, error=str(e))
 
     async def simple_crawling(self, url: Union[str, List[str]]) -> List[CrawlResult]:
         if isinstance(url, str):
@@ -263,7 +269,9 @@ class BaseCrawler(ABC):
         return results
 
     async def _save_images(
-        self, result, save_format: ExtensionReturnCrawlerType
+        self,
+        result,
+        save_format: ExtensionReturnCrawlerType,
     ) -> List[Dict[str, str]]:
         saved_image_paths = []
         if hasattr(result, "images") and result.images:
@@ -336,12 +344,12 @@ class BaseCrawler(ABC):
         ext: ExtensionReturnCrawlerType = ".txt",
         file_name: Optional[str] = None,
     ):
+        if not file_name:
+            file_name = StringHandler.sanitize_filename(
+                StringHandler.class_name_to_snake_case(f"{self.name}{ext}")
+            )
         data_to_save = self._prepare_data_for_saving(result)
         if data_to_save:
-            if not file_name:
-                file_name = StringHandler.sanitize_filename(
-                    StringHandler.class_name_to_snake_case(f"{self.name}{ext}")
-                )
             self.file_handler.write(
                 format_name=ext.strip("."),
                 data=data_to_save,
