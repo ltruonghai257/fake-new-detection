@@ -18,23 +18,37 @@ async def main():
     dataset_name = "tranthaihoa/vifactcheck"
     url_column = "Url"
     splits = ["train", "test", "dev"]
-    for split in splits:
-        output_filename = f"news_data_{dataset_name.split('/')[-1]}_{split}.json"
-        # Set a limit for testing. Set to None to crawl all URLs.
-        url_limit = 100
+    url_limit = None # Set a limit for testing. Set to None to crawl all URLs.
 
+    mode_input = input("Choose mode: 'yes_all' (clear cache for all), 'no_all' (keep cache for all), or 'manual' (prompt for each split): ").lower()
+    
+    if mode_input not in ["yes_all", "no_all", "manual"]:
+        print("Invalid mode selected. Exiting.")
+        return
+
+    for split in splits:
+        print(f"\n--- Processing split: {split} ---")
+        output_filename = f"news_data_{dataset_name.split('/')[-1]}_{split}.json"
+        
         crawler_factory = CrawlerFactory(
             cache_filename=f"data/caches/crawling_status_{split}.json",
             failed_log_filename=f"data/caches/failed_urls_{split}.json"
         )
 
-        if crawler_factory.check_cache_file_exists():
-            clear_cache_input = input(f"Cache file for split '{split}' exists. Do you want to clear it? (y/n): ")
-        
-            if clear_cache_input.lower() == "y":
+        if mode_input == "yes_all":
+            if crawler_factory.check_cache_file_exists():
                 crawler_factory.clear_cache()
-        else:
-            logger.info(f"No cache file found for split '{split}'. Starting fresh crawl.")
+            else:
+                logger.info(f"No cache file found for split '{split}'. Starting fresh crawl.")
+        elif mode_input == "no_all":
+            logger.info(f"Keeping cache for split '{split}'.")
+        elif mode_input == "manual":
+            if crawler_factory.check_cache_file_exists():
+                clear_cache_input = input(f"Cache file for split '{split}' exists. Do you want to clear it? (y/n): ")
+                if clear_cache_input.lower() == "y":
+                    crawler_factory.clear_cache()
+            else:
+                logger.info(f"No cache file found for split '{split}'. Starting fresh crawl.")
 
         dataset_handler = DatasetHandler(dataset_name)
         urls_to_crawl = dataset_handler.get_urls_from_split(
@@ -44,7 +58,7 @@ async def main():
         if urls_to_crawl:
             await crawler_factory.crawl_and_save_all(urls_to_crawl, output_filename, format_name="custom")
         else:
-            logger.info("--- No URLs to crawl. Exiting. ---")
+            logger.info(f"--- No URLs to crawl for split {split}. ---")
 
 
 if __name__ == "__main__":
