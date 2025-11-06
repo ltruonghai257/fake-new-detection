@@ -1,0 +1,84 @@
+2025-11-06 11:37:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 1035 completed URLs from cache.
+2025-11-06 11:37:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:37:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:37:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 757 completed URLs from cache.
+2025-11-06 11:37:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:37:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:37:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 496 completed URLs from cache.
+2025-11-06 11:37:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:37:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:37:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 1035 completed URLs from cache.
+2025-11-06 11:37:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:37:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:37:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 757 completed URLs from cache.
+2025-11-06 11:37:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 1 new URLs to crawl.
+2025-11-06 11:37:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:117 - 
+Appending 1 new results to data/json/news_data_vifactcheck_test.json...
+2025-11-06 11:37:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:133 - --- All results saved to data/json/news_data_vifactcheck_test.json ---
+2025-11-06 11:37:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 496 completed URLs from cache.
+2025-11-06 11:37:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:37:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:39:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 1035 completed URLs from cache.
+2025-11-06 11:39:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:39:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:39:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 758 completed URLs from cache.
+2025-11-06 11:39:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:39:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:39:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 496 completed URLs from cache.
+2025-11-06 11:39:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:39:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:41:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 1035 completed URLs from cache.
+2025-11-06 11:41:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:41:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:41:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 758 completed URLs from cache.
+2025-11-06 11:41:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:41:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:41:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 496 completed URLs from cache.
+2025-11-06 11:41:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:41:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:41:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 1035 completed URLs from cache.
+2025-11-06 11:41:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:41:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:41:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 758 completed URLs from cache.
+2025-11-06 11:41:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:41:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:41:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 496 completed URLs from cache.
+2025-11-06 11:41:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:41:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:42:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 1035 completed URLs from cache.
+2025-11-06 11:42:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:42:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:42:38 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 758 completed URLs from cache.
+2025-11-06 11:42:38 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:42:38 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:42:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:85 - Loaded 496 completed URLs from cache.
+2025-11-06 11:42:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 0 new URLs to crawl.
+2025-11-06 11:42:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:135 - 
+--- No new results to save. ---
+2025-11-06 11:43:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 5 new URLs to crawl.
+2025-11-06 11:43:04 | ERROR    | crawler.crawler_factory:crawl_and_save_all:110 -   Failed to crawl https://baotintuc.vn/the-gioi/trung-bay-ban-sao-bo-xuong-hoa-thach-cua-loai-khung-long-khong-lo-tai-london-20230330152500757.htm: [SSL: UNSAFE_LEGACY_RENEGOTIATION_DISABLED] unsafe legacy renegotiation disabled (_ssl.c:1032)
+2025-11-06 11:43:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:117 - 
+Appending 4 new results to data/json/news_data_vifactcheck_test_agent_test.json...
+2025-11-06 11:43:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:133 - --- All results saved to data/json/news_data_vifactcheck_test_agent_test.json ---
+2025-11-06 11:44:53 | INFO     | crawler.crawler_factory:clear_cache:74 - --- Cache file 'data/caches/crawling_status_test_agent_test.json' cleared. ---
+2025-11-06 11:44:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:88 - Found 5 new URLs to crawl.
+2025-11-06 11:44:58 | ERROR    | crawler.crawler_factory:crawl_and_save_all:110 -   Failed to crawl https://baotintuc.vn/the-gioi/trung-bay-ban-sao-bo-xuong-hoa-thach-cua-loai-khung-long-khong-lo-tai-london-20230330152500757.htm: [SSL: UNSAFE_LEGACY_RENEGOTIATION_DISABLED] unsafe legacy renegotiation disabled (_ssl.c:1032)
+2025-11-06 11:44:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:117 - 
+Appending 4 new results to data/json/news_data_vifactcheck_test_agent_test.json...
+2025-11-06 11:44:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:133 - --- All results saved to data/json/news_data_vifactcheck_test_agent_test.json ---

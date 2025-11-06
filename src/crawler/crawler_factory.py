@@ -8,6 +8,7 @@ from .base_crawler import BaseCrawler
 from .crawl_result import CrawlResult
 from helpers.file_handler.file_handler import FileHandler
 from .output_formats import OutputFormatter
+from helpers.logger import logger
 
 from .news.real.VnExpressCrawler import VnExpressCrawler
 from .news.real.BaoChinhPhuCrawler import BaoChinhPhuCrawler
@@ -52,7 +53,7 @@ class CrawlerFactory:
                 if key in domain:
                     return crawler_class()
         except Exception as e:
-            tqdm.write(f"Error finding crawler for url {url}: {e}")
+            logger.error(f"Error finding crawler for url {url}: {e}")
         
         return None
 
@@ -70,7 +71,7 @@ class CrawlerFactory:
         """
         if os.path.exists(self.cache_filename):
             os.remove(self.cache_filename)
-            tqdm.write(f"--- Cache file '{self.cache_filename}' cleared. ---")
+            logger.info(f"--- Cache file '{self.cache_filename}' cleared. ---")
 
     async def crawl_and_save_all(self, urls: List[str], output_filename: str, format_name: str = "default"):
         all_results_data = []
@@ -80,11 +81,11 @@ class CrawlerFactory:
 
         if os.path.exists(self.cache_filename):
             with open(self.cache_filename, 'r') as f:
-                completed_urls = set(json.load(f))
-            tqdm.write(f"Loaded {len(completed_urls)} completed URLs from cache.")
+                completed_urls = list(json.load(f))
+            logger.info(f"Loaded {len(completed_urls)} completed URLs from cache.")
 
         urls_to_crawl = [url for url in urls if url not in completed_urls]
-        tqdm.write(f"Found {len(urls_to_crawl)} new URLs to crawl.")
+        logger.info(f"Found {len(urls_to_crawl)} new URLs to crawl.")
 
         with tqdm(total=len(urls_to_crawl), desc="Crawling URLs") as pbar:
             for url in urls_to_crawl:
@@ -106,21 +107,21 @@ class CrawlerFactory:
                                 json.dump(list(completed_urls), f)
 
                         else:
-                            tqdm.write(f"  Failed to crawl {url}: {result.error}")
+                            logger.error(f"  Failed to crawl {url}: {result.error}")
                 else:
-                    tqdm.write(f"--- No crawler found for {url} ---")
+                    logger.warning(f"--- No crawler found for {url} ---")
                 pbar.update(1)
 
         if all_results_data:
             output_path = os.path.join("data", "json", output_filename)
-            tqdm.write(f"\nAppending {len(all_results_data)} new results to {output_path}...")
+            logger.info(f"\nAppending {len(all_results_data)} new results to {output_path}...")
             existing_data = []
             if os.path.exists(output_path):
                 with open(output_path, 'r') as f:
                     try:
                         existing_data = json.load(f)
                     except json.JSONDecodeError:
-                        tqdm.write(f"Warning: Could not decode JSON from {output_path}. Starting with a new file.")
+                        logger.warning(f"Warning: Could not decode JSON from {output_path}. Starting with a new file.")
             
             existing_data.extend(all_results_data)
 
@@ -129,6 +130,6 @@ class CrawlerFactory:
                 data=existing_data,
                 file_name=output_filename, # Use output_filename directly
             )
-            tqdm.write(f"--- All results saved to {output_path} ---")
+            logger.info(f"--- All results saved to {output_path} ---")
         else:
-            tqdm.write("\n--- No new results to save. ---")
+            logger.info("\n--- No new results to save. ---")

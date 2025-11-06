@@ -18,7 +18,7 @@ class DatasetHandler:
         print(f"--- Loading dataset '{self.dataset_name}' from Hugging Face... ---")
         try:
             # Use streaming to avoid downloading the entire dataset at once
-            ds = load_dataset(self.dataset_name, split=split, streaming=True)
+            ds = load_dataset(self.dataset_name, split=split, streaming=False)
             urls = []
             dataset_iterator = ds.take(limit) if limit else ds
 
@@ -26,9 +26,9 @@ class DatasetHandler:
             for item in dataset_iterator:
                 if item and item.get(url_column):
                     urls.append(item[url_column])
-            list_urls = list(set(urls))
-            print(f"--- Found {len(list_urls)} URLs to crawl. ---")
-            return list_urls  # Return unique URLs
+
+            print(f"--- Found {len(urls)} URLs to crawl. ---")
+            return urls  # Return unique URLs
         except Exception as e:
             print(f"Error loading or processing dataset: {e}")
             print("Please ensure you are logged in to Hugging Face.")

@@ -8,6 +8,7 @@ from typing import List
 
 from crawler.crawler_factory import CrawlerFactory
 from processing.dataset_handler import DatasetHandler
+from helpers.logger import logger
 
 
 async def main():
@@ -20,7 +21,7 @@ async def main():
     for split in splits:
         output_filename = f"news_data_{dataset_name.split('/')[-1]}_{split}.json"
         # Set a limit for testing. Set to None to crawl all URLs.
-        url_limit = None
+        url_limit = 15
 
         crawler_factory = CrawlerFactory(cache_filename=f"data/caches/crawling_status_{split}.json")
 
@@ -30,7 +31,7 @@ async def main():
             if clear_cache_input.lower() == "y":
                 crawler_factory.clear_cache()
         else:
-            print(f"No cache file found for split '{split}'. Starting fresh crawl.")
+            logger.info(f"No cache file found for split '{split}'. Starting fresh crawl.")
 
         dataset_handler = DatasetHandler(dataset_name)
         urls_to_crawl = dataset_handler.get_urls_from_split(
@@ -40,7 +41,7 @@ async def main():
         if urls_to_crawl:
             await crawler_factory.crawl_and_save_all(urls_to_crawl, output_filename, format_name="custom")
         else:
-            print("--- No URLs to crawl. Exiting. ---")
+            logger.info("--- No URLs to crawl. Exiting. ---")
 
 
 if __name__ == "__main__":
