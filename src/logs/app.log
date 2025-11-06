@@ -499,3 +499,915 @@ Appending 15 new results to data/json/news_data_vifactcheck_dev.json...
 2025-11-06 12:10:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:164 - Total URLs processed: 15
 2025-11-06 12:10:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - Successfully crawled: 15 URLs
 2025-11-06 12:10:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:166 - Failed to crawl: 0 URLs
+2025-11-06 12:12:37 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_test_agent_test.json' cleared. ---
+2025-11-06 12:12:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:98 - Loaded 1 failed URLs from previous runs.
+2025-11-06 12:12:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:102 - Found 4 new URLs to crawl.
+2025-11-06 12:12:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:12:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:12:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:12:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:12:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:12:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:12:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:12:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:12:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:144 - 
+Appending 4 new results to data/json/news_data_vifactcheck_test_agent_test.json...
+2025-11-06 12:12:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:160 - --- All results saved to data/json/news_data_vifactcheck_test_agent_test.json ---
+2025-11-06 12:12:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:167 - --- 1 failed URLs saved to data/caches/failed_urls_test_agent_test.json ---
+2025-11-06 12:12:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:170 - 
+--- Crawling Summary ---
+2025-11-06 12:12:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:171 - Total URLs processed: 5
+2025-11-06 12:12:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - Successfully crawled: 4 URLs
+2025-11-06 12:12:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:173 - Failed to crawl: 1 URLs
+2025-11-06 12:12:56 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_train.json' cleared. ---
+2025-11-06 12:13:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:102 - Found 15 new URLs to crawl.
+2025-11-06 12:13:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/lan-toa-nhung-gia-tri-van-hoa-tot-dep-chan-thien-my-cua-dan-toc-102230318225051612.htm
+2025-11-06 12:13:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/lan-toa-nhung-gia-tri-van-hoa-tot-dep-chan-thien-my-cua-dan-toc-102230318225051612.htm
+2025-11-06 12:13:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baotintuc.vn/an-ninh-trat-tu/bat-tam-giam-doi-tuong-chon-lap-hon-600-tan-chat-thai-ra-moi-truong-20230324173816078.htm
+2025-11-06 12:13:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baotintuc.vn/an-ninh-trat-tu/bat-tam-giam-doi-tuong-chon-lap-hon-600-tan-chat-thai-ra-moi-truong-20230324173816078.htm
+2025-11-06 12:13:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://plo.vn/9-quan-huyen-o-tphcm-se-bi-cup-nuoc-vao-cuoi-tuan-nay-post725015.html
+2025-11-06 12:13:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://plo.vn/9-quan-huyen-o-tphcm-se-bi-cup-nuoc-vao-cuoi-tuan-nay-post725015.html
+2025-11-06 12:13:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://nld.com.vn/giao-duc-khoa-hoc/hanh-trinh-cua-nhung-chiec-om-20230325201419584.htm
+2025-11-06 12:13:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://nld.com.vn/giao-duc-khoa-hoc/hanh-trinh-cua-nhung-chiec-om-20230325201419584.htm
+2025-11-06 12:13:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://thanhnien.vn/giao-duc-anh-ngu-phat-trien-manh-me-bat-chap-khung-hoang-hau-covid-19-185230320124322595.htm
+2025-11-06 12:13:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://thanhnien.vn/giao-duc-anh-ngu-phat-trien-manh-me-bat-chap-khung-hoang-hau-covid-19-185230320124322595.htm
+2025-11-06 12:13:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://vnexpress.net/bon-cach-cam-on-bang-tieng-anh-qua-le-trao-giai-oscar-4581973.html
+2025-11-06 12:13:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://vnexpress.net/bon-cach-cam-on-bang-tieng-anh-qua-le-trao-giai-oscar-4581973.html
+2025-11-06 12:13:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://tuoitre.vn/ly-hoang-nam-vao-ban-ket-giai-m25-lucknow-an-do-2023032414280582.htm
+2025-11-06 12:13:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://tuoitre.vn/ly-hoang-nam-vao-ban-ket-giai-m25-lucknow-an-do-2023032414280582.htm
+2025-11-06 12:13:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/hlv-philippe-troussier-chinh-thuc-nhan-nhiem-vu-voi-bong-da-viet-nam-102230227143914537.htm
+2025-11-06 12:13:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/hlv-philippe-troussier-chinh-thuc-nhan-nhiem-vu-voi-bong-da-viet-nam-102230227143914537.htm
+2025-11-06 12:13:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://thanhnien.vn/le-hoi-thanh-nien-the-he-moi-thich-ung-ket-noi-va-chia-se-185230325203534866.htm
+2025-11-06 12:13:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://thanhnien.vn/le-hoi-thanh-nien-the-he-moi-thich-ung-ket-noi-va-chia-se-185230325203534866.htm
+2025-11-06 12:13:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://thanhnien.vn/hoc-thong-qua-choi-kich-thich-su-sang-tao-o-hoc-sinh-tieu-hoc-185230322111015524.htm
+2025-11-06 12:13:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://thanhnien.vn/hoc-thong-qua-choi-kich-thich-su-sang-tao-o-hoc-sinh-tieu-hoc-185230322111015524.htm
+2025-11-06 12:13:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://tuoitre.vn/hai-nguyen-pho-chu-tich-ha-noi-bi-de-nghi-xu-ly-trong-vu-nang-khong-gia-cay-xanh-20230328134424234.htm
+2025-11-06 12:13:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://tuoitre.vn/hai-nguyen-pho-chu-tich-ha-noi-bi-de-nghi-xu-ly-trong-vu-nang-khong-gia-cay-xanh-20230328134424234.htm
+2025-11-06 12:13:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://tuoitre.vn/evn-van-de-xuat-cap-dien-cho-con-dao-bang-cap-ngam-vuot-bien-20230317105713882.htm
+2025-11-06 12:13:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://tuoitre.vn/evn-van-de-xuat-cap-dien-cho-con-dao-bang-cap-ngam-vuot-bien-20230317105713882.htm
+2025-11-06 12:13:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://dantri.com.vn/giao-duc-huong-nghiep/ha-noi-khoang-50-hoc-sinh-tieu-hoc-nghi-ngo-doc-sau-khi-da-ngoai-20230328203127735.htm
+2025-11-06 12:13:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://dantri.com.vn/giao-duc-huong-nghiep/ha-noi-khoang-50-hoc-sinh-tieu-hoc-nghi-ngo-doc-sau-khi-da-ngoai-20230328203127735.htm
+2025-11-06 12:13:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://nld.com.vn/giao-duc-khoa-hoc/nu-hieu-truong-phan-phao-ket-qua-xac-minh-don-thu-cua-so-gd-dt-20230318100828021.htm
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://nld.com.vn/giao-duc-khoa-hoc/nu-hieu-truong-phan-phao-ket-qua-xac-minh-don-thu-cua-so-gd-dt-20230318100828021.htm
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://tuoitre.vn/giai-phap-thuc-day-so-hoa-truy-xuat-nguon-goc-nong-san-20230228134150083.htm
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://tuoitre.vn/giai-phap-thuc-day-so-hoa-truy-xuat-nguon-goc-nong-san-20230228134150083.htm
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:144 - 
+Appending 15 new results to data/json/news_data_vifactcheck_train.json...
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:160 - --- All results saved to data/json/news_data_vifactcheck_train.json ---
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:170 - 
+--- Crawling Summary ---
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:171 - Total URLs processed: 15
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - Successfully crawled: 15 URLs
+2025-11-06 12:13:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:173 - Failed to crawl: 0 URLs
+2025-11-06 12:13:53 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_test.json' cleared. ---
+2025-11-06 12:13:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:102 - Found 15 new URLs to crawl.
+2025-11-06 12:13:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baotintuc.vn/the-gioi/trung-bay-ban-sao-bo-xuong-hoa-thach-cua-loai-khung-long-khong-lo-tai-london-20230330152500757.htm
+2025-11-06 12:13:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baotintuc.vn/the-gioi/trung-bay-ban-sao-bo-xuong-hoa-thach-cua-loai-khung-long-khong-lo-tai-london-20230330152500757.htm
+2025-11-06 12:13:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:13:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:13:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:13:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:13:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:13:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:13:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:13:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:13:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baotintuc.vn/dich-benh/ha-noi-khong-de-dich-cum-gia-cam-lay-sang-nguoi-20230315213949243.htm
+2025-11-06 12:13:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baotintuc.vn/dich-benh/ha-noi-khong-de-dich-cum-gia-cam-lay-sang-nguoi-20230315213949243.htm
+2025-11-06 12:13:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/nuoi-duong-dam-me-khat-vong-sang-tao-doi-moi-tao-ra-cac-thuong-hieu-ban-dia-viet-nam-mang-tam-quoc-te-102230317121741553.htm
+2025-11-06 12:13:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/nuoi-duong-dam-me-khat-vong-sang-tao-doi-moi-tao-ra-cac-thuong-hieu-ban-dia-viet-nam-mang-tam-quoc-te-102230317121741553.htm
+2025-11-06 12:13:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://vnexpress.net/bon-cach-cam-on-bang-tieng-anh-qua-le-trao-giai-oscar-4581973.html
+2025-11-06 12:13:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://vnexpress.net/bon-cach-cam-on-bang-tieng-anh-qua-le-trao-giai-oscar-4581973.html
+2025-11-06 12:13:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baotintuc.vn/giao-duc/gan-5000-viec-lam-tai-chuoi-su-kien-ueh-sharing-career-fair-2023-20230330175236350.htm
+2025-11-06 12:13:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baotintuc.vn/giao-duc/gan-5000-viec-lam-tai-chuoi-su-kien-ueh-sharing-career-fair-2023-20230330175236350.htm
+2025-11-06 12:13:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://tienphong.vn/cong-bo-quyet-dinh-cua-ban-thuong-vu-tinh-uy-binh-duong-ve-cong-tac-can-bo-post1520981.tpo
+2025-11-06 12:13:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://tienphong.vn/cong-bo-quyet-dinh-cua-ban-thuong-vu-tinh-uy-binh-duong-ve-cong-tac-can-bo-post1520981.tpo
+2025-11-06 12:13:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://tienphong.vn/binh-duong-thi-diem-to-chuc-day-hoc-song-ngu-trong-truong-cong-lap-post1520316.tpo
+2025-11-06 12:13:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://tienphong.vn/binh-duong-thi-diem-to-chuc-day-hoc-song-ngu-trong-truong-cong-lap-post1520316.tpo
+2025-11-06 12:14:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baotintuc.vn/bong-da/vong-loai-euro-2024-giua-phap-ha-lan-long-tranh-ho-dau-tai-stade-de-france-20230324172351609.htm
+2025-11-06 12:14:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baotintuc.vn/bong-da/vong-loai-euro-2024-giua-phap-ha-lan-long-tranh-ho-dau-tai-stade-de-france-20230324172351609.htm
+2025-11-06 12:14:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://dantri.com.vn/van-hoa/cuoc-song-tren-quan-dao-nen-tho-du-thua-2000-dan-ong-20230323174836594.htm
+2025-11-06 12:14:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://dantri.com.vn/van-hoa/cuoc-song-tren-quan-dao-nen-tho-du-thua-2000-dan-ong-20230323174836594.htm
+2025-11-06 12:14:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://thanhnien.vn/gen-z-viet-bai-tieu-luan-nhanh-hon-nho-chatgpt-185230325234611357.htm
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://thanhnien.vn/gen-z-viet-bai-tieu-luan-nhanh-hon-nho-chatgpt-185230325234611357.htm
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://tienphong.vn/anh-sap-gui-dan-urani-cho-ukraine-tong-thong-putin-tuyen-bo-dap-tra-post1519594.tpo
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://tienphong.vn/anh-sap-gui-dan-urani-cho-ukraine-tong-thong-putin-tuyen-bo-dap-tra-post1519594.tpo
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:144 - 
+Appending 15 new results to data/json/news_data_vifactcheck_test.json...
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:160 - --- All results saved to data/json/news_data_vifactcheck_test.json ---
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:170 - 
+--- Crawling Summary ---
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:171 - Total URLs processed: 15
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - Successfully crawled: 15 URLs
+2025-11-06 12:14:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:173 - Failed to crawl: 0 URLs
+2025-11-06 12:14:07 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_test_agent_test.json' cleared. ---
+2025-11-06 12:14:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:101 - Loaded 1 failed URLs from previous runs.
+2025-11-06 12:14:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 4 new URLs to crawl.
+2025-11-06 12:14:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:149 - 
+Appending 4 new results to data/json/news_data_vifactcheck_test_agent_test.json...
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - --- All results saved to data/json/news_data_vifactcheck_test_agent_test.json ---
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - --- 1 failed URLs saved to data/caches/failed_urls_test_agent_test.json ---
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 4 URLs
+2025-11-06 12:14:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 1 URLs
+2025-11-06 12:14:20 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_dev.json' cleared. ---
+2025-11-06 12:14:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:102 - Found 15 new URLs to crawl.
+2025-11-06 12:14:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:14:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:14:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/phat-huy-gia-tri-bao-tap-chi-cua-dang-trong-thoi-dai-bung-no-thong-tin-102230410135707719.htm
+2025-11-06 12:14:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/phat-huy-gia-tri-bao-tap-chi-cua-dang-trong-thoi-dai-bung-no-thong-tin-102230410135707719.htm
+2025-11-06 12:14:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://nld.com.vn/phap-luat/cong-ty-o-tp-hcm-chuyen-ghep-anh-nong-boi-nho-nguoi-vay-len-mang-xa-hoi-de-doi-no-20230325103001264.htm
+2025-11-06 12:14:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://nld.com.vn/phap-luat/cong-ty-o-tp-hcm-chuyen-ghep-anh-nong-boi-nho-nguoi-vay-len-mang-xa-hoi-de-doi-no-20230325103001264.htm
+2025-11-06 12:14:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://thanhnien.vn/can-lam-gi-de-con-nguoi-cong-nghe-khong-bi-thay-the-boi-may-moc-185230328185320135.htm
+2025-11-06 12:14:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://thanhnien.vn/can-lam-gi-de-con-nguoi-cong-nghe-khong-bi-thay-the-boi-may-moc-185230328185320135.htm
+2025-11-06 12:14:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/he-thong-xang-dau-khi-dot-phai-van-hanh-dong-bo-thong-suot-dam-bao-cho-nen-kinh-te-102230330163626936.htm
+2025-11-06 12:14:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/he-thong-xang-dau-khi-dot-phai-van-hanh-dong-bo-thong-suot-dam-bao-cho-nen-kinh-te-102230330163626936.htm
+2025-11-06 12:14:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://plo.vn/bhxh-viet-nam-dung-trien-khai-tin-nhan-dich-vu-tra-cuu-toi-dau-so-8079-post722286.html
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://plo.vn/bhxh-viet-nam-dung-trien-khai-tin-nhan-dich-vu-tra-cuu-toi-dau-so-8079-post722286.html
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://vnexpress.net/truong-hoc-chau-a-quy-dinh-de-toc-hoc-sinh-nhu-the-nao-4585468.html
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://vnexpress.net/truong-hoc-chau-a-quy-dinh-de-toc-hoc-sinh-nhu-the-nao-4585468.html
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://nld.com.vn/thoi-su/bo-dao-nha-suc-hut-cua-thien-duong-du-lich-20230318201717979.htm
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://nld.com.vn/thoi-su/bo-dao-nha-suc-hut-cua-thien-duong-du-lich-20230318201717979.htm
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/hoan-thien-de-an-phat-trien-1-trieu-ha-lua-chat-luong-cao-giam-phat-thai-102230329191115412.htm
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/hoan-thien-de-an-phat-trien-1-trieu-ha-lua-chat-luong-cao-giam-phat-thai-102230329191115412.htm
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://dantri.com.vn/van-hoa/ly-do-dem-nhac-co-mat-hien-ho-bi-huy-bo-20230330103110566.htm
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://dantri.com.vn/van-hoa/ly-do-dem-nhac-co-mat-hien-ho-bi-huy-bo-20230330103110566.htm
+2025-11-06 12:14:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://thanhnien.vn/hang-hang-khong-gia-re-hk-express-nhan-may-bay-airbus-a321neo-dau-tien-185230329151331922.htm
+2025-11-06 12:14:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://thanhnien.vn/hang-hang-khong-gia-re-hk-express-nhan-may-bay-airbus-a321neo-dau-tien-185230329151331922.htm
+2025-11-06 12:14:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://plo.vn/fan-ha-anh-tuan-ung-ho-nhu-chua-he-co-cuoc-chia-ly-lat-mat-6-cua-ly-hai-tung-trailer-post722201.html
+2025-11-06 12:14:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://plo.vn/fan-ha-anh-tuan-ung-ho-nhu-chua-he-co-cuoc-chia-ly-lat-mat-6-cua-ly-hai-tung-trailer-post722201.html
+2025-11-06 12:14:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://nld.com.vn/thoi-su-quoc-te/ong-donald-trump-tap-trung-luc-luong-o-texas-20230326085413351.htm
+2025-11-06 12:14:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://nld.com.vn/thoi-su-quoc-te/ong-donald-trump-tap-trung-luc-luong-o-texas-20230326085413351.htm
+2025-11-06 12:14:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://baochinhphu.vn/ha-noi-sap-co-them-tren-41-trieu-met-vuong-san-nha-o-phuc-vu-nguoi-dan-103230413124947886.htm
+2025-11-06 12:14:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://baochinhphu.vn/ha-noi-sap-co-them-tren-41-trieu-met-vuong-san-nha-o-phuc-vu-nguoi-dan-103230413124947886.htm
+2025-11-06 12:14:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:107 - Processing URL: https://dantri.com.vn/kinh-doanh/thu-tuong-de-nghi-hoa-binh-xay-dung-cac-san-pham-du-lich-chat-luong-cao-20230325222810830.htm
+2025-11-06 12:14:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:115 - Saving images for https://dantri.com.vn/kinh-doanh/thu-tuong-de-nghi-hoa-binh-xay-dung-cac-san-pham-du-lich-chat-luong-cao-20230325222810830.htm
+2025-11-06 12:14:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:144 - 
+Appending 15 new results to data/json/news_data_vifactcheck_dev.json...
+2025-11-06 12:14:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:160 - --- All results saved to data/json/news_data_vifactcheck_dev.json ---
+2025-11-06 12:14:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:170 - 
+--- Crawling Summary ---
+2025-11-06 12:14:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:171 - Total URLs processed: 15
+2025-11-06 12:14:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - Successfully crawled: 15 URLs
+2025-11-06 12:14:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:173 - Failed to crawl: 0 URLs
+2025-11-06 12:14:44 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_train.json' cleared. ---
+2025-11-06 12:14:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 100 new URLs to crawl.
+2025-11-06 12:14:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/lan-toa-nhung-gia-tri-van-hoa-tot-dep-chan-thien-my-cua-dan-toc-102230318225051612.htm
+2025-11-06 12:14:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/lan-toa-nhung-gia-tri-van-hoa-tot-dep-chan-thien-my-cua-dan-toc-102230318225051612.htm
+2025-11-06 12:14:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/an-ninh-trat-tu/bat-tam-giam-doi-tuong-chon-lap-hon-600-tan-chat-thai-ra-moi-truong-20230324173816078.htm
+2025-11-06 12:14:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/an-ninh-trat-tu/bat-tam-giam-doi-tuong-chon-lap-hon-600-tan-chat-thai-ra-moi-truong-20230324173816078.htm
+2025-11-06 12:14:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/9-quan-huyen-o-tphcm-se-bi-cup-nuoc-vao-cuoi-tuan-nay-post725015.html
+2025-11-06 12:14:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/9-quan-huyen-o-tphcm-se-bi-cup-nuoc-vao-cuoi-tuan-nay-post725015.html
+2025-11-06 12:14:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/giao-duc-khoa-hoc/hanh-trinh-cua-nhung-chiec-om-20230325201419584.htm
+2025-11-06 12:14:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/giao-duc-khoa-hoc/hanh-trinh-cua-nhung-chiec-om-20230325201419584.htm
+2025-11-06 12:14:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/giao-duc-anh-ngu-phat-trien-manh-me-bat-chap-khung-hoang-hau-covid-19-185230320124322595.htm
+2025-11-06 12:14:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/giao-duc-anh-ngu-phat-trien-manh-me-bat-chap-khung-hoang-hau-covid-19-185230320124322595.htm
+2025-11-06 12:14:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/bon-cach-cam-on-bang-tieng-anh-qua-le-trao-giai-oscar-4581973.html
+2025-11-06 12:14:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/bon-cach-cam-on-bang-tieng-anh-qua-le-trao-giai-oscar-4581973.html
+2025-11-06 12:14:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/ly-hoang-nam-vao-ban-ket-giai-m25-lucknow-an-do-2023032414280582.htm
+2025-11-06 12:14:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/ly-hoang-nam-vao-ban-ket-giai-m25-lucknow-an-do-2023032414280582.htm
+2025-11-06 12:14:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/hlv-philippe-troussier-chinh-thuc-nhan-nhiem-vu-voi-bong-da-viet-nam-102230227143914537.htm
+2025-11-06 12:14:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/hlv-philippe-troussier-chinh-thuc-nhan-nhiem-vu-voi-bong-da-viet-nam-102230227143914537.htm
+2025-11-06 12:14:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/le-hoi-thanh-nien-the-he-moi-thich-ung-ket-noi-va-chia-se-185230325203534866.htm
+2025-11-06 12:14:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/le-hoi-thanh-nien-the-he-moi-thich-ung-ket-noi-va-chia-se-185230325203534866.htm
+2025-11-06 12:14:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/hoc-thong-qua-choi-kich-thich-su-sang-tao-o-hoc-sinh-tieu-hoc-185230322111015524.htm
+2025-11-06 12:14:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/hoc-thong-qua-choi-kich-thich-su-sang-tao-o-hoc-sinh-tieu-hoc-185230322111015524.htm
+2025-11-06 12:14:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/hai-nguyen-pho-chu-tich-ha-noi-bi-de-nghi-xu-ly-trong-vu-nang-khong-gia-cay-xanh-20230328134424234.htm
+2025-11-06 12:14:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/hai-nguyen-pho-chu-tich-ha-noi-bi-de-nghi-xu-ly-trong-vu-nang-khong-gia-cay-xanh-20230328134424234.htm
+2025-11-06 12:14:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/evn-van-de-xuat-cap-dien-cho-con-dao-bang-cap-ngam-vuot-bien-20230317105713882.htm
+2025-11-06 12:14:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/evn-van-de-xuat-cap-dien-cho-con-dao-bang-cap-ngam-vuot-bien-20230317105713882.htm
+2025-11-06 12:14:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/giao-duc-huong-nghiep/ha-noi-khoang-50-hoc-sinh-tieu-hoc-nghi-ngo-doc-sau-khi-da-ngoai-20230328203127735.htm
+2025-11-06 12:14:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/giao-duc-huong-nghiep/ha-noi-khoang-50-hoc-sinh-tieu-hoc-nghi-ngo-doc-sau-khi-da-ngoai-20230328203127735.htm
+2025-11-06 12:14:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/giao-duc-khoa-hoc/nu-hieu-truong-phan-phao-ket-qua-xac-minh-don-thu-cua-so-gd-dt-20230318100828021.htm
+2025-11-06 12:14:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/giao-duc-khoa-hoc/nu-hieu-truong-phan-phao-ket-qua-xac-minh-don-thu-cua-so-gd-dt-20230318100828021.htm
+2025-11-06 12:14:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/giai-phap-thuc-day-so-hoa-truy-xuat-nguon-goc-nong-san-20230228134150083.htm
+2025-11-06 12:14:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/giai-phap-thuc-day-so-hoa-truy-xuat-nguon-goc-nong-san-20230228134150083.htm
+2025-11-06 12:14:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/uy-ban-thuong-vu-quoc-hoi-khong-tan-thanh-quy-dinh-thoi-han-so-huu-chung-cu-20230317180028903.htm
+2025-11-06 12:14:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/uy-ban-thuong-vu-quoc-hoi-khong-tan-thanh-quy-dinh-thoi-han-so-huu-chung-cu-20230317180028903.htm
+2025-11-06 12:14:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/van-de-quan-tam/so-giao-duc-va-dao-tao-tp-ho-chi-minh-ra-van-ban-khan-canh-bao-chieu-tro-lua-dao-moi-20230328164923174.htm
+2025-11-06 12:14:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/van-de-quan-tam/so-giao-duc-va-dao-tao-tp-ho-chi-minh-ra-van-ban-khan-canh-bao-chieu-tro-lua-dao-moi-20230328164923174.htm
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/nam-2023-nhu-cau-hang-khong-phuc-hoi-ve-muc-truoc-dai-dich-covid-19-102230209144427102.htm
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/nam-2023-nhu-cau-hang-khong-phuc-hoi-ve-muc-truoc-dai-dich-covid-19-102230209144427102.htm
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/vu-khi-khi-tai/nga-kien-quyet-dinh-chi-new-start-20230329180412369.htm
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/vu-khi-khi-tai/nga-kien-quyet-dinh-chi-new-start-20230329180412369.htm
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/them-hai-phu-huynh-bi-lua-chuyen-100-trieu-dong-vi-con-can-mo-gap-post722858.html
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/them-hai-phu-huynh-bi-lua-chuyen-100-trieu-dong-vi-con-can-mo-gap-post722858.html
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/xa-hoi/mien-bac-mua-lanh-truoc-khi-don-dot-nang-nong-cuc-bo-20230330080713632.htm
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/xa-hoi/mien-bac-mua-lanh-truoc-khi-don-dot-nang-nong-cuc-bo-20230330080713632.htm
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/nong-nghiep-tiep-tuc-tang-truong-trong-quy-i-102230330180347503.htm
+2025-11-06 12:14:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/nong-nghiep-tiep-tuc-tang-truong-trong-quy-i-102230330180347503.htm
+2025-11-06 12:14:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/the-gioi/uav-ukraine-tap-kich-ban-chay-sieu-phao-nga-20230329003609965.htm
+2025-11-06 12:14:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/the-gioi/uav-ukraine-tap-kich-ban-chay-sieu-phao-nga-20230329003609965.htm
+2025-11-06 12:14:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/cuoc-song-trong-nhung-can-nha-sieu-nho-o-khu-ma-lang-4581460.html
+2025-11-06 12:14:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/cuoc-song-trong-nhung-can-nha-sieu-nho-o-khu-ma-lang-4581460.html
+2025-11-06 12:14:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/oto-porsche-tong-2-xe-may-tren-duong-dan-cao-toc-4583070.html
+2025-11-06 12:15:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/oto-porsche-tong-2-xe-may-tren-duong-dan-cao-toc-4583070.html
+2025-11-06 12:15:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/nang-cap-thiet-bi-giam-sat-dao-tao-lai-xe-tu-dong-phat-hien-gian-lan-102230418163901398.htm
+2025-11-06 12:15:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/nang-cap-thiet-bi-giam-sat-dao-tao-lai-xe-tu-dong-phat-hien-gian-lan-102230418163901398.htm
+2025-11-06 12:15:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/cac-tong-thong-my-dinh-vao-to-tung-20230331175157137.htm
+2025-11-06 12:15:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/cac-tong-thong-my-dinh-vao-to-tung-20230331175157137.htm
+2025-11-06 12:15:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/anh-duoc-chap-nhan-gia-nhap-cptpp-185230331085115673.htm
+2025-11-06 12:15:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/anh-duoc-chap-nhan-gia-nhap-cptpp-185230331085115673.htm
+2025-11-06 12:15:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/the-gioi/giao-tranh-leo-thang-quanh-nha-may-ukraine-iaea-canh-bao-su-co-hat-nhan-20230330124018825.htm
+2025-11-06 12:15:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/the-gioi/giao-tranh-leo-thang-quanh-nha-may-ukraine-iaea-canh-bao-su-co-hat-nhan-20230330124018825.htm
+2025-11-06 12:15:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/bo-gddt-phan-hoi-ve-kien-nghi-bo-viec-xet-tuyen-dai-hoc-qua-hoc-ba-post719325.html
+2025-11-06 12:15:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/bo-gddt-phan-hoi-ve-kien-nghi-bo-viec-xet-tuyen-dai-hoc-qua-hoc-ba-post719325.html
+2025-11-06 12:15:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/thoi-su-quoc-te/ong-donald-trump-tap-trung-luc-luong-o-texas-20230326085413351.htm
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/thoi-su-quoc-te/ong-donald-trump-tap-trung-luc-luong-o-texas-20230326085413351.htm
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/kham-pha-moi-tu-nha-tho-duc-ba-o-paris-sau-vu-hoa-hoan-2019-post724469.html
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/kham-pha-moi-tu-nha-tho-duc-ba-o-paris-sau-vu-hoa-hoan-2019-post724469.html
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/ha-noi-duoc-chon-la-diem-den-an-toan-cho-nu-du-khach-103230307135847784.htm
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/ha-noi-duoc-chon-la-diem-den-an-toan-cho-nu-du-khach-103230307135847784.htm
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/phap-luat/bat-2-ke-phat-tan-tin-nhan-rac-thue-cho-nguoi-dan-ong-trung-quoc-20230324203548639.htm
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/phap-luat/bat-2-ke-phat-tan-tin-nhan-rac-thue-cho-nguoi-dan-ong-trung-quoc-20230324203548639.htm
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/cuoc-gap-xuc-dong-sau-27-nam-giua-tac-gia-va-nhan-vat-buc-anh-doat-giai-quoc-te-post722657.html
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/cuoc-gap-xuc-dong-sau-27-nam-giua-tac-gia-va-nhan-vat-buc-anh-doat-giai-quoc-te-post722657.html
+2025-11-06 12:15:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/giai-tri/vu-nguoi-mau-thai-thien-phuong-bi-phan-xac-bat-ke-thu-6-20230302185435118.htm
+2025-11-06 12:15:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/giai-tri/vu-nguoi-mau-thai-thien-phuong-bi-phan-xac-bat-ke-thu-6-20230302185435118.htm
+2025-11-06 12:15:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/can-tho-xuat-khau-lo-sau-rieng-chinh-ngach-dau-tien-sang-trung-quoc-post724322.html
+2025-11-06 12:15:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/can-tho-xuat-khau-lo-sau-rieng-chinh-ngach-dau-tien-sang-trung-quoc-post724322.html
+2025-11-06 12:15:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/bay-ha-ma-cua-trum-ma-tuy-lam-kho-colombia-185230330124414345.htm
+2025-11-06 12:15:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/bay-ha-ma-cua-trum-ma-tuy-lam-kho-colombia-185230330124414345.htm
+2025-11-06 12:15:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/ke-cam-dau-duong-day-san-xuat-tien-gia-bi-bat-tai-trung-tam-cai-nghien-post1519748.tpo
+2025-11-06 12:15:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/ke-cam-dau-duong-day-san-xuat-tien-gia-bi-bat-tai-trung-tam-cai-nghien-post1519748.tpo
+2025-11-06 12:15:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/27-nguoi-duong-tinh-ma-tuy-trong-1-nha-hang-o-ba-ria-vung-tau-post724891.html
+2025-11-06 12:15:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/27-nguoi-duong-tinh-ma-tuy-trong-1-nha-hang-o-ba-ria-vung-tau-post724891.html
+2025-11-06 12:15:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/can-dinh-danh-cu-the-cac-khoan-thu-tai-chinh-ve-dat-dai-post725268.html
+2025-11-06 12:15:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/can-dinh-danh-cu-the-cac-khoan-thu-tai-chinh-ve-dat-dai-post725268.html
+2025-11-06 12:15:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/lo-ngai-nguy-co-benh-bai-liet-hoang-dai-xam-nhap-viet-nam-102230410161059569.htm
+2025-11-06 12:15:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/lo-ngai-nguy-co-benh-bai-liet-hoang-dai-xam-nhap-viet-nam-102230410161059569.htm
+2025-11-06 12:15:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/ba-the-he-nghe-si-hat-nhac-trinh-cong-son-tai-the-legend-concert-20230330170808908.htm
+2025-11-06 12:15:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/ba-the-he-nghe-si-hat-nhac-trinh-cong-son-tai-the-legend-concert-20230330170808908.htm
+2025-11-06 12:15:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/van-hoa/tran-thanh-khoc-nac-ke-kho-vi-la-nghe-si-nuoc-mat-roi-khong-dung-cho-20230322165824004.htm
+2025-11-06 12:15:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/van-hoa/tran-thanh-khoc-nac-ke-kho-vi-la-nghe-si-nuoc-mat-roi-khong-dung-cho-20230322165824004.htm
+2025-11-06 12:15:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/cuba-vinh-danh-nhung-nguoi-hy-sinh-trong-tham-hoa-matanzas-102220820110325279.htm
+2025-11-06 12:15:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/cuba-vinh-danh-nhung-nguoi-hy-sinh-trong-tham-hoa-matanzas-102220820110325279.htm
+2025-11-06 12:15:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/doi-song-van-hoa/dong-bao-cham-o-binh-thuan-phan-khoi-don-tet-ramuwan-20230321154228225.htm
+2025-11-06 12:15:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/doi-song-van-hoa/dong-bao-cham-o-binh-thuan-phan-khoi-don-tet-ramuwan-20230321154228225.htm
+2025-11-06 12:15:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/thanh-tich-khung-cua-hai-nu-sinh-truong-chuyen-ha-noi-amsterdam-duoc-ket-nap-dang-post1520741.tpo
+2025-11-06 12:15:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/thanh-tich-khung-cua-hai-nu-sinh-truong-chuyen-ha-noi-amsterdam-duoc-ket-nap-dang-post1520741.tpo
+2025-11-06 12:15:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/the-thao/thang-tung-bung-man-utd-van-bi-che-bai-tham-te-20230320145424767.htm
+2025-11-06 12:15:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/the-thao/thang-tung-bung-man-utd-van-bi-che-bai-tham-te-20230320145424767.htm
+2025-11-06 12:15:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/dai-hoc-quoc-gia-ha-noi-mo-4-nganh-moi-4577314.html
+2025-11-06 12:15:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/dai-hoc-quoc-gia-ha-noi-mo-4-nganh-moi-4577314.html
+2025-11-06 12:15:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/xa-hoi/gan-60-ho-dan-bi-anh-huong-do-thi-cong-dai-lo-nghin-ty-20230328175438884.htm
+2025-11-06 12:15:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/xa-hoi/gan-60-ho-dan-bi-anh-huong-do-thi-cong-dai-lo-nghin-ty-20230328175438884.htm
+2025-11-06 12:15:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/da-nhua-hinh-thanh-tren-hon-dao-ngoai-khoi-4584043.html
+2025-11-06 12:15:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/da-nhua-hinh-thanh-tren-hon-dao-ngoai-khoi-4584043.html
+2025-11-06 12:15:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/chuong-trinh-trai-nghiem-doc-dao-tai-victoria-nam-sai-gon-post1520005.tpo
+2025-11-06 12:15:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/chuong-trinh-trai-nghiem-doc-dao-tai-victoria-nam-sai-gon-post1520005.tpo
+2025-11-06 12:15:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/hoan-thien-de-an-phat-trien-1-trieu-ha-lua-chat-luong-cao-giam-phat-thai-102230329191115412.htm
+2025-11-06 12:15:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/hoan-thien-de-an-phat-trien-1-trieu-ha-lua-chat-luong-cao-giam-phat-thai-102230329191115412.htm
+2025-11-06 12:15:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/cang-thang-tai-chinh-lam-phat-de-doa-phuc-hoi-kinh-te-the-gioi-4585511.html
+2025-11-06 12:15:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/cang-thang-tai-chinh-lam-phat-de-doa-phuc-hoi-kinh-te-the-gioi-4585511.html
+2025-11-06 12:15:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/the-thao/u23-viet-nam-lam-quen-voi-bong-thi-dau-va-khung-gio-moi-20230321114448641.htm
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/the-thao/u23-viet-nam-lam-quen-voi-bong-thi-dau-va-khung-gio-moi-20230321114448641.htm
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/truong-hoc-o-tphcm-rut-re-voi-cac-khoan-theo-thoa-thuan-post725192.html
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/truong-hoc-o-tphcm-rut-re-voi-cac-khoan-theo-thoa-thuan-post725192.html
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/khao-sat-ipsos-dan-trung-quoc-hanh-phuc-nhat-the-gioi-post725014.html
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/khao-sat-ipsos-dan-trung-quoc-hanh-phuc-nhat-the-gioi-post725014.html
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/doha-cup-2023-cho-u23-viet-nam-lay-lai-niem-tin-20230328090317386.htm
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/doha-cup-2023-cho-u23-viet-nam-lay-lai-niem-tin-20230328090317386.htm
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/nhieu-loi-ich-cua-nuoc-chanh-nong-185230326213843271.htm
+2025-11-06 12:15:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/nhieu-loi-ich-cua-nuoc-chanh-nong-185230326213843271.htm
+2025-11-06 12:15:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/tan-dung-chat-prompt-bi-quyet-su-dung-chat-gpt-hieu-qua-20230225094154216.htm
+2025-11-06 12:15:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/tan-dung-chat-prompt-bi-quyet-su-dung-chat-gpt-hieu-qua-20230225094154216.htm
+2025-11-06 12:15:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/hai-nguyen-pho-chu-tich-ha-noi-bi-de-nghi-xu-ly-trong-vu-nang-khong-gia-cay-xanh-20230328134424234.htm
+2025-11-06 12:15:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/hai-nguyen-pho-chu-tich-ha-noi-bi-de-nghi-xu-ly-trong-vu-nang-khong-gia-cay-xanh-20230328134424234.htm
+2025-11-06 12:15:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/thuong-ta-phan-thang-lam-chi-huy-truong-bo-chqs-thua-thien-hue-102230324094403192.htm
+2025-11-06 12:15:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/thuong-ta-phan-thang-lam-chi-huy-truong-bo-chqs-thua-thien-hue-102230324094403192.htm
+2025-11-06 12:15:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/bo-y-te-ton-vinh-51-nu-tri-thuc-tieu-bieu-nganh-y-post722114.html
+2025-11-06 12:15:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/bo-y-te-ton-vinh-51-nu-tri-thuc-tieu-bieu-nganh-y-post722114.html
+2025-11-06 12:15:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/thong-doc-nhnn-tra-loi-cu-tri-tphcm-ve-trach-nhiem-cua-ngan-hang-moi-gioi-trai-phieu-doanh-nghiep-post724636.html
+2025-11-06 12:15:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/thong-doc-nhnn-tra-loi-cu-tri-tphcm-ve-trach-nhiem-cua-ngan-hang-moi-gioi-trai-phieu-doanh-nghiep-post724636.html
+2025-11-06 12:15:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/phap-luat/ngu-lai-nha-co-giao-nu-sinh-lop-5-bi-chong-co-dam-o-20230325154813615.htm
+2025-11-06 12:15:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/phap-luat/ngu-lai-nha-co-giao-nu-sinh-lop-5-bi-chong-co-dam-o-20230325154813615.htm
+2025-11-06 12:15:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:15:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:15:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/thi-rot-nam-sinh-buon-gui-tin-nhan-cho-cha-da-mat-3-nam-va-cai-ket-rat-bat-ngo-20230331170144596.htm
+2025-11-06 12:15:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/thi-rot-nam-sinh-buon-gui-tin-nhan-cho-cha-da-mat-3-nam-va-cai-ket-rat-bat-ngo-20230331170144596.htm
+2025-11-06 12:15:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/suc-khoe/nguy-co-tiem-an-khi-an-nem-chua-20230325091113006.htm
+2025-11-06 12:15:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/suc-khoe/nguy-co-tiem-an-khi-an-nem-chua-20230325091113006.htm
+2025-11-06 12:15:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/phap-luat/giang-dien-bay-chuot-lam-chet-hang-xom-20230326214253038.htm
+2025-11-06 12:15:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/phap-luat/giang-dien-bay-chuot-lam-chet-hang-xom-20230326214253038.htm
+2025-11-06 12:15:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/kinh-te/giai-ngan-17000-ty-dong-cho-cac-du-an-giao-thong-trong-quy-i-20230331102222887.htm
+2025-11-06 12:15:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/kinh-te/giai-ngan-17000-ty-dong-cho-cac-du-an-giao-thong-trong-quy-i-20230331102222887.htm
+2025-11-06 12:15:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/khoi-to-cap-vo-chong-lai-xe-dien-xiec-tren-deo-hai-van-20230324183559036.htm
+2025-11-06 12:15:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/khoi-to-cap-vo-chong-lai-xe-dien-xiec-tren-deo-hai-van-20230324183559036.htm
+2025-11-06 12:15:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:15:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:15:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/ben-tre-dong-loat-kiem-tra-11-co-so-kinh-doanh-cua-f88-post725155.html
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/ben-tre-dong-loat-kiem-tra-11-co-so-kinh-doanh-cua-f88-post725155.html
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/van-hoa/hoa-hau-qua-doi-thuong-tam-khi-tim-cach-thoat-khoi-toa-chung-cu-bi-hoa-hoan-20230328103357795.htm
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/van-hoa/hoa-hau-qua-doi-thuong-tam-khi-tim-cach-thoat-khoi-toa-chung-cu-bi-hoa-hoan-20230328103357795.htm
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/9-nguoi-trung-quoc-bi-ban-chet-tai-mo-vang-ch-trung-phi-post724665.html
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/9-nguoi-trung-quoc-bi-ban-chet-tai-mo-vang-ch-trung-phi-post724665.html
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/tp-hcm-thang-4-2023-100-can-bo-cong-chuc-vien-chuc-phai-lam-cccd-va-tai-khoan-dinh-danh-20230330215854502.htm
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/tp-hcm-thang-4-2023-100-can-bo-cong-chuc-vien-chuc-phai-lam-cccd-va-tai-khoan-dinh-danh-20230330215854502.htm
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/doi-nu-viet-nam-va-loi-hua-tien-thuong-world-cup-tang-gap-10-lan-post724820.html
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/doi-nu-viet-nam-va-loi-hua-tien-thuong-world-cup-tang-gap-10-lan-post724820.html
+2025-11-06 12:15:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:15:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:15:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/giai-tri/hai-rapper-danh-nhau-o-hau-truong-grammy-2023-20230207102213987.htm
+2025-11-06 12:15:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/giai-tri/hai-rapper-danh-nhau-o-hau-truong-grammy-2023-20230207102213987.htm
+2025-11-06 12:15:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/hoc-sinh-reo-mung-khi-thay-thay-giao-ngung-tim-duoc-cuu-song-tro-ve-truong-185230326173840478.htm
+2025-11-06 12:15:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/hoc-sinh-reo-mung-khi-thay-thay-giao-ngung-tim-duoc-cuu-song-tro-ve-truong-185230326173840478.htm
+2025-11-06 12:15:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/van-de-quan-tam/cac-nha-mang-bat-dau-khoa-chieu-goi-di-doi-voi-cac-thue-bao-chua-chuan-hoa-thong-tin-20230331162122740.htm
+2025-11-06 12:15:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/van-de-quan-tam/cac-nha-mang-bat-dau-khoa-chieu-goi-di-doi-voi-cac-thue-bao-chua-chuan-hoa-thong-tin-20230331162122740.htm
+2025-11-06 12:15:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/van-hoa/tran-thanh-khoc-nac-ke-kho-vi-la-nghe-si-nuoc-mat-roi-khong-dung-cho-20230322165824004.htm
+2025-11-06 12:15:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/van-hoa/tran-thanh-khoc-nac-ke-kho-vi-la-nghe-si-nuoc-mat-roi-khong-dung-cho-20230322165824004.htm
+2025-11-06 12:15:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/gan-30000m2-dat-san-bay-bien-hoa-duoc-xu-ly-dioxin-102230307175714219.htm
+2025-11-06 12:15:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/gan-30000m2-dat-san-bay-bien-hoa-duoc-xu-ly-dioxin-102230307175714219.htm
+2025-11-06 12:15:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/giao-duc/nhom-7-truong-dai-hoc-khoi-ky-thuat-ky-ket-chuyen-giao-cong-nghe-20230331164203440.htm
+2025-11-06 12:15:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/giao-duc/nhom-7-truong-dai-hoc-khoi-ky-thuat-ky-ket-chuyen-giao-cong-nghe-20230331164203440.htm
+2025-11-06 12:15:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/tp-hcm-thang-4-2023-100-can-bo-cong-chuc-vien-chuc-phai-lam-cccd-va-tai-khoan-dinh-danh-20230330215854502.htm
+2025-11-06 12:15:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/tp-hcm-thang-4-2023-100-can-bo-cong-chuc-vien-chuc-phai-lam-cccd-va-tai-khoan-dinh-danh-20230330215854502.htm
+2025-11-06 12:15:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/quan-su/tuong-my-tiet-lo-phan-hoi-cua-moskva-sau-hang-loat-vu-chien-dau-co-nga-bay-qua-can-cu-o-syria-20230323112213575.htm
+2025-11-06 12:15:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/quan-su/tuong-my-tiet-lo-phan-hoi-cua-moskva-sau-hang-loat-vu-chien-dau-co-nga-bay-qua-can-cu-o-syria-20230323112213575.htm
+2025-11-06 12:15:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/xa-hoi/trai-long-cua-phong-vien-viet-lam-mc-truyen-hinh-20230324142634983.htm
+2025-11-06 12:15:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/xa-hoi/trai-long-cua-phong-vien-viet-lam-mc-truyen-hinh-20230324142634983.htm
+2025-11-06 12:15:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/giai-tri/vo-justin-bieber-thua-nhan-kho-khan-gui-loi-cam-on-selena-gomez-20230325141542452.htm
+2025-11-06 12:15:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/giai-tri/vo-justin-bieber-thua-nhan-kho-khan-gui-loi-cam-on-selena-gomez-20230325141542452.htm
+2025-11-06 12:15:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/du-lich-asean-huong-toi-phat-trien-ben-vung-102230127111617886.htm
+2025-11-06 12:15:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/du-lich-asean-huong-toi-phat-trien-ben-vung-102230127111617886.htm
+2025-11-06 12:15:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/du-an-tttm-anh-sang-da-lat-chi-tra-dung-voi2-trieu-usd-ung-truoc-185230330002420463.htm
+2025-11-06 12:15:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/du-an-tttm-anh-sang-da-lat-chi-tra-dung-voi2-trieu-usd-ung-truoc-185230330002420463.htm
+2025-11-06 12:15:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/tin-moi-ve-tuyen-ong-cap-nuoc-d1500-bi-vo-o-tphcm-post1520971.tpo
+2025-11-06 12:15:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/tin-moi-ve-tuyen-ong-cap-nuoc-d1500-bi-vo-o-tphcm-post1520971.tpo
+2025-11-06 12:15:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/day-manh-truyen-thong-su-kien-nam-du-lich-quoc-gia-2023-102230305103749759.htm
+2025-11-06 12:15:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/day-manh-truyen-thong-su-kien-nam-du-lich-quoc-gia-2023-102230305103749759.htm
+2025-11-06 12:15:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/bo-sung-5-dia-diem-to-chuc-thi-ielts-tai-5-dia-phuong-post722191.html
+2025-11-06 12:15:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/bo-sung-5-dia-diem-to-chuc-thi-ielts-tai-5-dia-phuong-post722191.html
+2025-11-06 12:15:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/thoi-su-quoc-te/trung-quoc-chu-trong-chuoi-cung-ung-20230327212813212.htm
+2025-11-06 12:15:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/thoi-su-quoc-te/trung-quoc-chu-trong-chuoi-cung-ung-20230327212813212.htm
+2025-11-06 12:15:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:15:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:15:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/kinh-doanh/vang-troi-sut-quanh-nguong-2000-usdounce-20230326081545770.htm
+2025-11-06 12:15:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/kinh-doanh/vang-troi-sut-quanh-nguong-2000-usdounce-20230326081545770.htm
+2025-11-06 12:15:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/anh-duoc-chap-nhan-gia-nhap-cptpp-185230331085115673.htm
+2025-11-06 12:15:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/anh-duoc-chap-nhan-gia-nhap-cptpp-185230331085115673.htm
+2025-11-06 12:15:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/new-york-times-ong-trump-co-to-ra-minh-on-nhung-ben-trong-dang-so-hai-20230331104014012.htm
+2025-11-06 12:15:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/new-york-times-ong-trump-co-to-ra-minh-on-nhung-ben-trong-dang-so-hai-20230331104014012.htm
+2025-11-06 12:15:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/vietcombank-thanh-cong-dua-tren-nen-tang-van-hoa-dang-tu-hao-102230407180540606.htm
+2025-11-06 12:15:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/vietcombank-thanh-cong-dua-tren-nen-tang-van-hoa-dang-tu-hao-102230407180540606.htm
+2025-11-06 12:15:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/ho-so-quan-su/my-lan-dau-trien-khai-huan-luyen-van-hanh-thaad-tai-han-quoc-20230324174951623.htm
+2025-11-06 12:15:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/ho-so-quan-su/my-lan-dau-trien-khai-huan-luyen-van-hanh-thaad-tai-han-quoc-20230324174951623.htm
+2025-11-06 12:15:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:149 - 
+Appending 100 new results to data/json/news_data_vifactcheck_train.json...
+2025-11-06 12:15:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - --- All results saved to data/json/news_data_vifactcheck_train.json ---
+2025-11-06 12:15:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:15:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 100
+2025-11-06 12:15:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 100 URLs
+2025-11-06 12:15:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 0 URLs
+2025-11-06 12:15:42 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_test.json' cleared. ---
+2025-11-06 12:15:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 100 new URLs to crawl.
+2025-11-06 12:15:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/the-gioi/trung-bay-ban-sao-bo-xuong-hoa-thach-cua-loai-khung-long-khong-lo-tai-london-20230330152500757.htm
+2025-11-06 12:15:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/the-gioi/trung-bay-ban-sao-bo-xuong-hoa-thach-cua-loai-khung-long-khong-lo-tai-london-20230330152500757.htm
+2025-11-06 12:15:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:15:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:15:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/dich-benh/ha-noi-khong-de-dich-cum-gia-cam-lay-sang-nguoi-20230315213949243.htm
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/dich-benh/ha-noi-khong-de-dich-cum-gia-cam-lay-sang-nguoi-20230315213949243.htm
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/nuoi-duong-dam-me-khat-vong-sang-tao-doi-moi-tao-ra-cac-thuong-hieu-ban-dia-viet-nam-mang-tam-quoc-te-102230317121741553.htm
+2025-11-06 12:15:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/nuoi-duong-dam-me-khat-vong-sang-tao-doi-moi-tao-ra-cac-thuong-hieu-ban-dia-viet-nam-mang-tam-quoc-te-102230317121741553.htm
+2025-11-06 12:15:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/bon-cach-cam-on-bang-tieng-anh-qua-le-trao-giai-oscar-4581973.html
+2025-11-06 12:15:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/bon-cach-cam-on-bang-tieng-anh-qua-le-trao-giai-oscar-4581973.html
+2025-11-06 12:15:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/giao-duc/gan-5000-viec-lam-tai-chuoi-su-kien-ueh-sharing-career-fair-2023-20230330175236350.htm
+2025-11-06 12:15:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/giao-duc/gan-5000-viec-lam-tai-chuoi-su-kien-ueh-sharing-career-fair-2023-20230330175236350.htm
+2025-11-06 12:15:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/cong-bo-quyet-dinh-cua-ban-thuong-vu-tinh-uy-binh-duong-ve-cong-tac-can-bo-post1520981.tpo
+2025-11-06 12:15:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/cong-bo-quyet-dinh-cua-ban-thuong-vu-tinh-uy-binh-duong-ve-cong-tac-can-bo-post1520981.tpo
+2025-11-06 12:15:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/binh-duong-thi-diem-to-chuc-day-hoc-song-ngu-trong-truong-cong-lap-post1520316.tpo
+2025-11-06 12:15:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/binh-duong-thi-diem-to-chuc-day-hoc-song-ngu-trong-truong-cong-lap-post1520316.tpo
+2025-11-06 12:15:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/bong-da/vong-loai-euro-2024-giua-phap-ha-lan-long-tranh-ho-dau-tai-stade-de-france-20230324172351609.htm
+2025-11-06 12:15:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/bong-da/vong-loai-euro-2024-giua-phap-ha-lan-long-tranh-ho-dau-tai-stade-de-france-20230324172351609.htm
+2025-11-06 12:15:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/van-hoa/cuoc-song-tren-quan-dao-nen-tho-du-thua-2000-dan-ong-20230323174836594.htm
+2025-11-06 12:15:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/van-hoa/cuoc-song-tren-quan-dao-nen-tho-du-thua-2000-dan-ong-20230323174836594.htm
+2025-11-06 12:15:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/gen-z-viet-bai-tieu-luan-nhanh-hon-nho-chatgpt-185230325234611357.htm
+2025-11-06 12:15:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/gen-z-viet-bai-tieu-luan-nhanh-hon-nho-chatgpt-185230325234611357.htm
+2025-11-06 12:15:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/anh-sap-gui-dan-urani-cho-ukraine-tong-thong-putin-tuyen-bo-dap-tra-post1519594.tpo
+2025-11-06 12:15:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/anh-sap-gui-dan-urani-cho-ukraine-tong-thong-putin-tuyen-bo-dap-tra-post1519594.tpo
+2025-11-06 12:15:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/tan-dung-chat-prompt-bi-quyet-su-dung-chat-gpt-hieu-qua-20230225094154216.htm
+2025-11-06 12:15:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/tan-dung-chat-prompt-bi-quyet-su-dung-chat-gpt-hieu-qua-20230225094154216.htm
+2025-11-06 12:15:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/giai-tri/kham-phuc-co-gai-ngay-luom-rac-toi-hat-phong-tra-20230318074333612.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/giai-tri/kham-phuc-co-gai-ngay-luom-rac-toi-hat-phong-tra-20230318074333612.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/xa-hoi/mien-bac-mua-lanh-truoc-khi-don-dot-nang-nong-cuc-bo-20230330080713632.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/xa-hoi/mien-bac-mua-lanh-truoc-khi-don-dot-nang-nong-cuc-bo-20230330080713632.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/evn-van-de-xuat-cap-dien-cho-con-dao-bang-cap-ngam-vuot-bien-20230317105713882.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/evn-van-de-xuat-cap-dien-cho-con-dao-bang-cap-ngam-vuot-bien-20230317105713882.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/suc-khoe/be-trai-bi-nham-gioi-tinh-vi-vung-kin-bat-thuong-20230327093343029.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/suc-khoe/be-trai-bi-nham-gioi-tinh-vi-vung-kin-bat-thuong-20230327093343029.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/viet-nam-san-sang-hop-tac-voi-hoa-ky-de-thuc-day-quan-he-hai-nuoc-phat-trien-ben-vung-102230323163341241.htm
+2025-11-06 12:15:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/viet-nam-san-sang-hop-tac-voi-hoa-ky-de-thuc-day-quan-he-hai-nuoc-phat-trien-ben-vung-102230323163341241.htm
+2025-11-06 12:15:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/my-chau-au-lo-nguy-co-khung-hoang-tin-dung-sau-hang-loat-that-bai-ngan-hang-post1520924.tpo#1520924|zone-timeline-3|23
+2025-11-06 12:15:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/my-chau-au-lo-nguy-co-khung-hoang-tin-dung-sau-hang-loat-that-bai-ngan-hang-post1520924.tpo#1520924|zone-timeline-3|23
+2025-11-06 12:15:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/the-thao/bi-tuoc-quyen-boc-tham-world-cup-u20-indonesia-de-xuat-giai-phap-nong-20230328114033300.htm
+2025-11-06 12:15:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/the-thao/bi-tuoc-quyen-boc-tham-world-cup-u20-indonesia-de-xuat-giai-phap-nong-20230328114033300.htm
+2025-11-06 12:15:54 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/giai-tri/nghi-pham-thu-7-vu-nguoi-mau-thai-thien-phuong-bi-phan-xac-la-ai-20230307145007961.htm
+2025-11-06 12:15:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/giai-tri/nghi-pham-thu-7-vu-nguoi-mau-thai-thien-phuong-bi-phan-xac-la-ai-20230307145007961.htm
+2025-11-06 12:15:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/hanh-trinh-tim-di-anh-cuoi-cung-cho-liet-si-gac-ma-4580034.html
+2025-11-06 12:15:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/hanh-trinh-tim-di-anh-cuoi-cung-cho-liet-si-gac-ma-4580034.html
+2025-11-06 12:15:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/giao-duc-huong-nghiep/kien-nghi-thay-doi-cach-ra-de-thi-mon-lich-su-tot-nghiep-thpt-nam-2025-20230330085533720.htm
+2025-11-06 12:15:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/giao-duc-huong-nghiep/kien-nghi-thay-doi-cach-ra-de-thi-mon-lich-su-tot-nghiep-thpt-nam-2025-20230330085533720.htm
+2025-11-06 12:15:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/van-hoa/nhung-buc-tuong-vang-tai-pho-co-hoi-an-bi-boi-ban-20230320142648654.htm
+2025-11-06 12:15:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/van-hoa/nhung-buc-tuong-vang-tai-pho-co-hoi-an-bi-boi-ban-20230320142648654.htm
+2025-11-06 12:15:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/nga-thu-hut-chuyen-gia-cong-nghe-thong-tin-bang-chinh-sach-visa-20230315191515991.htm
+2025-11-06 12:15:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/nga-thu-hut-chuyen-gia-cong-nghe-thong-tin-bang-chinh-sach-visa-20230315191515991.htm
+2025-11-06 12:15:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/dieu-gi-xay-ra-neu-sieu-trai-dat-nam-giua-he-mat-troi-4580917.html
+2025-11-06 12:15:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/dieu-gi-xay-ra-neu-sieu-trai-dat-nam-giua-he-mat-troi-4580917.html
+2025-11-06 12:15:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/nu-sinh-viet-dat-hoc-bong-9-truong-dai-hoc-my-18523033021510177.htm
+2025-11-06 12:15:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/nu-sinh-viet-dat-hoc-bong-9-truong-dai-hoc-my-18523033021510177.htm
+2025-11-06 12:15:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/tinh-nha-giau-trung-quoc-tang-tien-cho-cong-ty-du-lich-hut-khach-quoc-te-185230329170135594.htm
+2025-11-06 12:15:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/tinh-nha-giau-trung-quoc-tang-tien-cho-cong-ty-du-lich-hut-khach-quoc-te-185230329170135594.htm
+2025-11-06 12:15:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/giao-duc/viec-to-chuc-thi-xet-tuyen-hay-ket-hop-la-quyen-chu-dong-cua-cac-dia-phuong-20230303192030816.htm
+2025-11-06 12:15:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/giao-duc/viec-to-chuc-thi-xet-tuyen-hay-ket-hop-la-quyen-chu-dong-cua-cac-dia-phuong-20230303192030816.htm
+2025-11-06 12:15:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:15:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:15:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/nhanh-hoa-nu-cuoi-tren-nuoc-duc-20230330221817344.htm
+2025-11-06 12:15:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/nhanh-hoa-nu-cuoi-tren-nuoc-duc-20230330221817344.htm
+2025-11-06 12:15:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/giai-tri/khan-gia-tranh-cai-truoc-su-tro-lai-cua-show-dien-noi-y-nong-nhat-hanh-tinh-20230306202555433.htm
+2025-11-06 12:15:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/giai-tri/khan-gia-tranh-cai-truoc-su-tro-lai-cua-show-dien-noi-y-nong-nhat-hanh-tinh-20230306202555433.htm
+2025-11-06 12:16:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/chu-tich-dong-nai-bi-ky-luat-canh-cao-post725123.html
+2025-11-06 12:16:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/chu-tich-dong-nai-bi-ky-luat-canh-cao-post725123.html
+2025-11-06 12:16:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/ban-trai-toi-la-ho-ly-2-co-lee-dong-wook-moi-tung-poster-da-gay-sot-185230329141834085.htm
+2025-11-06 12:16:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/ban-trai-toi-la-ho-ly-2-co-lee-dong-wook-moi-tung-poster-da-gay-sot-185230329141834085.htm
+2025-11-06 12:16:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/tan-dung-chat-prompt-bi-quyet-su-dung-chat-gpt-hieu-qua-20230225094154216.htm
+2025-11-06 12:16:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/tan-dung-chat-prompt-bi-quyet-su-dung-chat-gpt-hieu-qua-20230225094154216.htm
+2025-11-06 12:16:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/the-thao/tuyen-ha-lan-phai-chia-tay-5-tuyen-thu-vi-virus-la-truoc-tran-dau-voi-phap-20230324114714409.htm
+2025-11-06 12:16:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/the-thao/tuyen-ha-lan-phai-chia-tay-5-tuyen-thu-vi-virus-la-truoc-tran-dau-voi-phap-20230324114714409.htm
+2025-11-06 12:16:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/giai-phap-thuc-day-so-hoa-truy-xuat-nguon-goc-nong-san-20230228134150083.htm
+2025-11-06 12:16:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/giai-phap-thuc-day-so-hoa-truy-xuat-nguon-goc-nong-san-20230228134150083.htm
+2025-11-06 12:16:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/phap-luat/bo-cong-an-nguoi-dan-canh-giac-voi-hanh-vi-ghep-mat-gia-giong-de-lua-dao-20230328181611199.htm
+2025-11-06 12:16:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/phap-luat/bo-cong-an-nguoi-dan-canh-giac-voi-hanh-vi-ghep-mat-gia-giong-de-lua-dao-20230328181611199.htm
+2025-11-06 12:16:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/xuat-hien-thu-doan-lua-dao-moi-du-do-hoc-sinh-o-cong-truong-185230328092058142.htm
+2025-11-06 12:16:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/xuat-hien-thu-doan-lua-dao-moi-du-do-hoc-sinh-o-cong-truong-185230328092058142.htm
+2025-11-06 12:16:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/ban-bi-thu-quy-dinh-ve-cach-thuc-su-dung-co-dang-20230329164646079.htm
+2025-11-06 12:16:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/ban-bi-thu-quy-dinh-ve-cach-thuc-su-dung-co-dang-20230329164646079.htm
+2025-11-06 12:16:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/tphcm-ky-niem-1980-nam-ngay-mat-hai-ba-trung-post721412.html
+2025-11-06 12:16:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/tphcm-ky-niem-1980-nam-ngay-mat-hai-ba-trung-post721412.html
+2025-11-06 12:16:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:16:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:16:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/vien-kiem-sat-de-nghi-bac-khang-cao-vu-ban-re-du-an-phuoc-kien-va-ven-song-20230328114000798.htm
+2025-11-06 12:16:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/vien-kiem-sat-de-nghi-bac-khang-cao-vu-ban-re-du-an-phuoc-kien-va-ven-song-20230328114000798.htm
+2025-11-06 12:16:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/nhieu-quan-nhau-bi-xu-phat-do-vi-pham-tieng-on-4585470.html
+2025-11-06 12:16:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/nhieu-quan-nhau-bi-xu-phat-do-vi-pham-tieng-on-4585470.html
+2025-11-06 12:16:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/chien-su-toi-263-ukraine-my-phan-ung-viec-nga-dua-vu-khi-hat-nhan-sang-belarus-185230326182828845.htm
+2025-11-06 12:16:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/chien-su-toi-263-ukraine-my-phan-ung-viec-nga-dua-vu-khi-hat-nhan-sang-belarus-185230326182828845.htm
+2025-11-06 12:16:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/xay-dung-bien-phap-an-toan-lao-dong-phu-hop-voi-dac-thu-doanh-nghiep-102230410162806296.htm
+2025-11-06 12:16:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/xay-dung-bien-phap-an-toan-lao-dong-phu-hop-voi-dac-thu-doanh-nghiep-102230410162806296.htm
+2025-11-06 12:16:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/thu-tuong-singapore-hau-qua-nghiem-trong-neu-my-trung-dung-do-20230330150629506.htm
+2025-11-06 12:16:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/thu-tuong-singapore-hau-qua-nghiem-trong-neu-my-trung-dung-do-20230330150629506.htm
+2025-11-06 12:16:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/thoi-su/kien-toan-nhan-su-ban-chi-dao-quoc-gia-ve-hoi-nhap-quoc-te-20230330194235937.htm
+2025-11-06 12:16:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/thoi-su/kien-toan-nhan-su-ban-chi-dao-quoc-gia-ve-hoi-nhap-quoc-te-20230330194235937.htm
+2025-11-06 12:16:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/truong-dh-kinh-te-tphcm-dong-loat-nhan-ho-so-xet-tuyen-som-qua-truc-tuyen-post724038.html
+2025-11-06 12:16:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/truong-dh-kinh-te-tphcm-dong-loat-nhan-ho-so-xet-tuyen-som-qua-truc-tuyen-post724038.html
+2025-11-06 12:16:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/the-gioi/nga-canh-bao-phuong-tay-ve-hau-qua-tham-khoc-20230329184224625.htm
+2025-11-06 12:16:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/the-gioi/nga-canh-bao-phuong-tay-ve-hau-qua-tham-khoc-20230329184224625.htm
+2025-11-06 12:16:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/tang-so-chuyen-bay-tu-viet-nam-sang-trung-quoc-post723821.html
+2025-11-06 12:16:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/tang-so-chuyen-bay-tu-viet-nam-sang-trung-quoc-post723821.html
+2025-11-06 12:16:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/de-nghi-cong-an-dieu-tra-xu-ly-viec-phong-vien-bi-hanh-hung-khi-tac-nghiep-post725307.html
+2025-11-06 12:16:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/de-nghi-cong-an-dieu-tra-xu-ly-viec-phong-vien-bi-hanh-hung-khi-tac-nghiep-post725307.html
+2025-11-06 12:16:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/nhan-dinh-han-quoc-vs-colombia-18h00-ngay-243-bay-ho-xuat-kich-post1520228.tpo#1520228|zone-timeline-11|1
+2025-11-06 12:16:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/nhan-dinh-han-quoc-vs-colombia-18h00-ngay-243-bay-ho-xuat-kich-post1520228.tpo#1520228|zone-timeline-11|1
+2025-11-06 12:16:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/giao-duc/tuyen-sinh-dau-cap-tai-tp-ho-chi-minh-hoc-sinh-se-duoc-cap-mot-ma-tam-neu-khong-co-ma-dinh-danh-ca-nhan-20230323191818410.htm
+2025-11-06 12:16:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/giao-duc/tuyen-sinh-dau-cap-tai-tp-ho-chi-minh-hoc-sinh-se-duoc-cap-mot-ma-tam-neu-khong-co-ma-dinh-danh-ca-nhan-20230323191818410.htm
+2025-11-06 12:16:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/cong-nghe/ngan-chan-lo-lot-thong-tin-ca-nhan-doanh-nghiep-20221219234348452.htm
+2025-11-06 12:16:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/cong-nghe/ngan-chan-lo-lot-thong-tin-ca-nhan-doanh-nghiep-20221219234348452.htm
+2025-11-06 12:16:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/u20-chau-a-2023-lien-tiep-thang-tran-nhung-ngoi-sao-vang-doc-chiem-ngoi-dau-bang-tu-than-102230304235901403.htm
+2025-11-06 12:16:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/u20-chau-a-2023-lien-tiep-thang-tran-nhung-ngoi-sao-vang-doc-chiem-ngoi-dau-bang-tu-than-102230304235901403.htm
+2025-11-06 12:16:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/the-thao/hlv-troussier-noi-gi-sau-that-bai-thu-3-lien-tiep-cua-u23-viet-nam-20230329065117147.htm
+2025-11-06 12:16:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/the-thao/hlv-troussier-noi-gi-sau-that-bai-thu-3-lien-tiep-cua-u23-viet-nam-20230329065117147.htm
+2025-11-06 12:16:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/biet-thu-o-hong-kong-ban-voi-gia-ky-luc-chau-a-20230324094155142.htm
+2025-11-06 12:16:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/biet-thu-o-hong-kong-ban-voi-gia-ky-luc-chau-a-20230324094155142.htm
+2025-11-06 12:16:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm
+2025-11-06 12:16:11 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm
+2025-11-06 12:16:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/van-hoa/phat-dong-giai-thuong-nhiep-anh-heritage-hanh-trinh-di-san-2023-20230330115431626.htm
+2025-11-06 12:16:12 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/van-hoa/phat-dong-giai-thuong-nhiep-anh-heritage-hanh-trinh-di-san-2023-20230330115431626.htm
+2025-11-06 12:16:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/cuu-ho-tham-hoa-dong-dat-tai-tho-nhi-ky-quoc-te-danh-gia-cao-su-chuyen-nghiep-nhiet-tinh-cua-doan-cuu-ho-viet-nam-10223021220213453.htm
+2025-11-06 12:16:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/cuu-ho-tham-hoa-dong-dat-tai-tho-nhi-ky-quoc-te-danh-gia-cao-su-chuyen-nghiep-nhiet-tinh-cua-doan-cuu-ho-viet-nam-10223021220213453.htm
+2025-11-06 12:16:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/chinh-tri/30-nam-bat-benh-ong-troi-va-thuc-cung-dong-song-20230330172133429.htm
+2025-11-06 12:16:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/chinh-tri/30-nam-bat-benh-ong-troi-va-thuc-cung-dong-song-20230330172133429.htm
+2025-11-06 12:16:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/phap-luat/nguoi-lay-iphone-cua-nan-nhan-trong-vu-danh-ghen-lot-do-bi-xu-ly-toi-gi-20230329153121578.htm
+2025-11-06 12:16:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/phap-luat/nguoi-lay-iphone-cua-nan-nhan-trong-vu-danh-ghen-lot-do-bi-xu-ly-toi-gi-20230329153121578.htm
+2025-11-06 12:16:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/gen-z-viet-bai-tieu-luan-nhanh-hon-nho-chatgpt-185230325234611357.htm
+2025-11-06 12:16:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/gen-z-viet-bai-tieu-luan-nhanh-hon-nho-chatgpt-185230325234611357.htm
+2025-11-06 12:16:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/the-gioi/cptpp-dong-y-ket-nap-anh-vao-khoi-20230331152630850.htm
+2025-11-06 12:16:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/the-gioi/cptpp-dong-y-ket-nap-anh-vao-khoi-20230331152630850.htm
+2025-11-06 12:16:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/dien-thoai-doa-giet-phong-vien-va-gia-dinh-bi-phat-42-5-trieu-dong-20230330100004227.htm
+2025-11-06 12:16:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/dien-thoai-doa-giet-phong-vien-va-gia-dinh-bi-phat-42-5-trieu-dong-20230330100004227.htm
+2025-11-06 12:16:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm
+2025-11-06 12:16:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm
+2025-11-06 12:16:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/vu-van-thinh-phat-bat-tam-giam-nguyen-cuc-truong-thanh-tra-giam-sat-ngan-hang-ii-ngan-hang-nha-nuoc-20230328150017249.htm
+2025-11-06 12:16:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/vu-van-thinh-phat-bat-tam-giam-nguyen-cuc-truong-thanh-tra-giam-sat-ngan-hang-ii-ngan-hang-nha-nuoc-20230328150017249.htm
+2025-11-06 12:16:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/tp-hcm-khoi-dong-lai-cau-hon-900-ty-sau-4-nam-ngung-tre-4585469.html
+2025-11-06 12:16:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/tp-hcm-khoi-dong-lai-cau-hon-900-ty-sau-4-nam-ngung-tre-4585469.html
+2025-11-06 12:16:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:16:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:16:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/moi-nhat-vu-10-nguoi-ngo-doc-sau-an-ca-chep-u-chua-o-quang-nam-post1520283.tpo#1520283|zone-timeline-210|1
+2025-11-06 12:16:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/moi-nhat-vu-10-nguoi-ngo-doc-sau-an-ca-chep-u-chua-o-quang-nam-post1520283.tpo#1520283|zone-timeline-210|1
+2025-11-06 12:16:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/phap-luat/nguoi-lay-iphone-cua-nan-nhan-trong-vu-danh-ghen-lot-do-bi-xu-ly-toi-gi-20230329153121578.htm
+2025-11-06 12:16:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/phap-luat/nguoi-lay-iphone-cua-nan-nhan-trong-vu-danh-ghen-lot-do-bi-xu-ly-toi-gi-20230329153121578.htm
+2025-11-06 12:16:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/nhieu-loi-ich-cua-nuoc-chanh-nong-185230326213843271.htm
+2025-11-06 12:16:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/nhieu-loi-ich-cua-nuoc-chanh-nong-185230326213843271.htm
+2025-11-06 12:16:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/sieu-kinh-dien-toi-te-nhat-lich-su-la-liga-post724640.html
+2025-11-06 12:16:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/sieu-kinh-dien-toi-te-nhat-lich-su-la-liga-post724640.html
+2025-11-06 12:16:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/sieu-kinh-dien-toi-te-nhat-lich-su-la-liga-post724640.html
+2025-11-06 12:16:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/sieu-kinh-dien-toi-te-nhat-lich-su-la-liga-post724640.html
+2025-11-06 12:16:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/anh-chup-sao-quai-vat-sap-phat-no-thanh-sieu-tan-tinh-4581417.html
+2025-11-06 12:16:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/anh-chup-sao-quai-vat-sap-phat-no-thanh-sieu-tan-tinh-4581417.html
+2025-11-06 12:16:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/thoi-su-quoc-te/tu-lenh-bat-cua-icc-voi-tong-thong-putin-nguyen-tac-hoat-dong-va-nhung-vu-dang-chu-y-20230321105911631.htm
+2025-11-06 12:16:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/thoi-su-quoc-te/tu-lenh-bat-cua-icc-voi-tong-thong-putin-nguyen-tac-hoat-dong-va-nhung-vu-dang-chu-y-20230321105911631.htm
+2025-11-06 12:16:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/vu-linh-ong-hoang-cai-luong-kho-nguoi-thay-the-20230305155158985.htm
+2025-11-06 12:16:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/vu-linh-ong-hoang-cai-luong-kho-nguoi-thay-the-20230305155158985.htm
+2025-11-06 12:16:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/vo-si-viet-dau-tien-vao-chung-ket-giai-vo-dich-boxing-the-gioi-102230324152650781.htm
+2025-11-06 12:16:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/vo-si-viet-dau-tien-vao-chung-ket-giai-vo-dich-boxing-the-gioi-102230324152650781.htm
+2025-11-06 12:16:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/tuong-an-duong-vuong-duc-tu-kho-dong-thieng-4576953.html
+2025-11-06 12:16:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/tuong-an-duong-vuong-duc-tu-kho-dong-thieng-4576953.html
+2025-11-06 12:16:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/the-gioi/nga-canh-bao-phuong-tay-ve-hau-qua-tham-khoc-20230329184224625.htm
+2025-11-06 12:16:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/the-gioi/nga-canh-bao-phuong-tay-ve-hau-qua-tham-khoc-20230329184224625.htm
+2025-11-06 12:16:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/thoi-su/kien-toan-nhan-su-ban-chi-dao-quoc-gia-ve-hoi-nhap-quoc-te-20230330194235937.htm
+2025-11-06 12:16:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/thoi-su/kien-toan-nhan-su-ban-chi-dao-quoc-gia-ve-hoi-nhap-quoc-te-20230330194235937.htm
+2025-11-06 12:16:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/ai-giup-cac-nha-khoa-hoc-noi-chuyen-voi-dong-vat-20230318220424159.htm
+2025-11-06 12:16:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/ai-giup-cac-nha-khoa-hoc-noi-chuyen-voi-dong-vat-20230318220424159.htm
+2025-11-06 12:16:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/co-10-nam-kinh-nghiem-lam-viec-xin-100-cong-ty-deu-bi-tu-choi-1852303260536073.htm
+2025-11-06 12:16:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/co-10-nam-kinh-nghiem-lam-viec-xin-100-cong-ty-deu-bi-tu-choi-1852303260536073.htm
+2025-11-06 12:16:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/kinh-doanh/lo-ngai-chuyen-huong-sang-deutsche-bank-20230325070043681.htm
+2025-11-06 12:16:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/kinh-doanh/lo-ngai-chuyen-huong-sang-deutsche-bank-20230325070043681.htm
+2025-11-06 12:16:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/xu-ly-nghiem-hanh-vi-loi-dung-di-tich-le-hoi-de-truc-loi-102230201154936714.htm
+2025-11-06 12:16:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/xu-ly-nghiem-hanh-vi-loi-dung-di-tich-le-hoi-de-truc-loi-102230201154936714.htm
+2025-11-06 12:16:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/chatgpt-tac-dong-den-bat-dong-san-the-nao-4582793.html
+2025-11-06 12:16:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/chatgpt-tac-dong-den-bat-dong-san-the-nao-4582793.html
+2025-11-06 12:16:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/cuu-ho-tham-hoa-dong-dat-tai-tho-nhi-ky-quoc-te-danh-gia-cao-su-chuyen-nghiep-nhiet-tinh-cua-doan-cuu-ho-viet-nam-10223021220213453.htm
+2025-11-06 12:16:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/cuu-ho-tham-hoa-dong-dat-tai-tho-nhi-ky-quoc-te-danh-gia-cao-su-chuyen-nghiep-nhiet-tinh-cua-doan-cuu-ho-viet-nam-10223021220213453.htm
+2025-11-06 12:16:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/2-khai-niem-can-lam-ro-ve-the-chap-quyen-su-dung-dat-post724094.html
+2025-11-06 12:16:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/2-khai-niem-can-lam-ro-ve-the-chap-quyen-su-dung-dat-post724094.html
+2025-11-06 12:16:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/tiktok-cong-bo-ke-hoach-an-ninh-du-lieu-tai-chau-au-20230309140836594.htm
+2025-11-06 12:16:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/tiktok-cong-bo-ke-hoach-an-ninh-du-lieu-tai-chau-au-20230309140836594.htm
+2025-11-06 12:16:32 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/tang-cuong-hop-tac-cap-dia-phuong-viet-phap-103230414135035416.htm
+2025-11-06 12:16:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/tang-cuong-hop-tac-cap-dia-phuong-viet-phap-103230414135035416.htm
+2025-11-06 12:16:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/su-nang-dong-cua-hop-tac-dia-phuong-viet-nam-phap-la-dong-luc-to-lon-cho-phat-trien-103230416152634587.htm
+2025-11-06 12:16:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/su-nang-dong-cua-hop-tac-dia-phuong-viet-nam-phap-la-dong-luc-to-lon-cho-phat-trien-103230416152634587.htm
+2025-11-06 12:16:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/van-de-quan-tam/so-giao-duc-va-dao-tao-tp-ho-chi-minh-ra-van-ban-khan-canh-bao-chieu-tro-lua-dao-moi-20230328164923174.htm
+2025-11-06 12:16:33 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/van-de-quan-tam/so-giao-duc-va-dao-tao-tp-ho-chi-minh-ra-van-ban-khan-canh-bao-chieu-tro-lua-dao-moi-20230328164923174.htm
+2025-11-06 12:16:34 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/giao-duc/nhom-7-truong-dai-hoc-khoi-ky-thuat-ky-ket-chuyen-giao-cong-nghe-20230331164203440.htm
+2025-11-06 12:16:34 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/giao-duc/nhom-7-truong-dai-hoc-khoi-ky-thuat-ky-ket-chuyen-giao-cong-nghe-20230331164203440.htm
+2025-11-06 12:16:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/dieu-gi-xay-ra-neu-sieu-trai-dat-nam-giua-he-mat-troi-4580917.html
+2025-11-06 12:16:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/dieu-gi-xay-ra-neu-sieu-trai-dat-nam-giua-he-mat-troi-4580917.html
+2025-11-06 12:16:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/thoi-su/kien-toan-nhan-su-ban-chi-dao-quoc-gia-ve-hoi-nhap-quoc-te-20230330194235937.htm
+2025-11-06 12:16:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/thoi-su/kien-toan-nhan-su-ban-chi-dao-quoc-gia-ve-hoi-nhap-quoc-te-20230330194235937.htm
+2025-11-06 12:16:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:149 - 
+Appending 100 new results to data/json/news_data_vifactcheck_test.json...
+2025-11-06 12:16:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - --- All results saved to data/json/news_data_vifactcheck_test.json ---
+2025-11-06 12:16:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:16:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 100
+2025-11-06 12:16:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 100 URLs
+2025-11-06 12:16:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 0 URLs
+2025-11-06 12:16:39 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_dev.json' cleared. ---
+2025-11-06 12:16:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 100 new URLs to crawl.
+2025-11-06 12:16:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:16:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:16:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/phat-huy-gia-tri-bao-tap-chi-cua-dang-trong-thoi-dai-bung-no-thong-tin-102230410135707719.htm
+2025-11-06 12:16:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/phat-huy-gia-tri-bao-tap-chi-cua-dang-trong-thoi-dai-bung-no-thong-tin-102230410135707719.htm
+2025-11-06 12:16:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/phap-luat/cong-ty-o-tp-hcm-chuyen-ghep-anh-nong-boi-nho-nguoi-vay-len-mang-xa-hoi-de-doi-no-20230325103001264.htm
+2025-11-06 12:16:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/phap-luat/cong-ty-o-tp-hcm-chuyen-ghep-anh-nong-boi-nho-nguoi-vay-len-mang-xa-hoi-de-doi-no-20230325103001264.htm
+2025-11-06 12:16:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/can-lam-gi-de-con-nguoi-cong-nghe-khong-bi-thay-the-boi-may-moc-185230328185320135.htm
+2025-11-06 12:16:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/can-lam-gi-de-con-nguoi-cong-nghe-khong-bi-thay-the-boi-may-moc-185230328185320135.htm
+2025-11-06 12:16:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/he-thong-xang-dau-khi-dot-phai-van-hanh-dong-bo-thong-suot-dam-bao-cho-nen-kinh-te-102230330163626936.htm
+2025-11-06 12:16:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/he-thong-xang-dau-khi-dot-phai-van-hanh-dong-bo-thong-suot-dam-bao-cho-nen-kinh-te-102230330163626936.htm
+2025-11-06 12:16:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/bhxh-viet-nam-dung-trien-khai-tin-nhan-dich-vu-tra-cuu-toi-dau-so-8079-post722286.html
+2025-11-06 12:16:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/bhxh-viet-nam-dung-trien-khai-tin-nhan-dich-vu-tra-cuu-toi-dau-so-8079-post722286.html
+2025-11-06 12:16:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/truong-hoc-chau-a-quy-dinh-de-toc-hoc-sinh-nhu-the-nao-4585468.html
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/truong-hoc-chau-a-quy-dinh-de-toc-hoc-sinh-nhu-the-nao-4585468.html
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/thoi-su/bo-dao-nha-suc-hut-cua-thien-duong-du-lich-20230318201717979.htm
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/thoi-su/bo-dao-nha-suc-hut-cua-thien-duong-du-lich-20230318201717979.htm
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/hoan-thien-de-an-phat-trien-1-trieu-ha-lua-chat-luong-cao-giam-phat-thai-102230329191115412.htm
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/hoan-thien-de-an-phat-trien-1-trieu-ha-lua-chat-luong-cao-giam-phat-thai-102230329191115412.htm
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/van-hoa/ly-do-dem-nhac-co-mat-hien-ho-bi-huy-bo-20230330103110566.htm
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/van-hoa/ly-do-dem-nhac-co-mat-hien-ho-bi-huy-bo-20230330103110566.htm
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/hang-hang-khong-gia-re-hk-express-nhan-may-bay-airbus-a321neo-dau-tien-185230329151331922.htm
+2025-11-06 12:16:44 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/hang-hang-khong-gia-re-hk-express-nhan-may-bay-airbus-a321neo-dau-tien-185230329151331922.htm
+2025-11-06 12:16:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/fan-ha-anh-tuan-ung-ho-nhu-chua-he-co-cuoc-chia-ly-lat-mat-6-cua-ly-hai-tung-trailer-post722201.html
+2025-11-06 12:16:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/fan-ha-anh-tuan-ung-ho-nhu-chua-he-co-cuoc-chia-ly-lat-mat-6-cua-ly-hai-tung-trailer-post722201.html
+2025-11-06 12:16:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/thoi-su-quoc-te/ong-donald-trump-tap-trung-luc-luong-o-texas-20230326085413351.htm
+2025-11-06 12:16:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/thoi-su-quoc-te/ong-donald-trump-tap-trung-luc-luong-o-texas-20230326085413351.htm
+2025-11-06 12:16:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/ha-noi-sap-co-them-tren-41-trieu-met-vuong-san-nha-o-phuc-vu-nguoi-dan-103230413124947886.htm
+2025-11-06 12:16:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/ha-noi-sap-co-them-tren-41-trieu-met-vuong-san-nha-o-phuc-vu-nguoi-dan-103230413124947886.htm
+2025-11-06 12:16:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/kinh-doanh/thu-tuong-de-nghi-hoa-binh-xay-dung-cac-san-pham-du-lich-chat-luong-cao-20230325222810830.htm
+2025-11-06 12:16:45 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/kinh-doanh/thu-tuong-de-nghi-hoa-binh-xay-dung-cac-san-pham-du-lich-chat-luong-cao-20230325222810830.htm
+2025-11-06 12:16:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/o-to-xe-may/volkswagen-tang-dau-tu-chuyen-doi-sang-xe-dien-20230314193931446.htm
+2025-11-06 12:16:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/o-to-xe-may/volkswagen-tang-dau-tu-chuyen-doi-sang-xe-dien-20230314193931446.htm
+2025-11-06 12:16:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/thoi-su-quoc-te/hon-30-nguoi-roi-xuong-gieng-13-nguoi-thiet-mang-20230330193102957.htm
+2025-11-06 12:16:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/thoi-su-quoc-te/hon-30-nguoi-roi-xuong-gieng-13-nguoi-thiet-mang-20230330193102957.htm
+2025-11-06 12:16:47 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/4-viec-tphcm-can-chuan-bi-khi-duoc-tang-bien-che-phuong-post724631.html
+2025-11-06 12:16:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/4-viec-tphcm-can-chuan-bi-khi-duoc-tang-bien-che-phuong-post724631.html
+2025-11-06 12:16:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/nguoi-dau-tien-tren-the-gioi-bi-nhiem-mot-loai-benh-nam-185230330183759313.htm
+2025-11-06 12:16:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/nguoi-dau-tien-tren-the-gioi-bi-nhiem-mot-loai-benh-nam-185230330183759313.htm
+2025-11-06 12:16:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/the-thao/thang-tung-bung-man-utd-van-bi-che-bai-tham-te-20230320145424767.htm
+2025-11-06 12:16:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/the-thao/thang-tung-bung-man-utd-van-bi-che-bai-tham-te-20230320145424767.htm
+2025-11-06 12:16:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/ha-noi-sap-co-them-tren-41-trieu-met-vuong-san-nha-o-phuc-vu-nguoi-dan-103230413124947886.htm
+2025-11-06 12:16:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/ha-noi-sap-co-them-tren-41-trieu-met-vuong-san-nha-o-phuc-vu-nguoi-dan-103230413124947886.htm
+2025-11-06 12:16:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/ngan-hang-first-citizens-mua-lai-svb-vua-sup-do-185230327150037049.htm
+2025-11-06 12:16:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/ngan-hang-first-citizens-mua-lai-svb-vua-sup-do-185230327150037049.htm
+2025-11-06 12:16:49 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/hoc-an-toan-thong-tin-ra-truong-luong-bao-nhieu-4580154.html
+2025-11-06 12:16:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/hoc-an-toan-thong-tin-ra-truong-luong-bao-nhieu-4580154.html
+2025-11-06 12:16:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/xa-hoi/kip-thoi-khong-che-vu-chay-rung-tren-nui-dinh-20230329215328044.htm
+2025-11-06 12:16:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/xa-hoi/kip-thoi-khong-che-vu-chay-rung-tren-nui-dinh-20230329215328044.htm
+2025-11-06 12:16:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/anh-sap-gui-dan-urani-cho-ukraine-tong-thong-putin-tuyen-bo-dap-tra-post1519594.tpo
+2025-11-06 12:16:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/anh-sap-gui-dan-urani-cho-ukraine-tong-thong-putin-tuyen-bo-dap-tra-post1519594.tpo
+2025-11-06 12:16:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/xay-dung-de-an-truong-dh-ha-tinh-la-thanh-vien-dh-quoc-gia-ha-noi-185230316182902262.htm
+2025-11-06 12:16:51 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/xay-dung-de-an-truong-dh-ha-tinh-la-thanh-vien-dh-quoc-gia-ha-noi-185230316182902262.htm
+2025-11-06 12:16:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/cuba-vinh-danh-nhung-nguoi-hy-sinh-trong-tham-hoa-matanzas-102220820110325279.htm
+2025-11-06 12:16:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/cuba-vinh-danh-nhung-nguoi-hy-sinh-trong-tham-hoa-matanzas-102220820110325279.htm
+2025-11-06 12:16:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/nghi-ngo-lua-gat-hay-goi-so-y-te-tphcm-so-0967771010-hoac-02839307916-post723421.html
+2025-11-06 12:16:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/nghi-ngo-lua-gat-hay-goi-so-y-te-tphcm-so-0967771010-hoac-02839307916-post723421.html
+2025-11-06 12:16:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/mot-nguoi-tu-vong-do-nghich-sung-trong-luc-nhau-gia-dinh-nghi-la-an-mang-post1519803.tpo
+2025-11-06 12:16:52 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/mot-nguoi-tu-vong-do-nghich-sung-trong-luc-nhau-gia-dinh-nghi-la-an-mang-post1519803.tpo
+2025-11-06 12:16:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/tai-sao-huynh-nhu-duoc-tro-ve-doi-tuyen-viet-nam-dau-vong-loai-olympic-paris-2024-185230331094444062.htm
+2025-11-06 12:16:53 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/tai-sao-huynh-nhu-duoc-tro-ve-doi-tuyen-viet-nam-dau-vong-loai-olympic-paris-2024-185230331094444062.htm
+2025-11-06 12:16:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/thu-tuong-pham-minh-chinh-tiep-cuu-thu-tuong-anh-tony-blair-102230310200423644.htm
+2025-11-06 12:16:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/thu-tuong-pham-minh-chinh-tiep-cuu-thu-tuong-anh-tony-blair-102230310200423644.htm
+2025-11-06 12:16:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/huong-dan-co-che-dac-thu-ve-chi-dinh-thau-goi-thau-thuoc-chuong-trinh-phuc-hoi-phat-trien-ktxh-102230329151617843.htm
+2025-11-06 12:16:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/huong-dan-co-che-dac-thu-ve-chi-dinh-thau-goi-thau-thuoc-chuong-trinh-phuc-hoi-phat-trien-ktxh-102230329151617843.htm
+2025-11-06 12:16:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/ha-noi-canh-bao-khan-ve-chieu-lua-con-dang-cap-cuu-chuyen-tien-gap-185230314161528156.htm
+2025-11-06 12:16:55 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/ha-noi-canh-bao-khan-ve-chieu-lua-con-dang-cap-cuu-chuyen-tien-gap-185230314161528156.htm
+2025-11-06 12:16:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/truong-dh-ton-duc-thang-nhan-ho-so-du-thi-nang-khieu-tu-ngay-14-185230329095618542.htm
+2025-11-06 12:16:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/truong-dh-ton-duc-thang-nhan-ho-so-du-thi-nang-khieu-tu-ngay-14-185230329095618542.htm
+2025-11-06 12:16:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/cuoc-gap-xuc-dong-sau-27-nam-giua-tac-gia-va-nhan-vat-buc-anh-doat-giai-quoc-te-post722657.html
+2025-11-06 12:16:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/cuoc-gap-xuc-dong-sau-27-nam-giua-tac-gia-va-nhan-vat-buc-anh-doat-giai-quoc-te-post722657.html
+2025-11-06 12:16:56 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/co-hoi-cho-hon-12000-lao-dong-sang-han-quoc-theo-chuong-trinh-eps-10223032116174668.htm
+2025-11-06 12:16:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/co-hoi-cho-hon-12000-lao-dong-sang-han-quoc-theo-chuong-trinh-eps-10223032116174668.htm
+2025-11-06 12:16:57 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/co-hoi-cuoi-mua-ve-ebox-voi-gia-uu-dai-4585016.html
+2025-11-06 12:16:58 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/co-hoi-cuoi-mua-ve-ebox-voi-gia-uu-dai-4585016.html
+2025-11-06 12:16:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/kham-pha-moi-tu-nha-tho-duc-ba-o-paris-sau-vu-hoa-hoan-2019-post724469.html
+2025-11-06 12:16:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/kham-pha-moi-tu-nha-tho-duc-ba-o-paris-sau-vu-hoa-hoan-2019-post724469.html
+2025-11-06 12:16:59 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/tham-pin-mat-troi-dau-tien-tren-duong-sat-4582998.html
+2025-11-06 12:17:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/tham-pin-mat-troi-dau-tien-tren-duong-sat-4582998.html
+2025-11-06 12:17:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/ti-phu-jack-ma-quay-lai-trung-quoc-sau-hon-1-nam-185230327140336172.htm
+2025-11-06 12:17:00 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/ti-phu-jack-ma-quay-lai-trung-quoc-sau-hon-1-nam-185230327140336172.htm
+2025-11-06 12:17:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/bong-da/boc-tham-vong-loai-thu-2-u20-nu-chau-a-2024-viet-nam-thuoc-bang-a-20230323201844758.htm
+2025-11-06 12:17:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/bong-da/boc-tham-vong-loai-thu-2-u20-nu-chau-a-2024-viet-nam-thuoc-bang-a-20230323201844758.htm
+2025-11-06 12:17:01 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/xa-hoi/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm
+2025-11-06 12:17:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/xa-hoi/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm
+2025-11-06 12:17:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tuoitre.vn/nhieu-hoc-sinh-nghi-bi-ngo-doc-sau-khi-di-tham-quan-voi-truong-20230328201456696.htm
+2025-11-06 12:17:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tuoitre.vn/nhieu-hoc-sinh-nghi-bi-ngo-doc-sau-khi-di-tham-quan-voi-truong-20230328201456696.htm
+2025-11-06 12:17:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/phap-luat/giang-dien-bay-chuot-lam-chet-hang-xom-20230326214253038.htm
+2025-11-06 12:17:02 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/phap-luat/giang-dien-bay-chuot-lam-chet-hang-xom-20230326214253038.htm
+2025-11-06 12:17:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/truong-hoc-o-tphcm-rut-re-voi-cac-khoan-theo-thoa-thuan-post725192.html
+2025-11-06 12:17:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/truong-hoc-o-tphcm-rut-re-voi-cac-khoan-theo-thoa-thuan-post725192.html
+2025-11-06 12:17:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/y-te/who-thong-tin-ve-tinh-hinh-dich-marburg-20230329221527750.htm
+2025-11-06 12:17:03 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/y-te/who-thong-tin-ve-tinh-hinh-dich-marburg-20230329221527750.htm
+2025-11-06 12:17:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/thoi-su-quoc-te/nong-ong-donald-trump-chinh-thuc-bi-truy-to-hinh-su-o-new-york-20230331061748313.htm
+2025-11-06 12:17:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/thoi-su-quoc-te/nong-ong-donald-trump-chinh-thuc-bi-truy-to-hinh-su-o-new-york-20230331061748313.htm
+2025-11-06 12:17:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/suc-khoe/dau-dau-te-moi-tay-chan-coi-chung-moi-hoa-thoai-hoa-dot-song-20230320133935292.htm
+2025-11-06 12:17:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/suc-khoe/dau-dau-te-moi-tay-chan-coi-chung-moi-hoa-thoai-hoa-dot-song-20230320133935292.htm
+2025-11-06 12:17:04 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/nguy-hiem-rinh-rap-o-cong-truong-nut-giao-nga-5-4581369.html
+2025-11-06 12:17:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/nguy-hiem-rinh-rap-o-cong-truong-nut-giao-nga-5-4581369.html
+2025-11-06 12:17:05 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/the-thao/cau-thu-to-clb-lam-dong-no-luong-truoc-them-giai-hang-nhi-20230331092256771.htm
+2025-11-06 12:17:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/the-thao/cau-thu-to-clb-lam-dong-no-luong-truoc-them-giai-hang-nhi-20230331092256771.htm
+2025-11-06 12:17:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/phap-luat/nhung-chu-meo-mang-nhiem-vu-dac-biet-trong-nha-tu-an-ninh-toi-da-20230326223246912.htm
+2025-11-06 12:17:06 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/phap-luat/nhung-chu-meo-mang-nhiem-vu-dac-biet-trong-nha-tu-an-ninh-toi-da-20230326223246912.htm
+2025-11-06 12:17:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/the-thao/tuyen-ha-lan-phai-chia-tay-5-tuyen-thu-vi-virus-la-truoc-tran-dau-voi-phap-20230324114714409.htm
+2025-11-06 12:17:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/the-thao/tuyen-ha-lan-phai-chia-tay-5-tuyen-thu-vi-virus-la-truoc-tran-dau-voi-phap-20230324114714409.htm
+2025-11-06 12:17:07 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/thoi-su/kien-toan-nhan-su-ban-chi-dao-quoc-gia-ve-hoi-nhap-quoc-te-20230330194235937.htm
+2025-11-06 12:17:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/thoi-su/kien-toan-nhan-su-ban-chi-dao-quoc-gia-ve-hoi-nhap-quoc-te-20230330194235937.htm
+2025-11-06 12:17:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/suc-khoe/khoi-u-5-cm-tron-trong-nao-nu-benh-nhan-campuchia-20230324142307048.htm
+2025-11-06 12:17:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/suc-khoe/khoi-u-5-cm-tron-trong-nao-nu-benh-nhan-campuchia-20230324142307048.htm
+2025-11-06 12:17:08 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/messi-va-ronaldo-con-co-hoi-dau-nhau-post725375.html
+2025-11-06 12:17:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/messi-va-ronaldo-con-co-hoi-dau-nhau-post725375.html
+2025-11-06 12:17:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/an-ninh-trat-tu/xu-phat-hai-chu-nha-hang-xay-dung-trai-phep-tren-ban-dao-son-tra-20230329175043843.htm
+2025-11-06 12:17:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/an-ninh-trat-tu/xu-phat-hai-chu-nha-hang-xay-dung-trai-phep-tren-ban-dao-son-tra-20230329175043843.htm
+2025-11-06 12:17:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/ha-noi-41-hoc-sinh-nhap-vien-sau-bua-an-trua-khi-di-da-ngoai-post1521409.tpo
+2025-11-06 12:17:09 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/ha-noi-41-hoc-sinh-nhap-vien-sau-bua-an-trua-khi-di-da-ngoai-post1521409.tpo
+2025-11-06 12:17:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/nhieu-nong-dan-o-binh-phuoc-hien-dat-tien-ti-de-lam-duong-18523032620192585.htm
+2025-11-06 12:17:10 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/nhieu-nong-dan-o-binh-phuoc-hien-dat-tien-ti-de-lam-duong-18523032620192585.htm
+2025-11-06 12:17:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/the-gioi/giao-tranh-leo-thang-quanh-nha-may-ukraine-iaea-canh-bao-su-co-hat-nhan-20230330124018825.htm
+2025-11-06 12:17:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/the-gioi/giao-tranh-leo-thang-quanh-nha-may-ukraine-iaea-canh-bao-su-co-hat-nhan-20230330124018825.htm
+2025-11-06 12:17:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/nghiem-tuc-thuc-hien-tiem-vaccine-phong-benh-cho-vat-nuoi-102230407145744877.htm
+2025-11-06 12:17:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/nghiem-tuc-thuc-hien-tiem-vaccine-phong-benh-cho-vat-nuoi-102230407145744877.htm
+2025-11-06 12:17:13 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/giao-duc-khoa-hoc/loai-ngan-hang-cau-hoi-thi-khoi-danh-muc-bi-mat-quoc-gia-khong-on-20230321213036532.htm
+2025-11-06 12:17:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/giao-duc-khoa-hoc/loai-ngan-hang-cau-hoi-thi-khoi-danh-muc-bi-mat-quoc-gia-khong-on-20230321213036532.htm
+2025-11-06 12:17:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/my-chau-au-lo-nguy-co-khung-hoang-tin-dung-sau-hang-loat-that-bai-ngan-hang-post1520924.tpo#1520924|zone-timeline-3|23
+2025-11-06 12:17:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/my-chau-au-lo-nguy-co-khung-hoang-tin-dung-sau-hang-loat-that-bai-ngan-hang-post1520924.tpo#1520924|zone-timeline-3|23
+2025-11-06 12:17:14 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/ha-noi-41-hoc-sinh-nhap-vien-sau-bua-an-trua-khi-di-da-ngoai-post1521409.tpo
+2025-11-06 12:17:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/ha-noi-41-hoc-sinh-nhap-vien-sau-bua-an-trua-khi-di-da-ngoai-post1521409.tpo
+2025-11-06 12:17:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/dh-quoc-gia-tphcm-co-9-nhom-nganh-duoc-xep-hang-cao-tren-the-gioi-185230326122356896.htm
+2025-11-06 12:17:15 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/dh-quoc-gia-tphcm-co-9-nhom-nganh-duoc-xep-hang-cao-tren-the-gioi-185230326122356896.htm
+2025-11-06 12:17:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/70-nam-dien-anh-viet-nam-dong-hanh-cung-lich-su-dan-toc-102230315175145348.htm
+2025-11-06 12:17:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/70-nam-dien-anh-viet-nam-dong-hanh-cung-lich-su-dan-toc-102230315175145348.htm
+2025-11-06 12:17:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/truong-hoc-chau-a-quy-dinh-de-toc-hoc-sinh-nhu-the-nao-4585468.html
+2025-11-06 12:17:16 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/truong-hoc-chau-a-quy-dinh-de-toc-hoc-sinh-nhu-the-nao-4585468.html
+2025-11-06 12:17:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/ngan-hang-first-citizens-mua-lai-svb-vua-sup-do-185230327150037049.htm
+2025-11-06 12:17:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/ngan-hang-first-citizens-mua-lai-svb-vua-sup-do-185230327150037049.htm
+2025-11-06 12:17:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/voi-cai-71-tuoi-bien-dang-cot-song-sau-25-nam-cho-khach-4579990.html
+2025-11-06 12:17:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/voi-cai-71-tuoi-bien-dang-cot-song-sau-25-nam-cho-khach-4579990.html
+2025-11-06 12:17:17 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/bo-sung-5-dia-diem-to-chuc-thi-ielts-tai-5-dia-phuong-post722191.html
+2025-11-06 12:17:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/bo-sung-5-dia-diem-to-chuc-thi-ielts-tai-5-dia-phuong-post722191.html
+2025-11-06 12:17:18 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/van-hoa/ngoc-huyen-ke-tai-nan-27-nam-truoc-bi-rach-mat-mau-chay-rong-rong-20230326075859660.htm
+2025-11-06 12:17:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/van-hoa/ngoc-huyen-ke-tai-nan-27-nam-truoc-bi-rach-mat-mau-chay-rong-rong-20230326075859660.htm
+2025-11-06 12:17:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/asean-xuc-tien-ho-so-xin-dang-cai-world-cup-2034-post1520440.tpo
+2025-11-06 12:17:19 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/asean-xuc-tien-ho-so-xin-dang-cai-world-cup-2034-post1520440.tpo
+2025-11-06 12:17:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/kinh-te/chung-khoan-am-tham-tang-20230329211730801.htm
+2025-11-06 12:17:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/kinh-te/chung-khoan-am-tham-tang-20230329211730801.htm
+2025-11-06 12:17:20 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/the-gioi/imf-thong-qua-khoan-vay-156-ty-usd-cho-ukraine-20230401062437232.htm
+2025-11-06 12:17:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/the-gioi/imf-thong-qua-khoan-vay-156-ty-usd-cho-ukraine-20230401062437232.htm
+2025-11-06 12:17:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/messi-va-ronaldo-con-co-hoi-dau-nhau-post725375.html
+2025-11-06 12:17:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/messi-va-ronaldo-con-co-hoi-dau-nhau-post725375.html
+2025-11-06 12:17:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/soi-dong-nhieu-hoat-dong-van-hoa-the-thao-du-lich-trong-quy-i-2023-102230324130038446.htm
+2025-11-06 12:17:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/soi-dong-nhieu-hoat-dong-van-hoa-the-thao-du-lich-trong-quy-i-2023-102230324130038446.htm
+2025-11-06 12:17:21 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/thoi-su/bo-truong-nguyen-manh-hung-bo-tt-tt-se-cam-nhip-ve-nam-du-lieu-2023-20221218093602535.htm
+2025-11-06 12:17:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/thoi-su/bo-truong-nguyen-manh-hung-bo-tt-tt-se-cam-nhip-ve-nam-du-lieu-2023-20221218093602535.htm
+2025-11-06 12:17:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/phap-luat/lua-3-ngan-hang-430-ti-dong-bi-tuyen-an-chung-than-20230324122330895.htm
+2025-11-06 12:17:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/phap-luat/lua-3-ngan-hang-430-ti-dong-bi-tuyen-an-chung-than-20230324122330895.htm
+2025-11-06 12:17:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm
+2025-11-06 12:17:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm
+2025-11-06 12:17:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/ngan-hang-first-citizens-mua-lai-svb-vua-sup-do-185230327150037049.htm
+2025-11-06 12:17:22 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/ngan-hang-first-citizens-mua-lai-svb-vua-sup-do-185230327150037049.htm
+2025-11-06 12:17:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/tphcm-ket-noi-giao-thuong-va-xuc-tien-dau-tu-voi-cac-tinh-dong-nam-bo-post724422.html
+2025-11-06 12:17:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/tphcm-ket-noi-giao-thuong-va-xuc-tien-dau-tu-voi-cac-tinh-dong-nam-bo-post724422.html
+2025-11-06 12:17:23 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/van-hoa/cuoc-song-qua-khac-nghiet-voi-shakira-lien-tiep-kho-khan-ap-den-sau-do-vo-20230322131750445.htm
+2025-11-06 12:17:24 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/van-hoa/cuoc-song-qua-khac-nghiet-voi-shakira-lien-tiep-kho-khan-ap-den-sau-do-vo-20230322131750445.htm
+2025-11-06 12:17:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/tong-thuat-hoi-nghi-thu-tuong-doi-thoai-voi-thanh-nien-nam-2023-102230322082001884.htm
+2025-11-06 12:17:25 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/tong-thuat-hoi-nghi-thu-tuong-doi-thoai-voi-thanh-nien-nam-2023-102230322082001884.htm
+2025-11-06 12:17:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/phap-luat/cong-ty-o-tp-hcm-chuyen-ghep-anh-nong-boi-nho-nguoi-vay-len-mang-xa-hoi-de-doi-no-20230325103001264.htm
+2025-11-06 12:17:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/phap-luat/cong-ty-o-tp-hcm-chuyen-ghep-anh-nong-boi-nho-nguoi-vay-len-mang-xa-hoi-de-doi-no-20230325103001264.htm
+2025-11-06 12:17:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/kinh-te/viet-nam-quang-tay-trung-quoc-thuc-day-hop-tac-kinh-te-thuong-mai-20230331180451537.htm
+2025-11-06 12:17:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/kinh-te/viet-nam-quang-tay-trung-quoc-thuc-day-hop-tac-kinh-te-thuong-mai-20230331180451537.htm
+2025-11-06 12:17:26 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/thoi-su/ban-giao-dat-quoc-phong-thuc-hien-du-an-ha-tang-giao-thong-20230330143825314.htm
+2025-11-06 12:17:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/thoi-su/ban-giao-dat-quoc-phong-thuc-hien-du-an-ha-tang-giao-thong-20230330143825314.htm
+2025-11-06 12:17:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/thuong-ta-phan-thang-lam-chi-huy-truong-bo-chqs-thua-thien-hue-102230324094403192.htm
+2025-11-06 12:17:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/thuong-ta-phan-thang-lam-chi-huy-truong-bo-chqs-thua-thien-hue-102230324094403192.htm
+2025-11-06 12:17:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/bo-ngoai-giao-len-tieng-viec-tau-hai-duong-dia-chat-4-trung-quoc-vao-vung-dac-quyen-kinh-te-viet-nam-post1521233.tpo
+2025-11-06 12:17:27 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/bo-ngoai-giao-len-tieng-viec-tau-hai-duong-dia-chat-4-trung-quoc-vao-vung-dac-quyen-kinh-te-viet-nam-post1521233.tpo
+2025-11-06 12:17:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/giao-duc/tuyen-sinh-dau-cap-tai-tp-ho-chi-minh-hoc-sinh-se-duoc-cap-mot-ma-tam-neu-khong-co-ma-dinh-danh-ca-nhan-20230323191818410.htm
+2025-11-06 12:17:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baotintuc.vn/giao-duc/tuyen-sinh-dau-cap-tai-tp-ho-chi-minh-hoc-sinh-se-duoc-cap-mot-ma-tam-neu-khong-co-ma-dinh-danh-ca-nhan-20230323191818410.htm
+2025-11-06 12:17:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/mac-tieu-duong-kem-mo-mau-11-nam-toi-van-song-khoe-nho-giai-phap-nay-post1518478.tpo
+2025-11-06 12:17:28 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/mac-tieu-duong-kem-mo-mau-11-nam-toi-van-song-khoe-nho-giai-phap-nay-post1518478.tpo
+2025-11-06 12:17:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/nghe-si-tan-beo-bat-tinh-sau-khi-roi-tu-do-xuong-cau-thang-post1518609.tpo#1518609|zone-timeline-7|3
+2025-11-06 12:17:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/nghe-si-tan-beo-bat-tinh-sau-khi-roi-tu-do-xuong-cau-thang-post1518609.tpo#1518609|zone-timeline-7|3
+2025-11-06 12:17:29 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/thong-tin-moi-vu-huong-dan-vien-phat-ngon-gay-soc-tai-dai-noi-hue-post723933.html
+2025-11-06 12:17:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/thong-tin-moi-vu-huong-dan-vien-phat-ngon-gay-soc-tai-dai-noi-hue-post723933.html
+2025-11-06 12:17:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/xu-phat-vi-pham-quyen-tac-gia-quyen-lien-quan-chua-du-suc-ran-de-101230401091130588.htm
+2025-11-06 12:17:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/xu-phat-vi-pham-quyen-tac-gia-quyen-lien-quan-chua-du-suc-ran-de-101230401091130588.htm
+2025-11-06 12:17:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/can-bo-tu-phap-phuong-nhan-hoi-lo-hon-100-trieu-dong-cua-dan-post725565.html
+2025-11-06 12:17:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/can-bo-tu-phap-phuong-nhan-hoi-lo-hon-100-trieu-dong-cua-dan-post725565.html
+2025-11-06 12:17:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/hoi-an-lay-y-kien-nguoi-dan-ve-chu-truong-ban-ve-vao-khu-pho-co-102230412101227014.htm
+2025-11-06 12:17:30 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/hoi-an-lay-y-kien-nguoi-dan-ve-chu-truong-ban-ve-vao-khu-pho-co-102230412101227014.htm
+2025-11-06 12:17:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:17:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://tienphong.vn/nhan-dinh-nhat-ban-vs-colombia-17h00-ngay-283-khong-tha-colombia-post1521149.tpo
+2025-11-06 12:17:31 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/kinh-te/lanh-dao-nhieu-tinh-mong-binh-duong-chia-se-mo-hinh-becamex-vsip-20230324183226513.htm
+2025-11-06 12:17:34 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/kinh-te/lanh-dao-nhieu-tinh-mong-binh-duong-chia-se-mo-hinh-becamex-vsip-20230324183226513.htm
+2025-11-06 12:17:34 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm
+2025-11-06 12:17:34 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm
+2025-11-06 12:17:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/day-manh-truyen-thong-su-kien-nam-du-lich-quoc-gia-2023-102230305103749759.htm
+2025-11-06 12:17:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/day-manh-truyen-thong-su-kien-nam-du-lich-quoc-gia-2023-102230305103749759.htm
+2025-11-06 12:17:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/can-dinh-danh-cu-the-cac-khoan-thu-tai-chinh-ve-dat-dai-post725268.html
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/can-dinh-danh-cu-the-cac-khoan-thu-tai-chinh-ve-dat-dai-post725268.html
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/vu-tiep-vien-hang-khong-xach-ma-tuy-xu-ly-than-trong-tap-hop-du-chung-cu-102230323195936338.htm
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/vu-tiep-vien-hang-khong-xach-ma-tuy-xu-ly-than-trong-tap-hop-du-chung-cu-102230323195936338.htm
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:149 - 
+Appending 100 new results to data/json/news_data_vifactcheck_dev.json...
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - --- All results saved to data/json/news_data_vifactcheck_dev.json ---
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 100
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 100 URLs
+2025-11-06 12:17:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 0 URLs
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_test_agent_test.json' cleared. ---
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:101 - Loaded 1 failed URLs from previous runs.
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 4 new URLs to crawl.
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:17:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:149 - 
+Appending 4 new results to data/json/news_data_vifactcheck_test_agent_test.json...
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - --- All results saved to data/json/news_data_vifactcheck_test_agent_test.json ---
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - --- 1 failed URLs saved to data/caches/failed_urls_test_agent_test.json ---
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 4 URLs
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 1 URLs
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:94 - Loaded 4 completed URLs from cache.
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:101 - Loaded 1 failed URLs from previous runs.
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 0 new URLs to crawl.
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:167 - 
+--- No new results to save. ---
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - --- 1 failed URLs saved to data/caches/failed_urls_test_agent_test.json ---
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 4 URLs
+2025-11-06 12:17:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 1 URLs
+2025-11-06 12:19:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 5 new URLs to crawl.
+2025-11-06 12:19:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:19:35 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/khach-san-lau-doi-nhat-co-do-hue-tron-122-tuoi-185230327161030989.htm
+2025-11-06 12:19:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/phat-huy-gia-tri-bao-tap-chi-cua-dang-trong-thoi-dai-bung-no-thong-tin-102230410135707719.htm
+2025-11-06 12:19:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/phat-huy-gia-tri-bao-tap-chi-cua-dang-trong-thoi-dai-bung-no-thong-tin-102230410135707719.htm
+2025-11-06 12:19:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/phap-luat/cong-ty-o-tp-hcm-chuyen-ghep-anh-nong-boi-nho-nguoi-vay-len-mang-xa-hoi-de-doi-no-20230325103001264.htm
+2025-11-06 12:19:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/phap-luat/cong-ty-o-tp-hcm-chuyen-ghep-anh-nong-boi-nho-nguoi-vay-len-mang-xa-hoi-de-doi-no-20230325103001264.htm
+2025-11-06 12:19:36 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/can-lam-gi-de-con-nguoi-cong-nghe-khong-bi-thay-the-boi-may-moc-185230328185320135.htm
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/can-lam-gi-de-con-nguoi-cong-nghe-khong-bi-thay-the-boi-may-moc-185230328185320135.htm
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/he-thong-xang-dau-khi-dot-phai-van-hanh-dong-bo-thong-suot-dam-bao-cho-nen-kinh-te-102230330163626936.htm
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/he-thong-xang-dau-khi-dot-phai-van-hanh-dong-bo-thong-suot-dam-bao-cho-nen-kinh-te-102230330163626936.htm
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:149 - 
+Appending 5 new results to data/json/news_data_vifactcheck_dev_agent_test.json...
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - --- All results saved to data/json/news_data_vifactcheck_dev_agent_test.json ---
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 5 URLs
+2025-11-06 12:19:37 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 0 URLs
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:clear_cache:77 - --- Cache file 'data/caches/crawling_status_test_agent_test.json' cleared. ---
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:101 - Loaded 1 failed URLs from previous runs.
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 4 new URLs to crawl.
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/quan-banh-cuon-trong-ngo-nho-re-nhat-ha-noi-4580711.html
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/thanh-nien-tang-tru-ma-tuy-chong-cu-quyet-liet-khi-bi-cong-an-vay-bat-post725522.html
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://vnexpress.net/bao-freddy-co-the-lap-ky-luc-keo-dai-nhat-trong-lich-su-4581851.html
+2025-11-06 12:19:39 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:19:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/vu-be-trai-nghi-bi-ep-hut-ma-tuy-can-xu-ly-nghiem-minh-113230327155549223.htm
+2025-11-06 12:19:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:149 - 
+Appending 4 new results to data/json/news_data_vifactcheck_test_agent_test.json...
+2025-11-06 12:19:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - --- All results saved to data/json/news_data_vifactcheck_test_agent_test.json ---
+2025-11-06 12:19:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - --- 1 failed URLs saved to data/caches/failed_urls_test_agent_test.json ---
+2025-11-06 12:19:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:19:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:19:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 4 URLs
+2025-11-06 12:19:40 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 1 URLs
+2025-11-06 12:19:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 5 new URLs to crawl.
+2025-11-06 12:19:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baochinhphu.vn/lan-toa-nhung-gia-tri-van-hoa-tot-dep-chan-thien-my-cua-dan-toc-102230318225051612.htm
+2025-11-06 12:19:41 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://baochinhphu.vn/lan-toa-nhung-gia-tri-van-hoa-tot-dep-chan-thien-my-cua-dan-toc-102230318225051612.htm
+2025-11-06 12:19:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://baotintuc.vn/an-ninh-trat-tu/bat-tam-giam-doi-tuong-chon-lap-hon-600-tan-chat-thai-ra-moi-truong-20230324173816078.htm
+2025-11-06 12:19:42 | ERROR    | helpers.httpx_client:_request:95 - An error occurred while requesting URL('https://baotintuc.vn/an-ninh-trat-tu/bat-tam-giam-doi-tuong-chon-lap-hon-600-tan-chat-thai-ra-moi-truong-20230324173816078.htm'): [SSL: UNSAFE_LEGACY_RENEGOTIATION_DISABLED] unsafe legacy renegotiation disabled (_ssl.c:1032)
+2025-11-06 12:19:42 | ERROR    | crawler.crawler_factory:crawl_and_save_all:136 -   Failed to crawl https://baotintuc.vn/an-ninh-trat-tu/bat-tam-giam-doi-tuong-chon-lap-hon-600-tan-chat-thai-ra-moi-truong-20230324173816078.htm: [SSL: UNSAFE_LEGACY_RENEGOTIATION_DISABLED] unsafe legacy renegotiation disabled (_ssl.c:1032)
+2025-11-06 12:19:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://plo.vn/9-quan-huyen-o-tphcm-se-bi-cup-nuoc-vao-cuoi-tuan-nay-post725015.html
+2025-11-06 12:19:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://plo.vn/9-quan-huyen-o-tphcm-se-bi-cup-nuoc-vao-cuoi-tuan-nay-post725015.html
+2025-11-06 12:19:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://nld.com.vn/giao-duc-khoa-hoc/hanh-trinh-cua-nhung-chiec-om-20230325201419584.htm
+2025-11-06 12:19:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://nld.com.vn/giao-duc-khoa-hoc/hanh-trinh-cua-nhung-chiec-om-20230325201419584.htm
+2025-11-06 12:19:42 | INFO     | crawler.crawler_factory:crawl_and_save_all:110 - Processing URL: https://thanhnien.vn/giao-duc-anh-ngu-phat-trien-manh-me-bat-chap-khung-hoang-hau-covid-19-185230320124322595.htm
+2025-11-06 12:19:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:118 - Saving images for https://thanhnien.vn/giao-duc-anh-ngu-phat-trien-manh-me-bat-chap-khung-hoang-hau-covid-19-185230320124322595.htm
+2025-11-06 12:19:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:149 - 
+Appending 4 new results to data/json/news_data_vifactcheck_train_agent_test.json...
+2025-11-06 12:19:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:165 - --- All results saved to data/json/news_data_vifactcheck_train_agent_test.json ---
+2025-11-06 12:19:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - --- 1 failed URLs saved to data/caches/failed_urls_train_agent_test.json ---
+2025-11-06 12:19:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:19:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:19:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 4 URLs
+2025-11-06 12:19:43 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 1 URLs
+2025-11-06 12:19:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:94 - Loaded 5 completed URLs from cache.
+2025-11-06 12:19:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 0 new URLs to crawl.
+2025-11-06 12:19:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:167 - 
+--- No new results to save. ---
+2025-11-06 12:19:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:19:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:19:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 5 URLs
+2025-11-06 12:19:46 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 0 URLs
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:94 - Loaded 4 completed URLs from cache.
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:101 - Loaded 1 failed URLs from previous runs.
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 0 new URLs to crawl.
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:167 - 
+--- No new results to save. ---
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - --- 1 failed URLs saved to data/caches/failed_urls_test_agent_test.json ---
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 4 URLs
+2025-11-06 12:19:48 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 1 URLs
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:94 - Loaded 4 completed URLs from cache.
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:101 - Loaded 1 failed URLs from previous runs.
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:105 - Found 0 new URLs to crawl.
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:167 - 
+--- No new results to save. ---
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:172 - --- 1 failed URLs saved to data/caches/failed_urls_train_agent_test.json ---
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:175 - 
+--- Crawling Summary ---
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:176 - Total URLs processed: 5
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:177 - Successfully crawled: 4 URLs
+2025-11-06 12:19:50 | INFO     | crawler.crawler_factory:crawl_and_save_all:178 - Failed to crawl: 1 URLs

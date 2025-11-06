@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from typing import Optional, List, Dict
 from urllib.parse import urlparse
 from tqdm.asyncio import tqdm
@@ -78,16 +79,19 @@ class CrawlerFactory:
     async def crawl_and_save_all(self, urls: List[str], output_filename: str, format_name: str = "default"):
         all_results_data = []
         file_handler = FileHandler()
-        completed_urls: Dict[str, Dict] = {}
+        completed_urls_list: List[Dict] = []
+        completed_urls_lookup: Dict[str, Dict] = {}
         failed_urls_data: Dict[str, Dict] = {}
         formatter = OutputFormatter.get_formatter(format_name)
 
         if os.path.exists(self.cache_filename):
             with open(self.cache_filename, 'r') as f:
                 cached_data = json.load(f)
-                for item in cached_data:
-                    completed_urls[item['url']] = item
-            logger.info(f"Loaded {len(completed_urls)} completed URLs from cache.")
+                if 'urls' in cached_data and isinstance(cached_data['urls'], list):
+                    completed_urls_list = cached_data['urls']
+                    for item in completed_urls_list:
+                        completed_urls_lookup[item['url']] = item
+            logger.info(f"Loaded {len(completed_urls_list)} completed URLs from cache.")
 
         if os.path.exists(self.failed_log_filename):
             with open(self.failed_log_filename, 'r') as f:
@@ -96,17 +100,20 @@ class CrawlerFactory:
                     failed_urls_data[item['url']] = item
             logger.info(f"Loaded {len(failed_urls_data)} failed URLs from previous runs.")
 
-        urls_to_skip = set(completed_urls.keys()).union(set(failed_urls_data.keys()))
+        urls_to_skip = set(completed_urls_lookup.keys()).union(set(failed_urls_data.keys()))
         urls_to_crawl = [url for url in urls if url not in urls_to_skip]
         logger.info(f"Found {len(urls_to_crawl)} new URLs to crawl.")
 
         with tqdm(total=len(urls_to_crawl), desc="Processing URLs") as pbar:
             for url in urls_to_crawl:
+                start_time = time.time()
                 logger.info(f"Processing URL: {url}")
                 crawler = self.get_crawler(url)
                 if crawler:
                     results = await crawler.arun(url=url, save_to_file=False)
                     for result in results:
+                        end_time = time.time()
+                        duration = round(end_time - start_time, 2)
                         if result.success:
                             logger.info(f"Saving images for {url}")
                             saved_images = await crawler._save_images(result, ".jpg")
@@ -117,19 +124,24 @@ class CrawlerFactory:
 
                             content_length = len(str(prepared_data))
                             timestamp = datetime.now().isoformat()
-                            completed_urls[url] = {'url': url, 'length': content_length, 'timestamp': timestamp}
-                            
+                            new_completed_url_entry = {'url': url, 'length': content_length, 'timestamp': timestamp, 'duration': duration}
+                            completed_urls_list.append(new_completed_url_entry)
+                            completed_urls_lookup[url] = new_completed_url_entry
+
+                            cache_to_save = {'length': len(completed_urls_list), 'urls': completed_urls_list}
                             with open(self.cache_filename, 'w') as f:
-                                json.dump(list(completed_urls.values()), f, indent=4)
+                                json.dump(cache_to_save, f, indent=4)
 
                         else:
                             logger.error(f"  Failed to crawl {url}: {result.error}")
                             timestamp = datetime.now().isoformat()
-                            failed_urls_data[url] = {'url': url, 'reason': result.error, 'timestamp': timestamp}
+                            failed_urls_data[url] = {'url': url, 'reason': result.error, 'timestamp': timestamp, 'duration': duration}
                 else:
+                    end_time = time.time()
+                    duration = round(end_time - start_time, 2)
                     logger.warning(f"--- No crawler found for {url} ---")
                     timestamp = datetime.now().isoformat()
-                    failed_urls_data[url] = {'url': url, 'reason': "No crawler found", 'timestamp': timestamp}
+                    failed_urls_data[url] = {'url': url, 'reason': "No crawler found", 'timestamp': timestamp, 'duration': duration}
                 pbar.update(1)
 
         if all_results_data:
@@ -159,8 +171,8 @@ class CrawlerFactory:
                 json.dump(list(failed_urls_data.values()), f, indent=4)
             logger.info(f"--- {len(failed_urls_data)} failed URLs saved to {self.failed_log_filename} ---")
 
-        total_crawled = len(completed_urls) + len(failed_urls_data)
+        total_crawled = len(completed_urls_list) + len(failed_urls_data)
         logger.info(f"\n--- Crawling Summary ---")
         logger.info(f"Total URLs processed: {total_crawled}")
-        logger.info(f"Successfully crawled: {len(completed_urls)} URLs")
+        logger.info(f"Successfully crawled: {len(completed_urls_list)} URLs")
         logger.info(f"Failed to crawl: {len(failed_urls_data)} URLs")

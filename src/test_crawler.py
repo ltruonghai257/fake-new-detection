@@ -21,7 +21,7 @@ async def main():
     for split in splits:
         output_filename = f"news_data_{dataset_name.split('/')[-1]}_{split}.json"
         # Set a limit for testing. Set to None to crawl all URLs.
-        url_limit = 15
+        url_limit = 100
 
         crawler_factory = CrawlerFactory(
             cache_filename=f"data/caches/crawling_status_{split}.json",
