@@ -1,3 +1,4 @@
+import asyncio
 import ssl
 from typing import Optional, Dict, Any
 
@@ -70,21 +71,29 @@ class BaseClient:
 
     async def _request(self, method: str, url: str, **kwargs) -> httpx.Response:
         """
-        A generic request method with error handling.
+        A generic request method with error handling and retry logic.
         """
-        try:
-            response = await self.client.request(method, url, **kwargs)
-            response.raise_for_status()
-            return response
-        except httpx.HTTPStatusError as e:
-            # Do not raise for redirects, as they are handled by the client
-            if e.response.status_code not in (301, 302, 307, 308):
-                tqdm.write(f"HTTP error occurred: {e}")
+        retries = 3
+        backoff_factor = 0.5
+        for i in range(retries):
+            try:
+                response = await self.client.request(method, url, **kwargs)
+                response.raise_for_status()
+                return response
+            except httpx.HTTPStatusError as e:
+                if e.response.status_code >= 500 and i < retries - 1:
+                    wait_time = backoff_factor * (2 ** i)
+                    tqdm.write(f"HTTP error occurred: {e}. Retrying in {wait_time:.2f} seconds...")
+                    await asyncio.sleep(wait_time)
+                    continue
+                # Do not raise for redirects, as they are handled by the client
+                if e.response.status_code not in (301, 302, 307, 308):
+                    tqdm.write(f"HTTP error occurred: {e}")
+                    raise
+                return e.response  # Return the response for redirects
+            except httpx.RequestError as e:
+                tqdm.write(f"An error occurred while requesting {e.request.url!r}: {e}")
                 raise
-            return e.response  # Return the response for redirects
-        except httpx.RequestError as e:
-            tqdm.write(f"An error occurred while requesting {e.request.url!r}: {e}")
-            raise
 
     async def __aenter__(self):
         return self

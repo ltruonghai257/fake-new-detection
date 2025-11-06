@@ -26,9 +26,9 @@ class DatasetHandler:
             for item in dataset_iterator:
                 if item and item.get(url_column):
                     urls.append(item[url_column])
-
-            print(f"--- Found {len(urls)} URLs to crawl. ---")
-            return list(set(urls))  # Return unique URLs
+            list_urls = list(set(urls))
+            print(f"--- Found {len(list_urls)} URLs to crawl. ---")
+            return list_urls  # Return unique URLs
         except Exception as e:
             print(f"Error loading or processing dataset: {e}")
             print("Please ensure you are logged in to Hugging Face.")
