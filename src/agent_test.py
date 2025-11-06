@@ -15,7 +15,10 @@ async def main():
     output_filename = f"news_data_{dataset_name.split('/')[-1]}_{split}_agent_test.json"
     url_limit = 5
 
-    crawler_factory = CrawlerFactory(cache_filename=f"data/caches/crawling_status_{split}_agent_test.json")
+    crawler_factory = CrawlerFactory(
+        cache_filename=f"data/caches/crawling_status_{split}_agent_test.json",
+        failed_log_filename=f"data/caches/failed_urls_{split}_agent_test.json"
+    )
 
     if crawler_factory.check_cache_file_exists():
         crawler_factory.clear_cache()

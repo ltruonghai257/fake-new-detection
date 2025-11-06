@@ -16,6 +16,7 @@ from helpers.file_handler.file_handler import FileHandler
 from helpers.httpx_client import BaseClient
 from .crawl_result import CrawlResult
 from .typings import ExtensionReturnCrawlerType, SelectorType
+from helpers.logger import logger
 
 
 class BaseCrawler(ABC):
@@ -315,9 +316,9 @@ class BaseCrawler(ABC):
                     )
 
                 except httpx.RequestError as e:
-                    print(f"Error downloading image: {e}")
+                    logger.error(f"Error downloading image: {e}")
                 except Exception as e:
-                    print(f"An error occurred while saving the image: {e}")
+                    logger.error(f"An error occurred while saving the image: {e}")
         return saved_image_paths
 
     def _prepare_data_for_saving(self, result: CrawlResult) -> Optional[Dict]:

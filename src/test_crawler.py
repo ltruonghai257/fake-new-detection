@@ -23,7 +23,10 @@ async def main():
         # Set a limit for testing. Set to None to crawl all URLs.
         url_limit = 15
 
-        crawler_factory = CrawlerFactory(cache_filename=f"data/caches/crawling_status_{split}.json")
+        crawler_factory = CrawlerFactory(
+            cache_filename=f"data/caches/crawling_status_{split}.json",
+            failed_log_filename=f"data/caches/failed_urls_{split}.json"
+        )
 
         if crawler_factory.check_cache_file_exists():
             clear_cache_input = input(f"Cache file for split '{split}' exists. Do you want to clear it? (y/n): ")

@@ -26,3 +26,5 @@ dist/
 # Visual code files
 .vscode/
 /src/data/
+src/failed_urls.json
+logs/*
