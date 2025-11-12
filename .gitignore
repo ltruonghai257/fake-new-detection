@@ -28,3 +28,4 @@ dist/
 /src/data/
 src/failed_urls.json
 logs/*
+src/logs/app.log
