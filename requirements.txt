@@ -19,6 +19,7 @@ Pillow>=8.0.0
 sentencepiece>=0.1.96
 protobuf>=3.20.0
 
+
 # Web scraping and data processing
 certifi>=2022.0.0
 charset-normalizer>=3.0.0
