@@ -1,15 +1,34 @@
-Bottleneck @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_55txi4fy1u/croot/bottleneck_1731058642212/work
-certifi==2025.10.5
-charset-normalizer==3.4.4
-idna==3.11
-numexpr @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_766kpwgy17/croot/numexpr_1755766476118/work
-numpy @ file:///opt/miniconda3/conda-bld/numpy_and_numpy_base_1760547730050/work/dist/numpy-2.3.3-cp313-cp313-macosx_12_0_arm64.whl#sha256=6528ffc6626f2728a7f27575b39b0f24916f7890c34a559b05c4e64921730c8a
-pandas @ file:///opt/miniconda3/conda-bld/pandas_1759822251234/work/dist/pandas-2.3.3-cp313-cp313-macosx_12_0_arm64.whl#sha256=132d05e03c5d0b1edf46852a671c634fe3752a9d621f3fbafa5b73c7f22e0e87
-python-dateutil @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/python-dateutil_1728585579455/work
-pytz @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_3bjczh6it0/croot/pytz_1752135865541/work
-requests==2.32.5
-setuptools==80.9.0
-six @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_03myqm7p6o/croot/six_1744271511946/work
-tzdata @ file:///croot/python-tzdata_1746123641790/work
-urllib3==2.5.0
-wheel==0.45.1
+# Core dependencies
+numpy>=1.21.0
+pandas>=1.3.0
+requests>=2.25.0
+python-dateutil>=2.8.0
+pytz>=2021.1
+setuptools>=60.0.0
+wheel>=0.37.0
+
+# Machine Learning and Deep Learning
+torch>=1.9.0
+torchvision>=0.10.0
+transformers>=4.20.0
+
+# Image processing
+Pillow>=8.0.0
+
+# Text processing for Vietnamese
+sentencepiece>=0.1.96
+protobuf>=3.20.0
+
+# Web scraping and data processing
+certifi>=2022.0.0
+charset-normalizer>=3.0.0
+idna>=3.0.0
+urllib3>=1.26.0
+
+# Optional dependencies for enhanced functionality
+# underthesea>=1.3.0  # Uncomment for better Vietnamese text processing
+# opencv-python>=4.5.0  # Uncomment for advanced image processing
+# scikit-learn>=1.0.0  # Uncomment for additional ML utilities
+# matplotlib>=3.5.0  # Uncomment for visualization
+# seaborn>=0.11.0  # Uncomment for advanced visualization
+# jupyter>=1.0.0  # Uncomment for notebook support
