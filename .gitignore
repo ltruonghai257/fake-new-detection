@@ -29,4 +29,4 @@ dist/
 src/failed_urls.json
 logs/*
 src/logs/app.log
-preprocessed_data/
+processed_data/
