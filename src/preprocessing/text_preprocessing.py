@@ -1,5 +1,6 @@
 """
 Text Preprocessing Pipeline for COOLANT Fake News Detection
+Vietnamese Language Support
 Based on the COOLANT repository: https://github.com/wishever/COOLANT
 """
 
@@ -8,73 +9,102 @@ import pickle
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from transformers import BertTokenizer, BertModel
+from transformers import BertTokenizer, BertModel, AutoTokenizer, AutoModel
 from typing import List, Dict, Tuple, Optional, Union
 import os
 from tqdm import tqdm
+
+# Optional Vietnamese text processing
+try:
+    import underthesea
+    UNDERTHESEA_AVAILABLE = True
+except ImportError:
+    UNDERTHESEA_AVAILABLE = False
 
 
 class TextPreprocessor:
     """
     Text preprocessing pipeline for multimodal fake news detection
-    Supports both English (Twitter) and Chinese (Weibo) datasets
+    Supports Vietnamese language processing
     """
     
     def __init__(self, 
-                 model_name: str = "bert-base-uncased",
+                 model_name: str = "vinai/phobert-base",
                  max_length: int = 512,
-                 language: str = "en",
+                 language: str = "vi",
                  device: str = "cuda" if torch.cuda.is_available() else "cpu"):
         """
-        Initialize text preprocessor
+        Initialize text preprocessor for Vietnamese
         
         Args:
-            model_name: BERT model name (bert-base-uncased for English, bert-base-chinese for Chinese)
+            model_name: BERT model name for Vietnamese (vinai/phobert-base or bert-base-multilingual-cased)
             max_length: Maximum sequence length
-            language: Language code ('en' for English, 'zh' for Chinese)
+            language: Language code ('vi' for Vietnamese)
             device: Device to run preprocessing on
         """
         self.max_length = max_length
         self.language = language
         self.device = device
         
-        # Initialize tokenizer based on language
-        if language == "zh":
-            self.model_name = "bert-base-chinese"
+        # Initialize tokenizer for Vietnamese
+        if language == "vi":
+            if "phobert" in model_name.lower():
+                self.model_name = "vinai/phobert-base"
+                self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+                self.bert_model = AutoModel.from_pretrained(self.model_name)
+            else:
+                self.model_name = "bert-base-multilingual-cased"
+                self.tokenizer = BertTokenizer.from_pretrained(self.model_name)
+                self.bert_model = BertModel.from_pretrained(self.model_name)
         else:
-            self.model_name = model_name
+            raise ValueError("This preprocessor only supports Vietnamese language (vi)")
             
-        self.tokenizer = BertTokenizer.from_pretrained(self.model_name)
-        self.bert_model = BertModel.from_pretrained(self.model_name)
         self.bert_model.to(device)
         self.bert_model.eval()
         
     def clean_text(self, text: str) -> str:
         """
-        Clean text data based on COOLANT preprocessing
+        Clean Vietnamese text data
         
         Args:
-            text: Raw text string
+            text: Raw Vietnamese text string
             
         Returns:
-            Cleaned text string
+            Cleaned Vietnamese text string
         """
-        if self.language == "zh":
-            # Chinese text cleaning (from weibo.py)
-            text = re.sub(u"[，。 :,.；|-""——_/nbsp+&;@、《》～（）())#O！：【】]", "", text)
-        else:
-            # English text cleaning
-            text = re.sub(r"[^\w\s]", "", text)  # Remove punctuation
-            text = re.sub(r"\s+", " ", text)     # Remove extra whitespace
-            
-        return text.strip().lower()
+        # Vietnamese text cleaning
+        # Remove URLs
+        text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
+        
+        # Remove Vietnamese punctuation and special characters
+        vietnamese_punctuation = r'[.,;:!?""''(){}\[\]\\/|`~@#$%^&*+=<>—–]'
+        text = re.sub(vietnamese_punctuation, '', text)
+        
+        # Remove numbers (optional - keep if important for your use case)
+        text = re.sub(r'\d+', '', text)
+        
+        # Remove extra whitespace
+        text = re.sub(r'\s+', ' ', text)
+        
+        # Remove leading/trailing whitespace and convert to lowercase
+        text = text.strip().lower()
+        
+        # Optional: Use underthesea for advanced Vietnamese text processing
+        if UNDERTHESEA_AVAILABLE:
+            try:
+                # Text normalization
+                text = underthesea.text_normalize(text)
+            except:
+                pass  # Fallback to basic cleaning if underthesea fails
+        
+        return text
     
     def tokenize_text(self, text: str) -> Dict[str, torch.Tensor]:
         """
-        Tokenize text using BERT tokenizer
+        Tokenize Vietnamese text using BERT tokenizer
         
         Args:
-            text: Input text string
+            text: Input Vietnamese text string
             
         Returns:
             Dictionary with tokenized inputs
@@ -93,10 +123,10 @@ class TextPreprocessor:
     
     def extract_bert_features(self, texts: List[str]) -> np.ndarray:
         """
-        Extract BERT features for a list of texts
+        Extract BERT features for a list of Vietnamese texts
         
         Args:
-            texts: List of text strings
+            texts: List of Vietnamese text strings
             
         Returns:
             numpy array of BERT features (batch_size, hidden_size)
@@ -104,12 +134,17 @@ class TextPreprocessor:
         features = []
         
         with torch.no_grad():
-            for text in tqdm(texts, desc="Extracting BERT features"):
+            for text in tqdm(texts, desc="Extracting Vietnamese BERT features"):
                 encoded = self.tokenize_text(text)
                 outputs = self.bert_model(**encoded)
                 
                 # Use [CLS] token representation (pooled output)
-                pooled_output = outputs.pooler_output
+                if hasattr(outputs, 'pooler_output'):
+                    pooled_output = outputs.pooler_output
+                else:
+                    # For PhoBERT, use the first token
+                    pooled_output = outputs.last_hidden_state[:, 0, :]
+                
                 features.append(pooled_output.cpu().numpy())
                 
         return np.vstack(features)
@@ -119,7 +154,7 @@ class TextPreprocessor:
         Extract token-level embeddings for CNN processing (FastCNN compatible)
         
         Args:
-            texts: List of text strings
+            texts: List of Vietnamese text strings
             
         Returns:
             numpy array of token embeddings (batch_size, seq_len, hidden_size)
@@ -127,7 +162,7 @@ class TextPreprocessor:
         embeddings = []
         
         with torch.no_grad():
-            for text in tqdm(texts, desc="Extracting token embeddings"):
+            for text in tqdm(texts, desc="Extracting Vietnamese token embeddings"):
                 encoded = self.tokenize_text(text)
                 outputs = self.bert_model(**encoded)
                 
@@ -143,10 +178,10 @@ class TextPreprocessor:
                           save_path: Optional[str] = None,
                           extract_type: str = "bert_features") -> Tuple[np.ndarray, np.ndarray]:
         """
-        Preprocess a complete dataset
+        Preprocess a complete Vietnamese dataset
         
         Args:
-            texts: List of text strings
+            texts: List of Vietnamese text strings
             labels: List of corresponding labels
             save_path: Path to save preprocessed data (optional)
             extract_type: Type of features to extract ('bert_features' or 'token_embeddings')
@@ -173,10 +208,10 @@ class TextPreprocessor:
                               labels: np.ndarray, 
                               save_path: str):
         """
-        Save preprocessed data to pickle or npz format
+        Save preprocessed Vietnamese data to pickle or npz format
         
         Args:
-            features: Preprocessed text features
+            features: Preprocessed Vietnamese text features
             labels: Corresponding labels
             save_path: Path to save the data
         """
@@ -184,18 +219,27 @@ class TextPreprocessor:
         
         if save_path.endswith('.pkl'):
             with open(save_path, 'wb') as f:
-                pickle.dump({'features': features, 'labels': labels}, f)
+                pickle.dump({
+                    'features': features, 
+                    'labels': labels,
+                    'language': 'vietnamese',
+                    'model_name': self.model_name
+                }, f)
         elif save_path.endswith('.npz'):
-            np.savez(save_path, data=features, label=labels)
+            np.savez(save_path, 
+                    data=features, 
+                    label=labels,
+                    language='vietnamese',
+                    model_name=self.model_name)
         else:
             raise ValueError("save_path must end with .pkl or .npz")
             
-        print(f"Saved preprocessed text data to {save_path}")
+        print(f"Saved preprocessed Vietnamese text data to {save_path}")
     
     @staticmethod
     def load_preprocessed_data(load_path: str) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Load preprocessed data from file
+        Load preprocessed Vietnamese data from file
         
         Args:
             load_path: Path to load data from
@@ -216,7 +260,7 @@ class TextPreprocessor:
 
 class TextDataset(Dataset):
     """
-    PyTorch Dataset for preprocessed text data
+    PyTorch Dataset for preprocessed Vietnamese text data
     Compatible with COOLANT training pipeline
     """
     
@@ -225,7 +269,7 @@ class TextDataset(Dataset):
         Initialize dataset
         
         Args:
-            features: Preprocessed text features
+            features: Preprocessed Vietnamese text features
             labels: Corresponding labels
         """
         self.features = torch.FloatTensor(features)
@@ -238,24 +282,26 @@ class TextDataset(Dataset):
         return self.features[idx], self.labels[idx]
 
 
-def preprocess_twitter_data(data_path: str, 
-                          save_dir: str = "./processed_data/twitter",
-                          save_format: str = "npz") -> Tuple[np.ndarray, np.ndarray]:
+def preprocess_vietnamese_data(data_path: str, 
+                          save_dir: str = "./processed_data/vietnamese",
+                          save_format: str = "npz",
+                          model_name: str = "vinai/phobert-base") -> Tuple[np.ndarray, np.ndarray]:
     """
-    Preprocess Twitter dataset (English)
+    Preprocess Vietnamese dataset
     
     Args:
-        data_path: Path to raw Twitter data
+        data_path: Path to raw Vietnamese data
         save_dir: Directory to save processed data
         save_format: Format to save ('pkl' or 'npz')
+        model_name: Model name for Vietnamese ('vinai/phobert-base' or 'bert-base-multilingual-cased')
         
     Returns:
         Tuple of (features, labels)
     """
-    # Initialize preprocessor for English
+    # Initialize preprocessor for Vietnamese
     preprocessor = TextPreprocessor(
-        model_name="bert-base-uncased",
-        language="en"
+        model_name=model_name,
+        language="vi"
     )
     
     # Load raw data (assuming JSON format)
@@ -269,45 +315,7 @@ def preprocess_twitter_data(data_path: str,
     # Preprocess
     features, labels_array = preprocessor.preprocess_dataset(
         texts, labels, 
-        save_path=f"{save_dir}/text_features.{save_format}",
-        extract_type="token_embeddings"  # FastCNN compatible
-    )
-    
-    return features, labels_array
-
-
-def preprocess_weibo_data(data_path: str,
-                         save_dir: str = "./processed_data/weibo", 
-                         save_format: str = "npz") -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Preprocess Weibo dataset (Chinese)
-    
-    Args:
-        data_path: Path to raw Weibo data
-        save_dir: Directory to save processed data
-        save_format: Format to save ('pkl' or 'npz')
-        
-    Returns:
-        Tuple of (features, labels)
-    """
-    # Initialize preprocessor for Chinese
-    preprocessor = TextPreprocessor(
-        model_name="bert-base-chinese",
-        language="zh"
-    )
-    
-    # Load raw data (assuming JSON format)
-    import json
-    with open(data_path, 'r', encoding='utf-8') as f:
-        raw_data = json.load(f)
-    
-    texts = [item['text'] for item in raw_data]
-    labels = [item['label'] for item in raw_data]
-    
-    # Preprocess
-    features, labels_array = preprocessor.preprocess_dataset(
-        texts, labels,
-        save_path=f"{save_dir}/text_features.{save_format}",
+        save_path=f"{save_dir}/vietnamese_text_features.{save_format}",
         extract_type="token_embeddings"  # FastCNN compatible
     )
     
@@ -315,27 +323,42 @@ def preprocess_weibo_data(data_path: str,
 
 
 if __name__ == "__main__":
-    # Example usage
-    print("Text Preprocessing Pipeline for COOLANT")
+    # Example usage for Vietnamese
+    print("Vietnamese Text Preprocessing Pipeline for COOLANT")
     
-    # Example for preprocessing sample data
+    # Example Vietnamese texts
     sample_texts = [
-        "This is a sample news article about fake news detection.",
-        "Another example of text that needs preprocessing."
+        "Tin tức Việt Nam hôm nay: Chính phủ ban hành chính sách mới về kinh tế.",
+        "Cảnh báo: Tin giả về dịch bệnh COVID-19 đang lan truyền trên mạng xã hội.",
+        "Khoa học công nghệ Việt Nam đạt nhiều thành tựu quan trọng trong năm 2023.",
+        "BREAKING: Phát hiện thuốc chữa bách bệnh - các chuyên gia cảnh báo tin giả."
     ]
-    sample_labels = [0, 1]  # 0: real news, 1: fake news
+    sample_labels = [0, 1, 0, 1]  # 0: real news, 1: fake news
     
-    # Initialize preprocessor
-    preprocessor = TextPreprocessor(language="en")
+    # Initialize preprocessor for Vietnamese
+    preprocessor = TextPreprocessor(
+        model_name="vinai/phobert-base",
+        language="vi"
+    )
+    
+    # Test text cleaning
+    print("\nOriginal Vietnamese texts:")
+    for i, text in enumerate(sample_texts):
+        print(f"{i+1}. {text}")
+    
+    print("\nCleaned Vietnamese texts:")
+    for i, text in enumerate(sample_texts):
+        cleaned = preprocessor.clean_text(text)
+        print(f"{i+1}. {cleaned}")
     
     # Preprocess and save
     features, labels = preprocessor.preprocess_dataset(
         sample_texts, 
         sample_labels,
-        save_path="./sample_text_data.pkl",
+        save_path="./sample_vietnamese_text_data.pkl",
         extract_type="token_embeddings"
     )
     
-    print(f"Features shape: {features.shape}")
+    print(f"\nFeatures shape: {features.shape}")
     print(f"Labels shape: {labels.shape}")
-    print("Text preprocessing completed successfully!")
+    print("Vietnamese text preprocessing completed successfully!")
