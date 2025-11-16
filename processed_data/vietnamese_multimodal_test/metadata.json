@@ -1,0 +1,22 @@
+{
+  "num_samples": 50,
+  "text_feature_shape": [
+    50,
+    256,
+    768
+  ],
+  "image_feature_shape": [
+    50,
+    512
+  ],
+  "num_classes": 1,
+  "language": "vi",
+  "text_model": "vinai/phobert-base",
+  "image_model": "resnet18",
+  "save_dir": "./processed_data/vietnamese_multimodal_test",
+  "files": {
+    "text_features": "text_features.pkl",
+    "image_features": "image_features.pkl",
+    "combined": "combined_dataset.pkl"
+  }
+}
