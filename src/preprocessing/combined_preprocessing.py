@@ -7,11 +7,10 @@ import os
 import pickle
 import numpy as np
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from typing import List, Dict, Tuple, Optional, Union
 from tqdm import tqdm
 import json
-import pandas as pd
 from PIL import Image
 
 from .text_preprocessing import TextPreprocessor
@@ -77,16 +76,13 @@ class MultimodalDataset(Dataset):
 
 
 class CombinedPreprocessor:
-    """
-    Combined preprocessing pipeline for multimodal fake news detection
-    Handles both text and image preprocessing with coordinated saving
-    """
+    """Vietnamese multimodal preprocessing pipeline for COOLANT."""
 
     def __init__(
         self,
-        text_model_name: str = "bert-base-uncased",
+        text_model_name: str = "vinai/phobert-base",
         image_model_name: str = "resnet18",
-        language: str = "en",
+        language: str = "vi",
         max_text_length: int = 512,
         image_size: Tuple[int, int] = (224, 224),
         device: str = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu",
@@ -95,9 +91,9 @@ class CombinedPreprocessor:
         Initialize combined preprocessor
 
         Args:
-            text_model_name: BERT model name for text
+            text_model_name: BERT model name for Vietnamese text
             image_model_name: ResNet model name for images
-            language: Language code ('en' or 'zh')
+            language: Language code ('vi')
             max_text_length: Maximum text sequence length
             image_size: Target image size
             device: Device to run preprocessing on
@@ -279,244 +275,100 @@ class CombinedPreprocessor:
         else:
             raise ValueError("load_path must end with .pkl or .npz")
 
-    def create_data_splits(
+    def process_existing_splits(
         self,
-        texts: List[str],
-        image_paths: List[str],
-        labels: List[int],
-        train_ratio: float = 0.7,
-        val_ratio: float = 0.15,
-        test_ratio: float = 0.15,
-        save_dir: str = "./processed_data",
-        save_format: str = "npz",
-        random_seed: int = 42,
-    ) -> Dict[str, MultimodalDataset]:
+        data_dir: str = "./src/data/json",
+        save_base_dir: str = "./processed_data",
+        save_format: str = "pkl",
+        batch_size: int = 32,
+        splits: List[str] = ["train", "dev", "test"],
+        file_prefix: str = "news_data_vifactcheck_",
+    ) -> Dict[str, Tuple[MultimodalDataset, Dict]]:
         """
-        Create train/val/test splits and preprocess each
-
+        Process existing dataset split files (train/dev/test.json)
+        
         Args:
-            texts: List of text strings
-            image_paths: List of image file paths
-            labels: List of corresponding labels
-            train_ratio: Ratio of training data
-            val_ratio: Ratio of validation data
-            test_ratio: Ratio of test data
-            save_dir: Base directory to save processed data
+            data_dir: Directory containing split JSON files
+            save_base_dir: Base directory to save processed data
             save_format: Format to save ('pkl' or 'npz')
-            random_seed: Random seed for reproducibility
-
+            batch_size: Batch size for processing
+            splits: List of split names to process
+            file_prefix: Prefix for split files (e.g., "news_data_vifactcheck_")
+            
         Returns:
-            Dictionary with train, val, test datasets
+            Dictionary with split names as keys and (dataset, metadata) tuples as values
         """
-        np.random.seed(random_seed)
-
-        # Shuffle data
-        indices = np.random.permutation(len(texts))
-        texts = [texts[i] for i in indices]
-        image_paths = [image_paths[i] for i in indices]
-        labels = [labels[i] for i in indices]
-
-        # Calculate split indices
-        n_samples = len(texts)
-        train_end = int(n_samples * train_ratio)
-        val_end = train_end + int(n_samples * val_ratio)
-
-        # Split data
-        splits = {
-            "train": (texts[:train_end], image_paths[:train_end], labels[:train_end]),
-            "val": (
-                texts[train_end:val_end],
-                image_paths[train_end:val_end],
-                labels[train_end:val_end],
-            ),
-            "test": (texts[val_end:], image_paths[val_end:], labels[val_end:]),
-        }
-
-        datasets = {}
-
-        for split_name, (split_texts, split_images, split_labels) in splits.items():
-            print(f"\nProcessing {split_name} split...")
-            split_dir = os.path.join(save_dir, split_name)
-
+        import json
+        
+        results = {}
+        
+        for split_name in splits:
+            print(f"\n🔄 Processing {split_name.upper()} split...")
+            
+            # Path to split file with customizable prefix
+            split_path = os.path.join(data_dir, f"{file_prefix}{split_name}.json")
+            
+            if not os.path.exists(split_path):
+                print(f"❌ Split file not found: {split_path}")
+                continue
+                
+            # Load and extract data
+            with open(split_path, 'r', encoding='utf-8') as f:
+                raw_data = json.load(f)
+            
+            # Extract texts, labels, and image paths
+            texts = []
+            labels = []
+            image_paths = []
+            base_data_dir = "./src/data"
+            
+            for item in raw_data:
+                text = item.get('text', item.get('content', ''))
+                if text:
+                    texts.append(text)
+                    labels.append(item.get('label', item.get('is_fake', 0)))
+                    
+                    # Extract image path
+                    images = item.get('images', [])
+                    if images and len(images) > 0:
+                        folder_path = images[0].get('folder_path', '')
+                        if folder_path:
+                            full_image_path = os.path.join(base_data_dir, folder_path)
+                            image_paths.append(full_image_path)
+                        else:
+                            image_paths.append(None)
+                    else:
+                        image_paths.append(None)
+            
+            print(f"✓ Extracted {len(texts)} texts for {split_name}")
+            print(f"✓ Found {sum(1 for path in image_paths if path is not None)} images")
+            
+            # Create placeholder images for missing paths
+            placeholder_dir = f"./placeholder_images/{split_name}"
+            os.makedirs(placeholder_dir, exist_ok=True)
+            
+            for i, image_path in enumerate(image_paths):
+                if image_path is None or not os.path.exists(image_path):
+                    placeholder_path = os.path.join(placeholder_dir, f"placeholder_{i}.jpg")
+                    if not os.path.exists(placeholder_path):
+                        from PIL import Image
+                        placeholder_array = np.random.randint(128, 200, (224, 224, 3), dtype=np.uint8)
+                        placeholder_image = Image.fromarray(placeholder_array)
+                        placeholder_image.save(placeholder_path)
+                    image_paths[i] = placeholder_path
+            
+            # Process the split
+            split_save_dir = os.path.join(save_base_dir, f"vietnamese_{split_name}")
             dataset, metadata = self.preprocess_dataset(
-                split_texts,
-                split_images,
-                split_labels,
-                save_dir=split_dir,
+                texts, image_paths, labels,
+                save_dir=split_save_dir,
                 save_format=save_format,
+                batch_size=batch_size
             )
+            
+            results[split_name] = (dataset, metadata)
+            
+            print(f"✓ {split_name.upper()} split completed: {len(dataset)} samples")
+        
+        return results
 
-            datasets[split_name] = dataset
-
-            # Save split metadata
-            with open(os.path.join(split_dir, f"{split_name}_metadata.json"), "w") as f:
-                json.dump(metadata, f, indent=2)
-
-        return datasets
-
-
-def preprocess_twitter_dataset(
-    data_path: str,
-    image_dir: str,
-    save_dir: str = "./processed_data/twitter",
-    save_format: str = "npz",
-) -> Dict[str, MultimodalDataset]:
-    """
-    Preprocess complete Twitter dataset
-
-    Args:
-        data_path: Path to Twitter metadata file (JSON)
-        image_dir: Directory containing Twitter images
-        save_dir: Directory to save processed data
-        save_format: Format to save ('pkl' or 'npz')
-
-    Returns:
-        Dictionary with train, val, test datasets
-    """
-    # Initialize combined preprocessor
-    preprocessor = CombinedPreprocessor(
-        text_model_name="bert-base-uncased", image_model_name="resnet18", language="en"
-    )
-
-    # Load raw data
-    with open(data_path, "r", encoding="utf-8") as f:
-        raw_data = json.load(f)
-
-    # Extract data
-    texts = [item["text"] for item in raw_data]
-    image_paths = [os.path.join(image_dir, item["image_name"]) for item in raw_data]
-    labels = [item["label"] for item in raw_data]
-
-    # Create splits and preprocess
-    datasets = preprocessor.create_data_splits(
-        texts, image_paths, labels, save_dir=save_dir, save_format=save_format
-    )
-
-    return datasets
-
-
-def preprocess_weibo_dataset(
-    data_path: str,
-    image_dir: str,
-    save_dir: str = "./processed_data/weibo",
-    save_format: str = "npz",
-) -> Dict[str, MultimodalDataset]:
-    """
-    Preprocess complete Weibo dataset
-
-    Args:
-        data_path: Path to Weibo metadata file (JSON)
-        image_dir: Directory containing Weibo images
-        save_dir: Directory to save processed data
-        save_format: Format to save ('pkl' or 'npz')
-
-    Returns:
-        Dictionary with train, val, test datasets
-    """
-    # Initialize combined preprocessor
-    preprocessor = CombinedPreprocessor(
-        text_model_name="bert-base-chinese", image_model_name="resnet18", language="zh"
-    )
-
-    # Load raw data
-    with open(data_path, "r", encoding="utf-8") as f:
-        raw_data = json.load(f)
-
-    # Extract data
-    texts = [item["text"] for item in raw_data]
-    image_paths = [os.path.join(image_dir, item["image_name"]) for item in raw_data]
-    labels = [item["label"] for item in raw_data]
-
-    # Create splits and preprocess
-    datasets = preprocessor.create_data_splits(
-        texts, image_paths, labels, save_dir=save_dir, save_format=save_format
-    )
-
-    return datasets
-
-
-def create_dataloaders(
-    datasets: Dict[str, MultimodalDataset], batch_size: int = 64, num_workers: int = 4
-) -> Dict[str, DataLoader]:
-    """
-    Create PyTorch DataLoaders from datasets
-
-    Args:
-        datasets: Dictionary with train, val, test datasets
-        batch_size: Batch size for DataLoaders
-        num_workers: Number of worker processes
-
-    Returns:
-        Dictionary with train, val, test DataLoaders
-    """
-    dataloaders = {}
-
-    for split_name, dataset in datasets.items():
-        shuffle = split_name == "train"
-        dataloaders[split_name] = DataLoader(
-            dataset,
-            batch_size=batch_size,
-            shuffle=shuffle,
-            num_workers=num_workers,
-            pin_memory=True,
-        )
-
-    return dataloaders
-
-
-if __name__ == "__main__":
-    # Example usage
-    print("Combined Multimodal Preprocessing Pipeline for COOLANT")
-
-    # Sample data for demonstration
-    sample_texts = [
-        "This is a real news article about climate change.",
-        "Breaking: Scientists discover new planet in solar system!",
-        "Celebrity gossip: Famous actor spotted at local restaurant.",
-        "Fake news claim: Eating chocolate cures all diseases.",
-    ]
-
-    sample_image_paths = [
-        "./sample_images/news1.jpg",
-        "./sample_images/news2.jpg",
-        "./sample_images/news3.jpg",
-        "./sample_images/news4.jpg",
-    ]
-
-    sample_labels = [0, 0, 1, 1]  # 0: real news, 1: fake news
-
-    # Create sample images
-    os.makedirs("./sample_images", exist_ok=True)
-    for i, path in enumerate(sample_image_paths):
-        if not os.path.exists(path):
-            dummy_img = Image.fromarray(
-                np.random.randint(0, 255, (224, 224, 3), dtype=np.uint8)
-            )
-            dummy_img.save(path)
-
-    # Initialize combined preprocessor
-    preprocessor = CombinedPreprocessor(language="en")
-
-    # Preprocess dataset
-    dataset, metadata = preprocessor.preprocess_dataset(
-        sample_texts,
-        sample_image_paths,
-        sample_labels,
-        save_dir="./sample_processed_data",
-        save_format="pkl",
-    )
-
-    print(f"Dataset size: {len(dataset)}")
-    print(f"Text features shape: {metadata['text_feature_shape']}")
-    print(f"Image features shape: {metadata['image_feature_shape']}")
-    print("Combined preprocessing completed successfully!")
-
-    # Example of loading the processed data
-    loaded_text, loaded_image, loaded_labels = (
-        CombinedPreprocessor.load_combined_dataset(
-            "./sample_processed_data/combined_dataset.pkl"
-        )
-    )
-    print(f"Loaded text features shape: {loaded_text.shape}")
-    print(f"Loaded image features shape: {loaded_image.shape}")
-    print(f"Loaded labels shape: {loaded_labels.shape}")
