@@ -1,3 +1,1 @@
-from .crawler import *
-
-__all__ = ["BaseCrawler", "VnExpressCrawler"]
+# This file makes 'src' a Python package.
