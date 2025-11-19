@@ -48,7 +48,25 @@ class StringHandler:
         """
         Sanitize a string to be used as a valid filename.
         """
-        return "".join(c if c.isalnum() else "_" for c in filename)
+        if not filename:
+            return ""
+        # 0. Strip leading/trailing spaces
+        filename = filename.strip()
+        # 1. Replace spaces with underscores
+        filename = re.sub(r'\s+', '_', filename)
+        # 2. Remove invalid characters
+        filename = re.sub(r'[^\w.-]', '', filename)
+        # 3. Collapse multiple underscores
+        filename = re.sub(r'__+', '_', filename)
+        # 4. Limit length
+        if len(filename) > 255:
+            name, ext = os.path.splitext(filename)
+            max_name_len = 255 - len(ext)
+            if max_name_len < 0:
+                max_name_len = 0
+            name = name[:max_name_len]
+            filename = name + ext
+        return filename
 
     @staticmethod
     def class_name_to_snake_case(class_name_str: str) -> str:
