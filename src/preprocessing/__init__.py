@@ -13,7 +13,7 @@ Components:
 
 from .text_preprocessing import TextPreprocessor, TextDataset
 from .image_preprocessing import ImagePreprocessor, ImageDataset, FeatureDataset
-from .combined_preprocessing import CombinedPreprocessor, MultimodalDataset, create_dataloaders
+from .combined_preprocessing import CombinedPreprocessor, MultimodalDataset
 from .data_utils import DataManager, DatasetSplitter, DataValidator, create_sample_data, convert_format
 
 __version__ = "1.0.0"
@@ -87,7 +87,6 @@ __all__ = [
     'MultimodalDataset',
     
     # Utility functions
-    'create_dataloaders',
     'create_sample_data',
     'convert_format',
     
