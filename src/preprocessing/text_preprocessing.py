@@ -10,7 +10,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 from transformers import BertTokenizer, BertModel, AutoTokenizer, AutoModel
-from typing import List, Dict, Tuple, Optional, Union
+from typing import List, Dict, Tuple, Optional, Union, TypedDict, Callable
 import os
 from tqdm import tqdm
 
@@ -23,6 +23,15 @@ except ImportError:
     UNDERTHESEA_AVAILABLE = False
 
 
+class TextCleaningOptions(TypedDict, total=False):
+    """Options for text cleaning configuration."""
+
+    urls: bool
+    punctuation: bool
+    numbers: bool
+    whitespace: bool
+
+
 class TextPreprocessor:
     """
     Text preprocessing pipeline for multimodal fake news detection
@@ -32,7 +41,7 @@ class TextPreprocessor:
     def __init__(
         self,
         model_name: str = "vinai/phobert-base",
-        max_length: int = 512,
+        max_length: int = 64,
         language: str = "vi",
         device: str = "cuda" if torch.cuda.is_available() else "mps",
     ):
@@ -65,33 +74,55 @@ class TextPreprocessor:
         self.bert_model.to(device)
         self.bert_model.eval()
 
-    def clean_text(self, text: str) -> str:
+    @staticmethod
+    def clean_text(
+        text: str,
+        outer_function: Optional[Callable[[str], str]] = None,
+        field_cleaning: Union[TextCleaningOptions, Callable[[str], str]] = {
+            "urls": True,
+            "punctuation": True,
+            "numbers": True,
+            "whitespace": True,
+        },
+    ) -> str:
         """
         Clean Vietnamese text data
 
         Args:
             text: Raw Vietnamese text string
+            outer_function: Optional callable that takes a string as input and returns a string as output. The callable will be used before the default cleaning.
+            field_cleaning: Dictionary with format {<field_name>: bool}. Field_name options are 'urls', 'punctuation', 'numbers', 'whitespace'. Set to True if the field should be cleaned, False otherwise.
+                Alternatively, a callable that takes a string as input and returns a string as output. The callable will be used instead of the default cleaning.
 
         Returns:
             Cleaned Vietnamese text string
         """
+        default_field_cleaning: TextCleaningOptions = {
+            "urls": True,
+            "punctuation": True,
+            "numbers": True,
+            "whitespace": True,
+        }
+        field_cleaning = {**default_field_cleaning, **field_cleaning}
+
         # Vietnamese text cleaning
-        # Remove URLs
-        text = re.sub(r"http\S+|www\S+|https\S+", "", text, flags=re.MULTILINE)
+        if field_cleaning.get("urls", True):
+            text = re.sub(r"http\S+|www\S+|https\S+", "", text, flags=re.MULTILINE)
 
-        # Remove Vietnamese punctuation and special characters
-        vietnamese_punctuation = r'[.,;:!?""' "(){}\[\]\\/|`~@#$%^&*+=<>—–]"
-        text = re.sub(vietnamese_punctuation, "", text)
+        if field_cleaning.get("punctuation", True):
+            vietnamese_punctuation = r'[.,;:!?""' "(){}\[\]\\/|`~@#$%^&*+=<>—–]"
+            text = re.sub(vietnamese_punctuation, "", text)
 
-        # Remove numbers (optional - keep if important for your use case)
-        text = re.sub(r"\d+", "", text)
+        if field_cleaning.get("numbers", True):
+            text = re.sub(r"\d+", "", text)
 
-        # Remove extra whitespace
-        text = re.sub(r"\s+", " ", text)
+        if field_cleaning.get("whitespace", True):
+            text = re.sub(r"\s+", " ", text)
 
         # Remove leading/trailing whitespace and convert to lowercase
         text = text.strip().lower()
-
+        if outer_function is not None:
+            text = outer_function(text)
         # Optional: Use underthesea for advanced Vietnamese text processing
         if UNDERTHESEA_AVAILABLE:
             try:

@@ -5,6 +5,7 @@ Based on the COOLANT repository: https://github.com/wishever/COOLANT
 
 import os
 import pickle
+from venv import logger
 import numpy as np
 import torch
 from torch.utils.data import Dataset
@@ -85,7 +86,11 @@ class CombinedPreprocessor:
         language: str = "vi",
         max_text_length: int = 512,
         image_size: Tuple[int, int] = (224, 224),
-        device: str = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu",
+        device: str = (
+            "cuda"
+            if torch.cuda.is_available()
+            else "mps" if torch.backends.mps.is_available() else "cpu"
+        ),
     ):
         """
         Initialize combined preprocessor
@@ -99,6 +104,7 @@ class CombinedPreprocessor:
             device: Device to run preprocessing on
         """
         self.device = device
+        logger.info(f"Using device: {device}")
         self.language = language
 
         # Initialize individual preprocessors
@@ -286,7 +292,7 @@ class CombinedPreprocessor:
     ) -> Dict[str, Tuple[MultimodalDataset, Dict]]:
         """
         Process existing dataset split files (train/dev/test.json)
-        
+
         Args:
             data_dir: Directory containing split JSON files
             save_base_dir: Base directory to save processed data
@@ -294,44 +300,44 @@ class CombinedPreprocessor:
             batch_size: Batch size for processing
             splits: List of split names to process
             file_prefix: Prefix for split files (e.g., "news_data_vifactcheck_")
-            
+
         Returns:
             Dictionary with split names as keys and (dataset, metadata) tuples as values
         """
         import json
-        
+
         results = {}
-        
+
         for split_name in splits:
             print(f"\n🔄 Processing {split_name.upper()} split...")
-            
+
             # Path to split file with customizable prefix
             split_path = os.path.join(data_dir, f"{file_prefix}{split_name}.json")
-            
+
             if not os.path.exists(split_path):
                 print(f"❌ Split file not found: {split_path}")
                 continue
-                
+
             # Load and extract data
-            with open(split_path, 'r', encoding='utf-8') as f:
+            with open(split_path, "r", encoding="utf-8") as f:
                 raw_data = json.load(f)
-            
+
             # Extract texts, labels, and image paths
             texts = []
             labels = []
             image_paths = []
             base_data_dir = "./src/data"
-            
+
             for item in raw_data:
-                text = item.get('text', item.get('content', ''))
+                text = item.get("text", item.get("content", ""))
                 if text:
                     texts.append(text)
-                    labels.append(item.get('label', item.get('is_fake', 0)))
-                    
+                    labels.append(item.get("label", item.get("is_fake", 0)))
+
                     # Extract image path
-                    images = item.get('images', [])
+                    images = item.get("images", [])
                     if images and len(images) > 0:
-                        folder_path = images[0].get('folder_path', '')
+                        folder_path = images[0].get("folder_path", "")
                         if folder_path:
                             full_image_path = os.path.join(base_data_dir, folder_path)
                             image_paths.append(full_image_path)
@@ -339,36 +345,44 @@ class CombinedPreprocessor:
                             image_paths.append(None)
                     else:
                         image_paths.append(None)
-            
+
             print(f"✓ Extracted {len(texts)} texts for {split_name}")
-            print(f"✓ Found {sum(1 for path in image_paths if path is not None)} images")
-            
+            print(
+                f"✓ Found {sum(1 for path in image_paths if path is not None)} images"
+            )
+
             # Create placeholder images for missing paths
             placeholder_dir = f"./placeholder_images/{split_name}"
             os.makedirs(placeholder_dir, exist_ok=True)
-            
+
             for i, image_path in enumerate(image_paths):
                 if image_path is None or not os.path.exists(image_path):
-                    placeholder_path = os.path.join(placeholder_dir, f"placeholder_{i}.jpg")
+                    placeholder_path = os.path.join(
+                        placeholder_dir, f"placeholder_{i}.jpg"
+                    )
                     if not os.path.exists(placeholder_path):
                         from PIL import Image
-                        placeholder_array = np.random.randint(128, 200, (224, 224, 3), dtype=np.uint8)
+
+                        placeholder_array = np.random.randint(
+                            128, 200, (224, 224, 3), dtype=np.uint8
+                        )
                         placeholder_image = Image.fromarray(placeholder_array)
                         placeholder_image.save(placeholder_path)
                     image_paths[i] = placeholder_path
-            
+
             # Process the split
             split_save_dir = os.path.join(save_base_dir, f"vietnamese_{split_name}")
             dataset, metadata = self.preprocess_dataset(
-                texts, image_paths, labels,
+                texts,
+                image_paths,
+                labels,
                 save_dir=split_save_dir,
                 save_format=save_format,
-                batch_size=batch_size
+                batch_size=batch_size,
             )
-            
-            results[split_name] = (dataset, metadata)
-            
-            print(f"✓ {split_name.upper()} split completed: {len(dataset)} samples")
-        
-        return results
 
+            results[split_name] = (dataset, metadata)
+
+            print(f"✓ {split_name.upper()} split completed: {len(dataset)} samples")
+
+        return results
