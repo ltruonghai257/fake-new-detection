@@ -159,16 +159,21 @@ class HDF5DatasetFull(Dataset):
         )
 
     def close(self):
-        """Close the HDF5 file."""
+        """Close the HDF5 file explicitly."""
         if hasattr(self, "file") and self.file:
-            self.file.close()
+            try:
+                self.file.close()
+                self.file = None
+            except Exception as e:
+                import warnings
+
+                warnings.warn(f"Error closing HDF5 file: {e}")
 
     def __del__(self):
         """Destructor to ensure file is closed."""
-        try:
-            self.close()
-        except Exception:
-            pass
+        # Note: __del__ is not guaranteed to be called promptly.
+        # Always use explicit close() or context manager.
+        self.close()
 
 
 def create_hdf5_dataloaders(
