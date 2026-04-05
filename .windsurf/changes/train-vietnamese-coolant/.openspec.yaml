@@ -1,0 +1,25 @@
+change:
+  name: train-vietnamese-coolant
+  description: Train COOLANT model for Vietnamese multimodal misinformation detection between images and text
+  status: proposal
+
+  artifacts:
+    proposal:
+      id: proposal
+      type: proposal
+      status: ready
+      path: proposal.md
+
+    design:
+      id: design
+      type: design
+      status: ready
+      path: design.md
+      depends_on: [proposal]
+
+    tasks:
+      id: tasks
+      type: tasks
+      status: ready
+      path: tasks.md
+      depends_on: [design]
