@@ -78,7 +78,11 @@ class HDF5Dataset(Dataset):
             label = self.labels[idx]  # Already in memory
 
         # Convert to tensors
-        text_tensor = torch.from_numpy(text).float()
+        # Text: transpose from (512, 768) to (768, 512) for Conv1d
+        # The notebook patches FastCNN with raw Conv1d (no internal permute)
+        text_tensor = (
+            torch.from_numpy(text).float().transpose(0, 1)
+        )  # [512, 768] -> [768, 512]
         image_tensor = torch.from_numpy(image).float()
         label_tensor = torch.tensor(label, dtype=torch.long)
 
@@ -152,8 +156,9 @@ class HDF5DatasetFull(Dataset):
         image = self.file["image_features"][actual_idx]
         label = self.labels[idx]
 
+        # Transpose text from (512, 768) to (768, 512) for Conv1d
         return (
-            torch.from_numpy(text).float(),
+            torch.from_numpy(text).float().transpose(0, 1),
             torch.from_numpy(image).float(),
             torch.tensor(label, dtype=torch.long),
         )
