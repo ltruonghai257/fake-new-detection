@@ -5,40 +5,45 @@ Clean, focused modules for processing ViFactCheck dataset with separate text and
 ## Modules Overview
 
 ### 1. `text_processor.py` - Text Processing
-- **Purpose**: Vietnamese text cleaning, tokenization, and feature extraction
-- **Key Features**:
-  - Text cleaning (HTML removal, normalization)
-  - PhoBERT tokenization support
-  - Feature extraction with fallback options
-  - Batch processing capability
 
-### 2. `image_processor.py` - Image Processing  
-- **Purpose**: Image loading, preprocessing, and feature extraction
-- **Key Features**:
-  - Image validation and loading
-  - ResNet/EfficientNet feature extraction
-  - Image augmentation support
-  - Batch processing capability
+-   **Purpose**: Vietnamese text cleaning, tokenization, and feature extraction
+-   **Key Features**:
+    -   Text cleaning (HTML removal, normalization)
+    -   PhoBERT tokenization support
+    -   Feature extraction with fallback options
+    -   Batch processing capability
+
+### 2. `image_processor.py` - Image Processing
+
+-   **Purpose**: Image loading, preprocessing, and feature extraction
+-   **Key Features**:
+    -   Image validation and loading
+    -   ResNet/EfficientNet feature extraction
+    -   Image augmentation support
+    -   Batch processing capability
 
 ### 3. `simple_preprocess.py` - Data Preprocessing
-- **Purpose**: Clean ViFactCheck data preprocessing
-- **Key Features**:
-  - Raw ViFactCheck JSON parsing
-  - Text and image validation
-  - Train/val/test splitting
-  - Statistics reporting
+
+-   **Purpose**: Clean ViFactCheck data preprocessing
+-   **Key Features**:
+    -   Raw ViFactCheck JSON parsing
+    -   Text and image validation
+    -   Train/val/test splitting
+    -   Statistics reporting
 
 ### 4. `simple_dataloader.py` - PyTorch DataLoader
-- **Purpose**: Simple, efficient dataloader for training
-- **Key Features**:
-  - Separate text and image processing
-  - Flexible label mapping
-  - Clean batch collation
-  - Memory efficient
+
+-   **Purpose**: Simple, efficient dataloader for training
+-   **Key Features**:
+    -   Separate text and image processing
+    -   Flexible label mapping
+    -   Clean batch collation
+    -   Memory efficient
 
 ## Quick Usage
 
 ### Complete Pipeline
+
 ```python
 import sys
 sys.path.append('src')
@@ -75,11 +80,14 @@ for batch in train_loader:
     text_features = batch['text_features']    # (32, 768)
     image_features = batch['image_features']  # (32, 512)
     labels = batch['labels']                  # (32,)
-    
+
+    # Runtime detection: The COOLANT notebook now auto-detects whether it is running on a local machine or inside Google Colab and adjusts the HDF5/checkpoint directories accordingly. You can still override the paths by setting `LOCAL_BASE_DIR` (local runs) or `COLAB_BASE_DIR` (Colab mounts) before running the notebook.
+
     # Your model training code here
 ```
 
 ### Individual Processors
+
 ```python
 from processing.text_processor import TextProcessor
 from processing.image_processor import ImageProcessor
@@ -89,7 +97,7 @@ text_processor = TextProcessor(max_length=128)
 text_result = text_processor.process("Vietnamese text here")
 print(f"Features shape: {text_result['features'].shape}")
 
-# Image processing  
+# Image processing
 image_processor = ImageProcessor(feature_dim=512)
 image_result = image_processor.process("path/to/image.jpg")
 print(f"Features shape: {image_result['features'].shape}")
@@ -98,20 +106,22 @@ print(f"Features shape: {image_result['features'].shape}")
 ## Data Format
 
 ### Input (ViFactCheck JSON):
+
 ```json
 [
-  {
-    "images": [
-      {
-        "caption": "Vietnamese text content",
-        "folder_path": "jpg/source_name/image.jpg"
-      }
-    ]
-  }
+    {
+        "images": [
+            {
+                "caption": "Vietnamese text content",
+                "folder_path": "jpg/source_name/image.jpg"
+            }
+        ]
+    }
 ]
 ```
 
 ### Output Batch:
+
 ```python
 {
     'text_features': torch.Tensor,     # (batch_size, 768)
@@ -130,15 +140,18 @@ print(f"Features shape: {image_result['features'].shape}")
 ## Configuration
 
 ### Text Processor:
-- `max_length`: Maximum sequence length (default: 128)
-- `tokenizer_name`: Pretrained tokenizer (default: "vinai/phobert-base")
+
+-   `max_length`: Maximum sequence length (default: 128)
+-   `tokenizer_name`: Pretrained tokenizer (default: "vinai/phobert-base")
 
 ### Image Processor:
-- `image_size`: Target size (default: (224, 224))
-- `feature_dim`: Output dimension (default: 512)
-- `model_name`: Pretrained model (default: "resnet50")
+
+-   `image_size`: Target size (default: (224, 224))
+-   `feature_dim`: Output dimension (default: 512)
+-   `model_name`: Pretrained model (default: "resnet50")
 
 ### Label Mapping:
+
 ```python
 label_mapping = {
     'reliable_source': 0,  # Real news
@@ -149,6 +162,7 @@ label_mapping = {
 ## Example Script
 
 Run the complete example:
+
 ```bash
 python examples/simple_pipeline.py
 ```
@@ -160,13 +174,14 @@ python examples/simple_pipeline.py
 ✅ **Memory Efficient**: No unnecessary caching or complexity  
 ✅ **Flexible**: Easy to customize and extend  
 ✅ **Vietnamese Support**: Proper handling of Vietnamese text  
-✅ **Error Handling**: Robust error handling with fallbacks  
+✅ **Error Handling**: Robust error handling with fallbacks
 
 ## File Structure
+
 ```
 src/processing/
 ├── text_processor.py      # Text processing
-├── image_processor.py     # Image processing  
+├── image_processor.py     # Image processing
 ├── simple_preprocess.py   # Data preprocessing
 └── simple_dataloader.py   # PyTorch dataloader
 

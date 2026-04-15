@@ -14,6 +14,13 @@ from tqdm import tqdm
 import json
 from PIL import Image
 
+# Import centralized device detection
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils.device import get_device
+
 from .text_preprocessing import TextPreprocessor
 from .image_preprocessing import ImagePreprocessor
 
@@ -86,11 +93,7 @@ class CombinedPreprocessor:
         language: str = "vi",
         max_text_length: int = 512,
         image_size: Tuple[int, int] = (224, 224),
-        device: str = (
-            "cuda"
-            if torch.cuda.is_available()
-            else "mps" if torch.backends.mps.is_available() else "cpu"
-        ),
+        device: Optional[str] = None,
     ):
         """
         Initialize combined preprocessor
@@ -101,22 +104,22 @@ class CombinedPreprocessor:
             language: Language code ('vi')
             max_text_length: Maximum text sequence length
             image_size: Target image size
-            device: Device to run preprocessing on
+            device: Device to run preprocessing on (None = auto-detect)
         """
-        self.device = device
-        logger.info(f"Using device: {device}")
+        self.device = get_device(device)
+        logger.info(f"Using device: {self.device}")
         self.language = language
 
-        # Initialize individual preprocessors
+        # Initialize individual preprocessors with the same device
         self.text_preprocessor = TextPreprocessor(
             model_name=text_model_name,
             max_length=max_text_length,
             language=language,
-            device=device,
+            device=str(self.device),
         )
 
         self.image_preprocessor = ImagePreprocessor(
-            model_name=image_model_name, device=device, image_size=image_size
+            model_name=image_model_name, device=str(self.device), image_size=image_size
         )
 
     def preprocess_sample(

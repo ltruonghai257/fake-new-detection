@@ -14,6 +14,13 @@ from typing import List, Dict, Tuple, Optional, Union, TypedDict, Callable
 import os
 from tqdm import tqdm
 
+# Import centralized device detection
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from utils.device import get_device
+
 # Optional Vietnamese text processing
 try:
     import underthesea
@@ -43,7 +50,7 @@ class TextPreprocessor:
         model_name: str = "vinai/phobert-base",
         max_length: int = 64,
         language: str = "vi",
-        device: str = "cuda" if torch.cuda.is_available() else "mps",
+        device: Optional[str] = None,
     ):
         """
         Initialize text preprocessor for Vietnamese
@@ -52,11 +59,11 @@ class TextPreprocessor:
             model_name: BERT model name for Vietnamese (vinai/phobert-base or bert-base-multilingual-cased)
             max_length: Maximum sequence length
             language: Language code ('vi' for Vietnamese)
-            device: Device to run preprocessing on
+            device: Device to run preprocessing on (None = auto-detect)
         """
         self.max_length = max_length
         self.language = language
-        self.device = device
+        self.device = get_device(device)
 
         # Initialize tokenizer for Vietnamese
         if language == "vi":
