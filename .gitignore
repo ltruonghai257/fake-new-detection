@@ -51,6 +51,7 @@ training/checkpoints/**/*
 **/*.pth
 **/Mocheg
 openspec/**/*
+**/changes/**/*
 data/
 Mocheg/
 
