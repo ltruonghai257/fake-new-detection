@@ -266,19 +266,19 @@ class HDF5DatasetSimple(Dataset):
     def __len__(self) -> int:
         return self.n_samples
 
-    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
         Get a single sample from the HDF5 file.
 
         Returns:
-            (text_features, image_features) as tensors.
-            Labels are NOT returned — they are generated at batch time via make_pair_sim.
+            (text_features, image_features, label) as tensors.
         """
         # Open file on each access (HDF5 handles caching efficiently)
         with h5py.File(self.hdf5_path, "r") as f:
             # Read only the required sample
             text = f["text_features"][idx]
             image = f["image_features"][idx]
+            label = f["labels"][idx]
 
         # Convert to tensors
         # Text: transpose from (512, 768) to (768, 512) for Conv1d
@@ -286,6 +286,7 @@ class HDF5DatasetSimple(Dataset):
             torch.from_numpy(text).float().transpose(0, 1)
         )  # [512, 768] -> [768, 512]
         image_tensor = torch.from_numpy(image).float()
+        label_tensor = torch.tensor(int(label), dtype=torch.long)
 
         # Apply transforms if provided
         if self.transform_text:
@@ -296,8 +297,9 @@ class HDF5DatasetSimple(Dataset):
         # Move tensors to device
         text_tensor = text_tensor.to(self.device)
         image_tensor = image_tensor.to(self.device)
+        label_tensor = label_tensor.to(self.device)
 
-        return text_tensor, image_tensor
+        return text_tensor, image_tensor, label_tensor
 
 
 def create_hdf5_dataloaders(
