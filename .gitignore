@@ -35,6 +35,12 @@ src/lib/**/*
 notebooks/data/**/*
 notebooks/**/*.jpg
 notebooks/**/*.jpeg
+notebooks/**/*.png
+data/**/*.jpg
+data/**/*.jpeg
+data/**/*.png
+diagrams/**/*.png
+diagrams/**/*.svg
 src/data.zip
 src/lib/Mocheg
 notebooks/processed_data/**/*
