@@ -34,6 +34,8 @@ placeholder_images/**/*
 src/lib/**/*    
 notebooks/data/**/*
 notebooks/**/*.jpg
+notebooks/**/*.jpeg
+src/data.zip
 src/lib/Mocheg
 notebooks/processed_data/**/*
 notebooks/logs/**/*
@@ -41,3 +43,4 @@ training/checkpoints/**/*
 **/*.pth
 **/Mocheg
 openspec/**/*
+data/
