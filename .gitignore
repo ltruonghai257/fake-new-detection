@@ -30,6 +30,8 @@ src/failed_urls.json
 logs/*
 src/logs/app.log
 processed_data/**/*
+**/*.h5
+**/*.npz
 placeholder_images/**/*
 src/lib/**/*    
 notebooks/data/**/*
