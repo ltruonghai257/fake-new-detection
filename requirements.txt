@@ -8,9 +8,13 @@ setuptools>=60.0.0
 wheel>=0.37.0
 
 # Machine Learning and Deep Learning
+# For vast.ai with CUDA: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 torch>=1.9.0
 torchvision>=0.10.0
 transformers>=4.28.0
+
+# HDF5 support for datasets
+h5py>=3.0.0
 
 # Image processing
 Pillow>=8.0.0
