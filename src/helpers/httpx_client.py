@@ -23,12 +23,18 @@ class BaseClient:
         self.timeout = timeout
         self.verify = verify
 
+        # Allow legacy SSL renegotiation (needed for baotintuc.vn and similar sites)
+        ssl_ctx = ssl.create_default_context()
+        ssl_ctx.options |= 0x4  # OP_LEGACY_SERVER_CONNECT
+        ssl_ctx.check_hostname = False
+        ssl_ctx.verify_mode = ssl.CERT_NONE
+
         self.client = httpx.AsyncClient(
             base_url=self.base_url,
             headers=self.headers,
             timeout=self.timeout,
-            follow_redirects=True,  # Automatically follow redirects
-            verify=self.verify,
+            follow_redirects=True,
+            verify=ssl_ctx,
         )
 
     async def get(

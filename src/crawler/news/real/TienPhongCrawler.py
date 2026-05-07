@@ -13,12 +13,12 @@ class TienPhongCrawler(BaseCrawler):
 
     @property
     def image_selector(self) -> SelectorType:
-        # Placeholder: Please inspect the website and update this selector
+        # TienPhong uses <table class="picture"> with <td class="caption"> <p>
         return {
-            "css_selector": ["figure"],
+            "css_selector": ["table.picture", "figure"],
             "image_tag_selector": "img",
-            "caption_tag_selector": "figcaption",
-            "image_tag_attr": "data-src",
+            "caption_tag_selector": "td.caption",
+            "image_tag_attr": "src",
         }
 
     @property

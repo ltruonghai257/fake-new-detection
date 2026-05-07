@@ -1,9 +1,11 @@
 """
-ResNetCOOLANT: Adapt COOLANT for ResNet50 (2048-dim) and BERT (768-dim) features.
+PatchedCOOLANT: Adapt COOLANT for arbitrary image and text feature dimensions.
 
 This module provides a wrapper class that adapts the COOLANT_Official model
-to work with pre-extracted features from ResNet50 (2048-dim image features)
-and BERT/PhoBERT (768-dim text features).
+to work with pre-extracted features from any image encoder (ResNet50, CLIP ViT,
+SigLIP, etc.) and any text encoder (PhoBERT, ViSoBERT, etc.).
+
+The patch_* functions below handle dimension adaptation at init time.
 """
 
 import torch
@@ -11,13 +13,14 @@ import torch.nn as nn
 from .coolant_official import COOLANT_Official
 
 
-class ResNetCOOLANT(COOLANT_Official):
+class PatchedCOOLANT(COOLANT_Official):
     """
-    COOLANT wrapper for ResNet50 (2048-dim) and BERT (768-dim) features.
+    COOLANT wrapper that patches layer dimensions for arbitrary feature extractors.
 
-    The base COOLANT implementation expects 512-dim image features (from ResNet18/ViT).
-    This wrapper provides methods to handle the different feature dimensions while
-    maintaining compatibility with the original COOLANT architecture.
+    The base COOLANT implementation expects 512-dim image and 200-dim text features.
+    This wrapper, combined with the patch_* functions, adapts the model to accept
+    any feature dimensions (e.g., 2048 for ResNet50, 1024 for CLIP ViT-L/14,
+    768 for SigLIP or PhoBERT).
 
     Args:
         config: Configuration dictionary with model hyperparameters
@@ -153,3 +156,7 @@ def patch_cnn_with_dropout(m, input_dim, dropout=0.1):
 
     import types
     m.forward = types.MethodType(patched_forward, m)
+
+
+# Backward-compatible alias — old notebooks import this name
+ResNetCOOLANT = PatchedCOOLANT

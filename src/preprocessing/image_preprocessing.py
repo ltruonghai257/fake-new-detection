@@ -31,10 +31,25 @@ except ImportError:
     CV2_AVAILABLE = False
 
 
+# Model registry: maps model keys to their configuration
+IMAGE_MODEL_REGISTRY = {
+    "resnet18": {"family": "resnet", "feature_dim": 512, "image_size": 224, "hf_id": None},
+    "resnet50": {"family": "resnet", "feature_dim": 2048, "image_size": 224, "hf_id": None},
+    "clip-vit-L-14": {"family": "clip", "feature_dim": 1024, "image_size": 224, "hf_id": "openai/clip-vit-large-patch14"},
+    "siglip-base-224": {"family": "siglip", "feature_dim": 768, "image_size": 224, "hf_id": "google/siglip-base-patch16-224"},
+}
+
+
 class ImagePreprocessor:
     """
-    Image preprocessing pipeline for multimodal fake news detection
-    Compatible with COOLANT's ResNet-based feature extraction
+    Image preprocessing pipeline for multimodal fake news detection.
+    Supports ResNet, CLIP ViT, and SigLIP backbones.
+
+    Supported model_name values:
+        "resnet18"        - ResNet18 (512-dim)
+        "resnet50"        - ResNet50 (2048-dim)
+        "clip-vit-L-14"   - CLIP ViT-L/14 (1024-dim, pre-aligned with text)
+        "siglip-base-224" - SigLIP base (768-dim, multilingual)
     """
 
     def __init__(
@@ -48,41 +63,79 @@ class ImagePreprocessor:
         Initialize image preprocessor
 
         Args:
-            model_name: Backbone model name ('resnet18' or 'resnet50')
+            model_name: Backbone model name (see IMAGE_MODEL_REGISTRY for options)
             pretrained: Whether to use pretrained weights
             device: Device to run preprocessing on (None = auto-detect)
-            image_size: Target image size for resizing
+            image_size: Target image size (overridden by registry for CLIP/SigLIP)
         """
         self.device = get_device(device)
-        self.image_size = image_size
         self.model_name = model_name
 
-        # Initialize ResNet model
+        if model_name not in IMAGE_MODEL_REGISTRY:
+            valid = ", ".join(IMAGE_MODEL_REGISTRY.keys())
+            raise ValueError(f"Unknown model_name '{model_name}'. Valid options: {valid}")
+
+        reg = IMAGE_MODEL_REGISTRY[model_name]
+        self.feature_dim = reg["feature_dim"]
+        self.image_size = (reg["image_size"], reg["image_size"])
+        family = reg["family"]
+
+        if family == "resnet":
+            self._init_resnet(model_name, pretrained)
+        elif family == "clip":
+            self._init_clip(reg["hf_id"])
+        elif family == "siglip":
+            self._init_siglip(reg["hf_id"])
+
+    def _init_resnet(self, model_name, pretrained):
         if model_name == "resnet18":
-            self.model = resnet18(pretrained=pretrained)
-            self.feature_dim = 512
-        elif model_name == "resnet50":
-            self.model = resnet50(pretrained=pretrained)
-            self.feature_dim = 2048
+            model = resnet18(pretrained=pretrained)
         else:
-            raise ValueError("model_name must be 'resnet18' or 'resnet50'")
-
-        # Remove the final classification layer to get features
-        self.model = nn.Sequential(*list(self.model.children())[:-1])
-        self.model.to(device)
+            model = resnet50(pretrained=pretrained)
+        self.model = nn.Sequential(*list(model.children())[:-1])
+        self.model.to(self.device)
         self.model.eval()
+        self.transform = transforms.Compose([
+            transforms.Resize(self.image_size),
+            transforms.CenterCrop(self.image_size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ])
 
-        # Define image transforms (matching COOLANT preprocessing)
-        self.transform = transforms.Compose(
-            [
-                transforms.Resize(image_size),
-                transforms.CenterCrop(image_size),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-                ),
-            ]
-        )
+    def _init_clip(self, hf_id):
+        from transformers import CLIPVisionModel, CLIPImageProcessor
+        self.model = CLIPVisionModel.from_pretrained(hf_id)
+        self.model.to(self.device)
+        self.model.eval()
+        processor = CLIPImageProcessor.from_pretrained(hf_id)
+        self.transform = transforms.Compose([
+            transforms.Resize(self.image_size, interpolation=transforms.InterpolationMode.BICUBIC),
+            transforms.CenterCrop(self.image_size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=processor.image_mean, std=processor.image_std),
+        ])
+
+    def _init_siglip(self, hf_id):
+        from transformers import SiglipVisionModel, AutoImageProcessor
+        self.model = SiglipVisionModel.from_pretrained(hf_id)
+        self.model.to(self.device)
+        self.model.eval()
+        processor = AutoImageProcessor.from_pretrained(hf_id)
+        self.transform = transforms.Compose([
+            transforms.Resize(self.image_size, interpolation=transforms.InterpolationMode.BICUBIC),
+            transforms.CenterCrop(self.image_size),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=processor.image_mean, std=processor.image_std),
+        ])
+
+    def _forward(self, image_tensor: torch.Tensor) -> torch.Tensor:
+        """Run model forward pass, return 1-D feature vector."""
+        family = IMAGE_MODEL_REGISTRY[self.model_name]["family"]
+        if family == "resnet":
+            return self.model(image_tensor).squeeze()
+        else:
+            outputs = self.model(pixel_values=image_tensor)
+            return outputs.pooler_output.squeeze()
 
     def load_and_preprocess_image(self, image_path: str) -> torch.Tensor:
         """
@@ -124,8 +177,8 @@ class ImagePreprocessor:
                 image_tensor = self.load_and_preprocess_image(image_path)
 
                 # Extract features
-                feature = self.model(image_tensor)
-                feature = feature.squeeze().cpu().numpy()
+                feature = self._forward(image_tensor)
+                feature = feature.cpu().numpy()
 
                 # Ensure feature is 1D
                 if feature.ndim == 0:
@@ -162,8 +215,8 @@ class ImagePreprocessor:
                 image_tensor = image_tensor.to(self.device)
 
                 # Extract features
-                feature = self.model(image_tensor)
-                feature = feature.squeeze().cpu().numpy()
+                feature = self._forward(image_tensor)
+                feature = feature.cpu().numpy()
 
                 # Ensure feature is 1D
                 if feature.ndim == 0:

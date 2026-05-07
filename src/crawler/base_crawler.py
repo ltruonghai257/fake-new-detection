@@ -167,11 +167,20 @@ class BaseCrawler(ABC):
 
         for figure in image_elements:
             img_tag = figure.find(image_tag_selector)
-            caption_tag = figure.find(caption_tag_selector)
+            # Use select_one for CSS selectors (e.g., "td.caption"), find for tag names
+            if "." in caption_tag_selector or "#" in caption_tag_selector:
+                caption_tag = figure.select_one(caption_tag_selector)
+            else:
+                caption_tag = figure.find(caption_tag_selector)
 
             if img_tag and image_tag_attr in img_tag.attrs:
                 image_src = img_tag[image_tag_attr]
                 caption = caption_tag.get_text(strip=True) if caption_tag else ""
+                # Fallback chain: figcaption -> alt text -> title -> default
+                if not caption and img_tag:
+                    caption = img_tag.get("alt", "") or img_tag.get("title", "")
+                if not caption:
+                    caption = "Không được đề cập"
                 images.append({"src_url": image_src, "caption": caption})
 
         links = []
@@ -268,65 +277,70 @@ class BaseCrawler(ABC):
         await self._recursive_crawl(url_to_crawl, 0, max_depth, visited, results)
         return results
 
+    async def _download_single_image(self, image_url, caption, format_name):
+        """Download and save a single image. Returns dict or None."""
+        try:
+            response = await self.client.get(image_url)
+            image_data = response.content
+
+            try:
+                img = Image.open(io.BytesIO(image_data))
+            except Exception:
+                try:
+                    import pillow_avif  # noqa: F401
+                    img = Image.open(io.BytesIO(image_data))
+                except Exception:
+                    return None
+
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+
+            output_buffer = io.BytesIO()
+            img.save(output_buffer, format="JPEG")
+            image_data = output_buffer.getvalue()
+
+            hash_id = hashlib.sha256(image_url.encode()).hexdigest()[:10]
+            image_filename = f"{self.name}_{hash_id}.jpg"
+
+            self.file_handler.write(
+                format_name=format_name,
+                data=image_data,
+                class_name=self.name,
+                file_name=image_filename,
+            )
+
+            folder_path = f"{format_name}/{self.name}/{image_filename}"
+            return {"folder_path": folder_path, "src_url": image_url, "caption": caption}
+
+        except Exception:
+            return None
+
     async def _save_images(
         self,
         result,
         save_format: ExtensionReturnCrawlerType,
     ) -> List[Dict[str, str]]:
-        saved_image_paths = []
-        if hasattr(result, "images") and result.images:
-            format_name = save_format.strip(".")
+        import asyncio
 
-            for image in result.images:
-                image_url = image.get("src_url")
-                caption = image.get("caption")
-                if (
-                    not image_url
-                    or not isinstance(image_url, str)
-                    or image_url.startswith("data:")
-                ):
-                    continue
+        if not hasattr(result, "images") or not result.images:
+            return []
 
-                if not image_url.startswith("http"):
-                    image_url = parse.urljoin(self.url, image_url)
+        format_name = save_format.strip(".")
 
-                try:
-                    response = await self.client.get(image_url)
-                    image_data = response.content
+        # Prepare download tasks
+        tasks = []
+        for image in result.images:
+            image_url = image.get("src_url")
+            caption = image.get("caption")
+            if not image_url or not isinstance(image_url, str) or image_url.startswith("data:"):
+                continue
+            if not image_url.startswith("http"):
+                image_url = parse.urljoin(self.url, image_url)
+            tasks.append(self._download_single_image(image_url, caption, format_name))
 
-                    # Open the image and convert to JPG
-                    img = Image.open(io.BytesIO(image_data))
-                    if img.mode != 'RGB':
-                        img = img.convert('RGB')
-                    
-                    output_buffer = io.BytesIO()
-                    img.save(output_buffer, format="JPEG")
-                    image_data = output_buffer.getvalue()
-
-                    hash_id = hashlib.sha256(image_url.encode()).hexdigest()[:10]
-                    image_filename = f"{self.name}_{hash_id}.jpg"
-
-                    self.file_handler.write(
-                        format_name=format_name,
-                        data=image_data,
-                        class_name=self.name,
-                        file_name=image_filename,
-                    )
-
-                    saved_image_paths.append(
-                        {
-                            "folder_path": os.path.join(
-                                format_name, self.name, image_filename
-                            ),
-                            "src_url": image_url,
-                            "caption": caption,
-                        }
-                    )
-
-                except httpx.RequestError as e:
-                    logger.error(f"Error downloading image: {e}")
-                except Exception as e:
-                    logger.error(f"An error occurred while saving the image: {e}")
+        # Download all images concurrently
+        results = await asyncio.gather(*tasks)
+        return [r for r in results if r is not None]
         return saved_image_paths
 
     def _prepare_data_for_saving(self, result: CrawlResult) -> Optional[Dict]:

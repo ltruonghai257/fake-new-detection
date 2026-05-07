@@ -346,6 +346,7 @@ def create_hdf5_dataloaders_from_files(
     test_path: str,
     batch_size: int = 32,
     num_workers: int = 0,
+    weighted_sampling: bool = False,
 ) -> dict:
     """
     Create train/val/test DataLoaders from separate HDF5 files.
@@ -359,6 +360,8 @@ def create_hdf5_dataloaders_from_files(
         test_path: Path to test HDF5 file
         batch_size: Batch size for all loaders
         num_workers: Number of workers (must be 0 for HDF5)
+        weighted_sampling: If True, use WeightedRandomSampler for training
+            to balance class distribution in each batch
 
     Returns:
         Dictionary with keys 'train', 'dev', 'test' containing DataLoaders
@@ -368,10 +371,30 @@ def create_hdf5_dataloaders_from_files(
     dev_ds = HDF5DatasetSimple(dev_path)
     test_ds = HDF5DatasetSimple(test_path)
 
-    # Create dataloaders (num_workers must be 0 for HDF5)
-    train_loader = torch.utils.data.DataLoader(
-        train_ds, batch_size=batch_size, shuffle=True, num_workers=0
-    )
+    # Create train dataloader with optional weighted sampling
+    if weighted_sampling:
+        from torch.utils.data import WeightedRandomSampler
+        from collections import Counter
+
+        # Read all labels to compute weights
+        with h5py.File(train_path, "r") as f:
+            all_labels = f["labels"][:]
+        label_counts = Counter(all_labels.tolist())
+        n_samples = len(all_labels)
+        class_weights = {cls: n_samples / count for cls, count in label_counts.items()}
+        sample_weights = [class_weights[int(lbl)] for lbl in all_labels]
+        sampler = WeightedRandomSampler(
+            weights=sample_weights, num_samples=n_samples, replacement=True
+        )
+        train_loader = torch.utils.data.DataLoader(
+            train_ds, batch_size=batch_size, sampler=sampler, num_workers=0
+        )
+        print(f"  Weighted sampling enabled: class_weights={class_weights}")
+    else:
+        train_loader = torch.utils.data.DataLoader(
+            train_ds, batch_size=batch_size, shuffle=True, num_workers=0
+        )
+
     dev_loader = torch.utils.data.DataLoader(
         dev_ds, batch_size=batch_size, shuffle=False, num_workers=0
     )

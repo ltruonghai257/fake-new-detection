@@ -100,10 +100,12 @@ class CombinedPreprocessor:
 
         Args:
             text_model_name: BERT model name for Vietnamese text
-            image_model_name: ResNet model name for images
+            image_model_name: Image backbone name. Options:
+                "resnet18", "resnet50", "clip-vit-L-14", "siglip-base-224"
+                See IMAGE_MODEL_REGISTRY in image_preprocessing.py for details.
             language: Language code ('vi')
             max_text_length: Maximum text sequence length
-            image_size: Target image size
+            image_size: Target image size (overridden by model registry for CLIP/SigLIP)
             device: Device to run preprocessing on (None = auto-detect)
         """
         self.device = get_device(device)

@@ -38,26 +38,23 @@ class CrawlerFactory:
     def __init__(self, cache_filename: str = "crawling_status.json", failed_log_filename: str = "failed_urls.json"):
         self.cache_filename = cache_filename
         self.failed_log_filename = failed_log_filename
+        self._crawler_cache: Dict[str, BaseCrawler] = {}  # Reuse crawlers per domain
 
     def get_crawler(self, url: str) -> Optional[BaseCrawler]:
         """
         Factory method to get the appropriate crawler for a given URL.
-
-        Args:
-            url: The URL to be crawled.
-
-        Returns:
-            An instance of the appropriate BaseCrawler subclass, or None if no
-            matching crawler is found.
+        Caches crawler instances per domain to reuse HTTP connections.
         """
         try:
             domain = urlparse(url).netloc
             for key, crawler_class in self.CRAWLER_MAPPING.items():
                 if key in domain:
-                    return crawler_class()
+                    if key not in self._crawler_cache:
+                        self._crawler_cache[key] = crawler_class()
+                    return self._crawler_cache[key]
         except Exception as e:
             logger.error(f"Error finding crawler for url {url}: {e}")
-        
+
         return None
 
     def check_cache_file_exists(self) -> bool:
@@ -76,14 +73,43 @@ class CrawlerFactory:
             os.remove(self.cache_filename)
             logger.info(f"--- Cache file '{self.cache_filename}' cleared. ---")
 
-    async def crawl_and_save_all(self, urls: List[str], output_filename: str, format_name: str = "default"):
+    async def crawl_and_save_all(
+        self,
+        urls: List[str],
+        output_filename: str,
+        format_name: str = "default",
+        max_concurrent: int = 15,
+        retry_failed: bool = False,
+        save_interval: int = 50,
+    ):
+        """
+        Crawl URLs concurrently with smart caching.
+
+        Behavior:
+        - Normal run: skips completed URLs, skips failed URLs
+        - retry_failed=True: skips completed, RETRIES previously failed URLs
+        - Saves cache every `save_interval` URLs (resumable on crash)
+
+        Args:
+            urls: List of URLs to crawl
+            output_filename: Output JSON filename
+            format_name: Output format
+            max_concurrent: Max concurrent requests
+            retry_failed: If True, retry previously failed URLs
+            save_interval: Save cache checkpoint every N completed URLs
+        """
+        import asyncio
+
         all_results_data = []
         file_handler = FileHandler()
         completed_urls_list: List[Dict] = []
         completed_urls_lookup: Dict[str, Dict] = {}
         failed_urls_data: Dict[str, Dict] = {}
         formatter = OutputFormatter.get_formatter(format_name)
+        lock = asyncio.Lock()
+        completed_since_save = 0
 
+        # Load completed cache (always skip these)
         if os.path.exists(self.cache_filename):
             with open(self.cache_filename, 'r') as f:
                 cached_data = json.load(f)
@@ -91,93 +117,122 @@ class CrawlerFactory:
                     completed_urls_list = cached_data['urls']
                     for item in completed_urls_list:
                         completed_urls_lookup[item['url']] = item
-            logger.info(f"Loaded {len(completed_urls_list)} completed URLs from cache.")
+            logger.info(f"Loaded {len(completed_urls_list)} completed URLs from cache (will skip).")
 
+        # Load failed cache
+        prev_failed: Dict[str, Dict] = {}
         if os.path.exists(self.failed_log_filename):
             with open(self.failed_log_filename, 'r') as f:
-                failed_urls_list = json.load(f)
-                for item in failed_urls_list:
-                    failed_urls_data[item['url']] = item
-            logger.info(f"Loaded {len(failed_urls_data)} failed URLs from previous runs.")
+                for item in json.load(f):
+                    prev_failed[item['url']] = item
 
-        urls_to_skip = set(completed_urls_lookup.keys()).union(set(failed_urls_data.keys()))
+        # Decide what to crawl
+        urls_to_skip = set(completed_urls_lookup.keys())
+        if not retry_failed:
+            urls_to_skip |= set(prev_failed.keys())
+            logger.info(f"Skipping {len(prev_failed)} previously failed URLs (use retry_failed=True to retry).")
+        else:
+            logger.info(f"Retrying {len(prev_failed)} previously failed URLs.")
+
         urls_to_crawl = [url for url in urls if url not in urls_to_skip]
-        logger.info(f"Found {len(urls_to_crawl)} new URLs to crawl.")
+        logger.info(f"URLs to crawl: {len(urls_to_crawl)} (skipped: {len(urls) - len(urls_to_crawl)}, concurrency={max_concurrent})")
 
-        with tqdm(total=len(urls_to_crawl), desc="Processing URLs") as pbar:
-            for url in urls_to_crawl:
+        if not urls_to_crawl:
+            logger.info("Nothing to crawl.")
+            self._print_summary(completed_urls_lookup, failed_urls_data, prev_failed)
+            return
+
+        sem = asyncio.Semaphore(max_concurrent)
+
+        async def _save_checkpoint():
+            """Save cache + results to disk (for crash recovery)."""
+            if completed_urls_list:
+                with open(self.cache_filename, 'w') as f:
+                    json.dump({'length': len(completed_urls_list), 'urls': completed_urls_list}, f)
+
+        async def process_url(url, pbar):
+            nonlocal completed_since_save
+            async with sem:
                 start_time = time.time()
-                logger.info(f"Processing URL: {url}")
                 crawler = self.get_crawler(url)
                 if crawler:
-                    results = await crawler.arun(url=url, save_to_file=False)
-                    for result in results:
-                        end_time = time.time()
-                        duration = round(end_time - start_time, 2)
-                        if result.success:
-                            logger.info(f"Saving images for {url}")
-                            saved_images = await crawler._save_images(result, ".jpg")
-                            result.images = saved_images
+                    try:
+                        results = await crawler.arun(url=url, save_to_file=False)
+                        for result in results:
+                            duration = round(time.time() - start_time, 2)
+                            if result.success:
+                                saved_images = await crawler._save_images(result, ".jpg")
+                                result.images = saved_images
+                                prepared_data = formatter(result)
 
-                            prepared_data = formatter(result)
-                            all_results_data.append(prepared_data)
-
-                            content_length = len(str(prepared_data))
-                            timestamp = datetime.now().isoformat()
-                            new_completed_url_entry = {'url': url, 'length': content_length, 'timestamp': timestamp, 'duration': duration}
-                            completed_urls_list.append(new_completed_url_entry)
-                            completed_urls_lookup[url] = new_completed_url_entry
-
-                            cache_to_save = {'length': len(completed_urls_list), 'urls': completed_urls_list}
-                            with open(self.cache_filename, 'w') as f:
-                                json.dump(cache_to_save, f, indent=4)
-
-                        else:
-                            if "SSL Error: Unsafe legacy renegotiation disabled" in result.error:
-                                logger.warning(f"  Skipping {url} due to SSL configuration issue: {result.error}")
-                                reason = "SSL_ERROR_LEGACY_RENEGOTIATION"
+                                async with lock:
+                                    all_results_data.append(prepared_data)
+                                    ts = datetime.now().isoformat()
+                                    entry = {'url': url, 'length': len(str(prepared_data)), 'timestamp': ts, 'duration': duration}
+                                    completed_urls_list.append(entry)
+                                    completed_urls_lookup[url] = entry
+                                    # Remove from failed if it was a retry
+                                    failed_urls_data.pop(url, None)
+                                    completed_since_save += 1
+                                    if completed_since_save >= save_interval:
+                                        await _save_checkpoint()
+                                        completed_since_save = 0
                             else:
-                                logger.error(f"  Failed to crawl {url}: {result.error}")
-                                reason = result.error
-                            timestamp = datetime.now().isoformat()
-                            failed_urls_data[url] = {'url': url, 'reason': reason, 'timestamp': timestamp, 'duration': duration}
+                                reason = result.error or "Unknown error"
+                                async with lock:
+                                    failed_urls_data[url] = {'url': url, 'reason': reason[:200], 'timestamp': datetime.now().isoformat(), 'duration': duration}
+                    except Exception as e:
+                        duration = round(time.time() - start_time, 2)
+                        async with lock:
+                            failed_urls_data[url] = {'url': url, 'reason': str(e)[:200], 'timestamp': datetime.now().isoformat(), 'duration': duration}
                 else:
-                    end_time = time.time()
-                    duration = round(end_time - start_time, 2)
-                    logger.warning(f"--- No crawler found for {url} ---")
-                    timestamp = datetime.now().isoformat()
-                    failed_urls_data[url] = {'url': url, 'reason': "No crawler found", 'timestamp': timestamp, 'duration': duration}
+                    duration = round(time.time() - start_time, 2)
+                    async with lock:
+                        failed_urls_data[url] = {'url': url, 'reason': "No crawler found", 'timestamp': datetime.now().isoformat(), 'duration': duration}
                 pbar.update(1)
 
+        with tqdm(total=len(urls_to_crawl), desc="Crawling") as pbar:
+            tasks = [process_url(url, pbar) for url in urls_to_crawl]
+            await asyncio.gather(*tasks)
+
+        # Final save: cache
+        await _save_checkpoint()
+
+        # Final save: results JSON (append to existing)
         if all_results_data:
             output_path = os.path.join("data", "json", output_filename)
-            logger.info(f"\nAppending {len(all_results_data)} new results to {output_path}...")
             existing_data = []
             if os.path.exists(output_path):
                 with open(output_path, 'r') as f:
                     try:
                         existing_data = json.load(f)
                     except json.JSONDecodeError:
-                        logger.warning(f"Warning: Could not decode JSON from {output_path}. Starting with a new file.")
-            
+                        pass
             existing_data.extend(all_results_data)
+            file_handler.write(format_name="json", data=existing_data, file_name=output_filename)
+            logger.info(f"Saved {len(all_results_data)} new + {len(existing_data) - len(all_results_data)} existing = {len(existing_data)} total articles to {output_path}")
 
-            file_handler.write(
-                format_name="json",
-                data=existing_data,
-                file_name=output_filename, # Use output_filename directly
-            )
-            logger.info(f"--- All results saved to {output_path} ---")
-        else:
-            logger.info("\n--- No new results to save. ---")
-
-        if failed_urls_data:
+        # Merge new failures with previous (keep both)
+        all_failed = {**prev_failed, **failed_urls_data}
+        # Remove any that succeeded on retry
+        for url in completed_urls_lookup:
+            all_failed.pop(url, None)
+        if all_failed:
             with open(self.failed_log_filename, 'w') as f:
-                json.dump(list(failed_urls_data.values()), f, indent=4)
-            logger.info(f"--- {len(failed_urls_data)} failed URLs saved to {self.failed_log_filename} ---")
+                json.dump(list(all_failed.values()), f, indent=2)
 
-        total_crawled = len(completed_urls_list) + len(failed_urls_data)
+        self._print_summary(completed_urls_lookup, failed_urls_data, all_failed)
+
+    def _print_summary(self, completed, new_failed, total_failed):
         logger.info(f"\n--- Crawling Summary ---")
-        logger.info(f"Total URLs processed: {total_crawled}")
-        logger.info(f"Successfully crawled: {len(completed_urls_list)} URLs")
-        logger.info(f"Failed to crawl: {len(failed_urls_data)} URLs")
+        logger.info(f"Completed (total): {len(completed)} URLs")
+        logger.info(f"Failed this run:   {len(new_failed)} URLs")
+        logger.info(f"Failed (total):    {len(total_failed)} URLs")
+        if total_failed:
+            reasons = {}
+            for item in total_failed.values():
+                r = item.get('reason', 'unknown')[:50]
+                reasons[r] = reasons.get(r, 0) + 1
+            logger.info(f"Failure reasons:")
+            for reason, count in sorted(reasons.items(), key=lambda x: -x[1])[:5]:
+                logger.info(f"  {count:4d}x {reason}")

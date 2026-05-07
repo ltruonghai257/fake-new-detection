@@ -68,3 +68,8 @@ Mocheg/
 **/*.mkv
 **/*.iso
 **/*.dmg
+
+.windsurf/
+.gemini/
+.claude/
+.github/

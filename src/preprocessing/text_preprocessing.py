@@ -39,10 +39,33 @@ class TextCleaningOptions(TypedDict, total=False):
     whitespace: bool
 
 
+# Text model registry: maps model keys to their configuration
+TEXT_MODEL_REGISTRY = {
+    "phobert-base": {"hf_id": "vinai/phobert-base", "feature_dim": 768},
+    "phobert-base-v2": {"hf_id": "vinai/phobert-base-v2", "feature_dim": 768},
+    "phobert-large": {"hf_id": "vinai/phobert-large", "feature_dim": 1024},
+    "visobert": {"hf_id": "uitnlp/visobert", "feature_dim": 768},
+}
+
+# Also accept full HF IDs as aliases
+_TEXT_MODEL_ALIASES = {
+    "vinai/phobert-base": "phobert-base",
+    "vinai/phobert-base-v2": "phobert-base-v2",
+    "vinai/phobert-large": "phobert-large",
+    "uitnlp/visobert": "visobert",
+}
+
+
 class TextPreprocessor:
     """
-    Text preprocessing pipeline for multimodal fake news detection
-    Supports Vietnamese language processing
+    Text preprocessing pipeline for multimodal fake news detection.
+    Supports Vietnamese language processing.
+
+    Supported model_name values:
+        "phobert-base"     or "vinai/phobert-base"     - PhoBERT base (768-dim)
+        "phobert-base-v2"  or "vinai/phobert-base-v2"  - PhoBERT v2, 7x more data (768-dim)
+        "phobert-large"    or "vinai/phobert-large"     - PhoBERT large (1024-dim)
+        "visobert"         or "uitnlp/visobert"         - ViSoBERT, social media specialist (768-dim)
     """
 
     def __init__(
@@ -56,7 +79,7 @@ class TextPreprocessor:
         Initialize text preprocessor for Vietnamese
 
         Args:
-            model_name: BERT model name for Vietnamese (vinai/phobert-base or bert-base-multilingual-cased)
+            model_name: Model name or HF ID (see TEXT_MODEL_REGISTRY for options)
             max_length: Maximum sequence length
             language: Language code ('vi' for Vietnamese)
             device: Device to run preprocessing on (None = auto-detect)
@@ -65,19 +88,23 @@ class TextPreprocessor:
         self.language = language
         self.device = get_device(device)
 
-        # Initialize tokenizer for Vietnamese
-        if language == "vi":
-            if "phobert" in model_name.lower():
-                self.model_name = "vinai/phobert-base"
-                self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-                self.bert_model = AutoModel.from_pretrained(self.model_name)
-            else:
-                self.model_name = "bert-base-multilingual-cased"
-                self.tokenizer = BertTokenizer.from_pretrained(self.model_name)
-                self.bert_model = BertModel.from_pretrained(self.model_name)
-        else:
+        if language != "vi":
             raise ValueError("This preprocessor only supports Vietnamese language (vi)")
 
+        # Resolve aliases (accept both "phobert-base" and "vinai/phobert-base")
+        key = _TEXT_MODEL_ALIASES.get(model_name, model_name)
+        if key not in TEXT_MODEL_REGISTRY:
+            valid = ", ".join(
+                [f'"{k}" ({v["hf_id"]})' for k, v in TEXT_MODEL_REGISTRY.items()]
+            )
+            raise ValueError(f"Unknown model_name '{model_name}'. Valid options: {valid}")
+
+        reg = TEXT_MODEL_REGISTRY[key]
+        self.model_name = reg["hf_id"]
+        self.feature_dim = reg["feature_dim"]
+
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        self.bert_model = AutoModel.from_pretrained(self.model_name)
         self.bert_model.to(device)
         self.bert_model.eval()
 
