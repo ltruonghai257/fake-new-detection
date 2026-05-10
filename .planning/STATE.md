@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 ## Current Position
 
 Phase: Phase 1 — Data Crawling Notebook
-Plan: —
-Status: Ready to plan
-Last activity: 2026-05-10 — ROADMAP.md created
+Plan: .planning/phases/01-data-crawling-notebook/01-PLAN.md
+Status: Ready to execute
+Last activity: 2026-05-10 — Phase 1 PLAN.md created (7 tasks)
 
 Progress: [░░░░░░░░░░] 0% (0/4 phases complete)
 
