@@ -95,22 +95,33 @@ class PairExtractor:
         self.jpg_base_dir = Path(jpg_base_dir)
         self.min_caption_len = min_caption_len
 
-    def extract_from_json(self, json_path: str) -> List[Dict]:
+    def extract_from_json(self, json_path: str, return_stats: bool = False):
         """
         Extract valid (image, caption) pairs from a crawled JSON file.
 
         Args:
             json_path: Path to news_data_vifactcheck_*_cleaned.json
+            return_stats: If True, return (pairs, stats) tuple; else return pairs list
 
         Returns:
-            List of dicts with keys: image_path, caption, article_idx
+            List of dicts with keys: image_path, caption, article_idx, pair_text, title, source_url, source_label
+            Or if return_stats=True: (pairs, stats) tuple
         """
         with open(json_path, "r", encoding="utf-8") as f:
             articles = json.load(f)
 
         pairs = []
         skipped = {"no_caption": 0, "credit_only": 0, "too_short": 0, "no_image": 0}
+        source_label_counts = Counter()
+        
         for article_idx, article in enumerate(articles):
+            article_title = article.get("title", "")
+            article_source_url = article.get("source_url", "")
+            article_source_label = article.get("label", "")
+            
+            if article_source_label:
+                source_label_counts[article_source_label] += 1
+            
             for img in article.get("images", []):
                 raw_caption = (img.get("caption") or "").strip()
                 folder_path = img.get("folder_path", "")
@@ -160,17 +171,33 @@ class PairExtractor:
                     skipped["too_short"] += 1
                     continue
 
+                pair_text = f"{article_title} {caption}".strip() if article_title else caption
+                
                 pairs.append({
                     "image_path": str(full_path),
                     "caption": caption,
                     "article_idx": article_idx,
                     "folder_path": folder_path,
+                    "pair_text": pair_text,
+                    "title": article_title,
+                    "source_url": article_source_url,
+                    "source_label": article_source_label,
                 })
 
         total_imgs = sum(len(a.get("images", [])) for a in articles)
         print(f"    Total images: {total_imgs}, Valid pairs: {len(pairs)}")
         print(f"    Skipped: {skipped}")
 
+        if return_stats:
+            stats = {
+                "raw_articles": len(articles),
+                "total_images": total_imgs,
+                "valid_pairs": len(pairs),
+                "skipped": skipped,
+                "source_label_counts": dict(source_label_counts),
+            }
+            return pairs, stats
+        
         return pairs
 
     def extract_all_splits(
