@@ -1,0 +1,40 @@
+Model: COOLANT + AdaBelief (Simultaneous)
+Best epoch: 20
+Val F1: 0.8503
+Test F1: 0.8410
+Test Acc: 0.8442
+
+                 precision    recall  f1-score   support
+
+  Real(matched)     0.7680    0.9863    0.8636       876
+Fake(unmatched)     0.9809    0.7021    0.8184       876
+
+       accuracy                         0.8442      1752
+      macro avg     0.8744    0.8442    0.8410      1752
+   weighted avg     0.8744    0.8442    0.8410      1752
+
+Confusion Matrix: [[864, 12], [261, 615]]
+
+Config:
+  shared_dim: 128
+  sim_dim: 64
+  clip_embed_dim: 64
+  feature_dim: 96
+  h_dim: 64
+  lr: 0.0003
+  eps: 1e-16
+  betas: (0.9, 0.999)
+  weight_decouple: True
+  rectify: True
+  weight_decay: 0.0001
+  max_epochs: 30
+  patience: 7
+  dropout: 0.3
+  label_smoothing: 0.1
+  grad_clip: 1.0
+  batch_size: 32
+  seed: 42
+  warmup_fraction: 0.05
+  min_lr: 1e-06
+  plateau_factor: 0.5
+  plateau_patience: 3

@@ -94,6 +94,7 @@ class CombinedPreprocessor:
         max_text_length: int = 512,
         image_size: Tuple[int, int] = (224, 224),
         device: Optional[str] = None,
+        use_word_segmentation: bool = True,
     ):
         """
         Initialize combined preprocessor
@@ -118,6 +119,7 @@ class CombinedPreprocessor:
             max_length=max_text_length,
             language=language,
             device=str(self.device),
+            use_word_segmentation=use_word_segmentation,
         )
 
         self.image_preprocessor = ImagePreprocessor(

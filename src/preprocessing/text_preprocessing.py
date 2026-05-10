@@ -24,10 +24,19 @@ from utils.device import get_device
 # Optional Vietnamese text processing
 try:
     import underthesea
+    from underthesea import word_tokenize as vi_word_tokenize
 
     UNDERTHESEA_AVAILABLE = True
 except ImportError:
     UNDERTHESEA_AVAILABLE = False
+
+# Optional VnCoreNLP (requires Java + py_vncorenlp package)
+try:
+    import py_vncorenlp
+
+    VNCORENLP_AVAILABLE = True
+except ImportError:
+    VNCORENLP_AVAILABLE = False
 
 
 class TextCleaningOptions(TypedDict, total=False):
@@ -74,6 +83,7 @@ class TextPreprocessor:
         max_length: int = 64,
         language: str = "vi",
         device: Optional[str] = None,
+        use_word_segmentation: bool = True,
     ):
         """
         Initialize text preprocessor for Vietnamese
@@ -87,6 +97,7 @@ class TextPreprocessor:
         self.max_length = max_length
         self.language = language
         self.device = get_device(device)
+        self.use_word_segmentation = use_word_segmentation
 
         if language != "vi":
             raise ValueError("This preprocessor only supports Vietnamese language (vi)")
@@ -97,7 +108,9 @@ class TextPreprocessor:
             valid = ", ".join(
                 [f'"{k}" ({v["hf_id"]})' for k, v in TEXT_MODEL_REGISTRY.items()]
             )
-            raise ValueError(f"Unknown model_name '{model_name}'. Valid options: {valid}")
+            raise ValueError(
+                f"Unknown model_name '{model_name}'. Valid options: {valid}"
+            )
 
         reg = TEXT_MODEL_REGISTRY[key]
         self.model_name = reg["hf_id"]
@@ -167,6 +180,39 @@ class TextPreprocessor:
 
         return text
 
+    @staticmethod
+    def segment_words(text: str) -> str:
+        """
+        Vietnamese word segmentation for PhoBERT.
+
+        PhoBERT was trained on word-segmented Vietnamese where multi-word
+        tokens are joined with underscores (e.g., "học_sinh" not "học sinh").
+        This is required for correct PhoBERT tokenization.
+
+        Priority: VnCoreNLP (more accurate) → underthesea → passthrough.
+
+        Args:
+            text: Raw Vietnamese text.
+
+        Returns:
+            Word-segmented text string.
+        """
+        if VNCORENLP_AVAILABLE:
+            try:
+                result = py_vncorenlp.annotate_text(text)
+                tokens = [w for sent in result.values() for w in sent]
+                return " ".join(tokens)
+            except Exception:
+                pass
+
+        if UNDERTHESEA_AVAILABLE:
+            try:
+                return vi_word_tokenize(text, format="text")
+            except Exception:
+                pass
+
+        return text
+
     def tokenize_text(self, text: str) -> Dict[str, torch.Tensor]:
         """
         Tokenize Vietnamese text using BERT tokenizer
@@ -178,6 +224,8 @@ class TextPreprocessor:
             Dictionary with tokenized inputs
         """
         cleaned_text = self.clean_text(text)
+        if self.use_word_segmentation:
+            cleaned_text = self.segment_words(cleaned_text)
 
         encoded = self.tokenizer(
             cleaned_text,

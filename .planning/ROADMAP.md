@@ -13,7 +13,7 @@
 **Objective:** Create a production-ready notebook for automated, resumable Vietnamese news crawling.
 
 **Delivers:**
-- `notebooks/01_data_crawling.ipynb` with config cell, progress display, and resumable state
+- `notebooks/pipeline/01_data_crawling.ipynb` with config cell, progress display, and resumable state
 - Structured JSON output with text, image paths, and source metadata
 
 **Requirements:**
@@ -36,7 +36,7 @@
 **Objective:** Build unified preprocessing pipeline converting raw ViFactCheck JSON → HDF5 with PhoBERT + ResNet features.
 
 **Delivers:**
-- `notebooks/02_preprocessing.ipynb` with text + image feature extraction
+- `notebooks/pipeline/02_preprocessing.ipynb` with text + image feature extraction
 - HDF5 dataset with train/dev/test splits
 - Dataset statistics report
 
@@ -61,7 +61,7 @@
 **Objective:** Train PatchedCOOLANT model with MLflow tracking, checkpointing, and inline visualization.
 
 **Delivers:**
-- `notebooks/03_coolant_training.ipynb` with config cell and MLflow integration
+- `notebooks/pipeline/03_coolant_training.ipynb` with config cell and MLflow integration
 - Best checkpoint saved by validation accuracy
 - Training curves (loss, accuracy plots)
 
@@ -86,7 +86,7 @@
 **Objective:** Integrate frozen COOLANT checkpoint with ViFactCheck Stage 2 model, train, evaluate, and export results.
 
 **Delivers:**
-- `notebooks/04_mm_vifactcheck_integration.ipynb` with Stage 2 training and evaluation
+- `notebooks/pipeline/04_mm_vifactcheck_integration.ipynb` with Stage 2 training and evaluation
 - Evaluation report (accuracy, macro-F1, per-class metrics, confusion matrix)
 - Ablation table (configs A–D)
 - JSON export for thesis documentation

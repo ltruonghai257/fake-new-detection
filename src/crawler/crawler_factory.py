@@ -81,6 +81,7 @@ class CrawlerFactory:
         max_concurrent: int = 15,
         retry_failed: bool = False,
         save_interval: int = 50,
+        output_dir: Optional[str] = None,
     ):
         """
         Crawl URLs concurrently with smart caching.
@@ -200,7 +201,11 @@ class CrawlerFactory:
 
         # Final save: results JSON (append to existing)
         if all_results_data:
-            output_path = os.path.join("data", "json", output_filename)
+            if output_dir:
+                output_path = os.path.join(output_dir, output_filename)
+            else:
+                output_path = os.path.join("data", "json", output_filename)
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
             existing_data = []
             if os.path.exists(output_path):
                 with open(output_path, 'r') as f:

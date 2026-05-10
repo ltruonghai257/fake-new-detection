@@ -1,0 +1,104 @@
+# Requirements: Fake News Detection — Full Pipeline Workflow
+
+**Defined:** 2026-05-08
+**Core Value:** A fully reproducible end-to-end pipeline — from raw Vietnamese news crawling to COOLANT training and MM-ViFactCheck Stage 2 integration — that produces thesis-quality results.
+
+## v1 Requirements
+
+### Data Crawling
+
+- [ ] **CRAWL-01**: Researcher can configure crawl sources and output path via a single notebook config cell
+- [ ] **CRAWL-02**: Notebook displays real-time crawl progress (URLs attempted, succeeded, failed counts)
+- [ ] **CRAWL-03**: Crawl resumes from saved checkpoint without re-crawling completed URLs
+- [ ] **CRAWL-04**: Crawled articles exported to structured JSON with text, image paths, and source metadata
+
+### Preprocessing
+
+- [ ] **PREP-01**: Notebook loads crawled ViFactCheck JSON into a unified sample format with train/dev/test splits
+- [ ] **PREP-02**: Text preprocessing applies Vietnamese normalization and PhoBERT-base-v2 tokenization/embedding
+- [ ] **PREP-03**: Image preprocessing applies ResNet50 feature extraction (2048-dim)
+- [ ] **PREP-04**: Preprocessed text and image features saved to HDF5 for efficient DataLoader access
+- [ ] **PREP-05**: Notebook outputs dataset statistics: class balance, split sizes, missing-image count
+
+### COOLANT Training (Stage 1)
+
+- [ ] **TRAIN-01**: Researcher configures PatchedCOOLANT variant, hyperparameters, and data paths via a single config cell
+- [ ] **TRAIN-02**: Training loop logs loss, accuracy, and F1 to MLflow per epoch
+- [ ] **TRAIN-03**: Checkpoints saved every N epochs with embedded config dict for reproducibility
+- [ ] **TRAIN-04**: Notebook displays inline training curves (loss and accuracy plots per epoch)
+- [ ] **TRAIN-05**: Best checkpoint selected and saved by validation accuracy; weights frozen for Stage 2
+
+### MM-ViFactCheck Integration (Stage 2)
+
+- [ ] **MMVF-01**: Notebook loads frozen PatchedCOOLANT checkpoint and extracts (text_aligned_clip, image_aligned_clip, attention_weights, fake_prob) per article
+- [ ] **MMVF-02**: Stage 2 PhoBERT-base-v2 encodes [Statement; SEP; Evidence] → [CLS] (768-dim)
+- [ ] **MMVF-03**: Gated fusion module combines h_nli_proj (256) and h_mm_proj (256) via learned gate
+- [ ] **MMVF-04**: Stage 2 model trains on ViFactCheck train split; best checkpoint by val macro-F1
+- [ ] **MMVF-05**: Evaluation report generated with accuracy, macro-F1, per-class P/R/F1, and confusion matrix on test split
+- [ ] **MMVF-06**: Ablation table produced comparing configs A–D (text-only → full MM-ViFactCheck)
+- [ ] **MMVF-07**: Results exported to JSON for thesis documentation
+
+### Notebook Quality
+
+- [ ] **NB-01**: Each notebook has a single top-of-notebook config cell for all tunable parameters and paths
+- [ ] **NB-02**: Each notebook uses relative/config-driven paths (no hardcoded absolute paths)
+- [ ] **NB-03**: Each notebook has clear markdown section headers explaining each step
+
+## v2 Requirements
+
+### Advanced Features
+
+- **EVAL-01**: Ablation with joint CLIP fine-tuning (Step 3 training recipe)
+- **EVAL-02**: Error analysis notebook visualizing failure cases with original images and text
+- **DEMO-01**: Interactive inference cell for single claim+evidence+image prediction
+- **AUG-01**: Data augmentation options in preprocessing notebook
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Web UI / demo interface | Not needed for thesis deliverable |
+| Real-time inference API | Out of scope for thesis |
+| Multi-GPU distributed training | Single-GPU sufficient for thesis scale |
+| COOLANT architecture changes | Using PatchedCOOLANT as-is; architecture research is separate |
+| Mocheg submodule integration | Separate research codebase, not part of main pipeline |
+| Data annotation tooling | Labels from ViFactCheck dataset |
+| phobert-large usage | Standardized to phobert-base-v2 across both stages |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| CRAWL-01 | Phase 1 | Pending |
+| CRAWL-02 | Phase 1 | Pending |
+| CRAWL-03 | Phase 1 | Pending |
+| CRAWL-04 | Phase 1 | Pending |
+| NB-01 | Phase 1 | Pending |
+| NB-02 | Phase 1 | Pending |
+| NB-03 | Phase 1 | Pending |
+| PREP-01 | Phase 2 | Pending |
+| PREP-02 | Phase 2 | Pending |
+| PREP-03 | Phase 2 | Pending |
+| PREP-04 | Phase 2 | Pending |
+| PREP-05 | Phase 2 | Pending |
+| TRAIN-01 | Phase 3 | Pending |
+| TRAIN-02 | Phase 3 | Pending |
+| TRAIN-03 | Phase 3 | Pending |
+| TRAIN-04 | Phase 3 | Pending |
+| TRAIN-05 | Phase 3 | Pending |
+| MMVF-01 | Phase 4 | Pending |
+| MMVF-02 | Phase 4 | Pending |
+| MMVF-03 | Phase 4 | Pending |
+| MMVF-04 | Phase 4 | Pending |
+| MMVF-05 | Phase 4 | Pending |
+| MMVF-06 | Phase 4 | Pending |
+| MMVF-07 | Phase 4 | Pending |
+
+**Coverage:**
+- v1 requirements: 24 total
+- Mapped to phases: 24
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-05-08*
+*Last updated: 2026-05-08 after architecture finalization*
