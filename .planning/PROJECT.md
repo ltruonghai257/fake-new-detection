@@ -8,7 +8,19 @@ A Vietnamese multimodal fake news detection research pipeline for a thesis proje
 
 A fully reproducible end-to-end pipeline — from raw Vietnamese news crawling to COOLANT training and ViFactCheck Stage 2 integration — that produces thesis-quality results.
 
-## Current Milestone: v1.0 Full Pipeline Notebook Workflow
+## Current State
+
+**Shipped:** v1.0 Full Pipeline Notebook Workflow (2026-05-23)
+
+**Delivered:**
+- End-to-end pipeline notebooks for data crawling, preprocessing, COOLANT training, and MM-ViFactCheck integration
+- Config-driven approach across all notebooks
+- Reproducible workflow with MLflow tracking and checkpointing
+- 51,304 LOC (Python + Jupyter notebooks)
+
+**Current Milestone:** Planning next milestone
+
+## Previous Milestone: v1.0 Full Pipeline Notebook Workflow
 
 **Goal:** Refactor scattered experimental notebooks into a clean, reproducible end-to-end research workflow covering data crawling, preprocessing, COOLANT training, and ViFactCheck Stage 2 integration.
 
