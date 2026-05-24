@@ -1,519 +1,436 @@
-# Complete vast.ai Workflow for Fake News Detection
+# Vast.ai Setup Guide for Fake News Detection
 
-## Phase 1: Account Setup (One-time)
+One-click setup and SSH connection guide for training on Vast.ai GPU instances.
 
-### 1. Create vast.ai Account
-
-1. Go to https://vast.ai
-2. Sign up with email or GitHub
-3. Add payment method (credit card required)
-4. Verify email address
-
-### 2. Generate SSH Keys (Recommended)
+## Quick Start
 
 ```bash
-# On your local machine
-ssh-keygen -t ed25519 -C "vastai" -f ~/.ssh/vastai_key
-cat ~/.ssh/vastai_key.pub
+# Run the one-click setup script
+python setup_vastai.py
 ```
 
--   Copy the public key output
--   Add it to vast.ai account settings under "SSH Keys"
+This script will:
+- Check/generate SSH keys
+- Guide you through adding the key to Vast.ai
+- Upload your project
+- Run environment setup
+- Connect to your instance
 
-### 3. Estimate Your Data Size
+## Step-by-Step Manual Setup
 
+### Step 1: Generate SSH Key (One-time)
+
+**Option A: Using the Python script (Recommended)**
 ```bash
-# Check your data size locally
-du -sh data/
-du -sh processed_data/
-du -sh checkpoints/
+python setup_vastai.py
+```
+The script will automatically guide you through SSH key generation.
+
+**Option B: Manual generation**
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 
--   Total data size determines required disk space
--   For this project: ~5GB (data) + ~2GB (checkpoints) = ~7GB minimum
--   Add buffer: Recommend 20-50GB disk
+This creates:
+- `~/.ssh/id_ed25519` - Private key (NEVER share)
+- `~/.ssh/id_ed25519.pub` - Public key (safe to share)
 
----
+### Step 2: Add SSH Key to Vast.ai
 
-## Phase 2: Launch Instance
+1. Go to https://cloud.vast.ai/manage-keys/
+2. Click "Add SSH Key"
+3. Paste your public key:
+   ```bash
+   cat ~/.ssh/id_ed25519.pub
+   ```
+4. Give it a name (e.g., "fake-news-detection")
+5. Click "Add"
 
-### 1. Browse Available Instances
+**Note**: Keys only apply to NEW instances. Existing instances won't get the key automatically.
+
+### Step 3: Launch Vast.ai Instance
 
 1. Go to https://vast.ai/console/create
 2. Filter by:
-    - **GPU**: RTX 3090, RTX 4090, or A100 40GB
-    - **Disk Space**: 20GB+ (or use persistent storage)
-    - **CUDA Version**: 12.1+
-    - **Min RAM**: 16GB+
-    - **Price**: $0.20-$0.50/hour for RTX 3090 (spot)
+   - **GPU**: RTX 3090 (24GB VRAM) or RTX 4090
+   - **Disk Space**: 30GB+
+   - **CUDA Version**: 12.1+
+   - **Min RAM**: 16GB+
+   - **Price**: $0.20-$0.50/hour for RTX 3090 (spot)
 
-### 2. Select Instance Configuration
+3. Configure:
+   - **Disk Size**: 30GB+
+   - **SSH Key**: Select your key from dropdown
+   - **Enable SSH Web**: Check for browser terminal backup
+   - **Template**: `pytorch/pytorch:2.1.0-cuda12.1-cudnn8-devel`
 
-**Recommended for this project:**
+4. Click "Deploy"
+5. Copy the SSH command: `ssh -p <port> root@<ip>`
 
--   **GPU**: RTX 3090 (24GB VRAM) - $0.20-$0.30/hour (spot)
--   **RAM**: 16GB+
--   **Disk**: 30GB+ SSD
--   **Template**: `pytorch/pytorch:2.1.0-cuda12.1-cudnn8-devel`
+### Step 4: Connect Using Python Script
 
-**Instance Types:**
-
--   **Spot instances**: Cheapest (~50-70% discount), can be interrupted
--   **On-demand**: More expensive, guaranteed uptime
--   **Recommendation**: Use spot for training, save checkpoints frequently
-
-### 3. Configure Launch Options
-
--   **Disk Size**: 30GB+ (or add persistent storage)
--   **SSH Key**: Select your SSH key from dropdown
--   **Enable SSH Web**: Check for browser-based terminal backup
--   **Port Forwarding**: Add port 8888 for Jupyter (optional)
--   **Startup Script**: Leave empty (we'll use setup_vastai.sh)
-
-### 4. Launch and Note Connection Details
-
--   Copy the SSH command: `ssh -p <port> root@<ip>`
--   Note the instance IP and port
--   Save these for later use
-
----
-
-## Phase 3: Upload Code and Data
-
-### Option A: rsync (Recommended - Fastest for small datasets)
-
+**Basic connection:**
 ```bash
-# From your local machine
-# Use the SSH command from vast.ai (includes port)
-rsync -avz -e 'ssh -p <port>' \
-  /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My\ Drive/Thesis_Final/fake-new-detection/ \
-  root@<ip>:/workspace/fake-new-detection/
-
-# Exclude unnecessary files to speed up transfer
-rsync -avz -e 'ssh -p 50769' \
-    --exclude='.git/' \
-    --exclude='.idea/' \
-    --exclude='.vscode/' \
-    --exclude='.cursor/' \
-    --exclude='notebooks/data/' \
-    --exclude='notebooks/results/' \
-    --exclude='*.jpg' \
-    --exclude='*.jpeg' \
-    --exclude='.openspec/' \
-    --exclude='.windsurf/' \
-    --exclude='.agent/' \
-    --exclude='.gemini/' \
-    --exclude='*.pkl'\
-    --exclude='.DS_Store' \
-    --exclude='.env*' \
-    --exclude='__pycache__/' \
-    --exclude='*.pyc' \
-    --exclude='.venv' \
-    --exclude='.pytest_cache/' \
-    --exclude='mlruns/' \
-    --exclude='logs/' \
-    --exclude='checkpoints/' \
-    --exclude='data/jpg/' \
-    --exclude='openspec/' \
-    --exclude='*.zip'\
-    --exclude='*.npz' \
-    --exclude='*.tar.gz' \
-    /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My\ Drive/Thesis_Final/fake-new-detection/ \
-    root@220.82.52.202:/workspace/fake-new-detection/
+python setup_vastai.py --ip <IP> --port <PORT>
 ```
 
-### Option B: Compressed Archive (Best for large datasets)
-
+**With Jupyter port forwarding:**
 ```bash
-# On local machine: Create compressed archive in parent directory
-cd /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My\ Drive/Thesis_Final/
-tar -czf fake-news-detection.tar.gz \
-  --exclude='fake-new-detection/.git' \
-  --exclude='fake-new-detection/__pycache__' \
-  --exclude='fake-new-detection/*.pyc' \
-  --exclude='fake-new-detection/notebooks/.ipynb_checkpoints' \
-  --exclude='fake-new-detection/.pytest_cache' \
-  --exclude='fake-new-detection/mlruns' \
-  fake-new-detection
+python setup_vastai.py --ip <IP> --port <PORT> --jupyter
+```
+Then open http://localhost:8888 in your browser.
 
-# Upload archive
-scp -P <port> fake-news-detection.tar.gz root@<ip>:/workspace/
+**With MLflow port forwarding:**
+```bash
+python setup_vastai.py --ip <IP> --port <PORT> --mlflow
+```
+Then open http://localhost:5000 in your browser.
 
-# On vast.ai: Extract
-ssh -p <port> root@<ip>
-cd /workspace
-tar -xzf fake-news-detection.tar.gz
-rm fake-news-detection.tar.gz
+**Connect only (skip upload/setup):**
+```bash
+python setup_vastai.py --ip <IP> --port <PORT> --connect-only
 ```
 
-### Option C: Git Clone (Best for code-only, separate data upload)
-
+**Interactive mode (prompts for everything):**
 ```bash
-# On vast.ai instance
-ssh -p <port> root@<ip>
-cd /workspace
-git clone <your-repo-url> fake-new-detection
-cd fake-new-detection
-
-# Upload data separately using rsync or scp
+python setup_vastai.py
 ```
 
-### Option D: Google Drive (If data is already on GDrive)
+### Step 5: Manual SSH Connection (Alternative)
+
+If you prefer manual SSH:
 
 ```bash
-# On vast.ai instance
-ssh -p <port> root@<ip>
-pip install gdown
-
-# Download specific files (need shareable GDrive links)
-gdown <google-drive-file-id> -O data/news_data.json
-gdown <google-drive-file-id> -O data/images.zip
+ssh -p <PORT> root@<IP>
 ```
 
----
-
-## Phase 4: Environment Setup
-
-### 1. SSH into Instance
-
+**With port forwarding:**
 ```bash
-ssh -p <port> root@<ip>
+# Forward Jupyter (8888) and MLflow (5000)
+ssh -p <PORT> root@<IP> -L 8888:localhost:8888 -L 5000:localhost:5000
 ```
 
-### 2. Run Setup Script
+**First time connection**: You'll see a fingerprint verification:
+```
+The authenticity of host '[IP]:PORT' can't be established.
+ED25519 key fingerprint is SHA256:...
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+```
+Type `yes` to continue.
+
+### Step 6: Environment Setup (Manual)
+
+If you skipped the Python script's auto-setup:
 
 ```bash
+# On the remote instance
 cd /workspace/fake-new-detection
 chmod +x setup_vastai.sh
 ./setup_vastai.sh
 ```
 
-### 3. Activate Environment
+This installs:
+- Python 3.10 with uv
+- PyTorch with CUDA support
+- All project dependencies
+- Jupyter kernel
 
-```bash
-source ~/.bashrc
-conda activate fake_news
-```
-
-### 4. Verify Setup
+### Step 7: Verify Setup
 
 ```bash
 # Check CUDA
 python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')"
 
-# Check data integrity
+# Check data
 ls -lh data/
 ls -lh processed_data/hdf5/
-du -sh .
-
-# Test imports
-python -c "import transformers, h5py, sklearn; print('All imports successful')"
 ```
 
----
+## SSH Connection Types
 
-## Phase 5: Run Training
+### Direct SSH (Recommended)
+- **Faster**: Direct connection to instance
+- **More reliable**: No proxy overhead
+- **Requirement**: Your machine must have open ports
+- **Use when**: Port forwarding works, you have stable internet
 
-### Option A: Training Script (Recommended for production)
+### Proxy SSH (Fallback)
+- **Slower**: Routes through Vast proxy
+- **Works everywhere**: No port requirements
+- **Use when**: Direct connection fails, behind firewall
+- **How**: Vast.ai provides proxy URL in instance details
+
+## Port Forwarding Guide
+
+Forward local ports to access remote services:
 
 ```bash
-cd /workspace/fake-new-detection
-conda activate fake_news
+# Basic syntax
+ssh -p <SSH_PORT> root@<IP> -L <LOCAL_PORT>:localhost:<REMOTE_PORT>
 
-# Run with specific config
-python examples/train_coolant_official.py \
-  --batch_size 32 \
-  --epochs 30 \
-  --lr 1e-3 \
-  --device cuda \
-  --checkpoint_dir checkpoints/
+# Jupyter Notebook
+ssh -p 20544 root@142.214.185.187 -L 8888:localhost:8888
+# Access at: http://localhost:8888
+
+# MLflow
+ssh -p 20544 root@142.214.185.187 -L 5000:localhost:5000
+# Access at: http://localhost:5000
+
+# Multiple ports
+ssh -p 20544 root@142.214.185.187 -L 8888:localhost:8888 -L 5000:localhost:5000
 ```
 
-### Option B: Jupyter Notebook (For experimentation)
+## File Transfer
 
+### Upload Project (Python Script)
 ```bash
-# Install Jupyter
-pip install jupyter
+python setup_vastai.py
+# Follow prompts to upload
+```
 
-# Start Jupyter with remote access
+### Manual Upload with rsync
+```bash
+rsync -avz -e 'ssh -p <PORT>' \
+  --exclude='.git/' \
+  --exclude='__pycache__/' \
+  --exclude='*.pyc' \
+  --exclude='.venv' \
+  --exclude='mlruns/' \
+  --exclude='checkpoints/' \
+  /path/to/fake-new-detection/ \
+  root@<IP>:/workspace/fake-new-detection/
+```
+
+### Download Results
+```bash
+# Download checkpoints
+rsync -avz -e 'ssh -p <PORT>' \
+  root@<IP>:/workspace/fake-new-detection/checkpoints/ \
+  ./checkpoints/
+
+# Download logs
+rsync -avz -e 'ssh -p <PORT>' \
+  root@<IP>:/workspace/fake-new-detection/logs/ \
+  ./logs/
+```
+
+### Using SCP
+```bash
+# Upload single file
+scp -P <PORT> local_file.py root@<IP>:/workspace/fake-new-detection/
+
+# Download single file
+scp -P <PORT> root@<IP>:/workspace/fake-new-detection/checkpoint.pth ./
+```
+
+## Running Training
+
+### Option A: Training Script
+```bash
+# On remote instance
+source .venv/bin/activate
+python examples/train_coolant_official.py --batch_size 32 --epochs 30
+```
+
+### Option B: Jupyter Notebook
+```bash
+# Start Jupyter on remote
 jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
 
-# On local machine: Create SSH tunnel
-ssh -L 8888:localhost:8888 -p <port> root@<ip>
+# On local: Forward port (if not already done)
+ssh -p <PORT> root@<IP> -L 8888:localhost:8888
 
-# Open browser to: http://localhost:8888
-# Use token from Jupyter output to authenticate
+# Open browser: http://localhost:8888
+# Use token from Jupyter output
 ```
 
-### Option C: Screen/Tmux Session (For long-running jobs)
-
+### Option C: Tmux (Long-running jobs)
 ```bash
-# Install tmux if not present
-apt-get install tmux
-
-# Create session
+# On remote instance
 tmux new -s training
 
 # Run training
-conda activate fake_news
+source .venv/bin/activate
 python examples/train_coolant_official.py
 
 # Detach: Ctrl+B, then D
 # Reattach: tmux attach -s training
+# List sessions: tmux ls
+# Kill session: tmux kill-session -t training
 ```
 
----
-
-## Phase 6: Monitor Training
-
-### 1. Monitor GPU Usage
-
+**Disable auto-tmux on Vast.ai** (if it interferes):
 ```bash
-# Real-time GPU monitoring
+touch ~/.no_auto_tmux
+```
+
+## Monitoring
+
+### GPU Usage
+```bash
+# Real-time monitoring
 watch -n 1 nvidia-smi
 
-# Or use gpustats
-pip install gpustats
+# Or use gpustat
+pip install gpustat
 gpustat -i
 ```
 
-### 2. Monitor Training Progress
-
+### Training Progress
 ```bash
-# Tail training logs
+# Tail logs
 tail -f logs/training.log
 
-# Check MLflow (if using)
-mlflow ui --host 0.0.0.0 --port 5000
-
-# Access via SSH tunnel
-ssh -L 5000:localhost:5000 -p <port> root@<ip>
-# Open browser to: http://localhost:5000
-```
-
-### 3. Check Disk Space
-
-```bash
+# Check disk space
 df -h
 du -sh /workspace/fake-new-detection/
-du -sh /workspace/fake-new-detection/checkpoints/
 ```
-
----
-
-## Phase 7: Download Results
-
-### 1. Download Checkpoints
-
-```bash
-# From local machine
-rsync -avz -e 'ssh -p <port>' \
-  root@<ip>:/workspace/fake-new-detection/checkpoints/ \
-  /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My\ Drive/Thesis_Final/fake-new-detection/checkpoints/
-```
-
-### 2. Download Logs
-
-```bash
-rsync -avz -e 'ssh -p <port>' \
-  root@<ip>:/workspace/fake-new-detection/logs/ \
-  /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My\ Drive/Thesis_Final/fake-new-detection/logs/
-```
-
-### 3. Download MLflow Artifacts
-
-```bash
-# If using MLflow
-rsync -avz -e 'ssh -p <port>' \
-  root@<ip>:/workspace/fake-new-detection/mlruns/ \
-  /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My\ Drive/Thesis_Final/fake-new-detection/mlruns/
-```
-
----
-
-## Phase 8: Instance Management
-
-### 1. Stop Instance (When Pausing)
-
--   Go to vast.ai console
--   Click "Stop" on your instance
--   You're not billed while stopped
--   Data persists on disk
-
-### 2. Terminate Instance (When Done)
-
--   **WARNING**: This deletes all data on the instance disk
--   Download all important data first
--   Go to vast.ai console
--   Click "Destroy" on your instance
--   You're no longer billed
-
-### 3. Use Persistent Storage (For Long-term Projects)
-
--   Add persistent storage add-on when launching
--   Data survives instance termination
--   Can be attached to new instances
--   Costs extra but worth it for long projects
-
----
-
-## Cost Optimization Strategies
-
-### 1. Use Spot Instances
-
--   **Savings**: 50-70% cheaper than on-demand
--   **Risk**: Can be interrupted with 2-minute notice
--   **Mitigation**: Save checkpoints frequently (every epoch)
--   **Best for**: Training experiments, hyperparameter tuning
-
-### 2. Right-size Your GPU
-
--   **RTX 3090 (24GB)**: $0.20-$0.30/hour - Good for most models
--   **RTX 4090 (24GB)**: $0.40-$0.60/hour - Faster training
--   **A100 40GB**: $0.80-$1.20/hour - Large models, big batches
--   **A100 80GB**: $1.50-$2.00/hour - Very large models
-
-### 3. Optimize Training Time
-
--   Use mixed precision training (faster, less VRAM)
--   Increase batch size to utilize GPU fully
--   Use gradient accumulation for effective large batches
--   Profile code to find bottlenecks
-
-### 4. Minimize Idle Time
-
--   Stop instances when not training
--   Use tmux/screen for long-running jobs
--   Monitor training to catch issues early
--   Terminate immediately after downloading results
-
-### 5. Data Strategy
-
--   Upload data once, reuse across runs
--   Use persistent storage for datasets
--   Preprocess data into HDF5 for faster loading
--   Cache features to avoid recomputation
-
----
 
 ## Troubleshooting
 
-### Out of Memory (OOM)
-
-**Symptoms**: CUDA out of memory error
+### Permission Denied (publickey)
+```
+Permission denied (publickey)
+```
 **Solutions**:
+1. Verify SSH key is added to Vast.ai account
+2. Check you're using the correct key: `ssh -i ~/.ssh/id_ed25519 -p <PORT> root@<IP>`
+3. For existing instances, add key via instance SSH settings
+4. Regenerate key if corrupted
 
--   Reduce batch size (e.g., 32 → 16 → 8)
--   Use gradient accumulation
--   Enable mixed precision: `torch.cuda.amp.autocast()`
--   Clear cache: `torch.cuda.empty_cache()`
--   Switch to GPU with more VRAM
-
-### Slow Data Loading
-
-**Symptoms**: GPU utilization < 50%, training slow
+### Connection Timeout
+```
+ssh: connect to host <IP> port <PORT>: Connection timed out
+```
 **Solutions**:
+1. Check instance is running in Vast.ai console
+2. Verify IP and PORT are correct
+3. Try proxy SSH if direct fails
+4. Check firewall settings
 
--   Ensure data is on SSD (not network storage)
--   Use HDF5 format (you have `hdf5_dataset.py`)
--   Increase `num_workers` in DataLoader (but keep at 0 for HDF5)
--   Pin memory: `pin_memory=True` in DataLoader
--   Preload data to RAM if small enough
-
-### Connection Issues
-
-**Symptoms**: SSH connection drops, timeout
+### Host Key Verification Failed
+```
+WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!
+```
 **Solutions**:
-
--   Use SSH keys instead of passwords
--   Enable "SSH Web" for browser-based terminal backup
--   Add to SSH config: `ServerAliveInterval 60`
--   Use tmux/screen to resume sessions
--   Check vast.ai status page for outages
-
-### Instance Interruption (Spot)
-
-**Symptoms**: Instance stops unexpectedly
-**Solutions**:
-
--   Spot instances can be interrupted
--   Save checkpoints every epoch
--   Use persistent storage for checkpoints
--   Monitor instance health in vast.ai console
--   Switch to on-demand if interruptions are frequent
-
-### Permission Errors
-
-**Symptoms**: Permission denied when accessing files
-**Solutions**:
-
 ```bash
-# Fix permissions
-chmod -R 755 /workspace/fake-new-detection/
-chown -R root:root /workspace/fake-new-detection/
+# Remove old host key
+ssh-keygen -R [<IP>]:<PORT>
 
-# Or run with sudo
-sudo python script.py
+# Or remove all known hosts for this IP
+ssh-keygen -R <IP>
 ```
 
----
+### Instance Interruption (Spot)
+**Symptoms**: Instance stops unexpectedly
+**Solutions**:
+- Spot instances can be interrupted with 2-minute notice
+- Save checkpoints every epoch
+- Use persistent storage for checkpoints
+- Monitor instance health in Vast.ai console
+- Switch to on-demand if interruptions are frequent
 
-## Quick Reference Commands
+### Out of Memory (OOM)
+**Symptoms**: CUDA out of memory error
+**Solutions**:
+- Reduce batch size (32 → 16 → 8)
+- Use gradient accumulation
+- Enable mixed precision: `torch.cuda.amp.autocast()`
+- Clear cache: `torch.cuda.empty_cache()`
+- Switch to GPU with more VRAM
+
+## VS Code Remote SSH Integration
+
+### Install Remote SSH Extension
+1. Install "Remote - SSH" extension in VS Code
+2. Press `Cmd+Shift+P` → "Remote-SSH: Connect to Host"
+3. Enter: `root@<IP> -p <PORT>`
+4. Or add to `~/.ssh/config`:
+
+```
+Host vastai
+    HostName <IP>
+    Port <PORT>
+    User root
+    IdentityFile ~/.ssh/id_ed25519
+    StrictHostKeyChecking no
+```
+
+Then connect via: `Cmd+Shift+P` → "Remote-SSH: Connect to Host" → "vastai"
+
+## Cost Optimization
+
+### Use Spot Instances
+- **Savings**: 50-70% cheaper than on-demand
+- **Risk**: Can be interrupted with 2-minute notice
+- **Mitigation**: Save checkpoints frequently
+
+### Right-size Your GPU
+- **RTX 3090 (24GB)**: $0.20-$0.30/hour - Good for most models
+- **RTX 4090 (24GB)**: $0.40-$0.60/hour - Faster training
+- **A100 40GB**: $0.80-$1.20/hour - Large models
+- **A100 80GB**: $1.50-$2.00/hour - Very large models
+
+### Minimize Idle Time
+- Stop instances when not training
+- Use tmux for long-running jobs
+- Terminate immediately after downloading results
+
+## Data Size Considerations
+
+Your project data:
+- `data/json/` - Raw JSON news data (~500MB)
+- `data/jpg/` - Images directory (~2GB)
+- `processed_data/hdf5/` - Preprocessed HDF5 files (~5GB)
+- `checkpoints/` - Model checkpoints (~1-2GB)
+
+**Total**: ~8-10GB
+
+**Recommendations**:
+- Use 30GB+ disk for comfort
+- Upload preprocessed HDF5 files if available (faster than raw data)
+- Use persistent storage if running multiple experiments
+- Download checkpoints regularly to avoid loss
+
+## Quick Reference
 
 ```bash
-# SSH connect
-ssh -p <port> root@<ip>
+# One-click setup
+python setup_vastai.py
 
-# Upload code
-rsync -avz -e 'ssh -p <port>' local_dir/ root@<ip>:/workspace/
+# Connect with port forwarding
+python setup_vastai.py --ip <IP> --port <PORT> --jupyter --mlflow
+
+# Manual SSH
+ssh -p <PORT> root@<IP>
+
+# SSH with port forwarding
+ssh -p <PORT> root@<IP> -L 8888:localhost:8888 -L 5000:localhost:5000
+
+# Upload project
+rsync -avz -e 'ssh -p <PORT>' ./ root@<IP>:/workspace/fake-new-detection/
 
 # Download results
-rsync -avz -e 'ssh -p <port>' root@<ip>:/workspace/checkpoints/ local_dir/
+rsync -avz -e 'ssh -p <PORT>' root@<IP>:/workspace/checkpoints/ ./checkpoints/
 
 # Monitor GPU
 watch -n 1 nvidia-smi
 
-# Check disk space
-df -h
+# Tmux session
+tmux new -s training  # Create
+Ctrl+B, D             # Detach
+tmux attach -s training  # Reattach
 
 # Activate environment
-conda activate fake_news
+source .venv/bin/activate
 
-# Start training
+# Run training
 python examples/train_coolant_official.py
-
-# Start Jupyter
-jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
-
-# SSH tunnel for Jupyter
-ssh -L 8888:localhost:8888 -p <port> root@<ip>
-
-# Create tmux session
-tmux new -s training
-
-# Detach tmux
-Ctrl+B, then D
-
-# Reattach tmux
-tmux attach -s training
 ```
 
----
+## Official Vast.ai Documentation
 
-## Data Considerations for This Project
-
-Your project has data in:
-
--   `data/json/` - Raw JSON news data (~500MB)
--   `data/jpg/` - Images directory (~2GB)
--   `processed_data/hdf5/` - Preprocessed HDF5 files (~5GB)
--   `checkpoints/` - Model checkpoints (~1-2GB)
-
-**Total estimated size**: ~8-10GB
-
-**Recommendations**:
-
--   Use 30GB+ disk for comfort
--   Upload preprocessed HDF5 files if available (faster than raw data)
--   Use persistent storage if running multiple experiments
--   Download checkpoints regularly to avoid loss
+For more details, see:
+- **SSH Connection**: https://docs.vast.ai/guides/instances/connect/ssh
+- **Instance Management**: https://docs.vast.ai/guides/instances/
+- **Vast CLI**: https://docs.vast.ai/cli/hello-world
