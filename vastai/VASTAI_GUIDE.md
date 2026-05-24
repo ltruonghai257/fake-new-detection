@@ -6,7 +6,7 @@ One-click setup and SSH connection guide for training on Vast.ai GPU instances.
 
 ```bash
 # Run the one-click setup script
-python setup_vastai.py
+python vastai/setup_vastai.py
 ```
 
 This script will:
@@ -22,7 +22,7 @@ This script will:
 
 **Option A: Using the Python script (Recommended)**
 ```bash
-python setup_vastai.py
+python vastai/setup_vastai.py
 ```
 The script will automatically guide you through SSH key generation.
 
@@ -71,29 +71,29 @@ This creates:
 
 **Basic connection:**
 ```bash
-python setup_vastai.py --ip <IP> --port <PORT>
+python vastai/setup_vastai.py --ip <IP> --port <PORT>
 ```
 
 **With Jupyter port forwarding:**
 ```bash
-python setup_vastai.py --ip <IP> --port <PORT> --jupyter
+python vastai/setup_vastai.py --ip <IP> --port <PORT> --jupyter
 ```
 Then open http://localhost:8888 in your browser.
 
 **With MLflow port forwarding:**
 ```bash
-python setup_vastai.py --ip <IP> --port <PORT> --mlflow
+python vastai/setup_vastai.py --ip <IP> --port <PORT> --mlflow
 ```
 Then open http://localhost:5000 in your browser.
 
 **Connect only (skip upload/setup):**
 ```bash
-python setup_vastai.py --ip <IP> --port <PORT> --connect-only
+python vastai/setup_vastai.py --ip <IP> --port <PORT> --connect-only
 ```
 
 **Interactive mode (prompts for everything):**
 ```bash
-python setup_vastai.py
+python vastai/setup_vastai.py
 ```
 
 ### Step 5: Manual SSH Connection (Alternative)
@@ -125,8 +125,8 @@ If you skipped the Python script's auto-setup:
 ```bash
 # On the remote instance
 cd /workspace/fake-new-detection
-chmod +x setup_vastai.sh
-./setup_vastai.sh
+chmod +x vastai/setup_vastai.sh
+./vastai/setup_vastai.sh
 ```
 
 This installs:
@@ -184,7 +184,7 @@ ssh -p 20544 root@142.214.185.187 -L 8888:localhost:8888 -L 5000:localhost:5000
 
 ### Upload Project (Python Script)
 ```bash
-python setup_vastai.py
+python vastai/setup_vastai.py
 # Follow prompts to upload
 ```
 
@@ -396,10 +396,10 @@ Your project data:
 
 ```bash
 # One-click setup
-python setup_vastai.py
+python vastai/setup_vastai.py
 
 # Connect with port forwarding
-python setup_vastai.py --ip <IP> --port <PORT> --jupyter --mlflow
+python vastai/setup_vastai.py --ip <IP> --port <PORT> --jupyter --mlflow
 
 # Manual SSH
 ssh -p <PORT> root@<IP>

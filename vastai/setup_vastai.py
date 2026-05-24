@@ -188,8 +188,8 @@ def run_remote_setup(ip: str, port: str, key_path: str):
     
     setup_commands = [
         "cd /workspace/fake-new-detection",
-        "chmod +x setup_vastai.sh",
-        "./setup_vastai.sh"
+        "chmod +x vastai/setup_vastai.sh",
+        "./vastai/setup_vastai.sh"
     ]
     
     cmd = f'ssh -p {port} -i {key_path} -o StrictHostKeyChecking=no root@{ip} "{" && ".join(setup_commands)}"'
@@ -201,7 +201,7 @@ def run_remote_setup(ip: str, port: str, key_path: str):
     else:
         print_error("Remote setup failed. Please run manually:")
         print_info(f"ssh -p {port} -i {key_path} root@{ip}")
-        print_info("cd /workspace/fake-new-detection && ./setup_vastai.sh")
+        print_info("cd /workspace/fake-new-detection && ./vastai/setup_vastai.sh")
 
 def save_connection_config(ip: str, port: str, key_path: str):
     """Save connection details to config file."""
