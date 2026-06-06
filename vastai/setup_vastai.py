@@ -160,7 +160,7 @@ def upload_project(ip: str, port: str, key_path: str, local_path: str, remote_pa
         ".openspec/", ".DS_Store", ".env*", "__pycache__/", "*.pyc",
         ".venv", ".pytest_cache/", "mlruns/", "logs/", "checkpoints/",
         "data/jpg/", "openspec/", "*.zip", "*.npz", "*.tar.gz",
-        ".ipynb_checkpoints/"
+        ".ipynb_checkpoints/", "processed_data/", "*.h5", "*.hdf5"
     ]
     
     exclude_args = " ".join([f"--exclude='{exc}'" for exc in excludes])

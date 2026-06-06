@@ -51,8 +51,11 @@ else
     fi
 
     # Install PyTorch based on CUDA version using uv pip (without extra_index_url to avoid NCCL)
-    if [[ "$CUDA_VERSION" == "13"* ]] || [[ "$CUDA_VERSION" == "12.1"* ]]; then
-        echo "Installing PyTorch for CUDA 12.1 (backward compatible with CUDA 13)..."
+    if [[ "$CUDA_VERSION" == "13"* ]] || [[ "$CUDA_VERSION" == "12.6"* ]] || [[ "$CUDA_VERSION" == "12.5"* ]] || [[ "$CUDA_VERSION" == "12.4"* ]]; then
+        echo "Installing PyTorch for CUDA 12.4 (compatible with CUDA 12.4–13)..."
+        uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124 --extra-index-url https://pypi.org/simple
+    elif [[ "$CUDA_VERSION" == "12.1"* ]] || [[ "$CUDA_VERSION" == "12.2"* ]] || [[ "$CUDA_VERSION" == "12.3"* ]]; then
+        echo "Installing PyTorch for CUDA 12.1..."
         uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121 --extra-index-url https://pypi.org/simple
     elif [[ "$CUDA_VERSION" == "12.0"* ]]; then
         echo "Installing PyTorch for CUDA 12.0..."
@@ -64,27 +67,14 @@ else
         echo "Installing PyTorch for CUDA 11.7..."
         uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu117 --extra-index-url https://pypi.org/simple
     else
-        echo "Unknown CUDA version $CUDA_VERSION, installing latest PyTorch..."
-        uv pip install torch torchvision
+        echo "Unknown CUDA version $CUDA_VERSION, installing latest PyTorch with cu124..."
+        uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124 --extra-index-url https://pypi.org/simple
     fi
 fi
 
-# Install other dependencies
+# Install project dependencies (includes numpy<2, h5py, underthesea, jupyter, protobuf)
 echo "Installing project dependencies..."
-uv pip install "numpy<2"
 uv pip install -r requirements.txt
-
-# Install additional dependencies
-echo "Installing additional dependencies..."
-uv pip install h5py underthesea
-
-# Downgrade protobuf for compatibility (fixes descriptor error)
-echo "Downgrading protobuf for compatibility..."
-uv pip install "protobuf==3.20.3"
-
-# Install Jupyter and create kernel
-echo "Installing Jupyter..."
-uv pip install jupyter jupyterlab ipykernel
 
 # Create Jupyter kernel
 echo "Creating Jupyter kernel..."

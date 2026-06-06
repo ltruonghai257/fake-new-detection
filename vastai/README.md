@@ -12,50 +12,62 @@ This folder contains all scripts and documentation for Vast.ai GPU instance mana
 
 - **setup_vastai.sh** - Shell script for remote environment setup
   - Installs Python dependencies
-  - Sets up PyTorch with CUDA support
+  - Sets up PyTorch with CUDA support (cu118 → cu124+ auto-detected)
   - Configures Jupyter and other tools
 
-- **download_from_vastai.py** - Script to download trained models and artifacts
-  - Downloads checkpoints
-  - Downloads logs and mlruns
-  - Downloads processed data
+- **autosync_vastai.py** - Continuous background sync to local machine
+  - Polls every N minutes (default 5)
+  - Syncs checkpoints, logs, mlruns, stage2_results
+  - Safe to leave running overnight — handles connection drops gracefully
+  - Stop the instance any time; your local copy stays current
+
+- **download_from_vastai.py** - One-shot download of all artifacts
+  - Downloads checkpoints, logs, mlruns, processed data
   - Supports selective or bulk downloads
 
 - **VASTAI_GUIDE.md** - Comprehensive documentation
-  - Step-by-step setup instructions
-  - SSH connection guide
-  - Port forwarding instructions
-  - Troubleshooting tips
 
 ## Quick Start
 
-### Setup and Upload
+### 1. Setup and Upload
 ```bash
-python vastai/setup_vastai.py
+python vastai/setup_vastai.py --ip <IP> --port <PORT> --jupyter
 ```
 
-### Connect with Port Forwarding
+### 2. Start overnight training (on remote via SSH)
 ```bash
-python vastai/setup_vastai.py --ip <IP> --port <PORT> --jupyter --mlflow
+source .venv/bin/activate
+tmux new -s train
+python examples/train_coolant_official.py   # or run notebooks via Jupyter
+# Ctrl+B, D to detach
 ```
 
-### Download Results
+### 3. Auto-sync to local (run this on your local machine)
 ```bash
-# Download all artifacts
+# Syncs every 5 min — safe to leave overnight
+python vastai/autosync_vastai.py
+
+# Or custom interval
+python vastai/autosync_vastai.py --interval 3
+
+# Override connection if needed
+python vastai/autosync_vastai.py --ip <IP> --port <PORT> --interval 5
+```
+Stop the Vast.ai instance whenever you want — the last sync is already local.
+
+### 4. One-shot download (after training finishes)
+```bash
 python vastai/download_from_vastai.py --all
-
-# Download only checkpoints
-python vastai/download_from_vastai.py --checkpoints
-
-# Download specific file
-python vastai/download_from_vastai.py --file /workspace/fake-new-detection/checkpoints/model.pth
 ```
 
-## Workflow
+## Overnight Training Workflow
 
-1. **Initial Setup**: Run `setup_vastai.py` to configure SSH keys and upload project
-2. **Training**: Connect to instance and run training scripts
-3. **Download**: Use `download_from_vastai.py` to fetch trained models and logs
+1. `python vastai/setup_vastai.py --ip <IP> --port <PORT> --jupyter` — setup + connect
+2. On remote: `tmux new -s train && source .venv/bin/activate && jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root`
+3. On local (second terminal): `python vastai/autosync_vastai.py` — starts polling
+4. Run notebooks in browser at http://localhost:8888
+5. Detach tmux, go to sleep
+6. Stop instance in Vast.ai console whenever convenient — auto-sync already grabbed your checkpoints
 
 ## Configuration
 
