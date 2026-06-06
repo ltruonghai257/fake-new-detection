@@ -22,6 +22,59 @@ from .news.real.PhapLuatHcmCrawler import PhapLuatHcmCrawler
 from .news.real.ThanhNienCrawler import ThanhNienCrawler
 from .news.real.TienPhongCrawler import TienPhongCrawler
 
+class CrawlJournal:
+    """
+    Tracks completed and failed URLs for resumable crawling.
+
+    Responsibilities:
+    - Load/save the completed-URL cache (``cache_path``)
+    - Load/save the failed-URL log (``failed_path``)
+    - Decide which URLs to skip (completed always; failed only when ``retry_failed=False``)
+    """
+
+    def __init__(self, cache_path: str, failed_path: str):
+        self.cache_path = cache_path
+        self.failed_path = failed_path
+
+    def load(self):
+        """
+        Read both persisted files.
+
+        Returns:
+            (completed_list, completed_lookup, prev_failed)
+        """
+        completed_list: List[Dict] = []
+        completed_lookup: Dict[str, Dict] = {}
+        if os.path.exists(self.cache_path):
+            with open(self.cache_path, 'r') as f:
+                data = json.load(f)
+                if 'urls' in data and isinstance(data['urls'], list):
+                    completed_list = data['urls']
+                    for item in completed_list:
+                        completed_lookup[item['url']] = item
+            logger.info(f"Loaded {len(completed_list)} completed URLs from cache (will skip).")
+
+        prev_failed: Dict[str, Dict] = {}
+        if os.path.exists(self.failed_path):
+            with open(self.failed_path, 'r') as f:
+                for item in json.load(f):
+                    prev_failed[item['url']] = item
+
+        return completed_list, completed_lookup, prev_failed
+
+    def save_checkpoint(self, completed_list: List[Dict]) -> None:
+        """Persist the completed-URL cache to disk."""
+        if completed_list:
+            with open(self.cache_path, 'w') as f:
+                json.dump({'length': len(completed_list), 'urls': completed_list}, f)
+
+    def save_failed(self, all_failed: Dict[str, Dict]) -> None:
+        """Persist the failed-URL log to disk."""
+        if all_failed:
+            with open(self.failed_path, 'w') as f:
+                json.dump(list(all_failed.values()), f, indent=2)
+
+
 class CrawlerFactory:
     CRAWLER_MAPPING = {
         "vnexpress.net": VnExpressCrawler,
@@ -101,31 +154,15 @@ class CrawlerFactory:
         """
         import asyncio
 
+        journal = CrawlJournal(self.cache_filename, self.failed_log_filename)
+        completed_urls_list, completed_urls_lookup, prev_failed = journal.load()
+
         all_results_data = []
         file_handler = FileHandler()
-        completed_urls_list: List[Dict] = []
-        completed_urls_lookup: Dict[str, Dict] = {}
         failed_urls_data: Dict[str, Dict] = {}
         formatter = OutputFormatter.get_formatter(format_name)
         lock = asyncio.Lock()
         completed_since_save = 0
-
-        # Load completed cache (always skip these)
-        if os.path.exists(self.cache_filename):
-            with open(self.cache_filename, 'r') as f:
-                cached_data = json.load(f)
-                if 'urls' in cached_data and isinstance(cached_data['urls'], list):
-                    completed_urls_list = cached_data['urls']
-                    for item in completed_urls_list:
-                        completed_urls_lookup[item['url']] = item
-            logger.info(f"Loaded {len(completed_urls_list)} completed URLs from cache (will skip).")
-
-        # Load failed cache
-        prev_failed: Dict[str, Dict] = {}
-        if os.path.exists(self.failed_log_filename):
-            with open(self.failed_log_filename, 'r') as f:
-                for item in json.load(f):
-                    prev_failed[item['url']] = item
 
         # Decide what to crawl
         urls_to_skip = set(completed_urls_lookup.keys())
@@ -146,10 +183,8 @@ class CrawlerFactory:
         sem = asyncio.Semaphore(max_concurrent)
 
         async def _save_checkpoint():
-            """Save cache + results to disk (for crash recovery)."""
-            if completed_urls_list:
-                with open(self.cache_filename, 'w') as f:
-                    json.dump({'length': len(completed_urls_list), 'urls': completed_urls_list}, f)
+            """Save cache to disk (for crash recovery)."""
+            journal.save_checkpoint(completed_urls_list)
 
         async def process_url(url, pbar):
             nonlocal completed_since_save
@@ -222,9 +257,7 @@ class CrawlerFactory:
         # Remove any that succeeded on retry
         for url in completed_urls_lookup:
             all_failed.pop(url, None)
-        if all_failed:
-            with open(self.failed_log_filename, 'w') as f:
-                json.dump(list(all_failed.values()), f, indent=2)
+        journal.save_failed(all_failed)
 
         self._print_summary(completed_urls_lookup, failed_urls_data, all_failed)
 

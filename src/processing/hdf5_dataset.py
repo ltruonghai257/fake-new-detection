@@ -1,5 +1,9 @@
 """
 HDF5 Dataset for memory-efficient loading of preprocessed features.
+
+NOTE: New code should use ``from src.data.loader import HDF5Dataset`` instead.
+The canonical, consolidated implementation now lives in ``src/data/loader/hdf5.py``.
+The classes below are kept for backward compatibility.
 """
 
 import torch

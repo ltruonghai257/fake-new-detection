@@ -13,6 +13,18 @@ import torch.nn as nn
 from .coolant_official import COOLANT_Official
 
 
+def _apply_all_patches(model: "PatchedCOOLANT", image_dim: int, text_dim: int, dropout: float = 0.1) -> None:
+    """Apply the full patch chain for a given image/text feature dimension pair."""
+    patch_encoding(model.similarity_module.encoding, image_dim=image_dim)
+    patch_encoding(model.detection_module.encoding, image_dim=image_dim)
+    patch_encoding(model.detection_module.ambiguity_module.encoding, image_dim=image_dim)
+    patch_clip_projection(model.clip_module, target_dim=image_dim, is_image=True)
+    patch_clip_projection(model.clip_module, target_dim=text_dim, is_image=False)
+    patch_cnn_with_dropout(model.similarity_module.encoding.shared_text_encoding, input_dim=text_dim, dropout=dropout)
+    patch_cnn_with_dropout(model.detection_module.encoding.shared_text_encoding, input_dim=text_dim, dropout=dropout)
+    patch_cnn_with_dropout(model.detection_module.ambiguity_module.encoding.shared_text_encoding, input_dim=text_dim, dropout=dropout)
+
+
 class PatchedCOOLANT(COOLANT_Official):
     """
     COOLANT wrapper that patches layer dimensions for arbitrary feature extractors.
@@ -28,6 +40,28 @@ class PatchedCOOLANT(COOLANT_Official):
 
     def __init__(self, config):
         super().__init__(config)
+
+    @classmethod
+    def from_config(cls, model_cfg: dict, device: str = "cpu") -> "PatchedCOOLANT":
+        """
+        Build a PatchedCOOLANT with all dimension patches applied.
+
+        Args:
+            model_cfg: CONFIG["model"] dict.  Must contain ``image_dim``,
+                ``text_embed_dim`` (or ``text_dim``), and ``dropout``.
+                All other keys are forwarded to the COOLANT_Official constructor.
+            device: Target device string (e.g. "cuda", "mps", "cpu").
+        """
+        _PATCH_KEYS = {"image_dim", "text_embed_dim", "text_dim", "variant"}
+        inner_cfg = {k: v for k, v in model_cfg.items() if k not in _PATCH_KEYS}
+        model = cls(inner_cfg)
+        _apply_all_patches(
+            model,
+            image_dim=model_cfg["image_dim"],
+            text_dim=model_cfg.get("text_embed_dim", model_cfg.get("text_dim", 768)),
+            dropout=model_cfg.get("dropout", 0.1),
+        )
+        return model.to(device)
 
     def encode_text(self, text):
         """
