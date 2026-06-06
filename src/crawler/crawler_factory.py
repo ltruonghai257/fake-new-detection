@@ -75,6 +75,77 @@ class CrawlJournal:
                 json.dump(list(all_failed.values()), f, indent=2)
 
 
+class DomainRateLimiter:
+    """
+    Per-domain rate limiter with adaptive backoff.
+
+    Ensures a minimum interval between consecutive requests to the same domain.
+    On 428/429, the interval doubles (up to MAX_INTERVAL).
+    On success, it decays back toward the configured base.
+    """
+
+    BASE_INTERVALS: Dict[str, float] = {
+        "dantri.com.vn":   3.0,
+        "tuoitre.vn":      1.0,
+        "vnexpress.net":   0.5,
+        "nld.com.vn":      1.0,
+        "baochinhphu.vn":  1.0,
+        "plo.vn":          1.0,
+        "thanhnien.vn":    1.0,
+        "tienphong.vn":    1.0,
+        "baotintuc.vn":    1.0,
+    }
+    DEFAULT_INTERVAL = 1.0
+    MAX_INTERVAL = 60.0
+
+    def __init__(self):
+        self._locks: Dict[str, asyncio.Lock] = {}
+        self._last_request: Dict[str, float] = {}
+        self._current_interval: Dict[str, float] = {}
+        self._meta_lock = asyncio.Lock()
+
+    def _match_domain(self, url: str) -> str:
+        netloc = urlparse(url).netloc
+        for key in self.BASE_INTERVALS:
+            if key in netloc:
+                return key
+        return netloc
+
+    async def _ensure(self, domain: str):
+        async with self._meta_lock:
+            if domain not in self._locks:
+                self._locks[domain] = asyncio.Lock()
+                self._last_request[domain] = 0.0
+                self._current_interval[domain] = self.BASE_INTERVALS.get(domain, self.DEFAULT_INTERVAL)
+
+    async def wait(self, url: str):
+        """Throttle: block until the per-domain interval has elapsed since the last request."""
+        domain = self._match_domain(url)
+        await self._ensure(domain)
+        async with self._locks[domain]:
+            interval = self._current_interval[domain]
+            elapsed = asyncio.get_event_loop().time() - self._last_request[domain]
+            wait_time = interval - elapsed
+            if wait_time > 0:
+                await asyncio.sleep(wait_time)
+            self._last_request[domain] = asyncio.get_event_loop().time()
+
+    def on_rate_limited(self, url: str):
+        """Double the interval when a 428/429 is received."""
+        domain = self._match_domain(url)
+        if domain in self._current_interval:
+            new = min(self._current_interval[domain] * 2, self.MAX_INTERVAL)
+            logger.warning(f"[RateLimiter] {domain}: 428 hit — interval {self._current_interval[domain]:.1f}s → {new:.1f}s")
+            self._current_interval[domain] = new
+
+    def on_success(self, url: str):
+        """Decay interval back toward the configured base after a successful request."""
+        domain = self._match_domain(url)
+        base = self.BASE_INTERVALS.get(domain, self.DEFAULT_INTERVAL)
+        if domain in self._current_interval and self._current_interval[domain] > base:
+            self._current_interval[domain] = max(base, self._current_interval[domain] * 0.8)
+
+
 class CrawlerFactory:
     CRAWLER_MAPPING = {
         "vnexpress.net": VnExpressCrawler,
@@ -154,6 +225,7 @@ class CrawlerFactory:
         """
         import asyncio
 
+        rate_limiter = DomainRateLimiter()
         journal = CrawlJournal(self.cache_filename, self.failed_log_filename)
         completed_urls_list, completed_urls_lookup, prev_failed = journal.load()
 
@@ -186,9 +258,12 @@ class CrawlerFactory:
             """Save cache to disk (for crash recovery)."""
             journal.save_checkpoint(completed_urls_list)
 
+        _RATE_LIMIT_SIGNALS = ("428", "429", "Too Many", "rate limit")
+
         async def process_url(url, pbar):
             nonlocal completed_since_save
             async with sem:
+                await rate_limiter.wait(url)
                 start_time = time.time()
                 crawler = self.get_crawler(url)
                 if crawler:
@@ -197,6 +272,7 @@ class CrawlerFactory:
                         for result in results:
                             duration = round(time.time() - start_time, 2)
                             if result.success:
+                                rate_limiter.on_success(url)
                                 saved_images = await crawler._save_images(result, ".jpg")
                                 result.images = saved_images
                                 prepared_data = formatter(result)
@@ -215,10 +291,14 @@ class CrawlerFactory:
                                         completed_since_save = 0
                             else:
                                 reason = result.error or "Unknown error"
+                                if any(s in reason for s in _RATE_LIMIT_SIGNALS):
+                                    rate_limiter.on_rate_limited(url)
                                 async with lock:
                                     failed_urls_data[url] = {'url': url, 'reason': reason[:200], 'timestamp': datetime.now().isoformat(), 'duration': duration}
                     except Exception as e:
                         duration = round(time.time() - start_time, 2)
+                        if any(s in str(e) for s in _RATE_LIMIT_SIGNALS):
+                            rate_limiter.on_rate_limited(url)
                         async with lock:
                             failed_urls_data[url] = {'url': url, 'reason': str(e)[:200], 'timestamp': datetime.now().isoformat(), 'duration': duration}
                 else:

@@ -1,0 +1,781 @@
+2026-06-06 14:05:04 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:171 - Skipping 0 previously failed URLs (use retry_failed=True to retry).
+2026-06-06 14:05:04 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:176 - URLs to crawl: 5062 (skipped: 0, concurrency=10)
+2026-06-06 14:05:24 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://tuoitre.vn/trong-tai-bi-vay-o-tran-futsal-sieu-kinh-dien-viet-nam-20230323200359357.htm'): peer closed connection without sending complete message body (received 171672 bytes, expected 197236)
+2026-06-06 14:06:14 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/T4q4jIFMYhWuVTm6JGAuBhxKtAE=/thumb_w/1020/2023/03/30/anh-edited-1680147661409.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:17 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/eA1kl4nqzvb1o0fNJ9SUw_BSG4M=/thumb_w/1020/2023/03/29/thai-lan-3-1680076674717.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:17 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/d_6a3E7lPJ_2RwiZ5WflpTpNKfA=/thumb_w/1020/2023/03/29/thai-lan-1680076674571.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:17 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/pfUCENriNHsh5Sthg86HJGfzkXY=/thumb_w/1020/2023/03/29/praveenar-singh-thakral-veena-1680076758331.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:18 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/WR851IQJYsxQkFP356c1ukE5YVw=/thumb_w/1020/2023/03/30/68a0085e76139f4dc602-1680159702575.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:18 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/2WXSCcC2KkeqMEFokbHVkoDS5Cc=/thumb_w/1020/2023/03/30/photo-2-1679968935842224381586-1680159743335.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:18 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/lilDRaVzVStH0TAJneizidNTmok=/thumb_w/1020/2023/03/30/uzbekistan-indonesia-group-a-afcu205-1678205401671-1679983647501-1680106310678-1680159810117.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:18 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/kVak_5MTFxOFgAorWIepedkRxQY=/thumb_w/1020/2023/03/29/z4220611760105399ea7276db333669ba1dd08c3817a67-crop-crop-1680075619688.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:19 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/PQ2gzVOSeZFOq9jUvBWHx_xWQhs=/thumb_w/1020/2023/03/27/lu3-edited-1679890220573.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:19 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/zdI8i_Z59KFfpFGHWT7gh6XrGnM=/thumb_w/1020/2023/03/27/lu2-1679890170353.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:19 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/NSq3sMmSw1GmkkXMy2IdbotYiEA=/thumb_w/1020/2023/03/07/thai-thien-phuong-33-1678178461763.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:19 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/MghxVpKP15M8vPAmu3MEjOqvlQY=/thumb_w/1020/2023/03/06/thai-thien-phuong-2-1678089959366.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:19 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Tk7mKwU2fnAQfg-3DT8d3IwM8TI=/thumb_w/1020/2023/03/07/thai-thien-phuong-34-1678178461087.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:19 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/DvKU3ijbx-WO3NqA1roVBoy4ol0=/thumb_w/1020/2023/03/07/thai-thien-phuong-6-1678151268449.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:20 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/zz6MfLAlCc-gV507hFMKUewkM4I=/thumb_w/1020/2023/03/22/su-phan-boi-lan-nhau-trong-gia-dinh-sat-thu-sau-khi-doat-mang-2-nguoi-1-edited-1679445389509.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:21 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/AU4FY_uvHT0tHPAnVY2LkOIvTXE=/thumb_w/1020/2023/03/23/1-1679568023427.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:21 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/hsXH-Oy8T2grhQoJwyUMSEbXNPI=/thumb_w/1020/2023/03/23/2-1679568023443.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:22 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/L278OiX01xcprDRvHuS_KdGqYu4=/thumb_w/1020/2023/03/23/6-1679568023435.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:22 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/y5S8ienkoeUP7eWHewhgWILWAms=/thumb_w/1020/2023/03/23/3-1679568023460.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:22 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/55Q_2nQH7s_USxwOirqXu9-prbA=/thumb_w/1020/2023/03/23/5-1679568023452.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:22 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/mCIjO-Jik-mUzZZrKnpAQ2iKOHU=/thumb_w/1020/2023/03/23/4-1679568023428.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:22 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/kpbskAIZFRLGtB15EbDodv1YiWY=/thumb_w/1020/2023/03/23/7-1679568023452.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:23 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/wlca24IghkhAQsRNknfqm-YnSAM=/thumb_w/1020/2023/03/25/vo-van-thuong-crop-1679736519202.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:23 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/QIIGV_UiLPhDfio76fzSABHcmI0=/thumb_w/1020/2023/03/24/tongthongukrainegetty-1679620185032.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:23 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/wlca24IghkhAQsRNknfqm-YnSAM=/thumb_w/1020/2023/03/25/vo-van-thuong-crop-1679736519202.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:25 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/ibPE2Np7fuXZkVWtIXaiKb9UCgw=/thumb_w/1020/2023/03/29/vu-tai-xe-taxi-tong-bao-ve-khu-do-thi-o-ha-noi-nan-nhan-da-tu-vong-1-edited-1680055983061.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:25 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/p2XWpp8D5rFvtnD8l_S429BVbTQ=/thumb_w/1020/2023/03/30/3372063617377729745533105189042207225898367n-edited-edited-1680146385479.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:25 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/iylwTAWVruU0JacWiQ7m9TSWd9M=/thumb_w/1020/2023/03/30/334674472133857682817344123202130484908639n-edited-1680146427234.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:26 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/6bZo4U4o7nS-r5Uf3-AYyeWpRHA=/thumb_w/1020/2023/03/30/truc-tiep-u23-viet-nam-0-1-u23-iraq-duy-cuong-pham-loi-trong-vong-cam-260626-1679598502088-1680173296789.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:26 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/qR-08PXacDnpTH_A_ZX4LHe-aj4=/thumb_w/1020/2023/03/30/u23-vietnam-u23-kyrgyzstan-1-16800262101041623761995-1680173339185.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:27 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/DOkmUYClQ79dVpS-Zka0C88-2T0=/thumb_w/1020/2023/03/20/anh-chup-man-hinh-2023-03-20-luc-074105-1679272973120.png'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/rnzGwUYbZbCl-rHsrfz8Kt0TS84=/thumb_w/1020/2023/03/30/3003docx-1680172840604.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/iEcfzhR9z5moo-Cd1nDZ1Zaj4KA=/thumb_w/1020/2023/03/30/3003docx-1680172840736.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/NSq3sMmSw1GmkkXMy2IdbotYiEA=/thumb_w/1020/2023/03/07/thai-thien-phuong-33-1678178461763.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/MghxVpKP15M8vPAmu3MEjOqvlQY=/thumb_w/1020/2023/03/06/thai-thien-phuong-2-1678089959366.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:29 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/DvKU3ijbx-WO3NqA1roVBoy4ol0=/thumb_w/1020/2023/03/07/thai-thien-phuong-6-1678151268449.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:29 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Tk7mKwU2fnAQfg-3DT8d3IwM8TI=/thumb_w/1020/2023/03/07/thai-thien-phuong-34-1678178461087.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:29 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/lUtR2Yz1WMI7e8lYkHfd1MOgbZQ=/thumb_w/1020/2023/03/25/pham-thi-thanh-tra-1679710653336.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:30 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Qi98UHzIohRN4JKAAD_KMfsaB8w=/thumb_w/1020/2023/03/29/lik6lvzy55mgbk4xhsobczevue-1680051359691.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:31 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/QIIGV_UiLPhDfio76fzSABHcmI0=/thumb_w/1020/2023/03/24/tongthongukrainegetty-1679620185032.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:31 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Ins534MqZ8PuwB65dZplwHWKMAY=/thumb_w/1020/2023/03/30/manopolking1matichon30-3-23-1680151826817.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:32 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/AZRi4zxVKaVZRGIYSRiAAKAnq5k=/thumb_w/1020/2023/03/19/yoo-ah-in-1-1679193546033.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:32 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/h451nJueCSaoPB1OQqHCerV5U7c=/thumb_w/1020/2023/03/19/yoo-ah-in-2-1679193546032.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:34 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/NSq3sMmSw1GmkkXMy2IdbotYiEA=/thumb_w/1020/2023/03/07/thai-thien-phuong-33-1678178461763.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:34 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/MghxVpKP15M8vPAmu3MEjOqvlQY=/thumb_w/1020/2023/03/06/thai-thien-phuong-2-1678089959366.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:34 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/DvKU3ijbx-WO3NqA1roVBoy4ol0=/thumb_w/1020/2023/03/07/thai-thien-phuong-6-1678151268449.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:34 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Tk7mKwU2fnAQfg-3DT8d3IwM8TI=/thumb_w/1020/2023/03/07/thai-thien-phuong-34-1678178461087.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/RkNltSOKdIg2T7FyiVJBP0DbmeQ=/thumb_w/1020/2023/03/17/6-1679045432925.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/UzWmj4hifBXg_NDIeEcmS6ZuCAs=/thumb_w/1020/2023/03/17/8-1679045433127.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/iNed4I1RGdmwMiICWRHu4hyYj1o=/thumb_w/1020/2023/03/17/du-an-du-lich-om-dat-vang-roi-bo-hoang-gan-2-thap-ky-14-edited-1679064751226.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Op4ixgonM_p6hkoI-NvV4j7AXG8=/thumb_w/1020/2023/03/17/anh-1-edited-1679046887275.jpeg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Ins534MqZ8PuwB65dZplwHWKMAY=/thumb_w/1020/2023/03/30/manopolking1matichon30-3-23-1680151826817.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:36 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/WR851IQJYsxQkFP356c1ukE5YVw=/thumb_w/1020/2023/03/30/68a0085e76139f4dc602-1680159702575.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:36 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/2WXSCcC2KkeqMEFokbHVkoDS5Cc=/thumb_w/1020/2023/03/30/photo-2-1679968935842224381586-1680159743335.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:36 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/lilDRaVzVStH0TAJneizidNTmok=/thumb_w/1020/2023/03/30/uzbekistan-indonesia-group-a-afcu205-1678205401671-1679983647501-1680106310678-1680159810117.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Mp_Us-LQRqVhNr5xCjUih1GdN1I=/thumb_w/1020/2023/03/11/cac-cuu-du-hoc-sinh-anh-tai-viet-nam-hoi-ngo-trong-su-kien-gap-go-va-ket-noidocx-1678513233960.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/LRp_LWjzfcZEQsoB_UgSjoPMu18=/thumb_w/1020/2023/03/11/cac-cuu-du-hoc-sinh-anh-tai-viet-nam-hoi-ngo-trong-su-kien-gap-go-va-ket-noidocx-1678513234206.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/eNtXwe87p5HO79WQ2FG7bjr43AY=/thumb_w/1020/2023/03/11/cac-cuu-du-hoc-sinh-anh-tai-viet-nam-hoi-ngo-trong-su-kien-gap-go-va-ket-noidocx-1678513234742.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/HKqb9wJSHGzJFqPQFt7dkqunIQU=/thumb_w/1020/2023/03/11/cac-cuu-du-hoc-sinh-anh-tai-viet-nam-hoi-ngo-trong-su-kien-gap-go-va-ket-noidocx-1678513234428.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/5LwZlaB6EGnByKutuW41VDEj6L4=/thumb_w/1020/2023/03/11/cac-cuu-du-hoc-sinh-anh-tai-viet-nam-hoi-ngo-trong-su-kien-gap-go-va-ket-noidocx-1678513234897.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/4RL49-ahat2O2JFH1V7hzO_GEaI=/thumb_w/1020/2023/03/11/cac-cuu-du-hoc-sinh-anh-tai-viet-nam-hoi-ngo-trong-su-kien-gap-go-va-ket-noidocx-1678513234588.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/WaROiWw7CEG8dKM29EbuG9vCFWA=/thumb_w/1020/2023/03/11/cac-cuu-du-hoc-sinh-anh-tai-viet-nam-hoi-ngo-trong-su-kien-gap-go-va-ket-noidocx-1678513235011.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/hMCPp70rBfacakzqrBZ2UzzYBmY=/thumb_w/1020/2023/03/25/3-1679740537851.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/tgOH3rWDH6GPSxOrKIgUSaGIzeM=/thumb_w/1020/2023/03/25/1-1679740522331.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/NhUWDyo-wZoHo-JN_7ieF0wMunw=/thumb_w/1020/2023/03/25/6-1679740508949.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/EIQ7nlPeBjBKloK3EqlrQ7_lFig=/thumb_w/1020/2023/03/25/5-1679740626926.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/5EfH1n2x4-gJLAect8tlm99KWlw=/thumb_w/1020/2023/03/25/8-1679740660846.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:38 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/vCOwvlQaUfFZaMc5bYfCMI0lgEo=/thumb_w/1020/2023/03/27/ngo-doc-botulinum-1679920457674.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:38 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/L1CNjn9a0lj_ZbzyA-gFC33qAMU=/thumb_w/1020/2023/03/19/botulinum-6-1679205679033.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:42 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/I_oSiw5O62LaKgs3Ujc0Usw_uIo=/thumb_w/1020/2023/03/28/gai-ma-tuy2-1680017297274.png'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:42 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/KAeWUQppd6Owy49ibE1_tGgd_tM=/thumb_w/1020/2023/03/28/gai-ma-tuy3-1680017297280.png'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:42 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/CYkV3Qz86KeQbuqG9SI5QTyDZ3A=/thumb_w/1020/2023/03/28/gai-ma-tuy-1680017297623.png'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:42 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/rnzGwUYbZbCl-rHsrfz8Kt0TS84=/thumb_w/1020/2023/03/30/3003docx-1680172840604.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:42 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/iEcfzhR9z5moo-Cd1nDZ1Zaj4KA=/thumb_w/1020/2023/03/30/3003docx-1680172840736.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:45 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/AZRi4zxVKaVZRGIYSRiAAKAnq5k=/thumb_w/1020/2023/03/19/yoo-ah-in-1-1679193546033.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:45 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/h451nJueCSaoPB1OQqHCerV5U7c=/thumb_w/1020/2023/03/19/yoo-ah-in-2-1679193546032.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:45 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/iNed4I1RGdmwMiICWRHu4hyYj1o=/thumb_w/1020/2023/03/17/du-an-du-lich-om-dat-vang-roi-bo-hoang-gan-2-thap-ky-14-edited-1679064751226.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:45 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/RkNltSOKdIg2T7FyiVJBP0DbmeQ=/thumb_w/1020/2023/03/17/6-1679045432925.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:45 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/UzWmj4hifBXg_NDIeEcmS6ZuCAs=/thumb_w/1020/2023/03/17/8-1679045433127.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:45 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Op4ixgonM_p6hkoI-NvV4j7AXG8=/thumb_w/1020/2023/03/17/anh-1-edited-1679046887275.jpeg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:47 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/cglZN8e76T6aen9aNeUNMtEZffs=/thumb_w/1020/2023/03/28/thi-tot-nghiep-thpt-manh-quan71-1679984545426.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:47 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/wfKF4i1viSQYEb0KN-x4Rw9Mahw=/thumb_w/1020/2023/03/28/thi-tot-nghiep-thpt-2022-manh-quan5-1679984544735.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:49 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:49 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:49 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/gUmvuUN-a_uZ6eHJDB0xUzxJ3ig=/thumb_w/1020/2023/03/25/phi-cao-toc-ha-noi-hoa-binh-edited-1679757870841.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:51 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-thao/hlv-iraq-noi-mot-dieu-ve-suc-manh-cua-u23-viet-nam-20230320173114638.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:51 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/dau-dau-te-moi-tay-chan-coi-chung-moi-hoa-thoai-hoa-dot-song-20230320133935292.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:53 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/nhap-khau-hang-hoa-co-phu-thuoc-vao-nganh-nghe-kinh-doanh-khong-20230328073250977.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:53 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-gioi/hoang-tu-harry-dot-nong-cuoc-chien-voi-bao-la-cai-nuoc-anh-20230329080140409.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:54 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/I_oSiw5O62LaKgs3Ujc0Usw_uIo=/thumb_w/1020/2023/03/28/gai-ma-tuy2-1680017297274.png'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:54 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/KAeWUQppd6Owy49ibE1_tGgd_tM=/thumb_w/1020/2023/03/28/gai-ma-tuy3-1680017297280.png'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:54 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/CYkV3Qz86KeQbuqG9SI5QTyDZ3A=/thumb_w/1020/2023/03/28/gai-ma-tuy-1680017297623.png'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:54 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/RkNltSOKdIg2T7FyiVJBP0DbmeQ=/thumb_w/1020/2023/03/17/6-1679045432925.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:54 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/iNed4I1RGdmwMiICWRHu4hyYj1o=/thumb_w/1020/2023/03/17/du-an-du-lich-om-dat-vang-roi-bo-hoang-gan-2-thap-ky-14-edited-1679064751226.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:54 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/UzWmj4hifBXg_NDIeEcmS6ZuCAs=/thumb_w/1020/2023/03/17/8-1679045433127.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:54 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Op4ixgonM_p6hkoI-NvV4j7AXG8=/thumb_w/1020/2023/03/17/anh-1-edited-1679046887275.jpeg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:55 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/AZRi4zxVKaVZRGIYSRiAAKAnq5k=/thumb_w/1020/2023/03/19/yoo-ah-in-1-1679193546033.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:55 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/h451nJueCSaoPB1OQqHCerV5U7c=/thumb_w/1020/2023/03/19/yoo-ah-in-2-1679193546032.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:55 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/hoan-xet-xu-cuu-chu-tich-alibaba-nguyen-thai-luyen-va-dong-pham-20230327111411648.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:55 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/can-bo-so-giao-thong-van-tai-bac-giang-bi-bat-vi-dua-hoi-lo-20230327215110405.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:55 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/nhung-buc-tuong-vang-tai-pho-co-hoi-an-bi-boi-ban-20230320142648654.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:56 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-thao/hlv-iraq-noi-mot-dieu-ve-suc-manh-cua-u23-viet-nam-20230320173114638.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:56 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/mot-bo-phan-can-bo-co-tu-tuong-chan-chu-giu-an-toan-so-sai-20230325092513887.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:56 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/6bZo4U4o7nS-r5Uf3-AYyeWpRHA=/thumb_w/1020/2023/03/30/truc-tiep-u23-viet-nam-0-1-u23-iraq-duy-cuong-pham-loi-trong-vong-cam-260626-1679598502088-1680173296789.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:56 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/qR-08PXacDnpTH_A_ZX4LHe-aj4=/thumb_w/1020/2023/03/30/u23-vietnam-u23-kyrgyzstan-1-16800262101041623761995-1680173339185.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:57 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/mot-bo-phan-can-bo-co-tu-tuong-chan-chu-giu-an-toan-so-sai-20230325092513887.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:58 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/hoc-sinh-gioi-quoc-gia-o-dak-nong-duoc-tao-dieu-kien-on-luyen-tot-nhat-20230320083714065.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:58 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/gia-dinh-mot-chu-tich-phuong-o-hai-phong-xay-9-can-nha-lien-ke-khong-phep-20230330102350477.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:59 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/mien-bac-mua-lanh-truoc-khi-don-dot-nang-nong-cuc-bo-20230330080713632.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:06:59 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc/nong-sua-doi-quy-che-thi-tot-nghiep-thpt-20230328133533795.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/-l9VRtAJNv_ZkfKXO7hY22i7qZc=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-5-1679887457349.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/aMI65m1MO1V5awczWWlmKi1lXrQ=/thumb_w/1020/2023/03/27/karolina-bielawska-19-1679887457422.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/B2udegPNaFjaj7mscF_oDbbEPU4=/thumb_w/1020/2023/03/27/karolina-bielawska-24-1679887457154.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/txOfnUyifrr5vtIhWiF5dDkeV6c=/thumb_w/1020/2023/03/27/karolina-bielawska-30-1679887457071.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/HiIMMPNuuHFppW8vtyOD80ougfY=/thumb_w/1020/2023/03/27/karolina-bielawska-6-1679887457041.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/r2GV44rsWsKKG11IZJoyrjpejRI=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-13-1679887456281.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/kPNgnIjnau7U-DmBtIb9BN4dMI0=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-12-1679887456396.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/ILNYyj79uDFw_KW0147TEf-Phqc=/thumb_w/1020/2023/03/27/karolina-bielawska-26-1679887457213.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/CAQGb_Yx82klVRTt8HvOC22BCRI=/thumb_w/1020/2023/03/27/karolina-bielawska-15-1679887457086.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/_9Qrdf0IF7kL6f_C8zRW_a07aq4=/thumb_w/1020/2023/03/27/karolina-bielawska-27-1679887457408.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/ILGBUiFv8I7XblA_JSpM-8pPeCM=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-2-1679887454558.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/p7aLF-hMfqGKXmXnM-CIBF5J91w=/thumb_w/1020/2023/03/27/karolina-bielawska-31-1679887457081.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/vPx4pML8WevRTQWgNqBy9fL61pE=/thumb_w/1020/2023/03/27/karolina-bielawska-23-1679887457283.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/kMCW_CikuyjnN2ni24ur4u-xJYs=/thumb_w/1020/2023/03/27/karolina-bielawska-2-1679887457002.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/aIk69fe0Vl93LMuCpnLFCQ6mQ9Y=/thumb_w/1020/2023/03/27/karolina-bielawska-4-1679887455471.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/uSe_XD_N1VZGkUlFyDXPFHXR0Gg=/thumb_w/1020/2023/03/27/karolina-bielawska-29-1679887457046.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/bMlIQ4y5K6Toca3-q5pPGmbHjlU=/thumb_w/1020/2023/03/27/karolina-bielawska-1679887455938.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/OxpI9OqYdxLjhiaegjcRhInkrbY=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-11-1679887455848.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/e8A4Qd7Zlk_d6SFPpcQW9MdHVnU=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-1-1679887455806.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/DSDRgaFYRD4BZGpeTE6kOprNf3A=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-14-edited-1679887850301.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/HHYBociJjxPwyBpexedj-mH3qng=/thumb_w/1020/2023/03/27/karolina-bielawska-3-1679887455117.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/O9jytVe27AiCZ-wEdqF-Jv7Cvkg=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-3-1679887455265.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:00 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/BWF7_GghLx9WKhd6tpD64AfTUTQ=/thumb_w/1020/2023/03/27/karolina-bielawska-28-1679887457009.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:01 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giai-tri/bat-tinh-nhan-cua-chong-cu-nguoi-mau-hong-kong-bi-sat-hai-20230307154638337.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:01 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/eA1kl4nqzvb1o0fNJ9SUw_BSG4M=/thumb_w/1020/2023/03/29/thai-lan-3-1680076674717.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:01 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/d_6a3E7lPJ_2RwiZ5WflpTpNKfA=/thumb_w/1020/2023/03/29/thai-lan-1680076674571.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:01 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/pfUCENriNHsh5Sthg86HJGfzkXY=/thumb_w/1020/2023/03/29/praveenar-singh-thakral-veena-1680076758331.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:01 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:01 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-thao/bao-indonesia-binh-luan-khi-doi-nha-bi-tuoc-quyen-dang-cai-world-cup-u20-20230330140915973.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:03 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/DOkmUYClQ79dVpS-Zka0C88-2T0=/thumb_w/1020/2023/03/20/anh-chup-man-hinh-2023-03-20-luc-074105-1679272973120.png'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:04 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/truy-duoi-ke-trom-xe-sh-hai-vo-chong-cung-bi-thuong-20230329114910144.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:04 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bi-thu-ha-noi-doi-moi-de-nang-cao-chat-luong-phuc-vu-nguoi-dan-20230328200513827.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:04 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/ly-do-dem-nhac-co-mat-hien-ho-bi-huy-bo-20230330103110566.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:04 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/cglZN8e76T6aen9aNeUNMtEZffs=/thumb_w/1020/2023/03/28/thi-tot-nghiep-thpt-manh-quan71-1679984545426.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:04 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/wfKF4i1viSQYEb0KN-x4Rw9Mahw=/thumb_w/1020/2023/03/28/thi-tot-nghiep-thpt-2022-manh-quan5-1679984544735.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:04 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/ibPE2Np7fuXZkVWtIXaiKb9UCgw=/thumb_w/1020/2023/03/29/vu-tai-xe-taxi-tong-bao-ve-khu-do-thi-o-ha-noi-nan-nhan-da-tu-vong-1-edited-1680055983061.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:04 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/nam-benh-nhan-mang-chum-nho-khong-lo-20-nam-tren-mat-20230309155833682.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:05 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/d_6a3E7lPJ_2RwiZ5WflpTpNKfA=/thumb_w/1020/2023/03/29/thai-lan-1680076674571.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:05 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/eA1kl4nqzvb1o0fNJ9SUw_BSG4M=/thumb_w/1020/2023/03/29/thai-lan-3-1680076674717.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:05 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/pfUCENriNHsh5Sthg86HJGfzkXY=/thumb_w/1020/2023/03/29/praveenar-singh-thakral-veena-1680076758331.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:06 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/hoa-hau-qua-doi-thuong-tam-khi-tim-cach-thoat-khoi-toa-chung-cu-bi-hoa-hoan-20230328103357795.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:06 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc/nong-sua-doi-quy-che-thi-tot-nghiep-thpt-20230328133533795.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:06 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/van-hoa-sa-huynh-duoc-cong-nhan-di-tich-quoc-gia-dac-biet-20230324131331038.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:07 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:07 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/can-bo-so-giao-thong-van-tai-bac-giang-bi-bat-vi-dua-hoi-lo-20230327215110405.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:07 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/tiet-lo-nhung-noi-gioi-sieu-giau-thich-so-huu-nha-nhat-20230310085441089.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-thao/bao-indonesia-binh-luan-khi-doi-nha-bi-tuoc-quyen-dang-cai-world-cup-u20-20230330140915973.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/-l9VRtAJNv_ZkfKXO7hY22i7qZc=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-5-1679887457349.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/aMI65m1MO1V5awczWWlmKi1lXrQ=/thumb_w/1020/2023/03/27/karolina-bielawska-19-1679887457422.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/B2udegPNaFjaj7mscF_oDbbEPU4=/thumb_w/1020/2023/03/27/karolina-bielawska-24-1679887457154.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/CAQGb_Yx82klVRTt8HvOC22BCRI=/thumb_w/1020/2023/03/27/karolina-bielawska-15-1679887457086.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/ILNYyj79uDFw_KW0147TEf-Phqc=/thumb_w/1020/2023/03/27/karolina-bielawska-26-1679887457213.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/uSe_XD_N1VZGkUlFyDXPFHXR0Gg=/thumb_w/1020/2023/03/27/karolina-bielawska-29-1679887457046.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/r2GV44rsWsKKG11IZJoyrjpejRI=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-13-1679887456281.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/O9jytVe27AiCZ-wEdqF-Jv7Cvkg=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-3-1679887455265.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/txOfnUyifrr5vtIhWiF5dDkeV6c=/thumb_w/1020/2023/03/27/karolina-bielawska-30-1679887457071.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/BWF7_GghLx9WKhd6tpD64AfTUTQ=/thumb_w/1020/2023/03/27/karolina-bielawska-28-1679887457009.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/OxpI9OqYdxLjhiaegjcRhInkrbY=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-11-1679887455848.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/vPx4pML8WevRTQWgNqBy9fL61pE=/thumb_w/1020/2023/03/27/karolina-bielawska-23-1679887457283.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/HiIMMPNuuHFppW8vtyOD80ougfY=/thumb_w/1020/2023/03/27/karolina-bielawska-6-1679887457041.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/p7aLF-hMfqGKXmXnM-CIBF5J91w=/thumb_w/1020/2023/03/27/karolina-bielawska-31-1679887457081.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/kMCW_CikuyjnN2ni24ur4u-xJYs=/thumb_w/1020/2023/03/27/karolina-bielawska-2-1679887457002.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/e8A4Qd7Zlk_d6SFPpcQW9MdHVnU=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-1-1679887455806.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/kPNgnIjnau7U-DmBtIb9BN4dMI0=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-12-1679887456396.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/bMlIQ4y5K6Toca3-q5pPGmbHjlU=/thumb_w/1020/2023/03/27/karolina-bielawska-1679887455938.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/aIk69fe0Vl93LMuCpnLFCQ6mQ9Y=/thumb_w/1020/2023/03/27/karolina-bielawska-4-1679887455471.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/ILGBUiFv8I7XblA_JSpM-8pPeCM=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-2-1679887454558.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/HHYBociJjxPwyBpexedj-mH3qng=/thumb_w/1020/2023/03/27/karolina-bielawska-3-1679887455117.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/DSDRgaFYRD4BZGpeTE6kOprNf3A=/thumb_w/1020/2023/03/27/hoa-hau-the-gioi-14-edited-1679887850301.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/_9Qrdf0IF7kL6f_C8zRW_a07aq4=/thumb_w/1020/2023/03/27/karolina-bielawska-27-1679887457408.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/bat-nguyen-chu-tich-xa-de-dieu-tra-toi-giao-hon-1600m2-dat-trai-tham-quyen-20230321220433682.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:08 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/bat-nguyen-chu-tich-xa-de-dieu-tra-toi-giao-hon-1600m2-dat-trai-tham-quyen-20230321220433682.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:09 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/vang-troi-sut-quanh-nguong-2000-usdounce-20230326081545770.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:10 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/eA1kl4nqzvb1o0fNJ9SUw_BSG4M=/thumb_w/1020/2023/03/29/thai-lan-3-1680076674717.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:10 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/d_6a3E7lPJ_2RwiZ5WflpTpNKfA=/thumb_w/1020/2023/03/29/thai-lan-1680076674571.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:10 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/pfUCENriNHsh5Sthg86HJGfzkXY=/thumb_w/1020/2023/03/29/praveenar-singh-thakral-veena-1680076758331.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/psoFgmVwBtahwwzEIqfhjrXuR0Q=/thumb_w/1020/2023/03/14/anh-1-1678779890486.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/0yrhEuQil8z3H1APh8TApNxS-2w=/thumb_w/1020/2023/03/14/anh-2-1678779890490.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/158kZ1YnCNLrKRWTFm83BfXSRc8=/thumb_w/1020/2023/03/14/anh-5-1678779890487.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/i4nFYfjENkn2ai-XpPAgWlY74wM=/thumb_w/1020/2023/03/14/anh-3-1678779890501.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/92NkIBdaaHcuynQgPLVckINPtA0=/thumb_w/1020/2023/03/14/anh-4-1678779890499.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/iNed4I1RGdmwMiICWRHu4hyYj1o=/thumb_w/1020/2023/03/17/du-an-du-lich-om-dat-vang-roi-bo-hoang-gan-2-thap-ky-14-edited-1679064751226.jpeg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/RkNltSOKdIg2T7FyiVJBP0DbmeQ=/thumb_w/1020/2023/03/17/6-1679045432925.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/UzWmj4hifBXg_NDIeEcmS6ZuCAs=/thumb_w/1020/2023/03/17/8-1679045433127.jpg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:11 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/Op4ixgonM_p6hkoI-NvV4j7AXG8=/thumb_w/1020/2023/03/17/anh-1-edited-1679046887275.jpeg?watermark=true'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:12 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:14 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/nguoi-bi-dam-nguoi-bi-bat-sau-loi-thach-do-moi-co-gai-len-xe-20230326200302230.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:15 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:16 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/nguoi-bi-dam-nguoi-bi-bat-sau-loi-thach-do-moi-co-gai-len-xe-20230326200302230.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:16 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/tre-mac-di-tat-bam-sinh-nay-dung-voi-dinh-chi-thai-20230322133955370.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:17 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/cglZN8e76T6aen9aNeUNMtEZffs=/thumb_w/1020/2023/03/28/thi-tot-nghiep-thpt-manh-quan71-1679984545426.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:17 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests' for url 'https://cdnphoto.dantri.com.vn/wfKF4i1viSQYEb0KN-x4Rw9Mahw=/thumb_w/1020/2023/03/28/thi-tot-nghiep-thpt-2022-manh-quan5-1679984544735.jpg'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:18 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:19 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:20 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/doanh-nghiep-cua-nu-ty-phu-phuong-thao-lan-dau-he-lo-buc-tranh-kinh-doanh-20230328091516087.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:21 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://thanhnien.vn/le-hoi-thanh-nien-the-he-moi-thich-ung-ket-noi-va-chia-se-185230325203534866.htm'): peer closed connection without sending complete message body (incomplete chunked read)
+2026-06-06 14:07:21 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/chu-tich-tap-doan-evn-duong-quang-thanh-nghi-huu-tu-15-20230329065440898.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:21 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giai-tri/nhan-sac-ngot-ngao-va-cuon-hut-cua-hoa-hau-thai-lan-2023-20230321092534253.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:22 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:22 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/bo-van-hoa-len-tieng-ve-viec-xet-tang-danh-hieu-nsut-cho-o-sen-ngoc-mai-20230328153054267.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:23 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/bo-cong-an-nguoi-dan-canh-giac-voi-hanh-vi-ghep-mat-gia-giong-de-lua-dao-20230328181611199.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:23 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/tong-bi-thu-nguyen-phu-trong-tiep-bi-thu-tinh-uy-van-nam-trung-quoc-20230328190149445.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:25 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/tre-mac-di-tat-bam-sinh-nay-dung-voi-dinh-chi-thai-20230322133955370.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:25 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/gia-dinh-xin-bac-si-thuoc-ham-vi-cu-ong-ngoai-60-van-them-chuyen-ay-20230320181851147.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:25 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:26 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/dau-dau-te-moi-tay-chan-coi-chung-moi-hoa-thoai-hoa-dot-song-20230320133935292.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:26 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/chu-tich-tap-doan-evn-duong-quang-thanh-nghi-huu-tu-15-20230329065440898.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:27 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-gioi/hop-tac-xuyen-quoc-gia-chia-khoa-phat-trien-nang-luong-tai-tao-ngoai-khoi-20230324100715634.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:27 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:27 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/cuoc-song-qua-khac-nghiet-voi-shakira-lien-tiep-kho-khan-ap-den-sau-do-vo-20230322131750445.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:27 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giai-tri/bat-tinh-nhan-cua-chong-cu-nguoi-mau-hong-kong-bi-sat-hai-20230307154638337.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/vu-tai-xe-taxi-tong-bao-ve-khu-do-thi-o-ha-noi-nan-nhan-da-tu-vong-20230328220832613.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-gioi/hop-tac-xuyen-quoc-gia-chia-khoa-phat-trien-nang-luong-tai-tao-ngoai-khoi-20230324100715634.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/gai-ma-tuy-vao-xe-may-co-gai-de-tra-thu-mau-thuan-viec-ban-cho-meo-20230328223400180.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/nhung-cach-de-bo-me-them-gan-ket-voi-con-cai-20230311103459652.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:28 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/tran-thanh-khoc-nac-ke-kho-vi-la-nghe-si-nuoc-mat-roi-khong-dung-cho-20230322165824004.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:29 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/dau-dau-te-moi-tay-chan-coi-chung-moi-hoa-thoai-hoa-dot-song-20230320133935292.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:30 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:30 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/doc-dao-nghi-le-cung-rung-cua-nguoi-jrai-20230325175111020.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:30 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:31 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/kien-nghi-cua-hang-can-niem-yet-gia-cong-khai-voi-thuoc-thiet-yeu-20230329000028215.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:31 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/quy-tac-don-dep-mot-lan-cham-giu-nha-cua-ngan-nap-20230314152427116.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:31 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:32 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/quy-tac-don-dep-mot-lan-cham-giu-nha-cua-ngan-nap-20230314152427116.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:32 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:32 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/hoa-hau-qua-doi-thuong-tam-khi-tim-cach-thoat-khoi-toa-chung-cu-bi-hoa-hoan-20230328103357795.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:33 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/kien-nghi-cua-hang-can-niem-yet-gia-cong-khai-voi-thuoc-thiet-yeu-20230329000028215.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:34 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/vang-troi-sut-quanh-nguong-2000-usdounce-20230326081545770.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:34 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/doc-dao-nghi-le-cung-rung-cua-nguoi-jrai-20230325175111020.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:34 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-gioi/tong-thong-ukraine-neu-thoi-diem-co-the-gianh-chien-thang-truoc-nga-20230324082343473.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/gia-dinh-xin-bac-si-thuoc-ham-vi-cu-ong-ngoai-60-van-them-chuyen-ay-20230320181851147.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/nhung-manh-ghep-tao-nen-su-chuyen-minh-cua-phia-dong-ha-noi-20230311110127157.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/quy-tac-don-dep-mot-lan-cham-giu-nha-cua-ngan-nap-20230314152427116.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:35 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:36 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/tran-thanh-khoc-nac-ke-kho-vi-la-nghe-si-nuoc-mat-roi-khong-dung-cho-20230322165824004.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:36 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/lap-fanpage-ban-xe-may-ao-de-lua-chiem-doat-gan-3-ty-dong-20230330104514671.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/kien-nghi-cua-hang-can-niem-yet-gia-cong-khai-voi-thuoc-thiet-yeu-20230329000028215.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:37 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/co-phieu-louis-capital-tang-tran-khi-thay-mau-lanh-dao-doi-ten-20230329141323034.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:38 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/vu-to-boc-hoi-gan-47-ty-dong-o-sacombank-van-nhung-nhang-20230324200727811.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:39 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/bo-sung-men-vi-sinh-moi-ngay-de-ho-tro-suc-khoe-he-tieu-hoa-20230323171558374.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:39 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giai-tri/nhan-sac-ngot-ngao-va-cuon-hut-cua-hoa-hau-thai-lan-2023-20230321092534253.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:39 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bi-thu-ha-noi-doi-moi-de-nang-cao-chat-luong-phuc-vu-nguoi-dan-20230328200513827.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:39 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/chu-tich-tap-doan-evn-duong-quang-thanh-nghi-huu-tu-15-20230329065440898.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:39 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/vu-di-tich-quoc-gia-bi-xam-hai-xu-phat-su-tru-tri-20-trieu-dong-20230323155336192.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:40 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-thao/doi-tuyen-viet-nam-tang-hang-thai-lan-tut-sau-20230329175037803.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:40 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/chu-tich-nuoc-gap-mat-cuu-can-bo-doan-tncs-ho-chi-minh-cac-thoi-ky-20230325163140209.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:40 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/vu-di-tich-quoc-gia-bi-xam-hai-xu-phat-su-tru-tri-20-trieu-dong-20230323155336192.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:40 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/ha-noi-o-cung-nha-co-nguoi-hut-thuoc-benh-nhan-36-tuoi-da-bi-ung-thu-phoi-20230309165854917.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:41 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giai-tri/sao-nhi-tro-ma-con-gai-cua-thuy-hanh-lot-xac-be-bao-an-gio-ra-sao-20230309103613619.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:41 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giai-tri/khan-gia-tranh-cai-truoc-su-tro-lai-cua-show-dien-noi-y-nong-nhat-hanh-tinh-20230306202555433.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:42 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:42 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/nhung-manh-ghep-tao-nen-su-chuyen-minh-cua-phia-dong-ha-noi-20230311110127157.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:42 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/co-phieu-louis-capital-tang-tran-khi-thay-mau-lanh-dao-doi-ten-20230329141323034.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:43 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:43 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/gai-ma-tuy-vao-xe-may-co-gai-de-tra-thu-mau-thuan-viec-ban-cho-meo-20230328223400180.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:43 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/mot-bo-phan-can-bo-co-tu-tuong-chan-chu-giu-an-toan-so-sai-20230325092513887.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:43 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/co-phieu-louis-capital-tang-tran-khi-thay-mau-lanh-dao-doi-ten-20230329141323034.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:44 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-gioi/chiec-ao-gay-chu-y-cua-con-gai-ong-kim-jong-un-20230324074128737.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:45 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/nong-sua-doi-quy-che-thi-tot-nghiep-thpt-20230328133533795.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:45 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:46 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/suc-khoe/bo-sung-men-vi-sinh-moi-ngay-de-ho-tro-suc-khoe-he-tieu-hoa-20230323171558374.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:46 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:46 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/quy-i2023-phat-hien-hon-700-nguoi-pham-toi-ve-tham-nhung-chuc-vu-20230329121329104.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:47 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/van-hoa/hinh-anh-khong-bao-gio-len-song-cua-phim-gia-dinh-minh-vui-bat-thinh-linh-20230326100813055.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:47 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/nguoi-bi-dam-nguoi-bi-bat-sau-loi-thach-do-moi-co-gai-len-xe-20230326200302230.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:47 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/quang-tri-van-con-thieu-nhung-khong-gian-song-thuong-luu-20230316111937350.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:47 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/tiet-lo-nhung-noi-gioi-sieu-giau-thich-so-huu-nha-nhat-20230310085441089.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:48 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/thoi-su/mot-bo-phan-can-bo-co-tu-tuong-chan-chu-giu-an-toan-so-sai-20230325092513887.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:49 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-thao/hlv-mano-polking-khang-dinh-thai-lan-se-tien-den-trinh-do-chau-a-20230330115540022.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:49 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:49 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-thao/hlv-philippe-troussier-da-thu-nghiem-duoc-nhung-gi-tai-doha-cup-20230326130910728.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:49 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/phap-luat/lap-fanpage-ban-xe-may-ao-de-lua-chiem-doat-gan-3-ty-dong-20230330104514671.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:49 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/quy-tac-don-dep-mot-lan-cham-giu-nha-cua-ngan-nap-20230314152427116.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:50 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/kinh-doanh/vu-to-boc-hoi-gan-47-ty-dong-o-sacombank-van-nhung-nhang-20230324200727811.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:50 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/bat-dong-san/quy-tac-don-dep-mot-lan-cham-giu-nha-cua-ngan-nap-20230314152427116.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:50 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/nhung-cach-de-bo-me-them-gan-ket-voi-con-cai-20230311103459652.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:50 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/the-gioi/hop-tac-xuyen-quoc-gia-chia-khoa-phat-trien-nang-luong-tai-tao-ngoai-khoi-20230324100715634.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:51 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giai-tri/le-quyen-toi-la-nghe-si-chan-chinh-vo-co-bi-xuc-pham-20230329132937484.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:51 | ERROR    | helpers.httpx_client:_request:97 - HTTP error occurred: Client error '428 Too Many Requests via Varnish' for url 'https://dantri.com.vn/giao-duc-huong-nghiep/ha-noi-canh-bao-chieu-lua-dao-moi-hoc-sinh-no-tien-hang-20230324100128283.htm'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/428
+2026-06-06 14:07:52 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/gia-dinh-xin-bac-si-thuoc-ham-vi-cu-ong-ngoai-60-van-them-chuyen-ay-20230320181851147.htm'): 
+2026-06-06 14:08:10 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/ha-noi-khoang-50-hoc-sinh-tieu-hoc-nghi-ngo-doc-sau-khi-da-ngoai-20230328203127735.htm'): 
+2026-06-06 14:08:10 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/lo-ngai-chuyen-huong-sang-deutsche-bank-20230325070043681.htm'): 
+2026-06-06 14:08:23 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'): 
+2026-06-06 14:08:24 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/doc-dao-nghi-le-cung-rung-cua-nguoi-jrai-20230325175111020.htm'): 
+2026-06-06 14:08:24 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/bo-sung-men-vi-sinh-moi-ngay-de-ho-tro-suc-khoe-he-tieu-hoa-20230323171558374.htm'): 
+2026-06-06 14:08:25 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/mien-bac-mua-lanh-truoc-khi-don-dot-nang-nong-cuc-bo-20230330080713632.htm'): 
+2026-06-06 14:08:27 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/bao-indonesia-binh-luan-khi-doi-nha-bi-tuoc-quyen-dang-cai-world-cup-u20-20230330140915973.htm'): 
+2026-06-06 14:08:28 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/nong-sua-doi-quy-che-thi-tot-nghiep-thpt-20230328133533795.htm'): 
+2026-06-06 14:08:28 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/ukraine-tiet-lo-chi-tieu-quan-su-de-doi-pho-chien-dich-cua-nga-20230330163410516.htm'): 
+2026-06-06 14:08:29 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm'): 
+2026-06-06 14:08:40 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'): 
+2026-06-06 14:08:41 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/vu-di-tich-quoc-gia-bi-xam-hai-xu-phat-su-tru-tri-20-trieu-dong-20230323155336192.htm'): 
+2026-06-06 14:08:54 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'): 
+2026-06-06 14:08:55 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/duong-gan-8km-thi-cong-2-nam-chua-xong-dan-khon-kho-hit-bui-20230325103611387.htm'): 
+2026-06-06 14:08:55 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/da-bat-duoc-sieu-trom-hung-nhai-tai-lao-cai-20230327142722244.htm'): 
+2026-06-06 14:08:57 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'): 
+2026-06-06 14:08:58 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/lap-fanpage-ban-xe-may-ao-de-lua-chiem-doat-gan-3-ty-dong-20230330104514671.htm'): 
+2026-06-06 14:09:01 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/bo-truong-tai-chinh-nhieu-doanh-nghiep-bds-lam-du-an-quy-mo-vuot-nang-luc-20230217231357747.htm'): 
+2026-06-06 14:09:05 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/tiet-lo-nhung-noi-gioi-sieu-giau-thich-so-huu-nha-nhat-20230310085441089.htm'): 
+2026-06-06 14:09:09 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/co-chung-chi-la-co-the-di-lam-co-can-hoc-4-nam-dai-hoc-nganh-ngoai-ngu-20230310163015006.htm'): 
+2026-06-06 14:09:11 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/ngoc-huyen-ke-tai-nan-27-nam-truoc-bi-rach-mat-mau-chay-rong-rong-20230326075859660.htm'): 
+2026-06-06 14:09:12 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/suri-cruise-muon-hoc-nganh-thoi-trang-phong-cach-dao-pho-noi-len-tat-ca-20230329121132548.htm'): 
+2026-06-06 14:09:26 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/ha-noi-dau-tu-cho-2-xa-mien-nui-hon-386-ty-dong-20230328203528350.htm'): 
+2026-06-06 14:09:28 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/nhung-buc-tuong-vang-tai-pho-co-hoi-an-bi-boi-ban-20230320142648654.htm'): 
+2026-06-06 14:09:28 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/quy-i2023-phat-hien-hon-700-nguoi-pham-toi-ve-tham-nhung-chuc-vu-20230329121329104.htm'): 
+2026-06-06 14:09:29 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/bo-truong-tai-chinh-nhieu-doanh-nghiep-bds-lam-du-an-quy-mo-vuot-nang-luc-20230217231357747.htm'): 
+2026-06-06 14:09:30 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giai-tri/a-hau-thao-nhi-le-chinh-thuc-mat-suat-thi-miss-universe-2023-20230329155127815.htm'): 
+2026-06-06 14:09:32 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/nhung-cach-de-bo-me-them-gan-ket-voi-con-cai-20230311103459652.htm'): 
+2026-06-06 14:09:35 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm'): 
+2026-06-06 14:09:39 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/vu-di-tich-quoc-gia-bi-xam-hai-xu-phat-su-tru-tri-20-trieu-dong-20230323155336192.htm'): 
+2026-06-06 14:09:43 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/kien-nghi-thay-doi-cach-ra-de-thi-mon-lich-su-tot-nghiep-thpt-nam-2025-20230330085533720.htm'): 
+2026-06-06 14:09:43 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/ha-noi-o-cung-nha-co-nguoi-hut-thuoc-benh-nhan-36-tuoi-da-bi-ung-thu-phoi-20230309165854917.htm'): 
+2026-06-06 14:09:58 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/suri-cruise-muon-hoc-nganh-thoi-trang-phong-cach-dao-pho-noi-len-tat-ca-20230329121132548.htm'): 
+2026-06-06 14:09:58 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/nhung-cach-de-bo-me-them-gan-ket-voi-con-cai-20230311103459652.htm'): 
+2026-06-06 14:09:59 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/nguoi-lay-iphone-cua-nan-nhan-trong-vu-danh-ghen-lot-do-bi-xu-ly-toi-gi-20230329153121578.htm'): 
+2026-06-06 14:10:00 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/nong-sua-doi-quy-che-thi-tot-nghiep-thpt-20230328133533795.htm'): 
+2026-06-06 14:10:02 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/ukraine-tiet-lo-chi-tieu-quan-su-de-doi-pho-chien-dich-cua-nga-20230330163410516.htm'): 
+2026-06-06 14:10:02 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/hoan-xet-xu-cuu-chu-tich-alibaba-nguyen-thai-luyen-va-dong-pham-20230327111411648.htm'): 
+2026-06-06 14:10:09 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/bo-truong-tai-chinh-nhieu-doanh-nghiep-bds-lam-du-an-quy-mo-vuot-nang-luc-20230217231357747.htm'): 
+2026-06-06 14:10:09 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'): 
+2026-06-06 14:10:13 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/lay-vo-kem-22-tuoi-ong-chong-xau-so-bi-ca-gia-dinh-vo-sat-hai-da-man-20230322074624351.htm'): 
+2026-06-06 14:10:13 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/loat-chinh-sach-hap-dan-hut-cu-dan-ve-vinhomes-ocean-park-2-20230320105933209.htm'): 
+2026-06-06 14:10:30 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/lay-vo-kem-22-tuoi-ong-chong-xau-so-bi-ca-gia-dinh-vo-sat-hai-da-man-20230322074624351.htm'): 
+2026-06-06 14:10:31 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/cuoc-song-qua-khac-nghiet-voi-shakira-lien-tiep-kho-khan-ap-den-sau-do-vo-20230322131750445.htm'): 
+2026-06-06 14:10:31 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/cat-buou-than-nguy-hiem-to-nhu-qua-chanh-cho-benh-nhan-nu-60-tuoi-20230327141659094.htm'): 
+2026-06-06 14:10:32 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/loat-chinh-sach-hap-dan-hut-cu-dan-ve-vinhomes-ocean-park-2-20230320105933209.htm'): 
+2026-06-06 14:10:33 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/ngoc-huyen-ke-tai-nan-27-nam-truoc-bi-rach-mat-mau-chay-rong-rong-20230326075859660.htm'): 
+2026-06-06 14:10:34 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/nguy-co-tiem-an-khi-an-nem-chua-20230325091113006.htm'): 
+2026-06-06 14:10:42 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/doanh-nghiep-cua-nu-ty-phu-phuong-thao-lan-dau-he-lo-buc-tranh-kinh-doanh-20230328091516087.htm'): 
+2026-06-06 14:10:44 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/quy-tac-don-dep-mot-lan-cham-giu-nha-cua-ngan-nap-20230314152427116.htm'): 
+2026-06-06 14:10:46 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/rao-can-voi-trung-quoc-trong-vai-tro-kien-tao-hoa-binh-cho-xung-dot-ukraine-20230328105030377.htm'): 
+2026-06-06 14:10:49 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'): 
+2026-06-06 14:11:01 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giai-tri/sao-nhi-tro-ma-con-gai-cua-thuy-hanh-lot-xac-be-bao-an-gio-ra-sao-20230309103613619.htm'): 
+2026-06-06 14:11:01 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'): 
+2026-06-06 14:11:02 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/doi-tuyen-viet-nam-tang-hang-thai-lan-tut-sau-20230329175037803.htm'): 
+2026-06-06 14:11:02 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/truy-duoi-ke-trom-xe-sh-hai-vo-chong-cung-bi-thuong-20230329114910144.htm'): 
+2026-06-06 14:11:03 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'): 
+2026-06-06 14:11:04 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/nhap-khau-hang-hoa-co-phu-thuoc-vao-nganh-nghe-kinh-doanh-khong-20230328073250977.htm'): 
+2026-06-06 14:11:14 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/suri-cruise-muon-hoc-nganh-thoi-trang-phong-cach-dao-pho-noi-len-tat-ca-20230329121132548.htm'): 
+2026-06-06 14:11:15 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/cuoc-song-qua-khac-nghiet-voi-shakira-lien-tiep-kho-khan-ap-den-sau-do-vo-20230322131750445.htm'): 
+2026-06-06 14:11:19 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/hlv-philippe-troussier-da-thu-nghiem-duoc-nhung-gi-tai-doha-cup-20230326130910728.htm'): 
+2026-06-06 14:11:20 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/vang-troi-sut-quanh-nguong-2000-usdounce-20230326081545770.htm'): 
+2026-06-06 14:11:32 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'): 
+2026-06-06 14:11:33 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/quy-tac-don-dep-mot-lan-cham-giu-nha-cua-ngan-nap-20230314152427116.htm'): 
+2026-06-06 14:11:33 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/co-phieu-louis-capital-tang-tran-khi-thay-mau-lanh-dao-doi-ten-20230329141323034.htm'): 
+2026-06-06 14:11:34 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/hoa-hau-qua-doi-thuong-tam-khi-tim-cach-thoat-khoi-toa-chung-cu-bi-hoa-hoan-20230328103357795.htm'): 
+2026-06-06 14:11:35 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/tre-mac-di-tat-bam-sinh-nay-dung-voi-dinh-chi-thai-20230322133955370.htm'): 
+2026-06-06 14:11:39 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bi-thu-ha-noi-doi-moi-de-nang-cao-chat-luong-phuc-vu-nguoi-dan-20230328200513827.htm'): 
+2026-06-06 14:11:47 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/ha-noi-canh-bao-chieu-lua-dao-moi-hoc-sinh-no-tien-hang-20230324100128283.htm'): 
+2026-06-06 14:11:50 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/hlv-iraq-noi-mot-dieu-ve-suc-manh-cua-u23-viet-nam-20230320173114638.htm'): 
+2026-06-06 14:11:51 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/xon-xao-clip-dan-quan-tu-ve-dung-gay-danh-hoc-sinh-o-tphcm-20230329164819730.htm'): 
+2026-06-06 14:11:51 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'): 
+2026-06-06 14:12:03 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/quy-tac-don-dep-mot-lan-cham-giu-nha-cua-ngan-nap-20230314152427116.htm'): 
+2026-06-06 14:12:03 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/bao-indonesia-binh-luan-khi-doi-nha-bi-tuoc-quyen-dang-cai-world-cup-u20-20230330140915973.htm'): 
+2026-06-06 14:12:06 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'): 
+2026-06-06 14:12:06 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'): 
+2026-06-06 14:12:06 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/tong-bi-thu-nguyen-phu-trong-tiep-bi-thu-tinh-uy-van-nam-trung-quoc-20230328190149445.htm'): 
+2026-06-06 14:12:11 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/gai-ma-tuy-vao-xe-may-co-gai-de-tra-thu-mau-thuan-viec-ban-cho-meo-20230328223400180.htm'): 
+2026-06-06 14:12:17 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/tphcm-se-trong-lai-cay-xanh-truoc-khi-lam-mai-che-via-he-duong-le-loi-20230330172547562.htm'): 
+2026-06-06 14:12:21 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/nong-sua-doi-quy-che-thi-tot-nghiep-thpt-20230328133533795.htm'): 
+2026-06-06 14:12:21 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giai-tri/sao-nhi-tro-ma-con-gai-cua-thuy-hanh-lot-xac-be-bao-an-gio-ra-sao-20230309103613619.htm'): 
+2026-06-06 14:12:22 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'): 
+2026-06-06 14:12:33 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/ukraine-tiet-lo-chi-tieu-quan-su-de-doi-pho-chien-dich-cua-nga-20230330163410516.htm'): 
+2026-06-06 14:12:35 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/bo-cong-an-nguoi-dan-canh-giac-voi-hanh-vi-ghep-mat-gia-giong-de-lua-dao-20230328181611199.htm'): 
+2026-06-06 14:12:36 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'): 
+2026-06-06 14:12:39 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/co-phieu-louis-capital-tang-tran-khi-thay-mau-lanh-dao-doi-ten-20230329141323034.htm'): 
+2026-06-06 14:12:42 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/hoa-hau-qua-doi-thuong-tam-khi-tim-cach-thoat-khoi-toa-chung-cu-bi-hoa-hoan-20230328103357795.htm'): 
+2026-06-06 14:12:42 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/dau-dau-te-moi-tay-chan-coi-chung-moi-hoa-thoai-hoa-dot-song-20230320133935292.htm'): 
+2026-06-06 14:12:51 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/co-phieu-louis-capital-tang-tran-khi-thay-mau-lanh-dao-doi-ten-20230329141323034.htm'): 
+2026-06-06 14:12:52 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giai-tri/nhan-sac-ngot-ngao-va-cuon-hut-cua-hoa-hau-thai-lan-2023-20230321092534253.htm'): 
+2026-06-06 14:12:54 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/vu-to-boc-hoi-gan-47-ty-dong-o-sacombank-van-nhung-nhang-20230324200727811.htm'): 
+2026-06-06 14:13:00 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/nhung-cach-de-bo-me-them-gan-ket-voi-con-cai-20230311103459652.htm'): 
+2026-06-06 14:13:03 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'): 
+2026-06-06 14:13:06 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/nam-benh-nhan-mang-chum-nho-khong-lo-20-nam-tren-mat-20230309155833682.htm'): 
+2026-06-06 14:13:07 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/can-bo-so-giao-thong-van-tai-bac-giang-bi-bat-vi-dua-hoi-lo-20230327215110405.htm'): 
+2026-06-06 14:13:09 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/vu-to-boc-hoi-gan-47-ty-dong-o-sacombank-van-nhung-nhang-20230324200727811.htm'): 
+2026-06-06 14:13:12 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'): 
+2026-06-06 14:13:14 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/nhung-cach-de-bo-me-them-gan-ket-voi-con-cai-20230311103459652.htm'): 
+2026-06-06 14:13:23 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/suri-cruise-muon-hoc-nganh-thoi-trang-phong-cach-dao-pho-noi-len-tat-ca-20230329121132548.htm'): 
+2026-06-06 14:13:27 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/vietjet-tien-phong-mo-duong-bay-ket-noi-hai-vung-trong-diem-kinh-te-lon-20230330174514118.htm'): 
+2026-06-06 14:13:29 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/lap-fanpage-ban-xe-may-ao-de-lua-chiem-doat-gan-3-ty-dong-20230330104514671.htm'): 
+2026-06-06 14:13:32 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/sau-13-nam-duoc-david-beckham-miet-mai-bu-lo-victoria-da-lam-an-co-lai-20230325081620246.htm'): 
+2026-06-06 14:13:33 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/ha-noi-o-cung-nha-co-nguoi-hut-thuoc-benh-nhan-36-tuoi-da-bi-ung-thu-phoi-20230309165854917.htm'): 
+2026-06-06 14:13:38 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giai-tri/ngoai-hinh-nhu-bup-be-song-cua-hoa-hau-the-gioi-karolina-bielawska-20230327104110559.htm'): 
+2026-06-06 14:13:38 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/nguoi-bi-dam-nguoi-bi-bat-sau-loi-thach-do-moi-co-gai-len-xe-20230326200302230.htm'): 
+2026-06-06 14:13:39 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/tphcm-se-trong-lai-cay-xanh-truoc-khi-lam-mai-che-via-he-duong-le-loi-20230330172547562.htm'): 
+2026-06-06 14:13:46 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/rao-can-voi-trung-quoc-trong-vai-tro-kien-tao-hoa-binh-cho-xung-dot-ukraine-20230328105030377.htm'): 
+2026-06-06 14:13:47 | ERROR    | helpers.httpx_client:_request:101 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/dien-gia-noi-hoc-dai-hoc-cung-di-lam-thue-sinh-vien-phan-ung-du-doi-20230330095028835.htm'): 
+2026-06-06 14:14:38 | INFO     | src.crawler.crawler_factory:load:55 - Loaded 4050 completed URLs from cache (will skip).
+2026-06-06 14:14:38 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:171 - Skipping 0 previously failed URLs (use retry_failed=True to retry).
+2026-06-06 14:14:38 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:176 - URLs to crawl: 61 (skipped: 5001, concurrency=5)
+2026-06-06 14:15:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm'): 
+2026-06-06 14:15:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'): 
+2026-06-06 14:15:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/hlv-iraq-noi-mot-dieu-ve-suc-manh-cua-u23-viet-nam-20230320173114638.htm'): 
+2026-06-06 14:15:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/nhung-buc-tuong-vang-tai-pho-co-hoi-an-bi-boi-ban-20230320142648654.htm'): 
+2026-06-06 14:15:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/hlv-iraq-noi-mot-dieu-ve-suc-manh-cua-u23-viet-nam-20230320173114638.htm'): 
+2026-06-06 14:15:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm'): 
+2026-06-06 14:15:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'): 
+2026-06-06 14:15:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bi-thu-ha-noi-doi-moi-de-nang-cao-chat-luong-phuc-vu-nguoi-dan-20230328200513827.htm'): 
+2026-06-06 14:15:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/nam-benh-nhan-mang-chum-nho-khong-lo-20-nam-tren-mat-20230309155833682.htm'): 
+2026-06-06 14:15:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/nguoi-bi-dam-nguoi-bi-bat-sau-loi-thach-do-moi-co-gai-len-xe-20230326200302230.htm'): 
+2026-06-06 14:16:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/nguoi-bi-dam-nguoi-bi-bat-sau-loi-thach-do-moi-co-gai-len-xe-20230326200302230.htm'): 
+2026-06-06 14:16:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm'): 
+2026-06-06 14:16:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/tong-bi-thu-nguyen-phu-trong-tiep-bi-thu-tinh-uy-van-nam-trung-quoc-20230328190149445.htm'): 
+2026-06-06 14:16:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/gia-dinh-xin-bac-si-thuoc-ham-vi-cu-ong-ngoai-60-van-them-chuyen-ay-20230320181851147.htm'): 
+2026-06-06 14:16:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/gia-dinh-xin-bac-si-thuoc-ham-vi-cu-ong-ngoai-60-van-them-chuyen-ay-20230320181851147.htm'): 
+2026-06-06 14:16:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/gia-dinh-xin-bac-si-thuoc-ham-vi-cu-ong-ngoai-60-van-them-chuyen-ay-20230320181851147.htm'): 
+2026-06-06 14:16:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bi-thu-ha-noi-doi-moi-de-nang-cao-chat-luong-phuc-vu-nguoi-dan-20230328200513827.htm'): 
+2026-06-06 14:16:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/vu-di-tich-quoc-gia-bi-xam-hai-xu-phat-su-tru-tri-20-trieu-dong-20230323155336192.htm'): 
+2026-06-06 14:16:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/doi-tuyen-viet-nam-tang-hang-thai-lan-tut-sau-20230329175037803.htm'): 
+2026-06-06 14:16:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/vu-di-tich-quoc-gia-bi-xam-hai-xu-phat-su-tru-tri-20-trieu-dong-20230323155336192.htm'): 
+2026-06-06 14:17:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/nguoi-bi-dam-nguoi-bi-bat-sau-loi-thach-do-moi-co-gai-len-xe-20230326200302230.htm'): 
+2026-06-06 14:17:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/vu-di-tich-quoc-gia-bi-xam-hai-xu-phat-su-tru-tri-20-trieu-dong-20230323155336192.htm'): 
+2026-06-06 14:17:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'): 
+2026-06-06 14:17:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/co-chung-chi-la-co-the-di-lam-co-can-hoc-4-nam-dai-hoc-nganh-ngoai-ngu-20230310163015006.htm'): 
+2026-06-06 14:17:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/suri-cruise-muon-hoc-nganh-thoi-trang-phong-cach-dao-pho-noi-len-tat-ca-20230329121132548.htm'): 
+2026-06-06 14:17:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/ha-noi-dau-tu-cho-2-xa-mien-nui-hon-386-ty-dong-20230328203528350.htm'): 
+2026-06-06 14:17:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/nhung-buc-tuong-vang-tai-pho-co-hoi-an-bi-boi-ban-20230320142648654.htm'): 
+2026-06-06 14:17:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/vu-di-tich-quoc-gia-bi-xam-hai-xu-phat-su-tru-tri-20-trieu-dong-20230323155336192.htm'): 
+2026-06-06 14:17:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/suri-cruise-muon-hoc-nganh-thoi-trang-phong-cach-dao-pho-noi-len-tat-ca-20230329121132548.htm'): 
+2026-06-06 14:17:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/rao-can-voi-trung-quoc-trong-vai-tro-kien-tao-hoa-binh-cho-xung-dot-ukraine-20230328105030377.htm'): 
+2026-06-06 14:18:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/doi-tuyen-viet-nam-tang-hang-thai-lan-tut-sau-20230329175037803.htm'): 
+2026-06-06 14:18:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'): 
+2026-06-06 14:18:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/suri-cruise-muon-hoc-nganh-thoi-trang-phong-cach-dao-pho-noi-len-tat-ca-20230329121132548.htm'): 
+2026-06-06 14:18:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bi-thu-ha-noi-doi-moi-de-nang-cao-chat-luong-phuc-vu-nguoi-dan-20230328200513827.htm'): 
+2026-06-06 14:18:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/hlv-iraq-noi-mot-dieu-ve-suc-manh-cua-u23-viet-nam-20230320173114638.htm'): 
+2026-06-06 14:18:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/tong-bi-thu-nguyen-phu-trong-tiep-bi-thu-tinh-uy-van-nam-trung-quoc-20230328190149445.htm'): 
+2026-06-06 14:18:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/nam-benh-nhan-mang-chum-nho-khong-lo-20-nam-tren-mat-20230309155833682.htm'): 
+2026-06-06 14:18:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/suri-cruise-muon-hoc-nganh-thoi-trang-phong-cach-dao-pho-noi-len-tat-ca-20230329121132548.htm'): 
+2026-06-06 14:18:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/nguoi-bi-dam-nguoi-bi-bat-sau-loi-thach-do-moi-co-gai-len-xe-20230326200302230.htm'): 
+2026-06-06 14:18:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/rao-can-voi-trung-quoc-trong-vai-tro-kien-tao-hoa-binh-cho-xung-dot-ukraine-20230328105030377.htm'): 
+2026-06-06 14:19:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bi-thu-ha-noi-doi-moi-de-nang-cao-chat-luong-phuc-vu-nguoi-dan-20230328200513827.htm'): 
+2026-06-06 14:19:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/thi-vao-lop-10-o-ha-noi-con-hoc-den-tram-cam-phu-huynh-lo-phuong-an-du-bi-20230327155051149.htm'): 
+2026-06-06 14:19:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/rao-can-voi-trung-quoc-trong-vai-tro-kien-tao-hoa-binh-cho-xung-dot-ukraine-20230328105030377.htm'): 
+2026-06-06 14:19:09 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/rao-can-voi-trung-quoc-trong-vai-tro-kien-tao-hoa-binh-cho-xung-dot-ukraine-20230328105030377.htm'): 
+2026-06-06 14:19:10 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/rao-can-voi-trung-quoc-trong-vai-tro-kien-tao-hoa-binh-cho-xung-dot-ukraine-20230328105030377.htm'): 
+2026-06-06 14:19:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/nhung-buc-tuong-vang-tai-pho-co-hoi-an-bi-boi-ban-20230320142648654.htm'): 
+2026-06-06 14:19:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/nam-benh-nhan-mang-chum-nho-khong-lo-20-nam-tren-mat-20230309155833682.htm'): 
+2026-06-06 14:19:39 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/tong-bi-thu-nguyen-phu-trong-tiep-bi-thu-tinh-uy-van-nam-trung-quoc-20230328190149445.htm'): 
+2026-06-06 14:19:40 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/gia-dinh-xin-bac-si-thuoc-ham-vi-cu-ong-ngoai-60-van-them-chuyen-ay-20230320181851147.htm'): 
+2026-06-06 14:19:41 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/doi-tuyen-viet-nam-tang-hang-thai-lan-tut-sau-20230329175037803.htm'): 
+2026-06-06 14:20:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/thanh-nien-dung-xa-beng-danh-truong-cong-an-xa-bi-thuong-20230330110731678.htm'): 
+2026-06-06 14:20:08 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/tong-bi-thu-nguyen-phu-trong-tiep-bi-thu-tinh-uy-van-nam-trung-quoc-20230328190149445.htm'): 
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:253 - Saved 9 new + 0 existing = 9 total articles to /Users/haila/Desktop/personal-app/CascadeProjects/fake-new-detection/data/json/news_data_vifactcheck_train.json
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:_print_summary:265 - 
+--- Crawling Summary ---
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:_print_summary:266 - Completed (total): 1020 URLs
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:_print_summary:267 - Failed this run:   15 URLs
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:_print_summary:268 - Failed (total):    15 URLs
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:_print_summary:274 - Failure reasons:
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:_print_summary:276 -     15x Unknown error
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:171 - Skipping 0 previously failed URLs (use retry_failed=True to retry).
+2026-06-06 14:20:08 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:176 - URLs to crawl: 723 (skipped: 0, concurrency=5)
+2026-06-06 14:20:38 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/ly-do-dem-nhac-co-mat-hien-ho-bi-huy-bo-20230330103110566.htm'): 
+2026-06-06 14:20:39 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/thu-tuong-de-nghi-hoa-binh-xay-dung-cac-san-pham-du-lich-chat-luong-cao-20230325222810830.htm'): 
+2026-06-06 14:20:39 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-thao/thang-tung-bung-man-utd-van-bi-che-bai-tham-te-20230320145424767.htm'): 
+2026-06-06 14:20:42 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/bo-chinh-tri-hop-tong-ket-10-nam-thuc-hien-nghi-quyet-ve-chinh-sach-xa-hoi-20230330141242565.htm'): 
+2026-06-06 14:20:43 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/giang-dien-bay-chuot-lam-chet-hang-xom-20230326214253038.htm'): 
+2026-06-06 14:21:09 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/suc-khoe/dau-dau-te-moi-tay-chan-coi-chung-moi-hoa-thoai-hoa-dot-song-20230320133935292.htm'): 
+2026-06-06 14:21:09 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/phap-luat/nhung-chu-meo-mang-nhiem-vu-dac-biet-trong-nha-tu-an-ninh-toi-da-20230326223246912.htm'): 
+2026-06-06 14:21:11 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/the-gioi/giao-tranh-leo-thang-quanh-nha-may-ukraine-iaea-canh-bao-su-co-hat-nhan-20230330124018825.htm'): 
+2026-06-06 14:21:13 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/ngoc-huyen-ke-tai-nan-27-nam-truoc-bi-rach-mat-mau-chay-rong-rong-20230326075859660.htm'): 
+2026-06-06 14:21:15 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/giao-duc-huong-nghiep/khong-co-chuyen-bat-coc-hoc-sinh-tai-cac-truong-o-nghe-an-20230321163632059.htm'): 
+2026-06-06 14:21:39 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/cuoc-song-qua-khac-nghiet-voi-shakira-lien-tiep-kho-khan-ap-den-sau-do-vo-20230322131750445.htm'): 
+2026-06-06 14:21:42 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/kinh-doanh/siet-ngan-hang-dau-tu-vao-trai-phieu-tin-tich-cuc-cho-thi-truong-20230328024156109.htm'): 
+2026-06-06 14:21:44 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/bat-dong-san/quang-tri-van-con-thieu-nhung-khong-gian-song-thuong-luu-20230316111937350.htm'): 
+2026-06-06 14:21:45 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/van-hoa/ly-do-dem-nhac-co-mat-hien-ho-bi-huy-bo-20230330103110566.htm'): 
+2026-06-06 14:21:48 | ERROR    | helpers.httpx_client:_request:108 - An error occurred while requesting URL('https://dantri.com.vn/xa-hoi/chu-tich-nuoc-gap-mat-cuu-can-bo-doan-tncs-ho-chi-minh-cac-thoi-ky-20230325163140209.htm'): 

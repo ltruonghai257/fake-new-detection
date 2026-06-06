@@ -87,17 +87,29 @@ class BaseClient:
                 response.raise_for_status()
                 return response
             except httpx.HTTPStatusError as e:
-                if e.response.status_code >= 500 and i < retries - 1:
-                    wait_time = backoff_factor * (2 ** i)
-                    logger.warning(f"HTTP error occurred: {e}. Retrying in {wait_time:.2f} seconds...")
+                status = e.response.status_code
+                is_rate_limited = status in (428, 429)
+                is_server_error = status >= 500
+                if (is_rate_limited or is_server_error) and i < retries - 1:
+                    if is_rate_limited:
+                        retry_after = e.response.headers.get("Retry-After")
+                        wait_time = float(retry_after) if retry_after else 2.0 * (2 ** i)
+                    else:
+                        wait_time = backoff_factor * (2 ** i)
+                    logger.warning(f"HTTP {status} for {url!r}. Retrying in {wait_time:.1f}s...")
                     await asyncio.sleep(wait_time)
                     continue
                 # Do not raise for redirects, as they are handled by the client
-                if e.response.status_code not in (301, 302, 307, 308):
+                if status not in (301, 302, 307, 308):
                     logger.error(f"HTTP error occurred: {e}")
                     raise
                 return e.response  # Return the response for redirects
             except httpx.RequestError as e:
+                if i < retries - 1:
+                    wait_time = backoff_factor * (2 ** i)
+                    logger.warning(f"Request error for {e.request.url!r}: {e}. Retrying in {wait_time:.1f}s...")
+                    await asyncio.sleep(wait_time)
+                    continue
                 logger.error(f"An error occurred while requesting {e.request.url!r}: {e}")
                 raise
 
