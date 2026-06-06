@@ -8,6 +8,7 @@
     },
     "output": {
         "format": "json",
+        "data_root": null,
         "data_dir": "data",
         "json_output": "data/json/news_data.json",
         "image_dir": "data/jpg",

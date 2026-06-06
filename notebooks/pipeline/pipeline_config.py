@@ -11,16 +11,25 @@ Notebooks may extend the returned dict freely; this file owns only
 the values that are shared across multiple notebooks.
 """
 
+import os
 from pathlib import Path
 
 
-def make_config(project_root: Path) -> dict:
+def make_config(project_root: Path, data_root: Path = None) -> dict:
     """
     Return the base CONFIG dict with all shared paths and model dimensions.
 
     Args:
         project_root: Absolute path to the repo root (contains src/, notebooks/, etc.)
+        data_root: Root directory for all data output (processed_data/, training/,
+                   data/json, data/jpg, mlruns/).  Defaults to the DATA_ROOT env var,
+                   or project_root if neither is set.  Set this to an external drive
+                   path to keep large files outside the git repo.
     """
+    if data_root is None:
+        env_val = os.environ.get("DATA_ROOT")
+        data_root = Path(env_val) if env_val else project_root
+
     return {
         # ── Shared feature dimensions ──────────────────────────────────────
         # These must match the Phase 2 feature extractors and COOLANT Stage 1.
@@ -33,15 +42,18 @@ def make_config(project_root: Path) -> dict:
         },
 
         # ── Shared data paths ──────────────────────────────────────────────
+        # All paths below live under data_root so they can be placed on an
+        # external drive without touching the git-tracked source tree.
         "paths": {
-            "hdf5_dir":          project_root / "processed_data" / "hdf5",
-            "json_dir":          project_root / "notebooks" / "data" / "json",
-            "jpg_dir":           project_root / "notebooks" / "data" / "jpg",
-            "stage2_features":   project_root / "training" / "stage2_features",
-            "stage1_checkpoints": project_root / "training" / "checkpoints_coolant",
-            "stage2_checkpoints": project_root / "training" / "checkpoints_stage2",
-            "stage2_results":    project_root / "training" / "stage2_results",
-            "mlflow_dir":        project_root / "notebooks" / "mlruns",
+            "data_root":         data_root,
+            "hdf5_dir":          data_root / "processed_data" / "hdf5",
+            "json_dir":          data_root / "data" / "json",
+            "jpg_dir":           data_root / "data" / "jpg",
+            "stage2_features":   data_root / "training" / "stage2_features",
+            "stage1_checkpoints": data_root / "training" / "checkpoints_coolant",
+            "stage2_checkpoints": data_root / "training" / "checkpoints_stage2",
+            "stage2_results":    data_root / "training" / "stage2_results",
+            "mlflow_dir":        data_root / "mlruns",
         },
 
         # ── Shared model architecture ──────────────────────────────────────
