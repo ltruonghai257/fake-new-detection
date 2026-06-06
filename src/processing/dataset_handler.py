@@ -1,6 +1,9 @@
 import os
 from typing import List
 
+# Disable torch import in datasets to avoid circular import issues
+os.environ["DATASETS_DISABLE_TORCH"] = "1"
+
 class DatasetHandler:
     def __init__(self, dataset_name: str):
         self.dataset_name = dataset_name

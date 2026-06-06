@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import time
@@ -94,6 +95,9 @@ class DomainRateLimiter:
         "thanhnien.vn":    1.0,
         "tienphong.vn":    1.0,
         "baotintuc.vn":    1.0,
+    }
+    DOMAIN_CONCURRENCY: Dict[str, int] = {
+        "dantri.com.vn":   1,
     }
     DEFAULT_INTERVAL = 1.0
     MAX_INTERVAL = 60.0
@@ -206,6 +210,7 @@ class CrawlerFactory:
         retry_failed: bool = False,
         save_interval: int = 50,
         output_dir: Optional[str] = None,
+        domain_concurrency: Optional[Dict[str, int]] = None,
     ):
         """
         Crawl URLs concurrently with smart caching.
@@ -223,8 +228,6 @@ class CrawlerFactory:
             retry_failed: If True, retry previously failed URLs
             save_interval: Save cache checkpoint every N completed URLs
         """
-        import asyncio
-
         rate_limiter = DomainRateLimiter()
         journal = CrawlJournal(self.cache_filename, self.failed_log_filename)
         completed_urls_list, completed_urls_lookup, prev_failed = journal.load()
@@ -253,6 +256,10 @@ class CrawlerFactory:
             return
 
         sem = asyncio.Semaphore(max_concurrent)
+        _domain_concurrency = {**DomainRateLimiter.DOMAIN_CONCURRENCY, **(domain_concurrency or {})}
+        domain_sems: Dict[str, asyncio.Semaphore] = {
+            domain: asyncio.Semaphore(limit) for domain, limit in _domain_concurrency.items()
+        }
 
         async def _save_checkpoint():
             """Save cache to disk (for crash recovery)."""
@@ -262,50 +269,53 @@ class CrawlerFactory:
 
         async def process_url(url, pbar):
             nonlocal completed_since_save
+            domain = rate_limiter._match_domain(url)
+            domain_sem = domain_sems.get(domain)
             async with sem:
-                await rate_limiter.wait(url)
-                start_time = time.time()
-                crawler = self.get_crawler(url)
-                if crawler:
-                    try:
-                        results = await crawler.arun(url=url, save_to_file=False)
-                        for result in results:
-                            duration = round(time.time() - start_time, 2)
-                            if result.success:
-                                rate_limiter.on_success(url)
-                                saved_images = await crawler._save_images(result, ".jpg")
-                                result.images = saved_images
-                                prepared_data = formatter(result)
+                async with (domain_sem if domain_sem else asyncio.Semaphore(max_concurrent)):
+                    await rate_limiter.wait(url)
+                    start_time = time.time()
+                    crawler = self.get_crawler(url)
+                    if crawler:
+                        try:
+                            results = await crawler.arun(url=url, save_to_file=False)
+                            for result in results:
+                                duration = round(time.time() - start_time, 2)
+                                if result.success:
+                                    rate_limiter.on_success(url)
+                                    saved_images = await crawler._save_images(result, ".jpg")
+                                    result.images = saved_images
+                                    prepared_data = formatter(result)
 
-                                async with lock:
-                                    all_results_data.append(prepared_data)
-                                    ts = datetime.now().isoformat()
-                                    entry = {'url': url, 'length': len(str(prepared_data)), 'timestamp': ts, 'duration': duration}
-                                    completed_urls_list.append(entry)
-                                    completed_urls_lookup[url] = entry
-                                    # Remove from failed if it was a retry
-                                    failed_urls_data.pop(url, None)
-                                    completed_since_save += 1
-                                    if completed_since_save >= save_interval:
-                                        await _save_checkpoint()
-                                        completed_since_save = 0
-                            else:
-                                reason = result.error or "Unknown error"
-                                if any(s in reason for s in _RATE_LIMIT_SIGNALS):
-                                    rate_limiter.on_rate_limited(url)
-                                async with lock:
-                                    failed_urls_data[url] = {'url': url, 'reason': reason[:200], 'timestamp': datetime.now().isoformat(), 'duration': duration}
-                    except Exception as e:
+                                    async with lock:
+                                        all_results_data.append(prepared_data)
+                                        ts = datetime.now().isoformat()
+                                        entry = {'url': url, 'length': len(str(prepared_data)), 'timestamp': ts, 'duration': duration}
+                                        completed_urls_list.append(entry)
+                                        completed_urls_lookup[url] = entry
+                                        # Remove from failed if it was a retry
+                                        failed_urls_data.pop(url, None)
+                                        completed_since_save += 1
+                                        if completed_since_save >= save_interval:
+                                            await _save_checkpoint()
+                                            completed_since_save = 0
+                                else:
+                                    reason = result.error or "Unknown error"
+                                    if any(s in reason for s in _RATE_LIMIT_SIGNALS):
+                                        rate_limiter.on_rate_limited(url)
+                                    async with lock:
+                                        failed_urls_data[url] = {'url': url, 'reason': reason[:200], 'timestamp': datetime.now().isoformat(), 'duration': duration}
+                        except Exception as e:
+                            duration = round(time.time() - start_time, 2)
+                            if any(s in str(e) for s in _RATE_LIMIT_SIGNALS):
+                                rate_limiter.on_rate_limited(url)
+                            async with lock:
+                                failed_urls_data[url] = {'url': url, 'reason': str(e)[:200], 'timestamp': datetime.now().isoformat(), 'duration': duration}
+                    else:
                         duration = round(time.time() - start_time, 2)
-                        if any(s in str(e) for s in _RATE_LIMIT_SIGNALS):
-                            rate_limiter.on_rate_limited(url)
                         async with lock:
-                            failed_urls_data[url] = {'url': url, 'reason': str(e)[:200], 'timestamp': datetime.now().isoformat(), 'duration': duration}
-                else:
-                    duration = round(time.time() - start_time, 2)
-                    async with lock:
-                        failed_urls_data[url] = {'url': url, 'reason': "No crawler found", 'timestamp': datetime.now().isoformat(), 'duration': duration}
-                pbar.update(1)
+                            failed_urls_data[url] = {'url': url, 'reason': "No crawler found", 'timestamp': datetime.now().isoformat(), 'duration': duration}
+                    pbar.update(1)
 
         with tqdm(total=len(urls_to_crawl), desc="Crawling") as pbar:
             tasks = [process_url(url, pbar) for url in urls_to_crawl]
