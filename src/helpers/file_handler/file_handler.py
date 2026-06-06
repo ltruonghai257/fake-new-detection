@@ -1,14 +1,19 @@
 import os
+from pathlib import Path
 from typing import Union, TypedDict, Optional
 
 from exceptions import InvalidExtensionException
+from helpers.paths import get_data_root
 
 
 class FileHandler:
     """Base class for file handling operations."""
 
     def __init__(self, root_folder: str = "data") -> None:
-        self.root_folder = root_folder
+        if os.path.isabs(root_folder):
+            self.root_folder = root_folder
+        else:
+            self.root_folder = str(get_data_root() / root_folder)
         self.supported_extensions = tuple(
             [
                 ".txt",

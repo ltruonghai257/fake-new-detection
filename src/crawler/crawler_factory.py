@@ -10,6 +10,7 @@ from datetime import datetime
 from .base_crawler import BaseCrawler
 from .crawl_result import CrawlResult
 from helpers.file_handler.file_handler import FileHandler
+from helpers.paths import get_data_root
 from .output_formats import OutputFormatter
 from helpers.logger import logger
 
@@ -329,7 +330,7 @@ class CrawlerFactory:
             if output_dir:
                 output_path = os.path.join(output_dir, output_filename)
             else:
-                output_path = os.path.join("data", "json", output_filename)
+                output_path = str(get_data_root() / "data" / "json" / output_filename)
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
             existing_data = []
             if os.path.exists(output_path):
