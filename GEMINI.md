@@ -48,10 +48,10 @@ src/
 
 ### Prerequisites
 
--   Python 3.13+
--   Conda (recommended) or pip
+-   Python 3.10+
+-   [uv](https://docs.astral.sh/uv/getting-started/installation/)
 
-### Setup with Conda (Recommended)
+### Setup with uv
 
 1. Clone the repository:
 
@@ -60,27 +60,15 @@ src/
     cd fake-new-detection
     ```
 
-2. Create and activate the conda environment:
+2. Install dependencies and activate the environment:
 
     ```bash
-    conda env create -f environment.yml
-    conda activate fake_news
+    uv sync
+    source .venv/bin/activate
     ```
 
-### Alternative Setup with pip
-
-1. Create a virtual environment:
-
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
-
-2. Install dependencies:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
+> **Note**: `torch`/`torchvision` are not included in `uv sync` — install them separately
+> with the appropriate CUDA index URL (see `vastai/setup_vastai.sh` for reference).
 
 ## Usage
 

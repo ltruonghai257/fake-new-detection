@@ -72,9 +72,9 @@ else
     fi
 fi
 
-# Install project dependencies (includes numpy<2, h5py, underthesea, jupyter, protobuf)
+# Install project dependencies via uv sync (torch pre-installed above is reused)
 echo "Installing project dependencies..."
-uv pip install -r requirements.txt
+uv sync --no-install-project
 
 # Create Jupyter kernel
 echo "Creating Jupyter kernel..."

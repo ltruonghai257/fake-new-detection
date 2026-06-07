@@ -174,8 +174,8 @@ total_loss = (
 ### 5.1. Setup & Installation
 1.  **Environment:**
     ```bash
-    conda env create -f environment.yml
-    conda activate fake-new-detection
+    uv sync
+    source .venv/bin/activate
     ```
 2.  **Verify OpenSSL:**
     Ensure `openssl.cnf` is in the root directory. This file is required for the crawler to function correctly on all sites.
