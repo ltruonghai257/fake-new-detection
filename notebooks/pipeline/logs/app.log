@@ -1046,3 +1046,109 @@ For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/St
 2026-06-06 16:03:06 | INFO     | src.crawler.crawler_factory:_print_summary:356 - Completed (total): 758 URLs
 2026-06-06 16:03:06 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Failed this run:   0 URLs
 2026-06-06 16:03:06 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed (total):    0 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:load:56 - Loaded 3734 completed URLs from cache (will skip).
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:248 - Retrying 0 previously failed URLs.
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:251 - URLs to crawl: 0 (skipped: 5062, concurrency=3)
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:254 - Nothing to crawl.
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:355 - 
+--- Crawling Summary ---
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:356 - Completed (total): 1035 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Failed this run:   0 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed (total):    0 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:load:56 - Loaded 723 completed URLs from cache (will skip).
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:248 - Retrying 0 previously failed URLs.
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:251 - URLs to crawl: 0 (skipped: 723, concurrency=3)
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:254 - Nothing to crawl.
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:355 - 
+--- Crawling Summary ---
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:356 - Completed (total): 496 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Failed this run:   0 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed (total):    0 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:load:56 - Loaded 1447 completed URLs from cache (will skip).
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:248 - Retrying 0 previously failed URLs.
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:251 - URLs to crawl: 0 (skipped: 1447, concurrency=3)
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:254 - Nothing to crawl.
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:355 - 
+--- Crawling Summary ---
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:356 - Completed (total): 758 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Failed this run:   0 URLs
+2026-06-07 17:25:28 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed (total):    0 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:load:57 - Loaded 3734 completed URLs from cache (will skip).
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:249 - Retrying 0 previously failed URLs.
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:252 - URLs to crawl: 0 (skipped: 5062, concurrency=3)
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:255 - Nothing to crawl.
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:356 - 
+--- Crawling Summary ---
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Completed (total): 1035 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed this run:   0 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:359 - Failed (total):    0 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:load:57 - Loaded 723 completed URLs from cache (will skip).
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:249 - Retrying 0 previously failed URLs.
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:252 - URLs to crawl: 0 (skipped: 723, concurrency=3)
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:255 - Nothing to crawl.
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:356 - 
+--- Crawling Summary ---
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Completed (total): 496 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed this run:   0 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:359 - Failed (total):    0 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:load:57 - Loaded 1447 completed URLs from cache (will skip).
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:249 - Retrying 0 previously failed URLs.
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:252 - URLs to crawl: 0 (skipped: 1447, concurrency=3)
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:255 - Nothing to crawl.
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:356 - 
+--- Crawling Summary ---
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Completed (total): 758 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed this run:   0 URLs
+2026-06-07 17:25:48 | INFO     | src.crawler.crawler_factory:_print_summary:359 - Failed (total):    0 URLs
+2026-06-07 17:33:53 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:249 - Retrying 0 previously failed URLs.
+2026-06-07 17:33:53 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:252 - URLs to crawl: 5062 (skipped: 0, concurrency=3)
+2026-06-07 17:35:04 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://tuoitre.vn/tan-dung-chat-prompt-bi-quyet-su-dung-chat-gpt-hieu-qua-20230225094154216.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 17:47:40 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/thu-tuong-chi-thi-day-manh-phan-bo-giai-ngan-von-dau-tu-cong-3-chuong-trinh-muc-tieu-quoc-gia-chuong-trinh-phuc-hoi-phat-trien-ktxh-102230324002006702.htm'): . Retrying in 0.5s...
+2026-06-07 17:47:45 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/cuu-ho-tham-hoa-dong-dat-tai-tho-nhi-ky-quoc-te-danh-gia-cao-su-chuyen-nghiep-nhiet-tinh-cua-doan-cuu-ho-viet-nam-10223021220213453.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 17:48:17 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/cuu-ho-tham-hoa-dong-dat-tai-tho-nhi-ky-quoc-te-danh-gia-cao-su-chuyen-nghiep-nhiet-tinh-cua-doan-cuu-ho-viet-nam-10223021220213453.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 17:50:20 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/dua-kim-ngach-thuong-mai-song-phuong-viet-nam-malaysia-som-dat-muc-tieu-18-ty-usd-102230407180905321.htm'): . Retrying in 0.5s...
+2026-06-07 17:54:16 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://thanhnien.vn/tong-thong-uae-bo-nhiem-con-trai-lam-thai-tu-abu-dhabi-185230331084512238.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 17:54:54 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/nam-2023-kinh-te-viet-nam-co-muc-tang-truong-tot-nhat-asean-102230331085532501.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 17:55:16 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://nld.com.vn/cong-nghe/xuat-khau-cong-nghe-ra-bien-lon-20230108102509189.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 17:57:31 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://thanhnien.vn/tis-gala-2023-trai-nghiem-nghe-thuat-trong-truong-hoc-185230327154011749.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:00:58 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://tuoitre.vn/nhieu-hoc-sinh-nghi-bi-ngo-doc-sau-khi-di-tham-quan-voi-truong-20230328201456696.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:04:20 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://tuoitre.vn/loi-nhuan-cao-nho-nuoi-muc-trong-long-be-tren-bien-20230328153752473.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:05:19 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://thanhnien.vn/can-lam-gi-de-con-nguoi-cong-nghe-khong-bi-thay-the-boi-may-moc-185230328185320135.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:06:31 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://nld.com.vn/thoi-su/nguoi-dan-ong-chet-tai-cho-sau-tieng-dong-manh-o-huyen-cu-chi-20230329145053271.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:09:51 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://tuoitre.vn/u23-viet-nam-ve-nuoc-ngay-17-4-tap-trung-chuan-bi-sea-games-32-20230330080015231.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:11:08 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/he-thong-xang-dau-khi-dot-phai-van-hanh-dong-bo-thong-suot-dam-bao-cho-nen-kinh-te-102230330163626936.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:12:10 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/moodys-lam-phat-da-vuot-dinh-o-hau-het-cac-nen-kinh-te-chau-a-thai-binh-duong-102230203143044883.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:15:12 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/vong-loai-olympic-hoc-tro-thang-dam-nhung-hlv-mai-duc-chung-van-chua-hai-long-102230406100638941.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:17:06 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/cuba-vinh-danh-nhung-nguoi-hy-sinh-trong-tham-hoa-matanzas-102220820110325279.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:20:33 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/du-lich-la-linh-vuc-hop-tac-quan-trong-giua-viet-nam-va-trung-quoc-102230309163857987.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:25:30 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/dong-gop-to-lon-cua-viet-nam-trong-viec-dem-lai-hy-vong-cho-nguoi-chan-nuoi-lon-tren-the-gioi-102230418160313148.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:27:33 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://baochinhphu.vn/hoan-thien-de-an-phat-trien-1-trieu-ha-lua-chat-luong-cao-giam-phat-thai-102230329191115412.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:30:08 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:344 - Saved 5062 new + 0 existing = 5062 total articles to /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My Drive/Thesis_Final/fake-news-data-for-thesis/data/json/news_data_vifactcheck_train.json
+2026-06-07 18:30:08 | INFO     | src.crawler.crawler_factory:_print_summary:356 - 
+--- Crawling Summary ---
+2026-06-07 18:30:08 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Completed (total): 1035 URLs
+2026-06-07 18:30:08 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed this run:   0 URLs
+2026-06-07 18:30:08 | INFO     | src.crawler.crawler_factory:_print_summary:359 - Failed (total):    0 URLs
+2026-06-07 18:30:08 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:249 - Retrying 0 previously failed URLs.
+2026-06-07 18:30:08 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:252 - URLs to crawl: 723 (skipped: 0, concurrency=3)
+2026-06-07 18:34:28 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://thanhnien.vn/nu-sinh-trung-vuong-thuot-tha-ao-dai-sang-dau-tuan-185230320094630818.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:35:19 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://thanhnien.vn/tinh-nha-giau-trung-quoc-tang-tien-cho-cong-ty-du-lich-hut-khach-quoc-te-185230329170135594.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:37:26 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:344 - Saved 723 new + 0 existing = 723 total articles to /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My Drive/Thesis_Final/fake-news-data-for-thesis/data/json/news_data_vifactcheck_dev.json
+2026-06-07 18:37:26 | INFO     | src.crawler.crawler_factory:_print_summary:356 - 
+--- Crawling Summary ---
+2026-06-07 18:37:26 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Completed (total): 496 URLs
+2026-06-07 18:37:26 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed this run:   0 URLs
+2026-06-07 18:37:26 | INFO     | src.crawler.crawler_factory:_print_summary:359 - Failed (total):    0 URLs
+2026-06-07 18:37:26 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:249 - Retrying 0 previously failed URLs.
+2026-06-07 18:37:26 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:252 - URLs to crawl: 1447 (skipped: 0, concurrency=3)
+2026-06-07 18:43:10 | WARNING  | helpers.httpx_client:_request:99 - HTTP 502 for 'https://baochinhphu.vn/phat-trien-nganh-duoc-dua-tren-tiem-nang-the-manh-khong-duy-y-chi-102230329214503614.htm'. Retrying in 0.5s...
+2026-06-07 18:45:07 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://nld.com.vn/thoi-su/nguoi-thu-3-vu-no-dau-dan-o-kon-tum-tu-vong-20230328104230882.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:52:41 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://thanhnien.vn/vong-loai-euro-2024-cuong-phong-do-trong-cho-vao-joselu-18523032712472929.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:52:54 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://tuoitre.vn/my-quyet-liet-chinh-phuc-lai-chau-phi-do-so-nga-va-trung-quoc-20230328164249345.htm'): Server disconnected without sending a response.. Retrying in 0.5s...
+2026-06-07 18:54:14 | WARNING  | helpers.httpx_client:_request:110 - Request error for URL('https://tuoitre.vn/le-thuy-kim-tu-long-tien-biet-nghe-si-vu-linh-20230306234524566.htm'): . Retrying in 0.5s...
+2026-06-07 18:55:07 | INFO     | src.crawler.crawler_factory:crawl_and_save_all:344 - Saved 1447 new + 0 existing = 1447 total articles to /Users/haila/Library/CloudStorage/GoogleDrive-latruonghai@gmail.com/My Drive/Thesis_Final/fake-news-data-for-thesis/data/json/news_data_vifactcheck_test.json
+2026-06-07 18:55:07 | INFO     | src.crawler.crawler_factory:_print_summary:356 - 
+--- Crawling Summary ---
+2026-06-07 18:55:07 | INFO     | src.crawler.crawler_factory:_print_summary:357 - Completed (total): 758 URLs
+2026-06-07 18:55:07 | INFO     | src.crawler.crawler_factory:_print_summary:358 - Failed this run:   0 URLs
+2026-06-07 18:55:07 | INFO     | src.crawler.crawler_factory:_print_summary:359 - Failed (total):    0 URLs

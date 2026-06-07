@@ -180,7 +180,57 @@ ssh -p 20544 root@142.214.185.187 -L 5000:localhost:5000
 ssh -p 20544 root@142.214.185.187 -L 8888:localhost:8888 -L 5000:localhost:5000
 ```
 
-## File Transfer
+## Data from Google Drive (rclone)
+
+This project stores all large data on Google Drive (via `DATA_ROOT`). On Vast.ai, Google
+Drive is not mounted — use **rclone** to sync data to and from the instance.
+
+### One-time: Install and configure rclone on Vast.ai
+
+```bash
+# On the Vast.ai instance
+curl https://rclone.org/install.sh | sudo bash
+
+# Configure Google Drive remote (opens browser link for auth)
+rclone config
+# → New remote → name it "gdrive" → type: Google Drive → follow OAuth prompts
+```
+
+> **Tip**: If the instance has no browser, run `rclone authorize "drive"` on your local
+> machine, copy the token, then paste it during `rclone config` on the remote.
+
+### Sync data from Drive → Vast.ai (before training)
+
+```bash
+GDRIVE_FOLDER="Thesis_Final/fake-news-data-for-thesis"
+LOCAL_ROOT="/workspace/fake-news-data-for-thesis"
+
+# Sync preprocessed data and JSON (skip raw images to save time/disk if not needed)
+rclone copy "gdrive:${GDRIVE_FOLDER}/data/json"           "${LOCAL_ROOT}/data/json"           --progress
+rclone copy "gdrive:${GDRIVE_FOLDER}/processed_data"      "${LOCAL_ROOT}/processed_data"      --progress
+
+# Optionally sync images (large, only needed if training uses raw images)
+rclone copy "gdrive:${GDRIVE_FOLDER}/data/jpg"            "${LOCAL_ROOT}/data/jpg"            --progress
+```
+
+### Set DATA_ROOT on Vast.ai
+
+```bash
+cp .env.vastai.example .env
+# .env already contains: DATA_ROOT=/workspace/fake-news-data-for-thesis
+```
+
+### Sync results back to Drive (after training)
+
+```bash
+# Upload training checkpoints and results back to Drive
+rclone copy "${LOCAL_ROOT}/training" "gdrive:${GDRIVE_FOLDER}/training" --progress
+rclone copy "${LOCAL_ROOT}/mlruns"   "gdrive:${GDRIVE_FOLDER}/mlruns"   --progress
+```
+
+---
+
+## File Transfer (Code)
 
 ### Upload Project (Python Script)
 ```bash
@@ -195,23 +245,23 @@ rsync -avz -e 'ssh -p <PORT>' \
   --exclude='__pycache__/' \
   --exclude='*.pyc' \
   --exclude='.venv' \
+  --exclude='data/' \
+  --exclude='processed_data/' \
+  --exclude='training/' \
   --exclude='mlruns/' \
-  --exclude='checkpoints/' \
   /path/to/fake-new-detection/ \
   root@<IP>:/workspace/fake-new-detection/
 ```
 
+> **Note**: Data directories (`data/`, `processed_data/`, `training/`) are excluded from
+> rsync — they come from Google Drive via rclone (see section above).
+
 ### Download Results
 ```bash
-# Download checkpoints
+# Download checkpoints via rsync (alternative to rclone)
 rsync -avz -e 'ssh -p <PORT>' \
-  root@<IP>:/workspace/fake-new-detection/checkpoints/ \
-  ./checkpoints/
-
-# Download logs
-rsync -avz -e 'ssh -p <PORT>' \
-  root@<IP>:/workspace/fake-new-detection/logs/ \
-  ./logs/
+  root@<IP>:/workspace/fake-news-data-for-thesis/training/ \
+  ./training/
 ```
 
 ### Using SCP
@@ -220,7 +270,7 @@ rsync -avz -e 'ssh -p <PORT>' \
 scp -P <PORT> local_file.py root@<IP>:/workspace/fake-new-detection/
 
 # Download single file
-scp -P <PORT> root@<IP>:/workspace/fake-new-detection/checkpoint.pth ./
+scp -P <PORT> root@<IP>:/workspace/fake-news-data-for-thesis/training/best_model.pth ./
 ```
 
 ## Running Training

@@ -62,6 +62,28 @@ from pathlib import Path
 print(Path(os.environ.get("DATA_ROOT", ".")))
 ```
 
+### Practical setups by environment
+
+#### macOS with Google Drive mounted (current local workflow)
+
+Google Drive client mounts your Drive as a local path. Set `DATA_ROOT` directly to that path — no upload/download step needed; the OS handles syncing transparently.
+
+```bash
+# .env on macOS
+DATA_ROOT=/Users/<you>/Library/CloudStorage/GoogleDrive-<email>/My Drive/Thesis_Final/fake-news-data-for-thesis
+```
+
+All pipeline output (JSON, images, caches, checkpoints) writes straight to Drive.
+
+#### Vast.ai (training only)
+
+Google Drive is not mounted on a remote GPU instance. Use **rclone** to pull preprocessed data before training and push checkpoints after. See [`vastai/VASTAI_GUIDE.md`](../vastai/VASTAI_GUIDE.md#data-from-google-drive-rclone) for the full rclone walkthrough.
+
+```bash
+# .env on Vast.ai (copy from .env.vastai.example)
+DATA_ROOT=/workspace/fake-news-data-for-thesis
+```
+
 ### Migrate existing data to the new root
 
 If you already have data inside the repo and want to move it out, run once:
