@@ -115,16 +115,23 @@ class PairExtractor:
         source_label_counts = Counter()
         
         for article_idx, article in enumerate(articles):
-            article_title = article.get("title", "")
-            article_source_url = article.get("source_url", "")
+            # Support both old flat format and new nested crawler format
+            if "features" in article or "media" in article:
+                article_title = article.get("features", {}).get("title", "")
+                article_source_url = article.get("metadata", {}).get("source_url", "")
+                images = article.get("media", {}).get("images", [])
+            else:
+                article_title = article.get("title", "")
+                article_source_url = article.get("source_url", "")
+                images = article.get("images", [])
             article_source_label = article.get("label", "")
-            
+
             if article_source_label:
                 source_label_counts[article_source_label] += 1
-            
-            for img in article.get("images", []):
+
+            for img in images:
                 raw_caption = (img.get("caption") or "").strip()
-                folder_path = img.get("folder_path", "")
+                folder_path = img.get("folder_path") or img.get("path", "")
 
                 # Must have an image file
                 if not folder_path:
@@ -184,7 +191,10 @@ class PairExtractor:
                     "source_label": article_source_label,
                 })
 
-        total_imgs = sum(len(a.get("images", [])) for a in articles)
+        total_imgs = sum(
+            len(a.get("media", {}).get("images", []) if ("media" in a or "features" in a) else a.get("images", []))
+            for a in articles
+        )
         print(f"    Total images: {total_imgs}, Valid pairs: {len(pairs)}")
         print(f"    Skipped: {skipped}")
 
