@@ -191,6 +191,9 @@ class TextPreprocessor:
         }
         field_cleaning = {**default_field_cleaning, **field_cleaning}
 
+        # Remove HTML tags
+        text = re.sub(r'<[^>]+>', '', text)
+
         # Vietnamese text cleaning
         if field_cleaning.get("photo_credits", True):
             # Matches: "- Ảnh: TTXVN phát", "Ảnh minh họa: VnExpress", "Nguồn ảnh: Reuters"

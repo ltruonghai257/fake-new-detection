@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 from torchvision import transforms
-from torchvision.models import resnet18, resnet50
+from torchvision.models import resnet18, resnet50, ResNet18_Weights, ResNet50_Weights
 from PIL import Image
 from typing import List, Dict, Tuple, Optional, Union
 from tqdm import tqdm
@@ -89,9 +89,9 @@ class ImagePreprocessor:
 
     def _init_resnet(self, model_name, pretrained):
         if model_name == "resnet18":
-            model = resnet18(pretrained=pretrained)
+            model = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1 if pretrained else None)
         else:
-            model = resnet50(pretrained=pretrained)
+            model = resnet50(weights=ResNet50_Weights.IMAGENET1K_V1 if pretrained else None)
         self.model = nn.Sequential(*list(model.children())[:-1])
         self.model.to(self.device)
         self.model.eval()
