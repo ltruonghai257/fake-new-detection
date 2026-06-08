@@ -185,6 +185,28 @@ ssh -p 20544 root@142.214.185.187 -L 8888:localhost:8888 -L 5000:localhost:5000
 This project stores all large data on Google Drive (via `DATA_ROOT`). On Vast.ai, Google
 Drive is not mounted — use **rclone** to sync data to and from the instance.
 
+### `DATA_ROOT` by Environment
+
+| Platform | Variable | Example Path |
+|----------|----------|--------------|
+| **Vast.ai** | `DATA_ROOT` | `/workspace/fake-news-data-for-thesis` |
+| **Google Colab** | `DATA_ROOT` | `/content/drive/MyDrive/Thesis_Final/fake-news-data-for-thesis` |
+| **macOS** | `DATA_ROOT` | `/Users/[USERNAME]/Library/CloudStorage/GoogleDrive-[EMAIL]/My Drive/Thesis_Final/fake-news-data-for-thesis` |
+| **Windows** | `DATA_ROOT` | `C:/Users/[USERNAME]/Google Drive/My Drive/Thesis_Final/fake-news-data-for-thesis` |
+
+**Platform Notes:**
+
+- **Google Colab**: Mount Drive first before running the pipeline:
+  ```python
+  from google.colab import drive
+  drive.mount('/content/drive')
+  ```
+- **Windows**: Use forward slashes in `.env` (`C:/Users/...`) OR use raw strings in Python (`r"C:\Users\..."`).
+- **macOS**: The CloudStorage path format varies by Google account email. Check your exact path with:
+  ```bash
+  ls ~/Library/CloudStorage/
+  ```
+
 ### One-time: Install and configure rclone on Vast.ai
 
 ```bash

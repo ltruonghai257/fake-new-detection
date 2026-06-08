@@ -159,6 +159,9 @@ class CLIP(nn.Module):
         self, image: torch.Tensor, text: torch.Tensor
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         # Project features to shared embedding space
+        # text may be [B, embed_dim, seq_len] — mean-pool to [B, embed_dim]
+        if text.dim() == 3:
+            text = text.mean(dim=2)
         text_embed = self.text_projection(text)  # (B, embed_dim)
         image_embed = self.image_projection(image)  # (B, embed_dim)
 
