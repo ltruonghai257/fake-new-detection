@@ -13,6 +13,28 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# --- Vietnamese caption artifact patterns (used by TextProcessor.clean_text) ---
+# 1. Photo credit lines: "Ảnh: ...", "(Ảnh: ...)", "Ảnh/...", "Photo: ...", "(Photo: ...)"
+_RE_PHOTO_CREDIT = re.compile(
+    r'\s*\(?\s*(?:Ảnh|Photo)\s*[:/／]\s*[^).\n]*\)?',
+    re.IGNORECASE,
+)
+# 2a. Dash/em-dash agency attribution at end of string
+_RE_AGENCY_DASH = re.compile(
+    r'\s*[-\u2013\u2014]\s*(?:TTXVN(?:\s+phát)?|VNA|AFP|Reuters|AP)\s*$',
+    re.IGNORECASE,
+)
+# 2b. Parenthesized agency attribution at end of string
+_RE_AGENCY_PAREN = re.compile(
+    r'\s*\((?:TTXVN(?:\s+phát)?|VNA|AFP|Reuters|AP)\)\s*$',
+    re.IGNORECASE,
+)
+# 3. Standalone Vietnamese caption suffixes (may appear mid-sentence or at end)
+_RE_VN_CAPTION_SUFFIX = re.compile(
+    r'\bẢnh\s+(?:minh\s+họa|tư\s+liệu|chụp\s+màn\s+hình)[.,]?\s*',
+    re.IGNORECASE,
+)
+
 
 class TextProcessor:
     """
@@ -72,6 +94,12 @@ class TextProcessor:
         
         # Remove URLs
         text = re.sub(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', text)
+        
+        # Photo credits → agency tags → Vietnamese caption suffixes
+        text = _RE_PHOTO_CREDIT.sub('', text)
+        text = _RE_AGENCY_DASH.sub('', text)
+        text = _RE_AGENCY_PAREN.sub('', text)
+        text = _RE_VN_CAPTION_SUFFIX.sub('', text)
         
         # Remove excessive whitespace
         text = re.sub(r'\s+', ' ', text.strip())

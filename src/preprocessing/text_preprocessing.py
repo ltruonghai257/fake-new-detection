@@ -46,6 +46,19 @@ class TextCleaningOptions(TypedDict, total=False):
     punctuation: bool
     numbers: bool
     whitespace: bool
+    stopwords: bool
+    photo_credits: bool
+
+
+VIETNAMESE_STOPWORDS = {
+    "là", "và", "của", "có", "được", "trong", "với", "cho", "không",
+    "một", "các", "những", "này", "đó", "từ", "theo", "trên", "như",
+    "khi", "đã", "về", "bị", "vì", "nên", "cũng", "thì", "mà", "hay",
+    "hoặc", "nhưng", "vào", "ra", "lên", "xuống", "đến", "qua", "tại",
+    "ở", "sau", "trước", "để", "rất", "còn", "đang", "sẽ", "đây", "kia",
+    "hơn", "nhất", "nào", "ai", "gì", "sao", "thế", "vậy", "đều",
+    "cả", "chỉ", "mới", "lại", "thêm", "cần",
+}
 
 
 # Text model registry: maps model keys to their configuration
@@ -63,6 +76,30 @@ _TEXT_MODEL_ALIASES = {
     "vinai/phobert-large": "phobert-large",
     "uitnlp/visobert": "visobert",
 }
+
+# --- Additional Vietnamese caption artifact patterns (extend TextPreprocessor.clean_text) ---
+# 1. Parenthesized photo credits, slash separator, and Photo: variant not covered by existing pattern
+_TP_PHOTO_CREDIT_EXT = re.compile(
+    r'\s*\(\s*(?:Ảnh|Photo)\s*[:/／]\s*[^).\n]*\)'
+    r'|\s*(?:Ảnh|Photo)\s*[/／]\s*[^).\n]*'
+    r'|\s*Photo\s*:\s*[^).\n]*',
+    re.IGNORECASE,
+)
+# 2a. Dash/em-dash agency attribution at end of string
+_TP_AGENCY_DASH = re.compile(
+    r'\s*[-\u2013\u2014]\s*(?:TTXVN(?:\s+phát)?|VNA|AFP|Reuters|AP)\s*$',
+    re.IGNORECASE,
+)
+# 2b. Parenthesized agency attribution at end of string
+_TP_AGENCY_PAREN = re.compile(
+    r'\s*\((?:TTXVN(?:\s+phát)?|VNA|AFP|Reuters|AP)\)\s*$',
+    re.IGNORECASE,
+)
+# 3. Standalone Vietnamese caption suffixes without colon (tư liệu, chụp màn hình, uncredited minh họa)
+_TP_VN_CAPTION_SUFFIX = re.compile(
+    r'\bẢnh\s+(?:minh\s+họa|tư\s+liệu|chụp\s+màn\s+hình)[.,]?\s*',
+    re.IGNORECASE,
+)
 
 
 class TextPreprocessor:
@@ -149,10 +186,20 @@ class TextPreprocessor:
             "punctuation": True,
             "numbers": True,
             "whitespace": True,
+            "stopwords": False,
+            "photo_credits": True,
         }
         field_cleaning = {**default_field_cleaning, **field_cleaning}
 
         # Vietnamese text cleaning
+        if field_cleaning.get("photo_credits", True):
+            # Matches: "- Ảnh: TTXVN phát", "Ảnh minh họa: VnExpress", "Nguồn ảnh: Reuters"
+            text = re.sub(r"[-–]?\s*(Ảnh(\s+minh\s+họa)?|Nguồn\s+ảnh)\s*:[^.!?\n]*", "", text)
+            text = _TP_PHOTO_CREDIT_EXT.sub("", text)
+            text = _TP_AGENCY_DASH.sub("", text)
+            text = _TP_AGENCY_PAREN.sub("", text)
+            text = _TP_VN_CAPTION_SUFFIX.sub("", text)
+
         if field_cleaning.get("urls", True):
             text = re.sub(r"http\S+|www\S+|https\S+", "", text, flags=re.MULTILINE)
 
@@ -168,6 +215,10 @@ class TextPreprocessor:
 
         # Remove leading/trailing whitespace and convert to lowercase
         text = text.strip().lower()
+
+        if field_cleaning.get("stopwords", False):
+            text = " ".join(w for w in text.split() if w not in VIETNAMESE_STOPWORDS)
+
         if outer_function is not None:
             text = outer_function(text)
         # Optional: Use underthesea for advanced Vietnamese text processing
