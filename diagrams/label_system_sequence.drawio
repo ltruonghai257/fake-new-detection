@@ -1,0 +1,211 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1200" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- Title -->
+    <mxCell id="title" value="Label System in Fake News Detection Pipeline — Sequence Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="80" y="20" width="1680" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- ===== LIFELINE HEADERS ===== -->
+    <mxCell id="lh1" value="Config&#xa;(simple_pipeline.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="100" y="80" width="150" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="lh2" value="DataLoader&#xa;(simple_dataloader.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="330" y="80" width="150" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="lh3" value="Preprocessor&#xa;(combined_preprocessing.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="570" y="80" width="170" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="lh4" value="ViFactCheck Integrator&#xa;(add_synthetic_labels.py&#xa;/ 04_mm_vifactcheck...ipynb)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="840" y="80" width="170" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="lh5" value="Training Loop&#xa;(train_coolant_official.py&#xa;/ training_utils.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="1120" y="80" width="160" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="lh6" value="Loss Functions&#xa;(03_coolant_training.ipynb)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="1390" y="80" width="160" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- ===== LIFELINE DASHED LINES ===== -->
+    <mxCell id="ll1" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#6c8ebf;strokeWidth=2;" edge="1" parent="1">
+      <mxGeometry x="175" y="135" relative="1" as="geometry"><Array as="points"><mxPoint x="175" y="1150"/></Array></mxGeometry>
+    </mxCell>
+    <mxCell id="ll2" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#6c8ebf;strokeWidth=2;" edge="1" parent="1">
+      <mxGeometry x="405" y="135" relative="1" as="geometry"><Array as="points"><mxPoint x="405" y="1150"/></Array></mxGeometry>
+    </mxCell>
+    <mxCell id="ll3" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;strokeWidth=2;" edge="1" parent="1">
+      <mxGeometry x="655" y="135" relative="1" as="geometry"><Array as="points"><mxPoint x="655" y="1150"/></Array></mxGeometry>
+    </mxCell>
+    <mxCell id="ll4" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;strokeWidth=2;" edge="1" parent="1">
+      <mxGeometry x="925" y="135" relative="1" as="geometry"><Array as="points"><mxPoint x="925" y="1150"/></Array></mxGeometry>
+    </mxCell>
+    <mxCell id="ll5" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#b85450;strokeWidth=2;" edge="1" parent="1">
+      <mxGeometry x="1200" y="135" relative="1" as="geometry"><Array as="points"><mxPoint x="1200" y="1150"/></Array></mxGeometry>
+    </mxCell>
+    <mxCell id="ll6" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#9673a6;strokeWidth=2;" edge="1" parent="1">
+      <mxGeometry x="1470" y="135" relative="1" as="geometry"><Array as="points"><mxPoint x="1470" y="1150"/></Array></mxGeometry>
+    </mxCell>
+
+    <!-- ===== SECTION 1: Label Source Mapping ===== -->
+    <mxCell id="sec1_label" value="① Label Source Mapping" style="text;html=1;strokeColor=none;fillColor=#dae8fc;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="160" width="195" height="28" as="geometry" />
+    </mxCell>
+
+    <!-- Config defines label_mapping -->
+    <mxCell id="s1_act1" value="define&#xa;label_mapping&#xa;{source→0/1}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="138" y="196" width="76" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- Config → DataLoader: pass label_mapping -->
+    <mxCell id="s1_msg1" value="pass label_mapping dict (source→binary label)" style="endArrow=block;endFill=1;html=1;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s1_act1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="370" y="221" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- DataLoader: ViFactCheckDataset.__init__ -->
+    <mxCell id="s1_act2" value="ViFactCheckDataset&#xa;.__init__()&#xa;store label_mapping" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="370" y="196" width="76" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- ===== SECTION 2: Data Loading & Label Assignment ===== -->
+    <mxCell id="sec2_label" value="② Data Loading &amp; Label Assignment" style="text;html=1;strokeColor=none;fillColor=#dae8fc;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="268" width="255" height="28" as="geometry" />
+    </mxCell>
+
+    <!-- DataLoader calls _load_data -->
+    <mxCell id="s2_act1" value="_load_data()&#xa;parse ViFactCheck&#xa;JSON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="370" y="305" width="76" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- DataLoader self-msg: assign label by source -->
+    <mxCell id="s2_self1" value="assign label:&#xa;mapping.get(source, 0)&#xa;(default=0=real)" style="endArrow=block;endFill=1;html=1;fontSize=9;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="s2_act1">
+      <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="480" y="320"/><mxPoint x="480" y="345"/></Array></mxGeometry>
+    </mxCell>
+
+    <!-- DataLoader __getitem__ → tensor -->
+    <mxCell id="s2_act2" value="__getitem__()&#xa;torch.tensor(label,&#xa;dtype=long)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="370" y="375" width="76" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- collate_fn -->
+    <mxCell id="s2_act3" value="collate_fn()&#xa;stack labels&#xa;into batch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="370" y="445" width="76" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- ===== SECTION 3: Preprocessing ===== -->
+    <mxCell id="sec3_label" value="③ Preprocessing &amp; Feature Extraction" style="text;html=1;strokeColor=none;fillColor=#d5e8d4;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="518" width="265" height="28" as="geometry" />
+    </mxCell>
+
+    <!-- DataLoader → Preprocessor: send raw samples with labels -->
+    <mxCell id="s3_msg1" value="raw samples + labels" style="endArrow=block;endFill=1;html=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="446" y="535" as="sourcePoint"/><mxPoint x="618" y="535" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- Preprocessor: extract text & image features -->
+    <mxCell id="s3_act1" value="CombinedPreprocessor&#xa;extract text &amp;&#xa;image features" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="618" y="548" width="76" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- Preprocessor: MultimodalDataset stores labels as LongTensor -->
+    <mxCell id="s3_act2" value="MultimodalDataset&#xa;labels=LongTensor&#xa;(combined_preprocessing:54)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="618" y="618" width="76" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- Preprocessor: calc num_classes -->
+    <mxCell id="s3_act3" value="num_classes=&#xa;len(set(labels))&#xa;(:210)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="618" y="693" width="76" height="45" as="geometry" />
+    </mxCell>
+
+    <!-- Preprocessor → returns (text_feat, img_feat, label) -->
+    <mxCell id="s3_msg2" value="return (text_feat, img_feat, label) per sample" style="endArrow=block;endFill=1;html=1;fontSize=9;dashed=1;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="618" y="758" as="sourcePoint"/><mxPoint x="446" y="758" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- ===== SECTION 4: ViFactCheck Label Integration ===== -->
+    <mxCell id="sec4_label" value="④ ViFactCheck Verification Label Integration" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="780" width="330" height="28" as="geometry" />
+    </mxCell>
+
+    <!-- ViFactCheck raw labels (0/1/2) -->
+    <mxCell id="s4_act1" value="Raw ViFactCheck labels&#xa;0=SUPPORTED(real)&#xa;1=REFUTED(fake)&#xa;2=NEI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="888" y="816" width="76" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- ViFactCheck → binary mapping: NEI(2)→0 -->
+    <mxCell id="s4_act2" value="Binary mapping&#xa;NEI(2)→real(0)&#xa;3-class → binary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="888" y="896" width="76" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- Synthetic label fallback -->
+    <mxCell id="s4_act3" value="Synthetic labels&#xa;i%2==0 → 0(real)&#xa;else → 1(fake)&#xa;(add_synthetic_labels:35)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="888" y="966" width="76" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- ViFactCheck → Preprocessor labels -->
+    <mxCell id="s4_msg1" value="verified binary labels" style="endArrow=block;endFill=1;html=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="888" y="1038" as="sourcePoint"/><mxPoint x="694" y="1038" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- ===== SECTION 5: Training Loop ===== -->
+    <mxCell id="sec5_label" value="⑤ Training Loop Label Usage" style="text;html=1;strokeColor=none;fillColor=#f8cecc;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="20" y="548" width="215" height="28" as="geometry" />
+    </mxCell>
+
+    <!-- Preprocessor → Training: batched labels -->
+    <mxCell id="s5_msg1" value="batched (text_feat, img_feat, labels)" style="endArrow=block;endFill=1;html=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="694" y="575" as="sourcePoint"/><mxPoint x="1163" y="575" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- Training: soft labels for contrastive -->
+    <mxCell id="s5_act1" value="soft_label gen&#xa;l==0→real row&#xa;l==1→fake row&#xa;(:72)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1163" y="590" width="76" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- training_utils: binary pair labels -->
+    <mxCell id="s5_act2" value="binary pair labels&#xa;zeros=real pairs&#xa;ones=fake pairs&#xa;(training_utils:58)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1163" y="665" width="76" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- Training → Loss -->
+    <mxCell id="s5_msg2" value="labels + logits" style="endArrow=block;endFill=1;html=1;fontSize=9;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="1239" y="700" as="sourcePoint"/><mxPoint x="1433" y="700" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- ===== SECTION 6: Loss Functions ===== -->
+    <mxCell id="sec6_label" value="⑥ Loss Computation" style="text;html=1;strokeColor=none;fillColor=#e1d5e7;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;rounded=1;" vertex="1" parent="1">
+      <mxGeometry x="1340" y="718" width="175" height="28" as="geometry" />
+    </mxCell>
+
+    <mxCell id="s6_act1" value="CrossEntropyLoss&#xa;(label_smoothing)&#xa;CosineEmbeddingLoss&#xa;KLDivLoss" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1433" y="748" width="76" height="65" as="geometry" />
+    </mxCell>
+
+    <!-- Loss backprop → Training -->
+    <mxCell id="s6_msg1" value="total_loss, backprop" style="endArrow=block;endFill=1;html=1;fontSize=9;dashed=1;" edge="1" parent="1">
+      <mxGeometry relative="1" as="geometry"><mxPoint x="1433" y="835" as="sourcePoint"/><mxPoint x="1239" y="835" as="targetPoint"/></mxGeometry>
+    </mxCell>
+
+    <!-- ===== LEGEND ===== -->
+    <mxCell id="leg_title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="100" y="1080" width="80" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="leg1" value="Config / DataLoader" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="190" y="1080" width="130" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="leg2" value="Preprocessing" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="335" y="1080" width="120" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="leg3" value="ViFactCheck Integration" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="470" y="1080" width="155" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="leg4" value="Training Loop" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="640" y="1080" width="120" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="leg5" value="Loss Functions" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="775" y="1080" width="120" height="25" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
