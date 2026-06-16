@@ -1,0 +1,200 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- ══ TITLE ══ -->
+    <mxCell id="T1" value="Proposal A — MILAttentionFusionHead" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;fontColor=#1E1B4B;" vertex="1" parent="1">
+      <mxGeometry x="80" y="18" width="1000" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="T2" value="05a_mil_attention_fusion.ipynb  |  MIL Attention Pooling + Asymmetric Gate  |  3-class: Real=0 / Fake=1 / NEI=2" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontStyle=2;fontColor=#4338CA;" vertex="1" parent="1">
+      <mxGeometry x="80" y="46" width="1000" height="18" as="geometry"/>
+    </mxCell>
+
+    <!-- ══ FROZEN ENCODERS SECTION header ══ -->
+    <mxCell id="frozenbg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+      <mxGeometry x="80" y="70" width="1000" height="26" as="geometry"/>
+    </mxCell>
+    <mxCell id="frozenlbl" value="FROZEN PRE-TRAINED ENCODERS  (no gradients — fixed feature extractors)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=3;fontColor=#0369A1;" vertex="1" parent="1">
+      <mxGeometry x="80" y="70" width="1000" height="26" as="geometry"/>
+    </mxCell>
+
+    <!-- ══ INPUT: TEXT ══ -->
+    <mxCell id="inp_text" value="Input Text&#xa;(per article)&#xa;&#xa;Statement [SEP] Evidence&#xa;(ViFactCheck HF dataset)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=2;fontSize=9;fontStyle=0;" vertex="1" parent="1">
+      <mxGeometry x="100" y="106" width="170" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- PhoBERT block -->
+    <mxCell id="phobert" value="PhoBERT-base-v2&#xa;(Frozen — Stage 3.9)&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;vinai/phobert-base-v2&#xa;135M params (all frozen)&#xa;max_length = 256&#xa;truncation = only_second&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;last_hidden_state&#xa;→ [:, 0, :] = CLS token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0EA5E9;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="320" y="96" width="230" height="160" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="cls_out" value="CLS token&#xa;[B, 768]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#38BDF8;strokeColor=#0EA5E9;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+      <mxGeometry x="600" y="146" width="110" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- INPUT: IMAGES (n pairs) -->
+    <mxCell id="inp_img" value="Input Images&#xa;(n pairs per article)&#xa;&#xa;image_aligned_clip&#xa;from COOLANT Stage 2&#xa;stage2_{split}.h5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="100" y="230" width="170" height="90" as="geometry"/>
+    </mxCell>
+
+    <!-- COOLANT block -->
+    <mxCell id="coolant" value="COOLANT ResNet&#xa;(Frozen — Stage 3)&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;ResNetCOOLANT (5.61M, frozen)&#xa;Val_acc = 0.8695 (epoch 18)&#xa;Trained: binary Real/Fake&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;image_aligned_clip&#xa;→ [n, 64] per article&#xa;n = variable # of pairs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDE68A;strokeColor=#D97706;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="320" y="220" width="230" height="160" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="img_pairs" value="Image pairs&#xa;[B, max_pairs=8, 64]&#xa;(padded, zeros for pad)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FBBF24;strokeColor=#D97706;strokeWidth=2;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="600" y="260" width="155" height="58" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="paircount" value="pair_counts&#xa;[B]  (real n, ≤8)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=1.5;fontSize=8.5;" vertex="1" parent="1">
+      <mxGeometry x="600" y="330" width="155" height="36" as="geometry"/>
+    </mxCell>
+
+    <!-- EDGES: inputs to encoders -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#0EA5E9;strokeWidth=2;" edge="1" parent="1" source="inp_text" target="phobert">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.3;strokeColor=#0EA5E9;strokeWidth=2;" edge="1" parent="1" source="phobert" target="cls_out">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#D97706;strokeWidth=2;" edge="1" parent="1" source="inp_img" target="coolant">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.4;entryX=0;entryY=0.5;strokeColor=#D97706;strokeWidth=2;" edge="1" parent="1" source="coolant" target="img_pairs">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4b" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.7;entryX=0;entryY=0.5;strokeColor=#D97706;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="coolant" target="paircount">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- ══ TRAINABLE HEAD section header ══ -->
+    <mxCell id="trainbg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="396" width="1000" height="26" as="geometry"/>
+    </mxCell>
+    <mxCell id="trainlbl" value="TRAINABLE FUSION HEAD  —  MILAttentionFusionHead  (~200K params, only these are updated)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#6D28D9;" vertex="1" parent="1">
+      <mxGeometry x="80" y="396" width="1000" height="26" as="geometry"/>
+    </mxCell>
+
+    <!-- TextProjector -->
+    <mxCell id="txtproj" value="TextProjector&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;Linear(768 → 256)&#xa;LayerNorm(256)&#xa;ReLU()&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;→ h_t  [B, 256]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="100" y="432" width="180" height="120" as="geometry"/>
+    </mxCell>
+
+    <!-- ImageProjector -->
+    <mxCell id="imgproj" value="ImageProjector&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;(applied to each pair)&#xa;reshape [B,P,64]→[B*P,64]&#xa;Linear(64 → 256)&#xa;LayerNorm(256)&#xa;ReLU()&#xa;reshape → [B, P, 256]&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;→ h_img  [B, 8, 256]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="100" y="570" width="180" height="148" as="geometry"/>
+    </mxCell>
+
+    <!-- MILAttentionPooling -->
+    <mxCell id="milattn" value="MILAttentionPooling  (Luong tanh-dot)&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;W: Linear(256 → 256, no bias)&#xa;v: Linear(256 → 1,   no bias)&#xa;─────────────────────────────────────────────────────&#xa;scores_i = v · tanh(W · h_img_i)     [B, P]&#xa;mask:  True where i ≥ pair_count   (padding positions)&#xa;scores = masked_fill(mask, −∞)&#xa;α = softmax(scores, dim=−1)          [B, 8]&#xa;α = masked_fill(isnan(α), 0.0)       (edge case: all-pad)&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;h_img_agg = Σᵢ αᵢ · h_img_i          [B, 256]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DDD6FE;strokeColor=#7C3AED;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="330" y="532" width="470" height="196" as="geometry"/>
+    </mxCell>
+
+    <!-- Concat -->
+    <mxCell id="catnode" value="concat([h_t, h_img_agg], dim=−1)&#xa;[B, 256+256] = [B, 512]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C4B5FD;strokeColor=#7C3AED;strokeWidth=2;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="330" y="432" width="330" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- AsymmetricGate -->
+    <mxCell id="gate" value="AsymmetricGate&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;gate: Linear(512 → 256)&#xa;g = sigmoid(gate([h_t; h_img_agg]))    [B, 256]&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;fused = g ⊙ h_t  +  (1 − g) ⊙ h_img_agg&#xa;→ fused  [B, 256]&#xa;(g &gt; 0.5 → text-dominant; asymmetric by input richness)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A78BFA;strokeColor=#7C3AED;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="330" y="746" width="470" height="128" as="geometry"/>
+    </mxCell>
+
+    <!-- Classifier -->
+    <mxCell id="clf" value="Classifier&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;Dropout(p=0.3)&#xa;Linear(256 → 3)&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;→ logits  [B, 3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7C3AED;strokeColor=#4C1D95;strokeWidth=2;fontSize=8.5;align=left;fontColor=#FFFFFF;" vertex="1" parent="1">
+      <mxGeometry x="330" y="892" width="470" height="90" as="geometry"/>
+    </mxCell>
+
+    <!-- Output -->
+    <mxCell id="outnode" value="Output  [B, 3]&#xa;argmax → ŷ ∈ {0, 1, 2}&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;0 = Real (Supported)&#xa;1 = Fake (Refuted)&#xa;2 = NEI  (Not Enough Info)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4C1D95;strokeColor=#2E1065;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+      <mxGeometry x="330" y="1000" width="470" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- LOSS box -->
+    <mxCell id="lossbox" value="Loss: WeightedCrossEntropyLoss&#xa;+ label_smoothing=0.1&#xa;class_weights: len(train)/(3·counts)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=8.5;" vertex="1" parent="1">
+      <mxGeometry x="840" y="892" width="220" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="optbox" value="Optimizer: AdamW&#xa;lr=3e-4, wd=1e-4&#xa;Scheduler: OneCycleLR&#xa;batch=32 articles&#xa;patience=8 (val macro-F1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=8.5;" vertex="1" parent="1">
+      <mxGeometry x="840" y="966" width="220" height="72" as="geometry"/>
+    </mxCell>
+
+    <!-- Attn weights side output -->
+    <mxCell id="attnout" value="attn_weights  [B, 8]&#xa;(returned for inspection)&#xa;shows which pair matters most" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#7C3AED;strokeWidth=1;dashed=1;fontSize=8;" vertex="1" parent="1">
+      <mxGeometry x="840" y="614" width="200" height="52" as="geometry"/>
+    </mxCell>
+
+    <!-- DATA FLOW EDGES inside head -->
+    <!-- cls_out → txtproj -->
+    <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0;strokeColor=#7C3AED;strokeWidth=2;" edge="1" parent="1" source="cls_out" target="txtproj">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- img_pairs → imgproj -->
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.3;strokeColor=#7C3AED;strokeWidth=2;" edge="1" parent="1" source="img_pairs" target="imgproj">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- paircount → milattn -->
+    <mxCell id="e6b" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.85;strokeColor=#D97706;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="paircount" target="milattn">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- imgproj → milattn -->
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.1;entryY=0;strokeColor=#7C3AED;strokeWidth=2;" edge="1" parent="1" source="imgproj" target="milattn">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- txtproj → catnode -->
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0;entryY=0.5;strokeColor=#7C3AED;strokeWidth=2;" edge="1" parent="1" source="txtproj" target="catnode">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- milattn → catnode (h_img_agg) -->
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=0;entryX=0.6;entryY=1;strokeColor=#7C3AED;strokeWidth=2;" edge="1" parent="1" source="milattn" target="catnode">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- milattn → attnout side -->
+    <mxCell id="e9b" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.4;entryX=0;entryY=0.5;strokeColor=#7C3AED;strokeWidth=1;dashed=1;" edge="1" parent="1" source="milattn" target="attnout">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- catnode → gate -->
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#7C3AED;strokeWidth=2;" edge="1" parent="1" source="catnode" target="gate">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- gate → clf -->
+    <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#7C3AED;strokeWidth=2;" edge="1" parent="1" source="gate" target="clf">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- clf → output -->
+    <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#4C1D95;strokeWidth=2;" edge="1" parent="1" source="clf" target="outnode">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <!-- clf → lossbox -->
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.3;strokeColor=#DC2626;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="clf" target="lossbox">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- SHAPE FLOW ANNOTATIONS -->
+    <mxCell id="ann1" value="[B, 768]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#0EA5E9;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="725" y="157" width="60" height="18" as="geometry"/>
+    </mxCell>
+    <mxCell id="ann2" value="[B, 8, 64]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#D97706;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="760" y="272" width="70" height="18" as="geometry"/>
+    </mxCell>
+    <mxCell id="ann3" value="h_t [B,256]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#7C3AED;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="110" y="552" width="80" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="ann4" value="h_img [B,8,256]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#7C3AED;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="102" y="718" width="100" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="ann5" value="h_img_agg [B,256]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#7C3AED;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="480" y="516" width="120" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="ann6" value="[B, 512]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#7C3AED;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="670" y="448" width="60" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="ann7" value="fused [B,256]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#7C3AED;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="480" y="872" width="100" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="ann8" value="logits [B,3]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#4C1D95;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="480" y="982" width="80" height="16" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

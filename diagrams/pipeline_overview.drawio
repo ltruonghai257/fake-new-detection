@@ -1,0 +1,279 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- TITLE -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="title" value="Multimodal Vietnamese Fake News Detection Pipeline" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#1A1A2E;" vertex="1" parent="1">
+      <mxGeometry x="200" y="20" width="1220" height="36" as="geometry"/>
+    </mxCell>
+    <mxCell id="subtitle" value="PhoBERT-COOLANT Asymmetric Fusion | 3-Class: Real / Fake / NEI | ViFactCheck + Crawled Images" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#555555;" vertex="1" parent="1">
+      <mxGeometry x="200" y="54" width="1220" height="22" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- STAGE LABELS (left margin) -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="lbl01" value="Stage 01&#xa;Data Crawling" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#FFFFFF;rounded=1;fillColor=#374151;" vertex="1" parent="1">
+      <mxGeometry x="20" y="100" width="90" height="52" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl02" value="Stage 02&#xa;Preprocessing" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#FFFFFF;rounded=1;fillColor=#374151;" vertex="1" parent="1">
+      <mxGeometry x="20" y="210" width="90" height="52" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl03" value="Stage 03&#xa;COOLANT" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#FFFFFF;rounded=1;fillColor=#374151;" vertex="1" parent="1">
+      <mxGeometry x="20" y="350" width="90" height="52" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl39" value="Stage 3.9&#xa;PhoBERT" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#FFFFFF;rounded=1;fillColor=#374151;" vertex="1" parent="1">
+      <mxGeometry x="20" y="510" width="90" height="52" as="geometry"/>
+    </mxCell>
+    <mxCell id="lbl05" value="Stage 05A/B&#xa;Fusion" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#FFFFFF;rounded=1;fillColor=#374151;" vertex="1" parent="1">
+      <mxGeometry x="20" y="700" width="90" height="52" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- STAGE 01: DATA CRAWLING -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="s01bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#6366F1;strokeWidth=2;dashed=0;" vertex="1" parent="1">
+      <mxGeometry x="130" y="88" width="1330" height="76" as="geometry"/>
+    </mxCell>
+    <mxCell id="s01lbl" value="① DATA COLLECTION" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#6366F1;" vertex="1" parent="1">
+      <mxGeometry x="138" y="88" width="160" height="20" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="vifact" value="ViFactCheck Dataset&#xa;(HuggingFace)&#xa;tranthaihoa/vifactcheck&#xa;train:5062 / dev:723 / test:1447" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C7D2FE;strokeColor=#6366F1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
+      <mxGeometry x="150" y="108" width="200" height="52" as="geometry"/>
+    </mxCell>
+    <mxCell id="crawl" value="Web Crawler&#xa;(01_data_crawling.ipynb)&#xa;Vietnamese news articles&#xa;title + images + captions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C7D2FE;strokeColor=#6366F1;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="390" y="108" width="200" height="52" as="geometry"/>
+    </mxCell>
+    <mxCell id="labels" value="Label Assignment&#xa;0=Real (Supported)&#xa;1=Fake (Refuted)&#xa;2=NEI (Not Enough Info)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C7D2FE;strokeColor=#6366F1;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="630" y="108" width="200" height="52" as="geometry"/>
+    </mxCell>
+    <mxCell id="jsonout" value="news_data_vifactcheck&#xa;_{train|dev|test}_labeled.json&#xa;+  /jpg/ images on disk" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#DDD6FE;strokeColor=#6366F1;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="870" y="105" width="190" height="58" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="e_vf_cr" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#6366F1;strokeWidth=1.5;" edge="1" parent="1" source="vifact" target="crawl">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_cr_lb" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#6366F1;strokeWidth=1.5;" edge="1" parent="1" source="crawl" target="labels">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_lb_js" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#6366F1;strokeWidth=1.5;" edge="1" parent="1" source="labels" target="jsonout">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- STAGE 02: PREPROCESSING -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="s02bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="130" y="196" width="1330" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="s02lbl" value="② FEATURE EXTRACTION  (02_preprocessing.ipynb)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#10B981;" vertex="1" parent="1">
+      <mxGeometry x="138" y="196" width="340" height="20" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="pairex" value="PairExtractor&#xa;(image, caption) pairs&#xa;Valid: 6724/862/2053&#xa;article_idx = HF row idx" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A7F3D0;strokeColor=#10B981;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="150" y="218" width="200" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="txtfeat" value="TextPreprocessor&#xa;PhoBERT-base-v2&#xa;token embeddings [128, 768]&#xa;→ [768, 128] transposed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A7F3D0;strokeColor=#10B981;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="390" y="218" width="200" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="imgfeat" value="ImagePreprocessor&#xa;ResNet50 (pretrained)&#xa;image features [2048]&#xa;per image" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A7F3D0;strokeColor=#10B981;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="630" y="218" width="200" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="hdf5" value="coolant_{split}.h5&#xa;caption_features [N, 768, 128]&#xa;image_features [N, 2048]&#xa;article_ids [N]" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#6EE7B7;strokeColor=#10B981;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="870" y="212" width="200" height="76" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="e_js_pe" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#10B981;strokeWidth=1.5;" edge="1" parent="1" source="jsonout" target="pairex">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_pe_tf" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#10B981;strokeWidth=1.5;" edge="1" parent="1" source="pairex" target="txtfeat">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_tf_if" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#10B981;strokeWidth=1.5;" edge="1" parent="1" source="txtfeat" target="imgfeat">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_if_h5" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#10B981;strokeWidth=1.5;" edge="1" parent="1" source="imgfeat" target="hdf5">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- STAGE 03: COOLANT TRAINING -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="s03bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#F97316;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="130" y="316" width="1330" height="172" as="geometry"/>
+    </mxCell>
+    <mxCell id="s03lbl" value="③ COOLANT MULTIMODAL ALIGNMENT TRAINING  (03_coolant_training.ipynb)  —  Frozen for downstream" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#F97316;" vertex="1" parent="1">
+      <mxGeometry x="138" y="316" width="560" height="20" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="coolarch" value="ResNetCOOLANT Architecture&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;SimilarityModule (cosine loss)&#xa;CLIPModule (InfoNCE loss)&#xa;DetectionModule (CE + KL loss)&#xa;─────────────────────&#xa;Total params: 5.61M&#xa;3 separate Adam optimizers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#F97316;fontSize=9;align=left;" vertex="1" parent="1">
+      <mxGeometry x="150" y="338" width="230" height="136" as="geometry"/>
+    </mxCell>
+    <mxCell id="coolinput" value="Input per batch:&#xa;━━━━━━━━━━━━━━&#xa;caption [B, 768, 128]&#xa;image [B, 2048]&#xa;─────────────────&#xa;Task 1: matched/unmatched pairs&#xa;shift=3 negatives&#xa;Task 2: detection pairs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#F97316;fontSize=9;align=left;" vertex="1" parent="1">
+      <mxGeometry x="420" y="338" width="210" height="136" as="geometry"/>
+    </mxCell>
+    <mxCell id="coolout" value="COOLANT Output dict:&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;text_aligned_clip [B, 64]&#xa;image_aligned_clip [B, 64]&#xa;similarity_pred [B, 1]&#xa;detection_logits [B, 2]&#xa;─────────────────────&#xa;Best val_acc = 0.8695 (ep 18)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FED7AA;strokeColor=#F97316;fontSize=9;align=left;" vertex="1" parent="1">
+      <mxGeometry x="672" y="338" width="220" height="136" as="geometry"/>
+    </mxCell>
+    <mxCell id="coolckpt" value="checkpoints_coolant/&#xa;coolant_stage1_{ts}/&#xa;  best_model.pth&#xa;  checkpoint_manifest.json&#xa;freeze_for_stage2=True" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FDBA74;strokeColor=#F97316;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="942" y="334" width="200" height="78" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="e_h5_ci" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#F97316;strokeWidth=1.5;" edge="1" parent="1" source="hdf5" target="coolinput">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_ca_ci2" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#F97316;strokeWidth=1.5;" edge="1" parent="1" source="coolarch" target="coolinput">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_ci_co" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#F97316;strokeWidth=1.5;" edge="1" parent="1" source="coolinput" target="coolout">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_co_cc" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#F97316;strokeWidth=1.5;" edge="1" parent="1" source="coolout" target="coolckpt">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- STAGE 3.9: PhoBERT TRAINING -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="s39bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="130" y="508" width="1330" height="164" as="geometry"/>
+    </mxCell>
+    <mxCell id="s39lbl" value="④ PhoBERT TEXT CLASSIFIER TRAINING  (03.9_vifactcheck_training.ipynb)  —  Frozen for downstream" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#3B82F6;" vertex="1" parent="1">
+      <mxGeometry x="138" y="508" width="560" height="20" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="pbinput" value="ViFactCheck Input:&#xa;━━━━━━━━━━━━━━━━&#xa;[CLS] Statement [SEP]&#xa;     Evidence [SEP]&#xa;max_length=256&#xa;truncation=only_second&#xa;3-class labels (0/1/2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFDBFE;strokeColor=#3B82F6;fontSize=9;align=left;" vertex="1" parent="1">
+      <mxGeometry x="150" y="530" width="200" height="128" as="geometry"/>
+    </mxCell>
+    <mxCell id="pbarch" value="PhoBERTClassifier:&#xa;━━━━━━━━━━━━━━━━━━━━&#xa;vinai/phobert-base-v2&#xa;135M params (trainable)&#xa;↓&#xa;last_hidden_state[:,0,:]&#xa;→ [B, 768] CLS token&#xa;Dropout(0.3) + Linear[768→3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFDBFE;strokeColor=#3B82F6;fontSize=9;align=left;" vertex="1" parent="1">
+      <mxGeometry x="390" y="530" width="230" height="128" as="geometry"/>
+    </mxCell>
+    <mxCell id="pbtrn" value="Training Config:&#xa;━━━━━━━━━━━━━━━━&#xa;lr = 5e-6 (paper §4.2)&#xa;batch = 16&#xa;epochs ≤ 15, patience=5&#xa;AdamW + linear warmup&#xa;class_weights [0.96,1.02,1.02]&#xa;WeightedCrossEntropy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BFDBFE;strokeColor=#3B82F6;fontSize=9;align=left;" vertex="1" parent="1">
+      <mxGeometry x="660" y="530" width="220" height="128" as="geometry"/>
+    </mxCell>
+    <mxCell id="pbckpt" value="checkpoints_vifactcheck/&#xa;vifactcheck_stage39_{ts}/&#xa;  best_model.pth&#xa;  tokenizer/&#xa;  checkpoint_manifest.json&#xa;+&#xa;stage39_features/&#xa;  stage39_{split}.h5&#xa;  [N_articles, 768]" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#93C5FD;strokeColor=#3B82F6;fontSize=9;align=left;" vertex="1" parent="1">
+      <mxGeometry x="930" y="522" width="210" height="148" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="e_vf2_pb" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.2;exitY=1;entryX=0.5;entryY=0;strokeColor=#3B82F6;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="vifact" target="pbinput">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_pbi_pba" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#3B82F6;strokeWidth=1.5;" edge="1" parent="1" source="pbinput" target="pbarch">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_pba_pbt" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#3B82F6;strokeWidth=1.5;" edge="1" parent="1" source="pbarch" target="pbtrn">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_pbt_pbck" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#3B82F6;strokeWidth=1.5;" edge="1" parent="1" source="pbtrn" target="pbckpt">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- STAGE 04: COOLANT FEATURE EXTRACTION (intermediate) -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="s04bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF1F2;strokeColor=#E11D48;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+      <mxGeometry x="130" y="690" width="640" height="68" as="geometry"/>
+    </mxCell>
+    <mxCell id="s04lbl" value="⑤ COOLANT FEATURE CACHE  (04_mm_vifactcheck_integration.ipynb Step 4)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#E11D48;" vertex="1" parent="1">
+      <mxGeometry x="138" y="690" width="520" height="18" as="geometry"/>
+    </mxCell>
+    <mxCell id="s04feat" value="Frozen COOLANT → extract image_aligned_clip [B,64] per pair&#xa;Join ViFactCheck 3-class labels by article_id → stage2_{split}.h5  [N_pairs, 64]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FECDD3;strokeColor=#E11D48;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="150" y="710" width="600" height="40" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="e_cc_s4" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.3;exitY=1;entryX=0.5;entryY=0;strokeColor=#E11D48;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="coolckpt" target="s04feat">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- STAGE 05: FUSION PROPOSALS -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="s05bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#7C3AED;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="130" y="776" width="1330" height="360" as="geometry"/>
+    </mxCell>
+    <mxCell id="s05lbl" value="⑥ FUSION TRAINING — Two Proposals  (05a / 05b)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#7C3AED;" vertex="1" parent="1">
+      <mxGeometry x="138" y="776" width="400" height="20" as="geometry"/>
+    </mxCell>
+
+    <!-- SHARED INPUTS BOX -->
+    <mxCell id="fusin" value="Frozen Inputs to Fusion&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;① PhoBERT CLS [N_art, 768]  ← stage39_{split}.h5&#xa;② COOLANT image_aligned_clip [N_pairs, 64]  ← stage2_{split}.h5&#xa;   article_id links pairs to articles&#xa;Ground truth: 3-class ViFactCheck labels" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DDD6FE;strokeColor=#7C3AED;fontSize=9;align=left;" vertex="1" parent="1">
+      <mxGeometry x="150" y="800" width="380" height="100" as="geometry"/>
+    </mxCell>
+
+    <!-- PROPOSAL A -->
+    <mxCell id="p05abg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#9333EA;strokeWidth=1.5;" vertex="1" parent="1">
+      <mxGeometry x="570" y="796" width="390" height="326" as="geometry"/>
+    </mxCell>
+    <mxCell id="p05atitle" value="Proposal A  —  05a_mil_attention_fusion.ipynb" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#9333EA;" vertex="1" parent="1">
+      <mxGeometry x="574" y="798" width="382" height="20" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="p05acache" value="MIL Cache Builder&#xa;group pairs by article_id&#xa;pad to max_pairs=8  [N, 8, 64]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9D5FF;strokeColor=#9333EA;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="584" y="822" width="360" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p05amodel" value="MILAttentionFusionHead&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;TextProjector:  Linear[768→256]+LayerNorm+ReLU&#xa;ImageProjector: Linear[64→256]+LayerNorm+ReLU&#xa;(applied to each of 8 pairs independently)&#xa;───────────────────────────────────────&#xa;MILAttentionPooling (tanh-dot):&#xa;  score_i = v·tanh(W·img_i)  [8 scores]&#xa;  α = masked_softmax(scores)  [ignore pads]&#xa;  img_agg = Σ αᵢ · imgᵢ  →  [B, 256]&#xa;───────────────────────────────────────&#xa;AsymmetricGate:&#xa;  g = sigmoid(Linear[512→256])&#xa;  fused = g·h_t + (1-g)·h_img  [B, 256]&#xa;Dropout(0.3) + Linear[256→3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E9D5FF;strokeColor=#9333EA;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="584" y="876" width="360" height="220" as="geometry"/>
+    </mxCell>
+
+    <!-- PROPOSAL B -->
+    <mxCell id="p05bbg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#DC2626;strokeWidth=1.5;" vertex="1" parent="1">
+      <mxGeometry x="990" y="796" width="450" height="326" as="geometry"/>
+    </mxCell>
+    <mxCell id="p05btitle" value="Proposal B  —  05b_asymmetric_gated_fusion.ipynb" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#DC2626;" vertex="1" parent="1">
+      <mxGeometry x="994" y="798" width="442" height="20" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="p05bcache" value="Article Cache Builder&#xa;mean-pool n pairs → [N_art, 64]&#xa;(uniform average, no padding needed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FECACA;strokeColor=#DC2626;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="1004" y="822" width="420" height="46" as="geometry"/>
+    </mxCell>
+    <mxCell id="p05bmodel" value="AsymmetricGatedFusionHead&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;TextProjector:  Linear[768→256]+LayerNorm+ReLU&#xa;ImageProjector: Linear[64→256]+LayerNorm+ReLU&#xa;─────────────────────────────────────────&#xa;AsymmetricGate:&#xa;  g = sigmoid(Linear[512→256])&#xa;  fused = g·h_t + (1-g)·h_v   [B, 256]&#xa;─────────────────────────────────────────&#xa;Text Residual (preserves NEI signal):&#xa;  output = fused + LayerNorm(h_t)  [B, 256]&#xa;─────────────────────────────────────────&#xa;Dropout(0.3) + Linear[256→3]&#xa;─────────────────────────────────────────&#xa;Inspection: gate mean per epoch logged&#xa;(gate&gt;0.5 → text wins, as expected for NEI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FECACA;strokeColor=#DC2626;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="1004" y="876" width="420" height="220" as="geometry"/>
+    </mxCell>
+
+    <!-- COMPARISON TABLE -->
+    <mxCell id="cmptbl" value="A vs B" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DDD6FE;strokeColor=#7C3AED;fontSize=8.5;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="150" y="908" width="380" height="24" as="geometry"/>
+    </mxCell>
+    <mxCell id="cmptbl2" value="Property  |  Proposal A  |  Proposal B&#xa;Image aggr  |  MIL attention  |  Mean pool&#xa;Residual  |  None  |  Text LayerNorm&#xa;Params  |  ~200K  |  ~200K&#xa;Strength  |  Learns best image  |  Stable, NEI-safe&#xa;Output: NEI=2, Fake=1, Real=0  (both)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="150" y="934" width="380" height="108" as="geometry"/>
+    </mxCell>
+
+    <!-- SHARED TRAINING CONFIG -->
+    <mxCell id="trncfg" value="Shared Training Config (both):&#xa;AdamW lr=3e-4  |  OneCycleLR  |  batch=32 articles&#xa;max_epochs=40  |  patience=8  |  label_smooth=0.1&#xa;class_weights (balanced)  |  grad_clip=1.0&#xa;Early stop on val macro-F1  |  seed=42" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C4B5FD;strokeColor=#7C3AED;fontSize=8.5;" vertex="1" parent="1">
+      <mxGeometry x="150" y="1050" width="380" height="76" as="geometry"/>
+    </mxCell>
+
+    <!-- EDGES INTO FUSION -->
+    <mxCell id="e_pbck_fu" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0;entryY=0.4;strokeColor=#3B82F6;strokeWidth=2;dashed=0;" edge="1" parent="1" source="pbckpt" target="fusin">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_s4_fu" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0;entryY=0.65;strokeColor=#E11D48;strokeWidth=2;" edge="1" parent="1" source="s04feat" target="fusin">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_fu_pa" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#9333EA;strokeWidth=2;" edge="1" parent="1" source="fusin" target="p05acache">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_fu_pb" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#DC2626;strokeWidth=2;" edge="1" parent="1" source="fusin" target="p05bcache">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_paca_pam" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#9333EA;strokeWidth=1.5;" edge="1" parent="1" source="p05acache" target="p05amodel">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e_pbca_pbm" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#DC2626;strokeWidth=1.5;" edge="1" parent="1" source="p05bcache" target="p05bmodel">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- CHECKPOINT NAMING BOX -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="ckptname" value="Checkpoint Naming Convention (self-documenting):&#xa;{YYYYMMDD_HHMMSS}_{arch-tag}_bs{B}_lr{lr}/best_model.pth&#xa;Example A:  20260617_143022_mil-attn_phobert768-coolant64_3cls_bs32_lr3e-4/&#xa;Example B:  20260617_150022_asym-gate_phobert768-coolant64_3cls_bs32_lr3e-4/&#xa;Each dir also contains  checkpoint_manifest.json  with arch + metrics — readable without loading." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="570" y="1108" width="870" height="80" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>

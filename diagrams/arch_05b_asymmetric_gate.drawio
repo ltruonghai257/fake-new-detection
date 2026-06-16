@@ -1,0 +1,206 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- ══ TITLE ══ -->
+    <mxCell id="T1" value="Proposal B — AsymmetricGatedFusionHead" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;fontColor=#7F1D1D;" vertex="1" parent="1">
+      <mxGeometry x="80" y="18" width="1000" height="28" as="geometry"/>
+    </mxCell>
+    <mxCell id="T2" value="05b_asymmetric_gated_fusion.ipynb  |  Mean Pool + Asymmetric Gate + Text Residual  |  3-class: Real=0 / Fake=1 / NEI=2" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontStyle=2;fontColor=#B91C1C;" vertex="1" parent="1">
+      <mxGeometry x="80" y="46" width="1000" height="18" as="geometry"/>
+    </mxCell>
+
+    <!-- ══ FROZEN SECTION ══ -->
+    <mxCell id="frozenbg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0EA5E9;strokeWidth=1.5;dashed=1;" vertex="1" parent="1">
+      <mxGeometry x="80" y="70" width="1000" height="26" as="geometry"/>
+    </mxCell>
+    <mxCell id="frozenlbl" value="FROZEN PRE-TRAINED ENCODERS  (no gradients — fixed feature extractors)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=3;fontColor=#0369A1;" vertex="1" parent="1">
+      <mxGeometry x="80" y="70" width="1000" height="26" as="geometry"/>
+    </mxCell>
+
+    <!-- INPUT TEXT -->
+    <mxCell id="inp_text" value="Input Text&#xa;(per article)&#xa;&#xa;Statement [SEP] Evidence&#xa;(ViFactCheck HF dataset)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0EA5E9;strokeWidth=2;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="100" y="106" width="170" height="80" as="geometry"/>
+    </mxCell>
+
+    <!-- PhoBERT -->
+    <mxCell id="phobert" value="PhoBERT-base-v2&#xa;(Frozen — Stage 3.9)&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;vinai/phobert-base-v2&#xa;135M params (all frozen)&#xa;max_length = 256&#xa;truncation = only_second&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;last_hidden_state&#xa;→ [:, 0, :] = CLS token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BAE6FD;strokeColor=#0EA5E9;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="320" y="96" width="230" height="160" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="cls_out" value="CLS token&#xa;[B, 768]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#38BDF8;strokeColor=#0EA5E9;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+      <mxGeometry x="600" y="146" width="110" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- INPUT IMAGES -->
+    <mxCell id="inp_img" value="Input Images&#xa;(n pairs per article)&#xa;&#xa;image_aligned_clip&#xa;from COOLANT Stage 2&#xa;stage2_{split}.h5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontSize=9;" vertex="1" parent="1">
+      <mxGeometry x="100" y="230" width="170" height="90" as="geometry"/>
+    </mxCell>
+
+    <!-- COOLANT -->
+    <mxCell id="coolant" value="COOLANT ResNet&#xa;(Frozen — Stage 3)&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;ResNetCOOLANT (5.61M, frozen)&#xa;Val_acc = 0.8695 (epoch 18)&#xa;Trained: binary Real/Fake&#xa;━━━━━━━━━━━━━━━━━━━━━━&#xa;image_aligned_clip&#xa;→ [n, 64] per article&#xa;n = variable # of pairs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDE68A;strokeColor=#D97706;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="320" y="220" width="230" height="160" as="geometry"/>
+    </mxCell>
+
+    <!-- Mean Pool -->
+    <mxCell id="meanpool" value="Mean Pool&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;mean(imgs, axis=0)  — done at cache-build time&#xa;uniform average over all n pairs&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;[n, 64] → [64]  (per article)&#xa;→ stage05b_{split}.h5&#xa;image_features: [N_articles, 64]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FDE68A;strokeColor=#D97706;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="600" y="244" width="320" height="118" as="geometry"/>
+    </mxCell>
+
+    <mxCell id="img_mean" value="Mean-pooled images&#xa;[B, 64]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FBBF24;strokeColor=#D97706;strokeWidth=2;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="600" y="374" width="155" height="44" as="geometry"/>
+    </mxCell>
+
+    <!-- EDGES inputs → encoders -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#0EA5E9;strokeWidth=2;" edge="1" parent="1" source="inp_text" target="phobert">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;strokeColor=#0EA5E9;strokeWidth=2;" edge="1" parent="1" source="phobert" target="cls_out">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#D97706;strokeWidth=2;" edge="1" parent="1" source="inp_img" target="coolant">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.4;strokeColor=#D97706;strokeWidth=2;" edge="1" parent="1" source="coolant" target="meanpool">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4b" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.3;exitY=1;entryX=0.5;entryY=0;strokeColor=#D97706;strokeWidth=2;" edge="1" parent="1" source="meanpool" target="img_mean">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- ══ TRAINABLE HEAD ══ -->
+    <mxCell id="trainbg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#DC2626;strokeWidth=2;" vertex="1" parent="1">
+      <mxGeometry x="80" y="432" width="1000" height="26" as="geometry"/>
+    </mxCell>
+    <mxCell id="trainlbl" value="TRAINABLE FUSION HEAD  —  AsymmetricGatedFusionHead  (~200K params, only these are updated)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#991B1B;" vertex="1" parent="1">
+      <mxGeometry x="80" y="432" width="1000" height="26" as="geometry"/>
+    </mxCell>
+
+    <!-- TextProjector -->
+    <mxCell id="txtproj" value="TextProjector&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;Linear(768 → 256)&#xa;LayerNorm(256)&#xa;ReLU()&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;→ h_t  [B, 256]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="100" y="468" width="200" height="120" as="geometry"/>
+    </mxCell>
+
+    <!-- ImageProjector -->
+    <mxCell id="imgproj" value="ImageProjector&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;Linear(64 → 256)&#xa;LayerNorm(256)&#xa;ReLU()&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;→ h_v  [B, 256]&#xa;(note: no per-pair loop needed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="100" y="610" width="200" height="128" as="geometry"/>
+    </mxCell>
+
+    <!-- Concat -->
+    <mxCell id="catnode" value="concat([h_t, h_v], dim=−1)&#xa;[B, 256+256] = [B, 512]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FECACA;strokeColor=#DC2626;strokeWidth=2;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="340" y="468" width="300" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- AsymmetricGate -->
+    <mxCell id="gate" value="AsymmetricGate&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;gate: Linear(512 → 256)&#xa;g = sigmoid(gate([h_t; h_v]))                   [B, 256]&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;fused = g ⊙ h_t  +  (1 − g) ⊙ h_v             [B, 256]&#xa;(text is asymmetrically richer: 768→256 vs 64→256 original dims)&#xa;gate logged per epoch for interpretability (gate &gt; 0.5 = text wins)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCA5A5;strokeColor=#DC2626;strokeWidth=2;fontSize=8.5;align=left;" vertex="1" parent="1">
+      <mxGeometry x="340" y="536" width="530" height="136" as="geometry"/>
+    </mxCell>
+
+    <!-- TEXT RESIDUAL — KEY DIFFERENCE vs A -->
+    <mxCell id="residbg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=2.5;" vertex="1" parent="1">
+      <mxGeometry x="340" y="690" width="530" height="110" as="geometry"/>
+    </mxCell>
+    <mxCell id="residlbl" value="★  Text Residual Connection  (KEY DIFFERENCE vs Proposal A)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;fontStyle=1;fontColor=#C2410C;" vertex="1" parent="1">
+      <mxGeometry x="348" y="692" width="516" height="18" as="geometry"/>
+    </mxCell>
+    <mxCell id="residblock" value="residual_norm: LayerNorm(256)   (on h_t before adding)&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;output = fused  +  residual_norm(h_t)               [B, 256]&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;Rationale: preserves PhoBERT NEI signal even if gate overwhelms text path.&#xa;LayerNorm stabilises residual scale vs. gated output." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=8.5;fontColor=#9A3412;" vertex="1" parent="1">
+      <mxGeometry x="348" y="712" width="514" height="82" as="geometry"/>
+    </mxCell>
+
+    <!-- h_t residual arrow -->
+    <mxCell id="e_resid" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.3;entryX=0.95;entryY=0;strokeColor=#EA580C;strokeWidth=2;dashed=1;curved=1;" edge="1" parent="1" source="txtproj" target="residbg">
+      <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="920" y="498"/><mxPoint x="920" y="696"/></Array></mxGeometry>
+    </mxCell>
+    <mxCell id="e_resid_lbl" value="h_t residual" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#EA580C;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="930" y="620" width="70" height="16" as="geometry"/>
+    </mxCell>
+
+    <!-- Classifier -->
+    <mxCell id="clf" value="Classifier&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;Dropout(p=0.3)&#xa;Linear(256 → 3)&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;→ logits  [B, 3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DC2626;strokeColor=#7F1D1D;strokeWidth=2;fontSize=8.5;align=left;fontColor=#FFFFFF;" vertex="1" parent="1">
+      <mxGeometry x="340" y="816" width="530" height="84" as="geometry"/>
+    </mxCell>
+
+    <!-- Output -->
+    <mxCell id="outnode" value="Output  [B, 3]&#xa;argmax → ŷ ∈ {0, 1, 2}&#xa;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&#xa;0 = Real (Supported)&#xa;1 = Fake (Refuted)&#xa;2 = NEI  (Not Enough Info)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7F1D1D;strokeColor=#450A0A;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+      <mxGeometry x="340" y="916" width="530" height="78" as="geometry"/>
+    </mxCell>
+
+    <!-- Side: Gate inspection output -->
+    <mxCell id="gateout" value="gate_vals  [B, 256]&#xa;(returned for inspection)&#xa;mean per epoch logged to MLflow&#xa;gate &gt; 0.5 → text-dominant&#xa;gate &lt; 0.5 → image-dominant" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1;dashed=1;fontSize=8;" vertex="1" parent="1">
+      <mxGeometry x="900" y="556" width="170" height="72" as="geometry"/>
+    </mxCell>
+
+    <!-- Loss / Opt -->
+    <mxCell id="lossbox" value="Loss: WeightedCrossEntropyLoss&#xa;+ label_smoothing=0.1&#xa;class_weights: len(train)/(3·counts)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=8.5;" vertex="1" parent="1">
+      <mxGeometry x="900" y="816" width="170" height="54" as="geometry"/>
+    </mxCell>
+    <mxCell id="optbox" value="Optimizer: AdamW&#xa;lr=3e-4, wd=1e-4&#xa;Scheduler: OneCycleLR&#xa;batch=32 articles&#xa;patience=8 (val macro-F1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontSize=8.5;" vertex="1" parent="1">
+      <mxGeometry x="900" y="882" width="170" height="70" as="geometry"/>
+    </mxCell>
+
+    <!-- EDGES inside head -->
+    <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.1;strokeColor=#DC2626;strokeWidth=2;" edge="1" parent="1" source="cls_out" target="txtproj">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeColor=#DC2626;strokeWidth=2;" edge="1" parent="1" source="img_mean" target="imgproj">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0;entryY=0.5;strokeColor=#DC2626;strokeWidth=2;" edge="1" parent="1" source="txtproj" target="catnode">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeColor=#DC2626;strokeWidth=2;" edge="1" parent="1" source="imgproj" target="catnode">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#DC2626;strokeWidth=2;" edge="1" parent="1" source="catnode" target="gate">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e9b" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#DC2626;strokeWidth=1;dashed=1;" edge="1" parent="1" source="gate" target="gateout">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#DC2626;strokeWidth=2;" edge="1" parent="1" source="gate" target="residbg">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#DC2626;strokeWidth=2;" edge="1" parent="1" source="residbg" target="clf">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#7F1D1D;strokeWidth=2;" edge="1" parent="1" source="clf" target="outnode">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.3;strokeColor=#DC2626;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="clf" target="lossbox">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+
+    <!-- TENSOR SHAPE ANNOTATIONS -->
+    <mxCell id="a1" value="[B, 768]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#0EA5E9;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="725" y="157" width="60" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="a2" value="[B, 64]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#D97706;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="762" y="383" width="50" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="a3" value="h_t [B,256]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#DC2626;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="110" y="588" width="80" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="a4" value="h_v [B,256]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#DC2626;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="110" y="736" width="80" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="a5" value="[B,512]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#DC2626;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="645" y="484" width="55" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="a6" value="fused [B,256]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#DC2626;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="490" y="672" width="100" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="a7" value="output [B,256]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#EA580C;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="490" y="800" width="105" height="16" as="geometry"/>
+    </mxCell>
+    <mxCell id="a8" value="logits [B,3]" style="text;html=1;strokeColor=none;fillColor=none;fontSize=8;fontColor=#7F1D1D;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="490" y="898" width="85" height="16" as="geometry"/>
+    </mxCell>
+
+    <!-- Difference callout -->
+    <mxCell id="diff" value="vs Proposal A: No MIL attention, no padding.&#xa;Mean pool is deterministic at cache time.&#xa;Residual is the key stability mechanism." style="callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;size=10;position=0.5;position2=0.5;direction=west;fillColor=#FFF7ED;strokeColor=#EA580C;fontSize=8;fontColor=#9A3412;" vertex="1" parent="1">
+      <mxGeometry x="100" y="700" width="205" height="60" as="geometry"/>
+    </mxCell>
+
+  </root>
+</mxGraphModel>
