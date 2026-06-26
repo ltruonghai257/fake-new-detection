@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Stage 3: COOLANT Training">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="2" value="Stage 3: COOLANT Multimodal Alignment Training"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="960" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Input: Caption features -->
+        <mxCell id="3" value="&lt;b&gt;Caption Features&lt;/b&gt;&#xa;coolant_{split}.h5&#xa;caption_features [N, 128, 768]&#xa;(PhoBERT-encoded captions)"
+          style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="280" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Input: Image features -->
+        <mxCell id="4" value="&lt;b&gt;Image Features&lt;/b&gt;&#xa;coolant_{split}.h5&#xa;image_features [N, 2048]&#xa;(ResNet50-encoded images)"
+          style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="700" y="80" width="280" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 2 HDF5 label -->
+        <mxCell id="5" value="Phase 2 HDF5 Features"
+          style="text;html=1;align=center;fontStyle=2;fontSize=12;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="390" y="105" width="280" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ResNetCOOLANT container -->
+        <mxCell id="6" value="ResNetCOOLANT.from_config()  with Dimension Patches"
+          style="swimlane;startSize=35;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="230" width="900" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="7" value="&lt;b&gt;patch_encoding&lt;/b&gt;&#xa;shared_image: Linear(2048 → 64)&#xa;Adapts ResNet50 2048-dim → 64-dim"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="6">
+          <mxGeometry x="20" y="50" width="270" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="8" value="&lt;b&gt;patch_clip_projection&lt;/b&gt;&#xa;CLIP text proj: Linear(768 → 64)&#xa;CLIP img proj: Linear(64 → 64)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="6">
+          <mxGeometry x="315" y="50" width="270" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="9" value="&lt;b&gt;patch_cnn_with_dropout&lt;/b&gt;&#xa;FastCNN 1D conv layers&#xa;Caption pooling: [N, 128, 768] → [N, 768]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="6">
+          <mxGeometry x="610" y="50" width="270" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- 3 Modules row -->
+        <mxCell id="10" value="&lt;b&gt;Similarity Module&lt;/b&gt;&#xa;Cosine sim: text ↔ image&#xa;text_aligned [B, 64]&#xa;image_aligned [B, 64]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="435" width="260" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="11" value="&lt;b&gt;CLIP Module&lt;/b&gt;&#xa;Contrastive alignment&#xa;text_aligned_clip [B, 64]&#xa;image_aligned_clip [B, 64]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="400" y="435" width="260" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="12" value="&lt;b&gt;Detection Module&lt;/b&gt;&#xa;Fake news binary detection&#xa;detection_logits [B, 2]&#xa;attention_weights"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="720" y="435" width="260" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Losses row -->
+        <mxCell id="13" value="&lt;b&gt;Cosine Embedding Loss&lt;/b&gt;&#xa;Matched vs. Unmatched pairs&#xa;(similarity alignment)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="595" width="260" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="14" value="&lt;b&gt;CLIP Contrastive Loss&lt;/b&gt;&#xa;Cross-modal alignment&#xa;compute_clip_loss(ta, ia)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="400" y="595" width="260" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="15" value="&lt;b&gt;Detection BCE Loss&lt;/b&gt;&#xa;Binary cross-entropy&#xa;on detection logits"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="720" y="595" width="260" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Combined loss -->
+        <mxCell id="16" value="&lt;b&gt;Combined Loss&lt;/b&gt;&#xa;L = λ₁·L_cos + λ₂·L_clip + λ₃·L_det"
+          style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="355" y="730" width="350" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Optimizer -->
+        <mxCell id="17" value="&lt;b&gt;AdamW Optimizer&lt;/b&gt;  +  LR Scheduler&#xa;Backward pass → gradient update on all COOLANT modules"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="255" y="875" width="550" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Outputs -->
+        <mxCell id="18" value="Stage 3 Outputs"
+          style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="1000" width="940" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="19" value="&lt;b&gt;best_model.pth&lt;/b&gt;&#xa;freeze_for_stage2=True&#xa;similarity + clip + detection states"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="18">
+          <mxGeometry x="15" y="38" width="290" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="&lt;b&gt;checkpoint_manifest.json&lt;/b&gt;&#xa;stage2_output_keys:&#xa;text_aligned_clip, image_aligned_clip"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="18">
+          <mxGeometry x="330" y="38" width="290" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="21" value="&lt;b&gt;Aligned Features [64-dim]&lt;/b&gt;&#xa;text_aligned_clip [N, 64]&#xa;image_aligned_clip [N, 64]&#xa;→ Stage 4 / Stage 05a input"
+          style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="18">
+          <mxGeometry x="645" y="20" width="285" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Flow edges: inputs to model -->
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="3" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="4" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Model to 3 modules -->
+        <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="6" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="6" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="6" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Modules to losses -->
+        <mxCell id="27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="10" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="11" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="12" target="15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Losses to combined -->
+        <mxCell id="30" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="13" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="14" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="15" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Combined to optimizer to outputs -->
+        <mxCell id="33" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="16" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="17" target="18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

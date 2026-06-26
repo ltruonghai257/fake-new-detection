@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Stage 6d: End-to-End Fusion">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="2" value="Stage 6d: End-to-End Fine-Tuning — PhoBERT + COOLANT Cross-Attention Fusion"
+          style="text;html=1;align=center;fontStyle=1;fontSize=15;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="1000" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Input: stage06d cache -->
+        <mxCell id="3" value="&lt;b&gt;stage06d_cache / {split}.h5&lt;/b&gt;&#xa;statements (claim text)  |  contexts (article)  |  evidences&#xa;image_features [N, 32, 64]  |  pair_counts  |  labels (Real/Fake/NEI)"
+          style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="225" y="80" width="650" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Dataset / tokenization -->
+        <mxCell id="4" value="&lt;b&gt;FinetuneFusionDataset&lt;/b&gt;&#xa;Online tokenization: tokenizer(statement, context, truncation=True, padding=max_length)&#xa;Returns: input_ids [B, seq], attention_mask, image_feat [B, 32, 64], pair_counts, label"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="150" y="220" width="800" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- FinetuneFusionModel container -->
+        <mxCell id="5" value="FinetuneFusionModel"
+          style="swimlane;startSize=35;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="350" width="980" height="320" as="geometry" />
+        </mxCell>
+
+        <!-- PhoBERT encoder -->
+        <mxCell id="6" value="&lt;b&gt;PhoBERT Encoder&lt;/b&gt;&#xa;vinai/phobert-base-v2&#xa;unfreeze_last_n=3 layers&#xa;CLS token → [B, 768]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="5">
+          <mxGeometry x="20" y="50" width="210" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- text_proj -->
+        <mxCell id="7" value="&lt;b&gt;text_proj&lt;/b&gt;&#xa;Linear(768 → proj_dim)&#xa;LayerNorm + ReLU&#xa;→ h_t [B, 256]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="5">
+          <mxGeometry x="260" y="50" width="190" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- image_proj -->
+        <mxCell id="8" value="&lt;b&gt;image_proj&lt;/b&gt;&#xa;Linear(64 → proj_dim)&#xa;LayerNorm + ReLU&#xa;→ h_img [B, 32, 256]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="5">
+          <mxGeometry x="480" y="50" width="190" height="95" as="geometry" />
+        </mxCell>
+
+        <!-- Stacked Cross-Attention -->
+        <mxCell id="9" value="&lt;b&gt;StackedCrossAttention&lt;/b&gt;  (num_attn_layers=2)&#xa;Query = h_t [B, 1, 256]&#xa;Key / Value = h_img [B, 32, 256]&#xa;Key-padding mask (pair_counts)&#xa;→ ctx [B, 256]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9673a6;strokeColor=#6a5481;fontColor=#ffffff;fontSize=11;"
+          vertex="1" parent="5">
+          <mxGeometry x="260" y="185" width="410" height="105" as="geometry" />
+        </mxCell>
+
+        <!-- MLP Classifier -->
+        <mxCell id="10" value="&lt;b&gt;MLP Classifier&lt;/b&gt;&#xa;cat([h_t, ctx]) → [B, 512]&#xa;Linear(512→256) → ReLU&#xa;Linear(256→128) → ReLU&#xa;Linear(128 → num_classes=3)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="5">
+          <mxGeometry x="730" y="95" width="230" height="155" as="geometry" />
+        </mxCell>
+
+        <!-- Internal edges -->
+        <mxCell id="11" value="[B, 768]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;" edge="1" parent="5" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="h_t [B,256]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="5" source="7" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="h_img [B,32,256]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="5" source="8" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="ctx [B,256]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="5" source="9" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="h_t [B,256]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="5" source="7" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Loss -->
+        <mxCell id="16" value="&lt;b&gt;Cross-Entropy Loss&lt;/b&gt;&#xa;3-class: Real / Fake / NEI"
+          style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="380" y="730" width="340" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Differential LR optimizer -->
+        <mxCell id="17" value="&lt;b&gt;Differential-LR AdamW&lt;/b&gt;  +  LR Scheduler&#xa;PhoBERT unfrozen layers: lr = 1e-5&#xa;Fusion head (projectors + cross-attn + MLP): lr = 3e-4"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="200" y="875" width="700" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Prediction output -->
+        <mxCell id="18" value="&lt;b&gt;Prediction&lt;/b&gt;&#xa;Real (0)  |  Fake (1)  |  NEI (2)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;"
+          vertex="1" parent="1">
+          <mxGeometry x="375" y="1010" width="350" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Checkpoint output -->
+        <mxCell id="19" value="Stage 6d Outputs"
+          style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="1135" width="980" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="&lt;b&gt;best_model.pth&lt;/b&gt;&#xa;FinetuneFusionModel weights&#xa;proj_dim, num_heads, num_attn_layers"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="19">
+          <mxGeometry x="15" y="38" width="290" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="21" value="&lt;b&gt;training_history.json&lt;/b&gt;&#xa;val_loss, val_acc per epoch&#xa;best_epoch, best_val_loss"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="19">
+          <mxGeometry x="340" y="38" width="290" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="22" value="&lt;b&gt;Evaluation Metrics&lt;/b&gt;&#xa;Accuracy, F1 (macro)&#xa;Confusion matrix (Real/Fake/NEI)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="19">
+          <mxGeometry x="665" y="38" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Flow edges -->
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="logits [B,3]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;" edge="1" parent="1" source="5" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="16" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="17" target="18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="28" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="18" target="19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
