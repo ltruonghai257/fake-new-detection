@@ -1,7 +1,37 @@
 {
   "version": "1.0.0",
-  "installedAt": "2026-06-20T10:50:32.304Z",
+  "installedAt": "2026-07-04T13:07:39.654Z",
   "skills": [
+    {
+      "category": "19-emerging-techniques",
+      "skill": "knowledge-distillation",
+      "standalone": false
+    },
+    {
+      "category": "19-emerging-techniques",
+      "skill": "long-context",
+      "standalone": false
+    },
+    {
+      "category": "19-emerging-techniques",
+      "skill": "model-merging",
+      "standalone": false
+    },
+    {
+      "category": "19-emerging-techniques",
+      "skill": "model-pruning",
+      "standalone": false
+    },
+    {
+      "category": "19-emerging-techniques",
+      "skill": "moe-training",
+      "standalone": false
+    },
+    {
+      "category": "19-emerging-techniques",
+      "skill": "speculative-decoding",
+      "standalone": false
+    },
     {
       "category": "0-autoresearch-skill",
       "skill": "0-autoresearch-skill",
@@ -30,6 +60,16 @@
     {
       "category": "01-model-architecture",
       "skill": "torchtitan",
+      "standalone": false
+    },
+    {
+      "category": "02-tokenization",
+      "skill": "huggingface-tokenizers",
+      "standalone": false
+    },
+    {
+      "category": "02-tokenization",
+      "skill": "sentencepiece",
       "standalone": false
     },
     {
@@ -100,6 +140,26 @@
     {
       "category": "06-post-training",
       "skill": "verl",
+      "standalone": false
+    },
+    {
+      "category": "07-safety-alignment",
+      "skill": "constitutional-ai",
+      "standalone": false
+    },
+    {
+      "category": "07-safety-alignment",
+      "skill": "llamaguard",
+      "standalone": false
+    },
+    {
+      "category": "07-safety-alignment",
+      "skill": "nemo-guardrails",
+      "standalone": false
+    },
+    {
+      "category": "07-safety-alignment",
+      "skill": "prompt-guard",
       "standalone": false
     },
     {
@@ -183,6 +243,26 @@
       "standalone": false
     },
     {
+      "category": "13-mlops",
+      "skill": "mlflow",
+      "standalone": false
+    },
+    {
+      "category": "13-mlops",
+      "skill": "swanlab",
+      "standalone": false
+    },
+    {
+      "category": "13-mlops",
+      "skill": "tensorboard",
+      "standalone": false
+    },
+    {
+      "category": "13-mlops",
+      "skill": "weights-and-biases",
+      "standalone": false
+    },
+    {
       "category": "16-prompt-engineering",
       "skill": "dspy",
       "standalone": false
@@ -203,33 +283,73 @@
       "standalone": false
     },
     {
-      "category": "19-emerging-techniques",
-      "skill": "knowledge-distillation",
+      "category": "18-multimodal",
+      "skill": "audiocraft",
       "standalone": false
     },
     {
-      "category": "19-emerging-techniques",
-      "skill": "long-context",
+      "category": "18-multimodal",
+      "skill": "blip-2",
       "standalone": false
     },
     {
-      "category": "19-emerging-techniques",
-      "skill": "model-merging",
+      "category": "18-multimodal",
+      "skill": "clip",
       "standalone": false
     },
     {
-      "category": "19-emerging-techniques",
-      "skill": "model-pruning",
+      "category": "18-multimodal",
+      "skill": "cosmos-policy",
       "standalone": false
     },
     {
-      "category": "19-emerging-techniques",
-      "skill": "moe-training",
+      "category": "18-multimodal",
+      "skill": "llava",
       "standalone": false
     },
     {
-      "category": "19-emerging-techniques",
-      "skill": "speculative-decoding",
+      "category": "18-multimodal",
+      "skill": "openpi",
+      "standalone": false
+    },
+    {
+      "category": "18-multimodal",
+      "skill": "openvla-oft",
+      "standalone": false
+    },
+    {
+      "category": "18-multimodal",
+      "skill": "segment-anything",
+      "standalone": false
+    },
+    {
+      "category": "18-multimodal",
+      "skill": "stable-diffusion",
+      "standalone": false
+    },
+    {
+      "category": "18-multimodal",
+      "skill": "whisper",
+      "standalone": false
+    },
+    {
+      "category": "20-ml-paper-writing",
+      "skill": "academic-plotting",
+      "standalone": false
+    },
+    {
+      "category": "20-ml-paper-writing",
+      "skill": "ml-paper-writing",
+      "standalone": false
+    },
+    {
+      "category": "20-ml-paper-writing",
+      "skill": "presenting-conference-talks",
+      "standalone": false
+    },
+    {
+      "category": "20-ml-paper-writing",
+      "skill": "systems-paper-writing",
       "standalone": false
     },
     {
@@ -241,9 +361,25 @@
       "category": "21-research-ideation",
       "skill": "creative-thinking-for-research",
       "standalone": false
+    },
+    {
+      "category": "22-agent-native-research-artifact",
+      "skill": "compiler",
+      "standalone": false
+    },
+    {
+      "category": "22-agent-native-research-artifact",
+      "skill": "research-manager",
+      "standalone": false
+    },
+    {
+      "category": "22-agent-native-research-artifact",
+      "skill": "rigor-reviewer",
+      "standalone": false
     }
   ],
   "agents": [
-    "claude"
+    "claude",
+    "opencode"
   ]
 }
