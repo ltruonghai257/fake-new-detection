@@ -13,20 +13,16 @@ from ..config import settings
 from ..state import Evidence, FactCheckState
 from ..tools.web_search import web_search
 from .llm import get_llm, parse_json
-
-_QUERY_PROMPT = (
-    "You are a fact-checking research assistant. Given a claim, produce up to "
-    "{n} short, diverse web-search queries that would surface authoritative "
-    "evidence for or against it. Prefer the claim's original language. "
-    'Respond as JSON: {{"queries": ["...", "..."]}}\n\nClaim: {statement}'
-)
+from ..prompts import SEARCH_QUERY_PROMPT
 
 
 def _draft_queries(statement: str) -> List[str]:
     llm = get_llm()
     if llm is not None:
         try:
-            resp = llm.invoke(_QUERY_PROMPT.format(n=settings.max_queries, statement=statement))
+            resp = llm.invoke(
+                SEARCH_QUERY_PROMPT.format(n=settings.max_queries, statement=statement)
+            )
             data = parse_json(getattr(resp, "content", "") or "")
             if data and isinstance(data.get("queries"), list):
                 qs = [q.strip() for q in data["queries"] if q and q.strip()]

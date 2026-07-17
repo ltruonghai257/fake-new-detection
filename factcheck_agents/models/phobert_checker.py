@@ -25,8 +25,41 @@ _LABELS_3 = {0: "SUPPORTED", 1: "REFUTED", 2: "NEI"}
 _LABELS_2 = {0: "SUPPORTED", 1: "REFUTED"}
 
 
+def _read_manifest_metric(run_dir: Path) -> float:
+    """Extract the best validation metric from a run's checkpoint_manifest.json.
+
+    Returns -1.0 if the manifest or metric is missing so that runs without
+    manifests sort last but don't crash.
+    """
+    man = run_dir / "checkpoint_manifest.json"
+    if not man.exists():
+        return -1.0
+    try:
+        data = json.loads(man.read_text())
+        metrics = data.get("best_metrics", {})
+        # PhoBERT manifest uses val_macro_f1; COOLANT uses val_accuracy
+        for key in (
+            "best_val_macro_f1",
+            "val_macro_f1",
+            "val_accuracy",
+            "best_val_accuracy",
+        ):
+            val = metrics.get(key)
+            if val is not None:
+                return float(val)
+        # Fallback: check top-level selection_metric
+        return -1.0
+    except Exception:
+        return -1.0
+
+
 def _resolve_run_dir() -> Optional[Path]:
-    """Explicit override wins; else newest run dir holding a best_model.pth."""
+    """Explicit override wins; else pick the run with the best validation metric.
+
+    Reads ``checkpoint_manifest.json`` from each run directory and selects the
+    one with the highest ``best_val_macro_f1`` (or ``val_accuracy``). Falls back
+    to newest-by-mtime if no manifests are found.
+    """
     if settings.phobert_ckpt_dir:
         p = Path(settings.phobert_ckpt_dir)
         return p if (p / "best_model.pth").exists() else None
@@ -37,6 +70,15 @@ def _resolve_run_dir() -> Optional[Path]:
     runs = [d for d in root.iterdir() if d.is_dir() and (d / "best_model.pth").exists()]
     if not runs:
         return None
+
+    # Try to pick by best metric from manifest
+    scored = [(_read_manifest_metric(d), d) for d in runs]
+    best_metric = max(s for s, _ in scored)
+    if best_metric > 0:
+        best_dir = max(scored, key=lambda pair: pair[0])[1]
+        return best_dir
+
+    # Fallback: newest by mtime
     return max(runs, key=lambda d: d.stat().st_mtime)
 
 
@@ -74,7 +116,9 @@ class PhoBERTChecker:
                 super().__init__()
                 self.backbone = AutoModel.from_pretrained(backbone_name)
                 hidden = self.backbone.config.hidden_size
-                self.classifier = nn.Sequential(nn.Dropout(dropout), nn.Linear(hidden, num_classes))
+                self.classifier = nn.Sequential(
+                    nn.Dropout(dropout), nn.Linear(hidden, num_classes)
+                )
 
             def forward(self, input_ids, attention_mask):
                 out = self.backbone(input_ids=input_ids, attention_mask=attention_mask)
@@ -111,11 +155,15 @@ class PhoBERTChecker:
                 or "vinai/phobert-base-v2"
             )
             self._max_length = int(
-                manifest.get("max_length") or manifest.get("data", {}).get("max_length") or 256
+                manifest.get("max_length")
+                or manifest.get("data", {}).get("max_length")
+                or 256
             )
 
             ckpt = torch.load(run_dir / "best_model.pth", map_location="cpu")
-            state = ckpt.get("model_state_dict", ckpt) if isinstance(ckpt, dict) else ckpt
+            state = (
+                ckpt.get("model_state_dict", ckpt) if isinstance(ckpt, dict) else ckpt
+            )
 
             # infer num_classes from the classifier head weight
             num_classes = 3
@@ -125,7 +173,11 @@ class PhoBERTChecker:
                     break
             self._labels = _LABELS_2 if num_classes == 2 else _LABELS_3
 
-            dropout = float(manifest.get("dropout") or manifest.get("model", {}).get("dropout") or 0.3)
+            dropout = float(
+                manifest.get("dropout")
+                or manifest.get("model", {}).get("dropout")
+                or 0.3
+            )
 
             self._device = _pick_device()
             model = self._build_model(backbone, num_classes, dropout)
@@ -169,7 +221,9 @@ class PhoBERTChecker:
                 probs = F.softmax(logits, dim=-1)[0].cpu().tolist()
 
             label_id = int(max(range(len(probs)), key=lambda i: probs[i]))
-            prob_map = {self._labels.get(i, str(i)): round(p, 4) for i, p in enumerate(probs)}
+            prob_map = {
+                self._labels.get(i, str(i)): round(p, 4) for i, p in enumerate(probs)
+            }
             return ModelResult(
                 model="phobert_vifactcheck",
                 available=True,
@@ -180,7 +234,11 @@ class PhoBERTChecker:
                 note="statement scored against retrieved evidence",
             )
         except Exception as exc:  # pragma: no cover - defensive
-            return ModelResult(model="phobert_vifactcheck", available=False, note=f"inference error: {exc}")
+            return ModelResult(
+                model="phobert_vifactcheck",
+                available=False,
+                note=f"inference error: {exc}",
+            )
 
 
 def build_evidence_text(evidence: List[dict], max_chars: int = 2000) -> str:

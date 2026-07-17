@@ -12,18 +12,12 @@ from typing import List
 
 from ..state import Evidence, FactCheckState, ModelResult, Verdict
 from .llm import get_llm, parse_json
-
-_SYSTEM = (
-    "You are the lead fact-checker. You are given a claim, machine-learning "
-    "model predictions, and web evidence. Weigh the evidence as primary and "
-    "the model signals as supporting. Decide one of: TRUE, FALSE, MISLEADING, "
-    "UNVERIFIED. Be conservative: if evidence is thin or conflicting, prefer "
-    "UNVERIFIED. Respond ONLY as JSON with keys: label, confidence (0-1), "
-    "rationale, citations (list of URLs), recommendation."
-)
+from ..prompts import CONCLUSION_SYSTEM_PROMPT
 
 
-def _fallback_verdict(model_results: List[ModelResult], evidence: List[Evidence]) -> Verdict:
+def _fallback_verdict(
+    model_results: List[ModelResult], evidence: List[Evidence]
+) -> Verdict:
     avail = [m for m in model_results if m.get("available")]
     citations = [e.get("url", "") for e in evidence if e.get("url")][:5]
     if not avail:
@@ -55,7 +49,9 @@ def _format_models(model_results: List[ModelResult]) -> str:
     lines = []
     for m in model_results:
         if m.get("available"):
-            lines.append(f"- {m['model']}: {m.get('label')} (conf={m.get('confidence')}, probs={m.get('probabilities')})")
+            lines.append(
+                f"- {m['model']}: {m.get('label')} (conf={m.get('confidence')}, probs={m.get('probabilities')})"
+            )
         else:
             lines.append(f"- {m['model']}: unavailable ({m.get('note')})")
     return "\n".join(lines)
@@ -78,7 +74,10 @@ def conclusion_agent(state: FactCheckState) -> dict:
     llm = get_llm()
     if llm is None:
         verdict = _fallback_verdict(model_results, evidence)
-        return {"verdict": verdict, "messages": [("assistant", f"[Conclusion] {verdict['label']} (fallback)")]}
+        return {
+            "verdict": verdict,
+            "messages": [("assistant", f"[Conclusion] {verdict['label']} (fallback)")],
+        }
 
     user = (
         f"CLAIM:\n{statement}\n\n"
@@ -86,18 +85,32 @@ def conclusion_agent(state: FactCheckState) -> dict:
         f"WEB EVIDENCE:\n{_format_evidence(evidence)}\n"
     )
     try:
-        resp = llm.invoke([("system", _SYSTEM), ("user", user)])
+        resp = llm.invoke([("system", CONCLUSION_SYSTEM_PROMPT), ("user", user)])
         data = parse_json(getattr(resp, "content", "") or "") or {}
     except Exception as exc:
         verdict = _fallback_verdict(model_results, evidence)
         verdict["rationale"] += f" (LLM error: {exc})"
-        return {"verdict": verdict, "messages": [("assistant", f"[Conclusion] {verdict['label']} (fallback)")]}
+        return {
+            "verdict": verdict,
+            "messages": [("assistant", f"[Conclusion] {verdict['label']} (fallback)")],
+        }
 
     verdict = Verdict(
         label=str(data.get("label", "UNVERIFIED")).upper(),
         confidence=float(data.get("confidence", 0.0) or 0.0),
         rationale=str(data.get("rationale", "")),
-        citations=list(data.get("citations", []) or [e.get("url", "") for e in evidence if e.get("url")][:5]),
+        citations=list(
+            data.get("citations", [])
+            or [e.get("url", "") for e in evidence if e.get("url")][:5]
+        ),
         recommendation=str(data.get("recommendation", "")),
     )
-    return {"verdict": verdict, "messages": [("assistant", f"[Conclusion] {verdict['label']} ({verdict['confidence']:.2f})")]}
+    return {
+        "verdict": verdict,
+        "messages": [
+            (
+                "assistant",
+                f"[Conclusion] {verdict['label']} ({verdict['confidence']:.2f})",
+            )
+        ],
+    }

@@ -12,6 +12,7 @@ mismatch (expected while the model is still being validated), it returns an
 
 from __future__ import annotations
 
+import json as _json
 import sys
 from pathlib import Path
 from typing import Optional
@@ -26,7 +27,35 @@ if str(_PROJECT_ROOT) not in sys.path:
 _LABELS = {0: "REAL", 1: "FAKE"}
 
 
+def _read_manifest_metric(run_dir: Path) -> float:
+    """Extract the best validation metric from a run's checkpoint_manifest.json."""
+    man = run_dir / "checkpoint_manifest.json"
+    if not man.exists():
+        return -1.0
+    try:
+        data = _json.loads(man.read_text())
+        metrics = data.get("best_metrics", {})
+        for key in (
+            "val_accuracy",
+            "best_val_accuracy",
+            "best_val_macro_f1",
+            "val_macro_f1",
+        ):
+            val = metrics.get(key)
+            if val is not None:
+                return float(val)
+        return -1.0
+    except Exception:
+        return -1.0
+
+
 def _resolve_ckpt() -> Optional[Path]:
+    """Explicit override wins; else pick the run with the best validation metric.
+
+    Reads ``checkpoint_manifest.json`` from each run directory and selects the
+    one with the highest ``val_accuracy``. Falls back to newest-by-mtime if no
+    manifests are found.
+    """
     if settings.coolant_ckpt_path:
         p = Path(settings.coolant_ckpt_path)
         return p if p.exists() else None
@@ -36,6 +65,13 @@ def _resolve_ckpt() -> Optional[Path]:
     runs = [d for d in root.iterdir() if d.is_dir() and (d / "best_model.pth").exists()]
     if not runs:
         return None
+
+    scored = [(_read_manifest_metric(d), d) for d in runs]
+    best_metric = max(s for s, _ in scored)
+    if best_metric > 0:
+        best_dir = max(scored, key=lambda pair: pair[0])[1]
+        return best_dir / "best_model.pth"
+
     newest = max(runs, key=lambda d: d.stat().st_mtime)
     return newest / "best_model.pth"
 
@@ -70,7 +106,9 @@ class CoolantChecker:
             self._device = "cuda" if torch.cuda.is_available() else "cpu"
             ckpt = torch.load(ckpt_path, map_location=self._device)
             model_cfg = ckpt["config"]["model"]
-            self._image_model = ckpt["config"].get("data", {}).get("image_model", self._image_model)
+            self._image_model = (
+                ckpt["config"].get("data", {}).get("image_model", self._image_model)
+            )
 
             model = PatchedCOOLANT.from_config(model_cfg, device=self._device)
             model.load_state_dict(ckpt["model_state_dict"], strict=False)
@@ -101,15 +139,21 @@ class CoolantChecker:
                 note="skipped: multimodal model requires an image alongside the statement",
             )
         if not Path(image_path).exists():
-            return ModelResult(model="coolant", available=False, note=f"image not found: {image_path}")
+            return ModelResult(
+                model="coolant", available=False, note=f"image not found: {image_path}"
+            )
         if not self.load():
-            return ModelResult(model="coolant", available=False, note=self._load_error or "unavailable")
+            return ModelResult(
+                model="coolant", available=False, note=self._load_error or "unavailable"
+            )
         try:
             import torch
             import torch.nn.functional as F
 
             self._ensure_preprocessor()
-            text_feat, image_feat = self._preprocessor.preprocess_sample(statement, image_path)
+            text_feat, image_feat = self._preprocessor.preprocess_sample(
+                statement, image_path
+            )
 
             # text: [1, seq, 768] -> [1, 768, seq] for the patched FastCNN
             text_raw = torch.tensor(text_feat, dtype=torch.float32)
@@ -117,7 +161,11 @@ class CoolantChecker:
                 text_raw = text_raw.unsqueeze(0)
             text_raw = text_raw.permute(0, 2, 1).to(self._device)
 
-            image_raw = torch.tensor(image_feat, dtype=torch.float32).reshape(1, -1).to(self._device)
+            image_raw = (
+                torch.tensor(image_feat, dtype=torch.float32)
+                .reshape(1, -1)
+                .to(self._device)
+            )
 
             with torch.no_grad():
                 out = self._model(text_raw, image_raw)
@@ -125,7 +173,9 @@ class CoolantChecker:
                 probs = F.softmax(logits, dim=-1)[0].cpu().tolist()
 
             label_id = int(max(range(len(probs)), key=lambda i: probs[i]))
-            prob_map = {_LABELS.get(i, str(i)): round(p, 4) for i, p in enumerate(probs)}
+            prob_map = {
+                _LABELS.get(i, str(i)): round(p, 4) for i, p in enumerate(probs)
+            }
             return ModelResult(
                 model="coolant",
                 available=True,
@@ -136,4 +186,6 @@ class CoolantChecker:
                 note="multimodal (statement + image) prediction",
             )
         except Exception as exc:  # pragma: no cover - defensive
-            return ModelResult(model="coolant", available=False, note=f"inference error: {exc}")
+            return ModelResult(
+                model="coolant", available=False, note=f"inference error: {exc}"
+            )
