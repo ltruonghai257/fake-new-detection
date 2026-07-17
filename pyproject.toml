@@ -51,6 +51,17 @@ dependencies = [
     "papermill>=2.7.0",
 ]
 
+[project.optional-dependencies]
+# factcheck_agents — standalone multi-agent fact-checking module.
+# Install with:  uv sync --extra agents
+agents = [
+    "langgraph>=0.2.28",
+    "langchain-core>=0.3.0",
+    "langchain-openai>=0.2.0",
+    "openai>=1.40.0",
+    "mcp>=1.2.0",
+]
+
 [tool.uv]
 # torch/torchvision are intentionally excluded — installed separately
 # by vastai/setup_vastai.sh with the correct CUDA index URL before `uv sync`.
