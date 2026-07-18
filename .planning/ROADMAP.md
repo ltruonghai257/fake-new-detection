@@ -35,8 +35,8 @@ Extend the `factcheck_agents` pipeline with an evidence graph, source-tier class
 
 Plans:
 
--   [ ] 01-01: state.py and config.py field extensions
--   [ ] 01-02: graph_utils.py and source_tier.py new modules
+-   [x] 01-01: state.py and config.py field extensions
+-   [x] 01-02: graph_utils.py and source_tier.py new modules
 
 ---
 
@@ -206,7 +206,7 @@ Phase 4 requires both 2 and 3.
 
 | Phase                                             | Plans Complete | Status      | Completed |
 | ------------------------------------------------- | -------------- | ----------- | --------- |
-| 1. State, Config & Evidence Graph Foundation      | 0/2            | Not started | -         |
+| 1. State, Config & Evidence Graph Foundation      | 2/2            | Planned     | -         |
 | 2. Search / Evidence Agent                        | 0/2            | Not started | -         |
 | 3. Verify Agent                                   | 0/2            | Not started | -         |
 | 4. Social Search Sub-Node                         | 0/1            | Not started | -         |
