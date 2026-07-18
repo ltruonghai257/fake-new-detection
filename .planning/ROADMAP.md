@@ -9,7 +9,7 @@ Extend the `factcheck_agents` pipeline with an evidence graph, source-tier class
 ## Phases
 
 -   [x] **Phase 1: State, Config & Evidence Graph Foundation** - Extend FactCheckState/config; implement in-memory evidence graph
--   [ ] **Phase 2: Search / Evidence Agent** - Tier-separated queries, tagged results, evidence graph in state
+-   [ ] **Phase 2: Search / Evidence Agent** - Tier-separated queries, tagged results, evidence graph in state _(Planned)_
 -   [ ] **Phase 3: Verify Agent** - Concurrent PhoBERT+COOLANT execution, reliability_signal computation
 -   [ ] **Phase 4: Social Search Sub-Node** - Site-restricted social queries merged into evidence graph
 -   [ ] **Phase 5: Conclusion Agent (Binary Verdict + Vietnamese)** - Binary verdict, verdict_label_vi, Vietnamese rationale
@@ -53,7 +53,7 @@ Plans:
 4. `SEARCH_QUERY_PROMPT` instructs Vietnamese queries
 5. `web_search.py` passes `include_domains` / `exclude_domains` to Tavily and Google CSE
 6. Search agent produces `state["evidence_graph"]` with tagged nodes on a sample statement
-   **Plans**: TBD
+   **Plans**: 02-01, 02-02
 
 Plans:
 
@@ -207,7 +207,7 @@ Phase 4 requires both 2 and 3.
 | Phase                                             | Plans Complete | Status      | Completed  |
 | ------------------------------------------------- | -------------- | ----------- | ---------- |
 | 1. State, Config & Evidence Graph Foundation      | 2/2            | Complete    | 2026-07-19 |
-| 2. Search / Evidence Agent                        | 0/2            | Not started | -          |
+| 2. Search / Evidence Agent                        | 2/2            | Planned     | -          |
 | 3. Verify Agent                                   | 0/2            | Not started | -          |
 | 4. Social Search Sub-Node                         | 0/1            | Not started | -          |
 | 5. Conclusion Agent (Binary Verdict + Vietnamese) | 0/2            | Not started | -          |
