@@ -8,7 +8,7 @@ Extend the `factcheck_agents` pipeline with an evidence graph, source-tier class
 
 ## Phases
 
--   [ ] **Phase 1: State, Config & Evidence Graph Foundation** - Extend FactCheckState/config; implement in-memory evidence graph
+-   [x] **Phase 1: State, Config & Evidence Graph Foundation** - Extend FactCheckState/config; implement in-memory evidence graph
 -   [ ] **Phase 2: Search / Evidence Agent** - Tier-separated queries, tagged results, evidence graph in state
 -   [ ] **Phase 3: Verify Agent** - Concurrent PhoBERT+COOLANT execution, reliability_signal computation
 -   [ ] **Phase 4: Social Search Sub-Node** - Site-restricted social queries merged into evidence graph
@@ -204,15 +204,15 @@ Phase 4 requires both 2 and 3.
 
 ## Progress
 
-| Phase                                             | Plans Complete | Status      | Completed |
-| ------------------------------------------------- | -------------- | ----------- | --------- |
-| 1. State, Config & Evidence Graph Foundation      | 2/2            | Planned     | -         |
-| 2. Search / Evidence Agent                        | 0/2            | Not started | -         |
-| 3. Verify Agent                                   | 0/2            | Not started | -         |
-| 4. Social Search Sub-Node                         | 0/1            | Not started | -         |
-| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 0/2            | Not started | -         |
-| 6. LangGraph Wiring                               | 0/1            | Not started | -         |
-| 7. Output Surface                                 | 0/1            | Not started | -         |
-| 8. Tests                                          | 0/2            | Not started | -         |
+| Phase                                             | Plans Complete | Status      | Completed  |
+| ------------------------------------------------- | -------------- | ----------- | ---------- |
+| 1. State, Config & Evidence Graph Foundation      | 2/2            | Complete    | 2026-07-19 |
+| 2. Search / Evidence Agent                        | 0/2            | Not started | -          |
+| 3. Verify Agent                                   | 0/2            | Not started | -          |
+| 4. Social Search Sub-Node                         | 0/1            | Not started | -          |
+| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 0/2            | Not started | -          |
+| 6. LangGraph Wiring                               | 0/1            | Not started | -          |
+| 7. Output Surface                                 | 0/1            | Not started | -          |
+| 8. Tests                                          | 0/2            | Not started | -          |
 
 _Created: 2026-07-19_
