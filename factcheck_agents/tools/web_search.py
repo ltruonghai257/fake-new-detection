@@ -15,17 +15,22 @@ from ..config import settings
 from ..state import Evidence
 
 
-def _search_tavily(query: str, max_results: int) -> List[Evidence]:
+def _search_tavily(
+    query: str, max_results: int, include_domains: list | None = None
+) -> List[Evidence]:
+    payload = {
+        "api_key": settings.tavily_api_key,
+        "query": query,
+        "max_results": max_results,
+        "search_depth": "advanced",
+        "include_answer": False,
+    }
+    if include_domains:
+        payload["include_domains"] = include_domains
     try:
         resp = requests.post(
             "https://api.tavily.com/search",
-            json={
-                "api_key": settings.tavily_api_key,
-                "query": query,
-                "max_results": max_results,
-                "search_depth": "advanced",
-                "include_answer": False,
-            },
+            json=payload,
             timeout=30,
         )
         resp.raise_for_status()
@@ -47,14 +52,20 @@ def _search_tavily(query: str, max_results: int) -> List[Evidence]:
     return out
 
 
-def _search_google_cse(query: str, max_results: int) -> List[Evidence]:
+def _search_google_cse(
+    query: str, max_results: int, include_domains: list | None = None
+) -> List[Evidence]:
+    effective_query = query
+    if include_domains:
+        site_filter = " OR ".join(f"site:{d}" for d in include_domains)
+        effective_query = f"{query} {site_filter}"
     try:
         resp = requests.get(
             "https://www.googleapis.com/customsearch/v1",
             params={
                 "key": settings.google_cse_api_key,
                 "cx": settings.google_cse_id,
-                "q": query,
+                "q": effective_query,
                 "num": min(max_results, 10),
             },
             timeout=30,
@@ -78,13 +89,15 @@ def _search_google_cse(query: str, max_results: int) -> List[Evidence]:
     return out
 
 
-def web_search(query: str, max_results: int | None = None) -> List[Evidence]:
+def web_search(
+    query: str, max_results: int | None = None, include_domains: list | None = None
+) -> List[Evidence]:
     """Return evidence for a single query using the first configured provider."""
     n = max_results or settings.max_results
     if settings.tavily_api_key:
-        results = _search_tavily(query, n)
+        results = _search_tavily(query, n, include_domains=include_domains)
         if results:
             return results
     if settings.google_cse_api_key and settings.google_cse_id:
-        return _search_google_cse(query, n)
+        return _search_google_cse(query, n, include_domains=include_domains)
     return []

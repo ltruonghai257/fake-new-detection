@@ -207,7 +207,7 @@ Phase 4 requires both 2 and 3.
 | Phase                                             | Plans Complete | Status      | Completed  |
 | ------------------------------------------------- | -------------- | ----------- | ---------- |
 | 1. State, Config & Evidence Graph Foundation      | 2/2            | Complete    | 2026-07-19 |
-| 2. Search / Evidence Agent                        | 2/2            | Planned     | -          |
+| 2. Search / Evidence Agent                        | 2/2            | Complete    | 2026-07-19 |
 | 3. Verify Agent                                   | 0/2            | Not started | -          |
 | 4. Social Search Sub-Node                         | 0/1            | Not started | -          |
 | 5. Conclusion Agent (Binary Verdict + Vietnamese) | 0/2            | Not started | -          |

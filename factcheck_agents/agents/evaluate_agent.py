@@ -31,6 +31,13 @@ def evaluate_agent(state: FactCheckState) -> dict:
     evidence = state.get("evidence", []) or []
     image_path = state.get("image_path")
 
+    # If no explicit image was provided, use the first evidence page image saved by the search agent.
+    if not image_path and evidence:
+        for e in evidence:
+            if e.get("image_path"):
+                image_path = e["image_path"]
+                break
+
     evidence_text = build_evidence_text(evidence)
 
     results = [

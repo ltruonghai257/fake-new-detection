@@ -18,7 +18,7 @@ SEARCH_QUERY_PROMPT = os.getenv(
     (
         "You are a fact-checking research assistant. Given a claim, produce up to "
         "{n} short, diverse web-search queries that would surface authoritative "
-        "evidence for or against it. Prefer the claim's original language. "
+        "evidence for or against it. Generate all queries in Vietnamese. "
         'Respond as JSON: {{"queries": ["...", "..."]}}\n\nClaim: {statement}'
     ),
 )
