@@ -72,6 +72,22 @@ class Settings:
     )
     device: str = field(default_factory=lambda: os.getenv("FACTCHECK_DEVICE", "auto"))
 
+    # ── Source tier & reliability ─────────────────────────────────────────────
+    trusted_domains: str = field(
+        default_factory=lambda: os.getenv(
+            "FACTCHECK_TRUSTED_DOMAINS",
+            "vnexpress.net,thanhnien.vn,dantri.com.vn,tuoitre.vn",
+        )
+    )
+    flagged_domains: str = field(
+        default_factory=lambda: os.getenv("FACTCHECK_FLAGGED_DOMAINS", "kenh14.vn")
+    )
+    reliability_threshold: float = field(
+        default_factory=lambda: float(
+            os.getenv("FACTCHECK_RELIABILITY_THRESHOLD", "0.5")
+        )
+    )
+
     def phobert_search_root(self) -> Path:
         return self.data_root / "training" / "checkpoints_vifactcheck"
 
