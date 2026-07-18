@@ -30,14 +30,18 @@ def _read_manifest_metric(run_dir: Path) -> float:
 
     Returns -1.0 if the manifest or metric is missing so that runs without
     manifests sort last but don't crash.
+
+    Handles two manifest formats:
+    - Enhanced (03.9_vifactcheck_training.ipynb): ``best_metrics.val_macro_f1``
+    - Original (03.9_vifactcheck_original_training.ipynb): top-level ``best_dev_macro_f1``
     """
     man = run_dir / "checkpoint_manifest.json"
     if not man.exists():
         return -1.0
     try:
         data = json.loads(man.read_text())
+        # Enhanced notebook: nested best_metrics dict
         metrics = data.get("best_metrics", {})
-        # PhoBERT manifest uses val_macro_f1; COOLANT uses val_accuracy
         for key in (
             "best_val_macro_f1",
             "val_macro_f1",
@@ -47,38 +51,50 @@ def _read_manifest_metric(run_dir: Path) -> float:
             val = metrics.get(key)
             if val is not None:
                 return float(val)
-        # Fallback: check top-level selection_metric
+        # Original notebook: top-level metric key
+        for key in ("best_dev_macro_f1", "best_val_macro_f1"):
+            val = data.get(key)
+            if val is not None:
+                return float(val)
         return -1.0
     except Exception:
         return -1.0
 
 
 def _resolve_run_dir() -> Optional[Path]:
-    """Explicit override wins; else pick the run with the best validation metric.
+    """Explicit override wins; else pick the best run across both checkpoint roots.
 
-    Reads ``checkpoint_manifest.json`` from each run directory and selects the
-    one with the highest ``best_val_macro_f1`` (or ``val_accuracy``). Falls back
-    to newest-by-mtime if no manifests are found.
+    Searches both ``checkpoints_vifactcheck/`` (enhanced, 03.9 notebook) and
+    ``checkpoints_vifactcheck_original/`` (original paper, 03.9_original notebook),
+    picks the run with the highest validation macro-F1. Falls back to newest-by-mtime
+    if no manifests are found.
     """
-    if settings.phobert_ckpt_dir:
-        p = Path(settings.phobert_ckpt_dir)
-        return p if (p / "best_model.pth").exists() else None
+    # Explicit overrides (enhanced then original)
+    for env_path in (settings.phobert_ckpt_dir, settings.phobert_original_ckpt_dir):
+        if env_path:
+            p = Path(env_path)
+            return p if (p / "best_model.pth").exists() else None
 
-    root = settings.phobert_search_root()
-    if not root.exists():
-        return None
-    runs = [d for d in root.iterdir() if d.is_dir() and (d / "best_model.pth").exists()]
+    # Auto-discover from both checkpoint roots
+    runs: list[Path] = []
+    for root in (
+        settings.phobert_search_root(),
+        settings.phobert_original_search_root(),
+    ):
+        if root.exists():
+            runs += [
+                d
+                for d in root.iterdir()
+                if d.is_dir() and (d / "best_model.pth").exists()
+            ]
     if not runs:
         return None
 
-    # Try to pick by best metric from manifest
     scored = [(_read_manifest_metric(d), d) for d in runs]
     best_metric = max(s for s, _ in scored)
     if best_metric > 0:
-        best_dir = max(scored, key=lambda pair: pair[0])[1]
-        return best_dir
+        return max(scored, key=lambda pair: pair[0])[1]
 
-    # Fallback: newest by mtime
     return max(runs, key=lambda d: d.stat().st_mtime)
 
 
@@ -94,6 +110,22 @@ def _pick_device() -> str:
     return "cpu"
 
 
+def _detect_arch(manifest: dict, state: dict) -> str:
+    """Return ``'cls'`` or ``'pooler'`` from manifest metadata or state dict keys.
+
+    - ``'cls'``: 03.9_vifactcheck_training.ipynb — ``backbone.`` prefix, ``classifier.1.weight``
+    - ``'pooler'``: 03.9_vifactcheck_original_training.ipynb — ``phobert.`` prefix, ``linear.weight``
+    """
+    arch_str = manifest.get("architecture", "")
+    if "pooler" in arch_str.lower():
+        return "pooler"
+    if any(k.startswith("phobert.") for k in state):
+        return "pooler"
+    if "linear.weight" in state and not any(k.startswith("backbone.") for k in state):
+        return "pooler"
+    return "cls"
+
+
 class PhoBERTChecker:
     """Lazy singleton-style wrapper around the fine-tuned PhoBERT classifier."""
 
@@ -107,11 +139,15 @@ class PhoBERTChecker:
         self._load_error: Optional[str] = None
 
     # ── loading ──────────────────────────────────────────────────────────
-    def _build_model(self, backbone: str, num_classes: int, dropout: float):
+    def _build_cls_model(self, backbone: str, num_classes: int, dropout: float):
+        """CLS-token classifier (03.9_vifactcheck_training.ipynb).
+
+        State dict keys: ``backbone.*``, ``classifier.1.weight/bias``.
+        """
         import torch.nn as nn
         from transformers import AutoModel
 
-        class PhoBERTClassifier(nn.Module):
+        class _CLSClassifier(nn.Module):
             def __init__(self, backbone_name, num_classes, dropout):
                 super().__init__()
                 self.backbone = AutoModel.from_pretrained(backbone_name)
@@ -125,7 +161,33 @@ class PhoBERTChecker:
                 cls = out.last_hidden_state[:, 0, :]
                 return self.classifier(cls)
 
-        return PhoBERTClassifier(backbone, num_classes, dropout)
+        return _CLSClassifier(backbone, num_classes, dropout)
+
+    def _build_pooler_model(self, backbone: str, num_classes: int, dropout: float):
+        """Pooler-output classifier (03.9_vifactcheck_original_training.ipynb).
+
+        Mirrors the original ``PhoBERTClassifier`` from ``plm_training.py``.
+        State dict keys: ``phobert.*``, ``linear.weight/bias``.
+        """
+        import torch.nn as nn
+        from transformers import AutoModel
+
+        class _PoolerClassifier(nn.Module):
+            def __init__(self, backbone_name, num_classes, dropout):
+                super().__init__()
+                self.phobert = AutoModel.from_pretrained(backbone_name)
+                self.dropout = nn.Dropout(dropout)
+                self.linear = nn.Linear(self.phobert.config.hidden_size, num_classes)
+
+            def forward(self, input_ids, attention_mask):
+                _, pooled = self.phobert(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    return_dict=False,
+                )
+                return self.linear(self.dropout(pooled))
+
+        return _PoolerClassifier(backbone, num_classes, dropout)
 
     def load(self) -> bool:
         if self._loaded:
@@ -139,8 +201,10 @@ class PhoBERTChecker:
             run_dir = _resolve_run_dir()
             if run_dir is None:
                 self._load_error = (
-                    "No PhoBERT checkpoint found. Set VIFACTCHECK_CKPT_DIR or place a run "
-                    f"under {settings.phobert_search_root()}."
+                    "No PhoBERT checkpoint found. Set VIFACTCHECK_CKPT_DIR / "
+                    "VIFACTCHECK_ORIGINAL_CKPT_DIR or place a run under "
+                    f"{settings.phobert_search_root()} or "
+                    f"{settings.phobert_original_search_root()}."
                 )
                 return False
 
@@ -149,28 +213,42 @@ class PhoBERTChecker:
             if man_path.exists():
                 manifest = json.loads(man_path.read_text())
 
-            backbone = (
-                manifest.get("backbone")
-                or manifest.get("model", {}).get("backbone")
-                or "vinai/phobert-base-v2"
-            )
-            self._max_length = int(
-                manifest.get("max_length")
-                or manifest.get("data", {}).get("max_length")
-                or 256
-            )
-
             ckpt = torch.load(run_dir / "best_model.pth", map_location="cpu")
             state = (
                 ckpt.get("model_state_dict", ckpt) if isinstance(ckpt, dict) else ckpt
             )
 
-            # infer num_classes from the classifier head weight
-            num_classes = 3
-            for key in ("classifier.1.weight", "classifier.weight"):
-                if key in state:
-                    num_classes = state[key].shape[0]
-                    break
+            # backbone: prefer saved value in checkpoint, then manifest, then default
+            backbone = (
+                (ckpt.get("backbone") if isinstance(ckpt, dict) else None)
+                or manifest.get("backbone")
+                or manifest.get("model", {}).get("backbone")
+                or "vinai/phobert-base-v2"
+            )
+
+            # max_length: check all known manifest locations
+            self._max_length = int(
+                manifest.get("max_length")
+                or manifest.get("data", {}).get("max_length")
+                or manifest.get("training_setup", {}).get("max_length")
+                or 256
+            )
+
+            # num_classes: prefer saved value in checkpoint, then infer from head weight
+            num_classes = (
+                int(ckpt.get("num_classes", 0)) if isinstance(ckpt, dict) else 0
+            )
+            if num_classes == 0:
+                for key in (
+                    "classifier.1.weight",
+                    "classifier.weight",
+                    "linear.weight",
+                ):
+                    if key in state:
+                        num_classes = state[key].shape[0]
+                        break
+                else:
+                    num_classes = 3
             self._labels = _LABELS_2 if num_classes == 2 else _LABELS_3
 
             dropout = float(
@@ -179,9 +257,14 @@ class PhoBERTChecker:
                 or 0.3
             )
 
+            # Detect architecture and build the matching model class
+            arch = _detect_arch(manifest, state)
             self._device = _pick_device()
-            model = self._build_model(backbone, num_classes, dropout)
-            model.load_state_dict(state, strict=False)
+            if arch == "pooler":
+                model = self._build_pooler_model(backbone, num_classes, dropout)
+            else:
+                model = self._build_cls_model(backbone, num_classes, dropout)
+            model.load_state_dict(state, strict=True)
             model.to(self._device).eval()
             self._model = model
 

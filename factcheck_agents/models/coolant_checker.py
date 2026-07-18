@@ -103,7 +103,15 @@ class CoolantChecker:
                 )
                 return False
 
-            self._device = "cuda" if torch.cuda.is_available() else "cpu"
+            if torch.cuda.is_available():
+                self._device = "cuda"
+            elif (
+                getattr(torch.backends, "mps", None)
+                and torch.backends.mps.is_available()
+            ):
+                self._device = "mps"
+            else:
+                self._device = "cpu"
             ckpt = torch.load(ckpt_path, map_location=self._device)
             model_cfg = ckpt["config"]["model"]
             self._image_model = (
