@@ -57,8 +57,8 @@ Plans:
 
 Plans:
 
--   [ ] 02-01: search_agent.py tier-separated queries and evidence graph integration
--   [ ] 02-02: prompts.py and web_search.py domain filter updates
+-   [x] 02-01: search_agent.py tier-separated queries and evidence graph integration
+-   [x] 02-02: prompts.py and web_search.py domain filter updates
 
 ---
 
@@ -73,12 +73,12 @@ Plans:
 2. `reliability_signal` computed from fused outputs and written to state
 3. `phobert_checker.py` `build_evidence_text()` prefers trusted-tier snippets first
 4. With no checkpoints → `reliability_signal=False`, pipeline does not crash (TEST-03, TEST-06 partial)
-   **Plans**: TBD
+   **Plans**: 03-01, 03-02
 
 Plans:
 
--   [ ] 03-01: verify_agent.py with concurrent execution and reliability_signal
--   [ ] 03-02: phobert_checker.py trusted-tier evidence ordering
+-   [x] 03-01: verify_agent.py with concurrent execution and reliability_signal
+-   [x] 03-02: phobert_checker.py trusted-tier evidence ordering
 
 ---
 
@@ -96,7 +96,7 @@ Plans:
 
 Plans:
 
--   [ ] 04-01: social_search_agent.py implementation
+-   [ ] 04-01: social_search_agent.py + helpers refactor
 
 ---
 
@@ -208,8 +208,8 @@ Phase 4 requires both 2 and 3.
 | ------------------------------------------------- | -------------- | ----------- | ---------- |
 | 1. State, Config & Evidence Graph Foundation      | 2/2            | Complete    | 2026-07-19 |
 | 2. Search / Evidence Agent                        | 2/2            | Complete    | 2026-07-19 |
-| 3. Verify Agent                                   | 0/2            | Not started | -          |
-| 4. Social Search Sub-Node                         | 0/1            | Not started | -          |
+| 3. Verify Agent                                   | 0/2            | Planned     | -          |
+| 4. Social Search Sub-Node                         | 0/1            | Planned     | -          |
 | 5. Conclusion Agent (Binary Verdict + Vietnamese) | 0/2            | Not started | -          |
 | 6. LangGraph Wiring                               | 0/1            | Not started | -          |
 | 7. Output Surface                                 | 0/1            | Not started | -          |
