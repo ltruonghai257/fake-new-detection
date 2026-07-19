@@ -1,7 +1,7 @@
 from unittest.mock import patch, MagicMock
 import pytest
 from factcheck_agents.agents.search_agent import search_agent
-from factcheck_agents.agents.search_agent import _fetch_evidence_image
+from factcheck_agents.helpers import _fetch_evidence_image
 from factcheck_agents.graph_utils import EvidenceGraph
 
 
@@ -23,7 +23,7 @@ def _mock_evidence(url, score=0.5):
 def _stub_fetch_evidence_image():
     """Prevent search_agent tests from making real HTTP requests for images."""
     with patch(
-        "factcheck_agents.agents.search_agent._fetch_evidence_image",
+        "factcheck_agents.helpers._fetch_evidence_image",
         return_value=(None, None),
     ) as p:
         yield p
@@ -140,8 +140,8 @@ def test_fetch_evidence_image_downloads_og_image(tmp_path):
     img_resp.raise_for_status.return_value = None
     img_resp.content = b"fake-image-bytes"
 
-    with patch("factcheck_agents.agents.search_agent.settings.data_root", tmp_path):
-        with patch("factcheck_agents.agents.search_agent.requests.get") as mock_get:
+    with patch("factcheck_agents.helpers.settings.data_root", tmp_path):
+        with patch("factcheck_agents.helpers.requests.get") as mock_get:
             mock_get.side_effect = [html_resp, img_resp]
             path, caption = _fetch_evidence_image("http://example.com/article")
 
@@ -152,9 +152,9 @@ def test_fetch_evidence_image_downloads_og_image(tmp_path):
 
 def test_fetch_evidence_image_returns_none_on_failure(tmp_path):
     with (
-        patch("factcheck_agents.agents.search_agent.settings.data_root", tmp_path),
+        patch("factcheck_agents.helpers.settings.data_root", tmp_path),
         patch(
-            "factcheck_agents.agents.search_agent.requests.get",
+            "factcheck_agents.helpers.requests.get",
             side_effect=Exception("network"),
         ),
     ):

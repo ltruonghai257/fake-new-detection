@@ -24,6 +24,8 @@ from ..state import ModelResult
 _LABELS_3 = {0: "SUPPORTED", 1: "REFUTED", 2: "NEI"}
 _LABELS_2 = {0: "SUPPORTED", 1: "REFUTED"}
 
+_TIER_ORDER = {"trusted": 0, "flagged": 1, "social": 2, "unknown": 3}
+
 
 def _read_manifest_metric(run_dir: Path) -> float:
     """Extract the best validation metric from a run's checkpoint_manifest.json.
@@ -325,7 +327,14 @@ class PhoBERTChecker:
 
 
 def build_evidence_text(evidence: List[dict], max_chars: int = 2000) -> str:
-    """Concatenate evidence snippets into a single evidence passage."""
+    """Concatenate evidence snippets into a single evidence passage.
+
+    Trusted-tier snippets are placed first so PhoBERT sees the most
+    reliable context at the front of the evidence passage.
+    """
+    evidence = sorted(
+        evidence, key=lambda e: _TIER_ORDER.get(e.get("source_tier", "unknown"), 3)
+    )
     parts, total = [], 0
     for e in evidence:
         snippet = (e.get("snippet") or "").strip()
