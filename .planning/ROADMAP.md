@@ -9,9 +9,9 @@ Extend the `factcheck_agents` pipeline with an evidence graph, source-tier class
 ## Phases
 
 -   [x] **Phase 1: State, Config & Evidence Graph Foundation** - Extend FactCheckState/config; implement in-memory evidence graph
--   [ ] **Phase 2: Search / Evidence Agent** - Tier-separated queries, tagged results, evidence graph in state _(Planned)_
--   [ ] **Phase 3: Verify Agent** - Concurrent PhoBERT+COOLANT execution, reliability_signal computation
--   [ ] **Phase 4: Social Search Sub-Node** - Site-restricted social queries merged into evidence graph
+-   [x] **Phase 2: Search / Evidence Agent** - Tier-separated queries, tagged results, evidence graph in state
+-   [x] **Phase 3: Verify Agent** - Concurrent PhoBERT+COOLANT execution, reliability_signal computation
+-   [x] **Phase 4: Social Search Sub-Node** - Site-restricted social queries merged into evidence graph
 -   [ ] **Phase 5: Conclusion Agent (Binary Verdict + Vietnamese)** - Binary verdict, verdict_label_vi, Vietnamese rationale
 -   [ ] **Phase 6: LangGraph Wiring** - Rewire graph.py with new nodes and conditional edge
 -   [ ] **Phase 7: Output Surface** - Surface new fields in CLI, Python API, MCP server
@@ -96,7 +96,7 @@ Plans:
 
 Plans:
 
--   [ ] 04-01: social_search_agent.py + helpers refactor
+-   [x] 04-01: social_search_agent.py + helpers refactor
 
 ---
 
@@ -113,7 +113,7 @@ Plans:
 4. `state.py` `Verdict` TypedDict includes `verdict_binary` and `verdict_label_vi`
 5. `CONCLUSION_SYSTEM_PROMPT` requests Vietnamese rationale with binary verdict instruction
 6. `_fallback_verdict` returns binary fields (TEST-04, TEST-05)
-   **Plans**: TBD
+   **Plans**: 05-01, 05-02
 
 Plans:
 
@@ -208,9 +208,9 @@ Phase 4 requires both 2 and 3.
 | ------------------------------------------------- | -------------- | ----------- | ---------- |
 | 1. State, Config & Evidence Graph Foundation      | 2/2            | Complete    | 2026-07-19 |
 | 2. Search / Evidence Agent                        | 2/2            | Complete    | 2026-07-19 |
-| 3. Verify Agent                                   | 0/2            | Planned     | -          |
-| 4. Social Search Sub-Node                         | 0/1            | Planned     | -          |
-| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 0/2            | Not started | -          |
+| 3. Verify Agent                                   | 2/2            | Complete    | 2026-07-19 |
+| 4. Social Search Sub-Node                         | 1/1            | Complete    | 2026-07-19 |
+| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 0/2            | Planned     | -          |
 | 6. LangGraph Wiring                               | 0/1            | Not started | -          |
 | 7. Output Surface                                 | 0/1            | Not started | -          |
 | 8. Tests                                          | 0/2            | Not started | -          |
