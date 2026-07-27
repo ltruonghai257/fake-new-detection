@@ -37,16 +37,22 @@ mcp = FastMCP("factcheck")
 
 
 @mcp.tool()
-def fact_check(statement: str, image_path: Optional[str] = None, language: str = "auto") -> dict:
+def fact_check(
+    statement: str, image_path: Optional[str] = None, language: str = "auto"
+) -> dict:
     """Run the full Search -> Evaluate -> Conclusion pipeline on a claim."""
     graph = build_graph()
-    result = graph.invoke(initial_state(statement, image_path=image_path, language=language))
+    result = graph.invoke(
+        initial_state(statement, image_path=image_path, language=language)
+    )
     return {
         "statement": statement,
         "verdict": result.get("verdict", {}),
         "model_results": result.get("model_results", []),
         "evidence": result.get("evidence", []),
         "search_queries": result.get("search_queries", []),
+        "verdict_binary": result.get("verdict", {}).get("verdict_binary"),
+        "verdict_label_vi": result.get("verdict", {}).get("verdict_label_vi"),
     }
 
 
@@ -54,7 +60,10 @@ def fact_check(statement: str, image_path: Optional[str] = None, language: str =
 def search_evidence(statement: str) -> dict:
     """Search open truth sources for evidence about the claim (no model inference)."""
     out = search_agent(FactCheckState(statement=statement))
-    return {"queries": out.get("search_queries", []), "evidence": out.get("evidence", [])}
+    return {
+        "queries": out.get("search_queries", []),
+        "evidence": out.get("evidence", []),
+    }
 
 
 @mcp.tool()

@@ -1,7 +1,7 @@
 """Command-line entrypoint.
 
-    python -m factcheck_agents.cli "Your claim here"
-    python -m factcheck_agents.cli "Claim with a picture" --image /path/to.jpg --json
+python -m factcheck_agents.cli "Your claim here"
+python -m factcheck_agents.cli "Claim with a picture" --image /path/to.jpg --json
 """
 
 from __future__ import annotations
@@ -17,7 +17,15 @@ from .graph import build_graph, initial_state
 def _print_human(result: dict) -> None:
     v = result.get("verdict", {}) or {}
     print("\n" + "=" * 60)
-    print(f"VERDICT: {v.get('label', 'UNVERIFIED')}  (confidence {v.get('confidence', 0):.2f})")
+    label_vi = v.get("verdict_label_vi")
+    if label_vi:
+        print(
+            f"VERDICT: {label_vi}  ({v.get('label', '')}, confidence {v.get('confidence', 0):.2f})"
+        )
+    else:
+        print(
+            f"VERDICT: {v.get('label', 'UNVERIFIED')}  (confidence {v.get('confidence', 0):.2f})"
+        )
     print("=" * 60)
     if v.get("rationale"):
         print(f"\nRationale:\n{v['rationale']}")
@@ -38,18 +46,28 @@ def _print_human(result: dict) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Multi-agent fake-news fact checker")
     parser.add_argument("statement", help="the claim/statement to fact-check")
-    parser.add_argument("--image", default=None, help="optional image path (enables COOLANT)")
+    parser.add_argument(
+        "--image", default=None, help="optional image path (enables COOLANT)"
+    )
     parser.add_argument("--language", default="auto", help="vi | en | auto")
     parser.add_argument("--json", action="store_true", help="print full result as JSON")
     args = parser.parse_args(argv)
 
     if not settings.has_llm():
-        print("[warn] OPENAI_API_KEY not set — using rule-based fallback conclusion.", file=sys.stderr)
+        print(
+            "[warn] OPENAI_API_KEY not set — using rule-based fallback conclusion.",
+            file=sys.stderr,
+        )
     if not settings.has_search():
-        print("[warn] No search provider (Tavily/Google CSE) — evidence step will be empty.", file=sys.stderr)
+        print(
+            "[warn] No search provider (Tavily/Google CSE) — evidence step will be empty.",
+            file=sys.stderr,
+        )
 
     graph = build_graph()
-    result = graph.invoke(initial_state(args.statement, image_path=args.image, language=args.language))
+    result = graph.invoke(
+        initial_state(args.statement, image_path=args.image, language=args.language)
+    )
 
     if args.json:
         printable = {k: v for k, v in result.items() if k != "messages"}

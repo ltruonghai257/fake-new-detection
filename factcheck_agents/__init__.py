@@ -25,10 +25,15 @@ __all__ = ["FactCheckState", "Verdict", "Evidence", "ModelResult", "run_fact_che
 __version__ = "0.1.0"
 
 
-def run_fact_check(statement: str, image_path: str | None = None, language: str = "auto"):
+def run_fact_check(
+    statement: str, image_path: str | None = None, language: str = "auto"
+):
     """Convenience one-shot entrypoint. Builds the graph and runs it once."""
     from .graph import build_graph, initial_state
 
     graph = build_graph()
     state = initial_state(statement, image_path=image_path, language=language)
-    return graph.invoke(state)
+    result = graph.invoke(state)
+    result["verdict_binary"] = result.get("verdict", {}).get("verdict_binary")
+    result["verdict_label_vi"] = result.get("verdict", {}).get("verdict_label_vi")
+    return result
