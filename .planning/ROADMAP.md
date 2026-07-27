@@ -135,7 +135,7 @@ Plans:
 4. Graph compiles without error
 5. Invoke with no checkpoints routes directly to conclusion (not social_search)
 6. LangGraph checkpointer (SqliteSaver, falling back to MemorySaver if the sqlite extra is unavailable) is added via `g.compile(checkpointer=...)`; callers pass a `thread_id` in the invoke config; an interrupted run resumes from the last completed node instead of restarting from search
-   **Plans**: TBD
+   **Plans**: 06-01, 06-02
 
 Plans:
 
