@@ -213,7 +213,7 @@ Phase 4 requires both 2 and 3.
 | 3. Verify Agent                                   | 2/2            | Complete    | 2026-07-19 |
 | 4. Social Search Sub-Node                         | 1/1            | Complete    | 2026-07-19 |
 | 5. Conclusion Agent (Binary Verdict + Vietnamese) | 2/2            | Complete    | 2026-07-27 |
-| 6. LangGraph Wiring                               | 0/2            | Not started | -          |
+| 6. LangGraph Wiring                               | 2/2            | Complete    | 2026-07-27 |
 | 7. Output Surface                                 | 0/1            | Not started | -          |
 | 8. Tests                                          | 0/2            | Not started | -          |
 
