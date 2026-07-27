@@ -14,7 +14,7 @@ Extend the `factcheck_agents` pipeline with an evidence graph, source-tier class
 -   [x] **Phase 4: Social Search Sub-Node** - Site-restricted social queries merged into evidence graph
 -   [x] **Phase 5: Conclusion Agent (Binary Verdict + Vietnamese)** - Binary verdict, verdict_label_vi, Vietnamese rationale
 -   [ ] **Phase 6: LangGraph Wiring** - Rewire graph.py with new nodes and conditional edge
--   [ ] **Phase 7: Output Surface** - Surface new fields in CLI, Python API, MCP server
+-   [x] **Phase 7: Output Surface** - Surface new fields in CLI, Python API, MCP server
 -   [ ] **Phase 8: Tests** - Unit and integration tests for all new behaviour
 
 ## Phase Details
@@ -157,9 +157,9 @@ Plans:
 4. `mcp_server.py` `fact_check` tool response includes new fields
 5. Existing `verdict` dict still present; no callers broken
    **Plans**: TBD
-Plans:
+   Plans:
 
--   [ ] 07-01: cli.py, **init**.py, mcp_server.py, README.md output updates
+-   [x] 07-01: cli.py, **init**.py, mcp_server.py, README.md output updates
 
 ---
 
@@ -213,7 +213,7 @@ Phase 4 requires both 2 and 3.
 | 4. Social Search Sub-Node                         | 1/1            | Complete    | 2026-07-19 |
 | 5. Conclusion Agent (Binary Verdict + Vietnamese) | 2/2            | Complete    | 2026-07-27 |
 | 6. LangGraph Wiring                               | 2/2            | Complete    | 2026-07-27 |
-| 7. Output Surface                                 | 0/1            | Not started | -          |
+| 7. Output Surface                                 | 1/1            | Complete    | 2026-07-27 |
 | 8. Tests                                          | 0/2            | Not started | -          |
 
 _Created: 2026-07-19_
