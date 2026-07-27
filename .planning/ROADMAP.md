@@ -124,8 +124,8 @@ Plans:
 
 ### Phase 6: LangGraph Wiring
 
-**Goal**: Rewire `graph.py` with the new node names and conditional edge for social search.
-**Requirements**: GRAPH-01, GRAPH-02, GRAPH-03
+**Goal**: Rewire `graph.py` with the new node names and conditional edge for social search, and add checkpoint/resume support so interrupted runs don't restart from search.
+**Requirements**: GRAPH-01, GRAPH-02, GRAPH-03, GRAPH-04
 **Depends on**: Phase 5
 **Success Criteria** (what must be TRUE):
 
@@ -134,11 +134,13 @@ Plans:
 3. `route_after_verify(state)` reads `state["reliability_signal"]` synchronously
 4. Graph compiles without error
 5. Invoke with no checkpoints routes directly to conclusion (not social_search)
+6. LangGraph checkpointer (SqliteSaver, falling back to MemorySaver if the sqlite extra is unavailable) is added via `g.compile(checkpointer=...)`; callers pass a `thread_id` in the invoke config; an interrupted run resumes from the last completed node instead of restarting from search
    **Plans**: TBD
 
 Plans:
 
 -   [ ] 06-01: graph.py rewiring with new nodes and conditional edges
+-   [ ] 06-02: graph.py checkpointer (SqliteSaver/MemorySaver) + thread_id config plumbing
 
 ---
 
@@ -211,7 +213,7 @@ Phase 4 requires both 2 and 3.
 | 3. Verify Agent                                   | 2/2            | Complete    | 2026-07-19 |
 | 4. Social Search Sub-Node                         | 1/1            | Complete    | 2026-07-19 |
 | 5. Conclusion Agent (Binary Verdict + Vietnamese) | 2/2            | Complete    | 2026-07-27 |
-| 6. LangGraph Wiring                               | 0/1            | Not started | -          |
+| 6. LangGraph Wiring                               | 0/2            | Not started | -          |
 | 7. Output Surface                                 | 0/1            | Not started | -          |
 | 8. Tests                                          | 0/2            | Not started | -          |
 
