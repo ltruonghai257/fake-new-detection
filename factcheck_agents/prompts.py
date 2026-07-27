@@ -47,6 +47,9 @@ CONCLUSION_SYSTEM_PROMPT = os.getenv(
         "the model signals as supporting. Decide one of: TRUE, FALSE, MISLEADING, "
         "UNVERIFIED. Be conservative: if evidence is thin or conflicting, prefer "
         "UNVERIFIED. Respond ONLY as JSON with keys: label, confidence (0-1), "
-        "rationale, citations (list of URLs), recommendation."
+        "rationale (in Vietnamese), citations (list of URLs), recommendation "
+        "(in Vietnamese). The final binary verdict must be either 'REAL'/'Thật' "
+        "for TRUE, or 'FAKE'/'Giả' for FALSE, MISLEADING, or UNVERIFIED. "
+        "Preserve the original 4-class label inside the rationale for nuance."
     ),
 )

@@ -40,6 +40,8 @@ class Verdict(TypedDict, total=False):
     """Final synthesized decision from the conclusion agent."""
 
     label: str  # TRUE | FALSE | MISLEADING | UNVERIFIED
+    verdict_binary: Literal["REAL", "FAKE"]
+    verdict_label_vi: Literal["Thật", "Giả"]
     confidence: float  # 0..1
     rationale: str
     citations: List[str]  # URLs backing the verdict

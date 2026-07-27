@@ -8,21 +8,49 @@ on the available model outputs so the pipeline still produces a verdict.
 from __future__ import annotations
 
 import json
-from typing import List
+from typing import Any, List, Optional, Tuple
 
 from ..state import Evidence, FactCheckState, ModelResult, Verdict
 from .llm import get_llm, parse_json
 from ..prompts import CONCLUSION_SYSTEM_PROMPT
 
 
+_BINARY_REAL_LABELS = {"SUPPORTED", "REAL", "TRUE"}
+_BINARY_FAKE_LABELS = {"REFUTED", "FAKE", "FALSE", "MISLEADING", "UNVERIFIED", "NEI"}
+
+
+def _has_cross_source_conflict(evidence_graph: Optional[Any]) -> bool:
+    if evidence_graph is None:
+        return False
+    tiers = {
+        data.get("source_tier")
+        for _, data in evidence_graph.graph.nodes(data=True)
+        if data.get("node_type") == "evidence"
+    }
+    return "trusted" in tiers and bool(tiers & {"flagged", "social"})
+
+
+def _map_to_binary(label: str, conflict: bool) -> Tuple[str, str]:
+    if conflict:
+        return "FAKE", "Giả"
+    label_upper = str(label).upper()
+    if label_upper in _BINARY_REAL_LABELS:
+        return "REAL", "Thật"
+    return "FAKE", "Giả"
+
+
 def _fallback_verdict(
-    model_results: List[ModelResult], evidence: List[Evidence]
+    model_results: List[ModelResult],
+    evidence: List[Evidence],
+    evidence_graph: Optional[Any] = None,
 ) -> Verdict:
     avail = [m for m in model_results if m.get("available")]
     citations = [e.get("url", "") for e in evidence if e.get("url")][:5]
     if not avail:
         return Verdict(
             label="UNVERIFIED",
+            verdict_binary="FAKE",
+            verdict_label_vi="Giả",
             confidence=0.2,
             rationale="No trained model was available and no LLM was configured to weigh evidence.",
             citations=citations,
@@ -36,8 +64,13 @@ def _fallback_verdict(
         "REAL": "TRUE",
         "NEI": "UNVERIFIED",
     }
+    label = label_map.get(top.get("label", ""), "UNVERIFIED")
+    conflict = _has_cross_source_conflict(evidence_graph)
+    binary, label_vi = _map_to_binary(label, conflict)
     return Verdict(
-        label=label_map.get(top.get("label", ""), "UNVERIFIED"),
+        label=label,
+        verdict_binary=binary,
+        verdict_label_vi=label_vi,
         confidence=round(float(top.get("confidence", 0.0)) * 0.7, 3),
         rationale=f"Rule-based fallback from {top['model']} ({top.get('label')}).",
         citations=citations,
@@ -70,10 +103,11 @@ def conclusion_agent(state: FactCheckState) -> dict:
     statement = state["statement"]
     model_results = state.get("model_results", []) or []
     evidence = state.get("evidence", []) or []
+    evidence_graph = state.get("evidence_graph")
 
     llm = get_llm()
     if llm is None:
-        verdict = _fallback_verdict(model_results, evidence)
+        verdict = _fallback_verdict(model_results, evidence, evidence_graph)
         return {
             "verdict": verdict,
             "messages": [("assistant", f"[Conclusion] {verdict['label']} (fallback)")],
@@ -88,15 +122,20 @@ def conclusion_agent(state: FactCheckState) -> dict:
         resp = llm.invoke([("system", CONCLUSION_SYSTEM_PROMPT), ("user", user)])
         data = parse_json(getattr(resp, "content", "") or "") or {}
     except Exception as exc:
-        verdict = _fallback_verdict(model_results, evidence)
+        verdict = _fallback_verdict(model_results, evidence, evidence_graph)
         verdict["rationale"] += f" (LLM error: {exc})"
         return {
             "verdict": verdict,
             "messages": [("assistant", f"[Conclusion] {verdict['label']} (fallback)")],
         }
 
+    label = str(data.get("label", "UNVERIFIED")).upper()
+    conflict = _has_cross_source_conflict(evidence_graph)
+    binary, label_vi = _map_to_binary(label, conflict)
     verdict = Verdict(
-        label=str(data.get("label", "UNVERIFIED")).upper(),
+        label=label,
+        verdict_binary=binary,
+        verdict_label_vi=label_vi,
         confidence=float(data.get("confidence", 0.0) or 0.0),
         rationale=str(data.get("rationale", "")),
         citations=list(

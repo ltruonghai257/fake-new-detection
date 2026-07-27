@@ -12,7 +12,7 @@ Extend the `factcheck_agents` pipeline with an evidence graph, source-tier class
 -   [x] **Phase 2: Search / Evidence Agent** - Tier-separated queries, tagged results, evidence graph in state
 -   [x] **Phase 3: Verify Agent** - Concurrent PhoBERT+COOLANT execution, reliability_signal computation
 -   [x] **Phase 4: Social Search Sub-Node** - Site-restricted social queries merged into evidence graph
--   [ ] **Phase 5: Conclusion Agent (Binary Verdict + Vietnamese)** - Binary verdict, verdict_label_vi, Vietnamese rationale
+-   [x] **Phase 5: Conclusion Agent (Binary Verdict + Vietnamese)** - Binary verdict, verdict_label_vi, Vietnamese rationale
 -   [ ] **Phase 6: LangGraph Wiring** - Rewire graph.py with new nodes and conditional edge
 -   [ ] **Phase 7: Output Surface** - Surface new fields in CLI, Python API, MCP server
 -   [ ] **Phase 8: Tests** - Unit and integration tests for all new behaviour
@@ -117,8 +117,8 @@ Plans:
 
 Plans:
 
--   [ ] 05-01: state.py Verdict fields + conclusion_agent.py binary rule and evidence graph
--   [ ] 05-02: prompts.py CONCLUSION_SYSTEM_PROMPT Vietnamese and binary update
+-   [x] 05-01: state.py Verdict fields + conclusion_agent.py binary rule and evidence graph
+-   [x] 05-02: prompts.py CONCLUSION_SYSTEM_PROMPT Vietnamese and binary update
 
 ---
 
@@ -210,7 +210,7 @@ Phase 4 requires both 2 and 3.
 | 2. Search / Evidence Agent                        | 2/2            | Complete    | 2026-07-19 |
 | 3. Verify Agent                                   | 2/2            | Complete    | 2026-07-19 |
 | 4. Social Search Sub-Node                         | 1/1            | Complete    | 2026-07-19 |
-| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 0/2            | Planned     | -          |
+| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 2/2            | Complete    | 2026-07-27 |
 | 6. LangGraph Wiring                               | 0/1            | Not started | -          |
 | 7. Output Surface                                 | 0/1            | Not started | -          |
 | 8. Tests                                          | 0/2            | Not started | -          |
