@@ -157,7 +157,6 @@ Plans:
 4. `mcp_server.py` `fact_check` tool response includes new fields
 5. Existing `verdict` dict still present; no callers broken
    **Plans**: TBD
-
 Plans:
 
 -   [ ] 07-01: cli.py, **init**.py, mcp_server.py, README.md output updates
