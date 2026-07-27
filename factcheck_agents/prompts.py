@@ -53,3 +53,15 @@ CONCLUSION_SYSTEM_PROMPT = os.getenv(
         "Preserve the original 4-class label inside the rationale for nuance."
     ),
 )
+
+# ── Debate Step (opt-in) ─────────────────────────────────────────────
+DEBATE_SYSTEM_PROMPT = os.getenv(
+    "FACTCHECK_DEBATE_PROMPT",
+    (
+        "Bạn là chuyên gia phân tích thông tin. Dựa CHỈ vào các bằng chứng được cung cấp "
+        "(ưu tiên bằng chứng được đánh dấu [TRUSTED]), hãy viết hai lập luận ngắn đối lập "
+        "về tuyên bố: một lập luận ủng hộ (support) và một lập luận phản bác (refute). "
+        "Không suy diễn ngoài phạm vi bằng chứng đã cho. "
+        'Trả lời ĐÚNG theo JSON: {"support": "...", "refute": "..."}'
+    ),
+)

@@ -87,6 +87,9 @@ class Settings:
             os.getenv("FACTCHECK_RELIABILITY_THRESHOLD", "0.5")
         )
     )
+    debate_rounds: int = field(
+        default_factory=lambda: int(os.getenv("FACTCHECK_DEBATE_ROUNDS", "0"))
+    )
 
     def phobert_search_root(self) -> Path:
         return self.data_root / "training" / "checkpoints_vifactcheck"

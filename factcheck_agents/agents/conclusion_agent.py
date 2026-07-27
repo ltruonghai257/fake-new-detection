@@ -12,7 +12,8 @@ from typing import Any, List, Optional, Tuple
 
 from ..state import Evidence, FactCheckState, ModelResult, Verdict
 from .llm import get_llm, parse_json
-from ..prompts import CONCLUSION_SYSTEM_PROMPT
+from ..config import settings
+from ..prompts import CONCLUSION_SYSTEM_PROMPT, DEBATE_SYSTEM_PROMPT
 
 
 _BINARY_REAL_LABELS = {"SUPPORTED", "REAL", "TRUE"}
@@ -99,6 +100,41 @@ def _format_evidence(evidence: List[Evidence]) -> str:
     return "\n".join(lines)
 
 
+_DEBATE_TIER_LABELS = {
+    "trusted": "[TRUSTED]",
+    "flagged": "[FLAGGED]",
+    "social": "[SOCIAL]",
+}
+
+
+def _debate_evidence(
+    statement: str,
+    evidence: List[Evidence],
+    evidence_graph: Optional[Any],
+) -> dict:
+    if settings.debate_rounds <= 0:
+        return {}
+    llm = get_llm()
+    if llm is None:
+        return {}
+    lines = []
+    for i, e in enumerate(evidence, 1):
+        tier = _DEBATE_TIER_LABELS.get(e.get("source_tier", ""), "[UNKNOWN]")
+        lines.append(
+            f"[{i}] {tier} {e.get('title')} — {e.get('url')}\n    {e.get('snippet')}"
+        )
+    ev_text = "\n".join(lines) or "(no evidence)"
+    user = f"TUYÊN BỐ:\n{statement}\n\nBẰNG CHỨNG:\n{ev_text}\n"
+    try:
+        resp = llm.invoke([("system", DEBATE_SYSTEM_PROMPT), ("user", user)])
+        data = parse_json(getattr(resp, "content", "") or "") or {}
+        if "support" in data and "refute" in data:
+            return data
+    except Exception:
+        pass
+    return {}
+
+
 def conclusion_agent(state: FactCheckState) -> dict:
     statement = state["statement"]
     model_results = state.get("model_results", []) or []
@@ -118,6 +154,13 @@ def conclusion_agent(state: FactCheckState) -> dict:
         f"MODEL PREDICTIONS:\n{_format_models(model_results)}\n\n"
         f"WEB EVIDENCE:\n{_format_evidence(evidence)}\n"
     )
+    debate = _debate_evidence(statement, evidence, evidence_graph)
+    if debate:
+        user += (
+            f"\nDEBATE ARGUMENTS:\n"
+            f"Ủng hộ: {debate['support']}\n"
+            f"Phản bác: {debate['refute']}\n"
+        )
     try:
         resp = llm.invoke([("system", CONCLUSION_SYSTEM_PROMPT), ("user", user)])
         data = parse_json(getattr(resp, "content", "") or "") or {}

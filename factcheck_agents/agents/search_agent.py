@@ -7,6 +7,7 @@ the results into the shared state.
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 from ..config import settings
@@ -44,23 +45,33 @@ def search_agent(state: FactCheckState) -> dict:
     trusted_list = [d.strip() for d in settings.trusted_domains.split(",") if d.strip()]
     flagged_list = [d.strip() for d in settings.flagged_domains.split(",") if d.strip()]
 
+    tasks = [
+        (include_domains, q)
+        for include_domains in (trusted_list, flagged_list, None)
+        for q in queries
+    ]
+
+    with ThreadPoolExecutor(max_workers=max(1, min(8, len(tasks)))) as executor:
+        futures = [
+            executor.submit(web_search, q, include_domains=domains)
+            for domains, q in tasks
+        ]
+
     seen: set = set()
     raw: List[Evidence] = []
 
-    for include_domains in (trusted_list, flagged_list, None):
-        for q in queries:
-            results = web_search(q, include_domains=include_domains)
-            for e in results:
-                url = e.get("url", "")
-                if url and url in seen:
-                    continue
-                if url:
-                    seen.add(url)
-                e["source_tier"] = classify_domain(url) if url else "unknown"
-                e["image_path"], e["image_caption"] = (
-                    _fetch_evidence_image(url) if url else (None, None)
-                )
-                raw.append(e)
+    for fut in futures:
+        for e in fut.result():
+            url = e.get("url", "")
+            if url and url in seen:
+                continue
+            if url:
+                seen.add(url)
+            e["source_tier"] = classify_domain(url) if url else "unknown"
+            e["image_path"], e["image_caption"] = (
+                _fetch_evidence_image(url) if url else (None, None)
+            )
+            raw.append(e)
 
     _tier_priority = {"trusted": 0, "flagged": 1, "social": 2, "unknown": 3}
     raw.sort(
