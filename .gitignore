@@ -75,3 +75,4 @@ Mocheg/
 .claude/
 .github/
 .env
+.factcheck_checkpoints.db

@@ -91,6 +91,13 @@ class Settings:
         default_factory=lambda: int(os.getenv("FACTCHECK_DEBATE_ROUNDS", "0"))
     )
 
+    # ── LangGraph checkpoint ─────────────────────────────────────────────────
+    checkpoint_db: str = field(
+        default_factory=lambda: os.getenv(
+            "FACTCHECK_CHECKPOINT_DB", ".factcheck_checkpoints.db"
+        )
+    )
+
     def phobert_search_root(self) -> Path:
         return self.data_root / "training" / "checkpoints_vifactcheck"
 

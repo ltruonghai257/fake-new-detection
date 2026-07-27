@@ -14,6 +14,7 @@ from .agents import (
     social_search_agent,
     verify_agent,
 )
+from .config import settings
 from .state import FactCheckState
 
 
@@ -24,8 +25,18 @@ def route_after_verify(state: FactCheckState) -> str:
     return "conclusion"
 
 
-def build_graph():
+def build_graph(checkpointer=None):
     """Compile and return the fact-checking graph."""
+    if checkpointer is None:
+        try:
+            from langgraph.checkpoint.sqlite import SqliteSaver
+
+            checkpointer = SqliteSaver.from_conn_string(settings.checkpoint_db)
+        except ImportError:
+            from langgraph.checkpoint.memory import MemorySaver
+
+            checkpointer = MemorySaver()
+
     g = StateGraph(FactCheckState)
     g.add_node("search", search_agent)
     g.add_node("verify", verify_agent)
@@ -41,7 +52,10 @@ def build_graph():
     )
     g.add_edge("social_search", "conclusion")
     g.add_edge("conclusion", END)
-    return g.compile()
+    # Note for Phase 7: g.invoke(state) without config={"configurable":
+    # {"thread_id": "..."}} uses LangGraph's null default thread — safe for
+    # existing callers. Wire thread_id into cli.py / run_fact_check() in Phase 7.
+    return g.compile(checkpointer=checkpointer)
 
 
 def initial_state(
