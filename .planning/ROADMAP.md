@@ -13,9 +13,9 @@ Extend the `factcheck_agents` pipeline with an evidence graph, source-tier class
 -   [x] **Phase 3: Verify Agent** - Concurrent PhoBERT+COOLANT execution, reliability_signal computation
 -   [x] **Phase 4: Social Search Sub-Node** - Site-restricted social queries merged into evidence graph
 -   [x] **Phase 5: Conclusion Agent (Binary Verdict + Vietnamese)** - Binary verdict, verdict_label_vi, Vietnamese rationale
--   [ ] **Phase 6: LangGraph Wiring** - Rewire graph.py with new nodes and conditional edge
+-   [x] **Phase 6: LangGraph Wiring** - Rewire graph.py with new nodes and conditional edge
 -   [x] **Phase 7: Output Surface** - Surface new fields in CLI, Python API, MCP server
--   [ ] **Phase 8: Tests** - Unit and integration tests for all new behaviour
+-   [x] **Phase 8: Tests** - Unit and integration tests for all new behaviour
 
 ## Phase Details
 
@@ -205,15 +205,15 @@ Phase 4 requires both 2 and 3.
 
 ## Progress
 
-| Phase                                             | Plans Complete | Status      | Completed  |
-| ------------------------------------------------- | -------------- | ----------- | ---------- |
-| 1. State, Config & Evidence Graph Foundation      | 2/2            | Complete    | 2026-07-19 |
-| 2. Search / Evidence Agent                        | 2/2            | Complete    | 2026-07-19 |
-| 3. Verify Agent                                   | 2/2            | Complete    | 2026-07-19 |
-| 4. Social Search Sub-Node                         | 1/1            | Complete    | 2026-07-19 |
-| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 2/2            | Complete    | 2026-07-27 |
-| 6. LangGraph Wiring                               | 2/2            | Complete    | 2026-07-27 |
-| 7. Output Surface                                 | 1/1            | Complete    | 2026-07-27 |
-| 8. Tests                                          | 0/2            | Not started | -          |
+| Phase                                             | Plans Complete | Status   | Completed  |
+| ------------------------------------------------- | -------------- | -------- | ---------- |
+| 1. State, Config & Evidence Graph Foundation      | 2/2            | Complete | 2026-07-19 |
+| 2. Search / Evidence Agent                        | 2/2            | Complete | 2026-07-19 |
+| 3. Verify Agent                                   | 2/2            | Complete | 2026-07-19 |
+| 4. Social Search Sub-Node                         | 1/1            | Complete | 2026-07-19 |
+| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 2/2            | Complete | 2026-07-27 |
+| 6. LangGraph Wiring                               | 2/2            | Complete | 2026-07-27 |
+| 7. Output Surface                                 | 1/1            | Complete | 2026-07-27 |
+| 8. Tests                                          | 2/2            | Complete | 2026-08-01 |
 
 _Created: 2026-07-19_
