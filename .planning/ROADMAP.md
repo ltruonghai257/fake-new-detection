@@ -180,8 +180,8 @@ Plans:
 
 Plans:
 
--   [ ] 08-01: test_source_tier.py and test_evidence_graph.py
--   [ ] 08-02: test_reliability_signal.py, test_binary_verdict.py, test_graceful_degrade.py
+-   [x] 08-01: test_source_tier.py and test_evidence_graph.py
+-   [x] 08-02: test_reliability_signal.py, test_binary_verdict.py, test_graceful_degrade.py
 
 ---
 
