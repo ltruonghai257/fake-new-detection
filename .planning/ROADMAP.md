@@ -8,7 +8,7 @@ Replace the single-pass evidence-overrides-models correctness bug with a full de
 
 ## Phases
 
--   [ ] **Phase 1: Debate Pipeline** - Build all debate infrastructure: dual-source agents, reranker, social loop, agreement gate, bounded debate, weighted judge, graph wiring, and tests
+-   [x] **Phase 1: Debate Pipeline** - Build all debate infrastructure: dual-source agents, reranker, social loop, agreement gate, bounded debate, weighted judge, graph wiring, and tests
 -   [ ] **Phase 2: Demo App** - FastAPI SSE backend + React/Vite/TypeScript frontend with live debate streaming and Vietnamese verdict card
 
 ## Phase Details
@@ -68,9 +68,9 @@ Phase 1 must be complete and `build_debate_graph()` stable before Phase 2 begins
 
 ## Progress
 
-| Phase | Name            | Plans | Status  |
-| ----- | --------------- | ----- | ------- |
-| 1     | Debate Pipeline | 5/5   | Planned |
-| 2     | Demo App        | 0/2   | Planned |
+| Phase | Name            | Plans | Status   |
+| ----- | --------------- | ----- | -------- |
+| 1     | Debate Pipeline | 5/5   | Complete |
+| 2     | Demo App        | 0/2   | Planned  |
 
 _Created: 2026-08-02_
