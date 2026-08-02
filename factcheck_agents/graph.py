@@ -27,6 +27,28 @@ def route_after_verify(state: FactCheckState) -> str:
     return "conclusion"
 
 
+def route_nei_check(state: FactCheckState) -> str:
+    """EVRET-04: NEI short-circuit when both evidence lists are empty after fan-out."""
+    real = state.get("evidence_real") or []
+    fake = state.get("evidence_fake") or []
+    return "judge" if not real and not fake else "reranker"
+
+
+def route_social_loop(state: FactCheckState) -> str:
+    """SOCLOOP-01/02/03: fire social loop at most once, only when evidence is weak."""
+    real = state.get("evidence_real") or []
+    fake = state.get("evidence_fake") or []
+    count = len(real) + len(fake)
+    cred = state.get("consistency_score", 0.1)
+    if (
+        not state.get("social_loop_fired", False)
+        and count < settings.social_loop_min_count
+        and cred < settings.social_loop_min_credibility
+    ):
+        return "social_loop"
+    return "verify"
+
+
 def build_graph(checkpointer=None):
     """Compile and return the fact-checking graph."""
     if checkpointer is None:
