@@ -1,24 +1,42 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: milestone
-status: completed
-last_updated: '2026-08-01T03:15:00Z'
-last_activity: 2026-08-01 -- Phase 08 marked complete; full test suite passes
+milestone: v3.0
+milestone_name: Debate-Based Verification Pipeline and Demo App
+status: planning
+last_updated: '2026-08-02T17:04:26.229Z'
+last_activity: 2026-08-03
 progress:
-    total_phases: 8
-    completed_phases: 8
-    total_plans: 14
-    completed_plans: 14
-    percent: 100
-current_phase: 8
+    total_phases: 0
+    completed_phases: 0
+    total_plans: 0
+    completed_plans: 0
+    percent: 0
 ---
 
 # Project State
 
 ## Current Position
 
-Phase: 08 — COMPLETE
-Plan: 2 of 2
-Status: All phases complete
-Last activity: 2026-08-01 -- Phase 08 execution completed
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-08-02 — Milestone v3.0 started; REQ 6 (RERANK-01) and REQ 7 (SOCLOOP-01) added to Phase 1 scope
+
+## Milestone v3.0 Requirements Index
+
+| REQ-ID        | Category           | Scope   | Description                                            |
+| ------------- | ------------------ | ------- | ------------------------------------------------------ |
+| EVRET-01..04  | Evidence Retrieval | Phase 1 | Dual-source agents (real + fake), NEI gate             |
+| RERANK-01     | Evidence Reranking | Phase 1 | BM25 + embedding rerank before PhoBERT truncation      |
+| SOCLOOP-01    | Social Loop        | Phase 1 | One-shot weak-evidence social search, hard-capped at 1 |
+| AGREE-01..02  | Agreement Gate     | Phase 1 | Skip-debate threshold, high-agreement logging          |
+| DEBATE-01..02 | Debate Loop        | Phase 1 | Bounded advocate debate, JSONL turn logging            |
+| JUDGE-01..03  | Weighted Judge     | Phase 1 | 30/30/40 weights, structured output, verdict JSON      |
+| DEMO-01..02   | Demo App           | Phase 2 | FastAPI + React/Vite/TS, SSE streaming, Vietnamese UI  |
+
+## Tunable Defaults (flag before changing)
+
+-   `FACTCHECK_AGREEMENT_THRESHOLD` = 0.8
+-   Debate weights: PhoBERT 30% / COOLANT 30% / evidence-credibility 40%
+-   `max_debate_rounds` = 2
+-   Social loop weakness threshold: TBD in Phase 1 discuss (define concrete values, not vague)

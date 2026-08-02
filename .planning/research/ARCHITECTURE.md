@@ -1,87 +1,166 @@
-# Architecture Research — v2.0 Evidence-Graph Pipeline
+# ARCHITECTURE.md — M2: Debate-Based Verification Pipeline and Demo App
 
-## TradingAgents Pattern (deepwiki confirmed)
+## New Components
 
-TradingAgents uses **sequential nodes** sharing a single `AgentState` TypedDict — not true parallelism at the LangGraph level. Each analyst node writes its own slice of state, and a `ConditionalLogic` class routes edges based on state flags.
+| Component           | File                          | Output                                                     |
+| ------------------- | ----------------------------- | ---------------------------------------------------------- |
+| `real_source_agent` | `agents/real_source_agent.py` | `state["evidence_real"]`                                   |
+| `fake_source_agent` | `agents/fake_source_agent.py` | `state["evidence_fake"]`                                   |
+| `evidence_reranker` | `reranker.py`                 | reranked evidence list (BM25 + embedding)                  |
+| `social_loop_node`  | `agents/social_loop_agent.py` | one-shot weak-evidence social search                       |
+| `agreement_gate`    | `agents/agreement_gate.py`    | `state["agreement_score"]`                                 |
+| `debate_node`       | `agents/debate_node.py`       | `state["debate_turns"]` (encapsulates real/fake advocates) |
+| `judge_agent`       | `agents/judge_agent.py`       | `state["verdict"]`, `state["weight_breakdown"]`            |
+| `demo_app/`         | `demo_app/`                   | FastAPI backend + React/Vite/TS frontend                   |
 
-Key patterns to mirror:
-- One `TypedDict` threaded through all nodes — each node writes its own slice
-- Conditional edges: `add_conditional_edges(source, path_fn, {key: node_name})` — `path_fn` reads state and returns a single string key
-- "Clear node" between analyst stages to reset message accumulation
-- Debate/research team pattern: node sets `reliability_signal` flag → router reads it → branches to social-search sub-node or skips
+## Modified Components
 
-## LangGraph Conditional Edge Pattern (confirmed, langgraph 0.2.x)
+| Component            | Change                                                                                                                                 |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `state.py`           | Add: `evidence_real`, `evidence_fake`, `agreement_score`, `debate_turns`, `request_id`, `weight_breakdown`, `social_loop_fired`        |
+| `config.py`          | Add: `FACTCHECK_AGREEMENT_THRESHOLD` (0.8), `FACTCHECK_MAX_DEBATE_ROUNDS` (2), `GOOGLE_FACTCHECK_API_KEY` (""), social loop thresholds |
+| `graph.py`           | Replace `search → verify → … → conclusion` with full M2 topology; keep `evaluate_agent` export for backward compat                     |
+| `agents/__init__.py` | Export new agents; keep `conclusion_agent` export for backward compat                                                                  |
 
-```python
-def route_after_verify(state: FactCheckState) -> str:
-    if state.get("reliability_signal"):
-        return "social_search"
-    return "conclusion"
+**NOT modified in Phase 1:** `cli.py`, `mcp_server.py`, `__init__.py` (Phase 2 scope), `verify_agent.py`, `phobert_checker.py`, training code
 
-g.add_conditional_edges("verify", route_after_verify, {
-    "social_search": "social_search",
-    "conclusion": "conclusion",
-})
-g.add_edge("social_search", "conclusion")
-```
-
-**Pitfalls:**
-- Path function must return EXACTLY one key matching the path_map; unmapped keys raise `KeyError` at invoke-time (not compile-time)
-- Do NOT make path function async — move async logic into preceding node, set flag in state, route synchronously on flag
-- Returning `END` constant is valid; returning a list was removed in 0.2.x
-
-## Evidence Graph Pattern
-
-Research shows **NetworkX DiGraph** is the standard for in-memory evidence graphs (confirmed: EVOCA paper, ClaimVer, BoggersTheCIG all use NetworkX). For our lightweight per-request use case:
+## State Shape Changes
 
 ```python
-import networkx as nx
+class FactCheckState(TypedDict, total=False):
+    # === Existing (unchanged) ===
+    statement: str
+    image_path: Optional[str]
+    search_queries: List[str]
+    evidence: List[Evidence]          # kept for backward compat
+    model_results: List[ModelResult]
+    evidence_graph: Optional[Any]
+    reliability_signal: Optional[bool]
+    verdict: Verdict
+    messages: Annotated[list, add_messages]
 
-G = nx.DiGraph()
-# nodes: entities (statement, source_domains, evidence_snippets)
-# edges: ("statement", snippet_id, {"relation": "mentions"/"supports"/"contradicts", "tier": "trusted"})
+    # === New M2 fields ===
+    request_id: str                   # uuid4 prefix for log filenames
+    evidence_real: List[Evidence]     # from real_source_agent
+    evidence_fake: List[Evidence]     # from fake_source_agent
+    social_loop_fired: bool           # hard cap: social loop never runs twice
+    agreement_score: Optional[float]  # from agreement_gate (0.0–1.0)
+    debate_turns: List[dict]          # [{round, agent, text, scores}]
+    debate_exit_reason: Optional[str] # "max_rounds" | "echo_chamber" | "timeout" | "skipped"
+    weight_breakdown: dict            # {"phobert": 0.3, "coolant": 0.3, "evidence": 0.4, "scores": {...}}
 ```
 
-**Alternatives considered:**
-- Plain `dict` of dicts — sufficient if we don't need graph traversal algorithms
-- SQLite — overkill for a single request lifecycle
-- Neo4j — far too heavy, requires external process
+All new fields use `total=False` — no existing tests break. `initial_state()` sets sane defaults.
 
-**Decision**: Use `networkx` for the evidence graph; it's already in the Python ecosystem and ClaimVer/EVOCA confirm it's appropriate for this scale. Add as a new dependency (pure Python, no heavy extras).
+## Graph Topology
 
-## ViFactCheck Input Format (from existing phobert_checker.py)
-
-```python
-tokenizer(
-    statement,           # text_a
-    evidence_text,       # text_b — concatenated snippets, up to 2000 chars
-    truncation="only_second",   # truncate evidence, not statement
-    max_length=256,
-)
+```
+START
+  ↓
+real_source_agent ──────────────────────────────────────────────────┐
+fake_source_agent ──────────────────────────────────────────────────┤
+  ↓                                                                  │
+[reranker runs inside evidence agents before writing to state]       │
+  ↓                                                                  │
+route_after_social_loop ←─────────────────────────────────────────  │
+  ├── (evidence weak AND social_loop_fired=False) → social_loop_node │
+  └── (otherwise)                                                    │
+        ↓                                                            │
+      verify_agent  [PhoBERT + COOLANT, existing]                   │
+        ↓                                                            │
+      agreement_gate                                                 │
+        ├── (agreement_score ≥ threshold) → judge_agent             │
+        └── (agreement_score < threshold) → debate_node             │
+                                              ↓                      │
+                                          judge_agent                │
+                                              ↓                      │
+                                            END  ←───────────────── ┘
 ```
 
-Labels: `{0: "SUPPORTED", 1: "REFUTED", 2: "NEI"}`
+**Conditional edges:**
 
-For evidence-graph context, `build_evidence_text()` already concatenates snippets. In v2.0 it should prefer `trusted`-tier snippets first, then `flagged`, then `unknown` when building the evidence passage.
+-   `route_after_social_loop(state)`: reads `social_loop_fired`, `len(evidence_real)`, `len(evidence_fake)`, credibility scores → `"social_loop"` or `"verify"`
+-   `route_after_agreement(state)`: reads `agreement_score` → `"debate"` or `"judge"`
+-   `social_loop_node` sets `social_loop_fired=True` before returning (prevents second fire)
 
-## Integration Points for v2.0
-
-| Existing | Change |
-|----------|--------|
-| `FactCheckState.evidence: List[Evidence]` | Add `evidence_graph: Optional[Any]` (NetworkX DiGraph stored in state) |
-| `search_agent` → query + fetch | Split into: query-per-tier, tag hits, build graph |
-| `evaluate_agent` → sequential models | Rename to `verify_agent`, add `reliability_signal: bool` to state |
-| `conclusion_agent` → 4-class verdict | Add binary mapping + `verdict_label_vi` + Vietnamese prompts |
-| `graph.py` → linear edges | Add `add_conditional_edges("verify", route_fn, ...)` |
+**Debate loop is a single node** — not graph-level recursion. `debate_node` internally calls real_advocate and fake_advocate LLM calls in a Python `for` loop up to `max_debate_rounds`. This avoids LangGraph cycle complexity and checkpointing issues.
 
 ## Build Order
 
-1. State + Config changes (evidence_graph field, source-tier env vars)
-2. Evidence graph structure (EvidenceGraph class or plain nx.DiGraph wrapper)
-3. Search/Evidence Agent (tier queries, graph build)
-4. Verify Agent (parallel model run, reliability_signal)
-5. Social search sub-node (site-restricted, conditional)
-6. Conclusion Agent (binary verdict, Vietnamese prompts)
-7. Graph wiring (conditional edge)
-8. Output layer (CLI/API/MCP additive changes)
-9. Tests
+### Phase 1 — Debate Pipeline (REQs 1–4, 6, 7)
+
+**Wave 1 (independent):**
+
+1. `state.py` — add new fields, update `initial_state()`
+2. `config.py` — add new env vars with defaults
+
+**Wave 2 (depends on Wave 1):** 3. `reranker.py` — BM25 + embedding reranker (RERANK-01) 4. `real_source_agent.py` — trusted domain search 5. `fake_source_agent.py` — tingia.gov.vn + Google Fact Check stub
+
+**Wave 3 (depends on Wave 2):** 6. `social_loop_agent.py` — one-shot weak-evidence social search (SOCLOOP-01) 7. `agreement_gate.py` — agreement score + evidence-credibility computation 8. Unit tests: reranker recall@k, social loop fire-once guard
+
+**Wave 4 (depends on Wave 3):** 9. `debate_node.py` — bounded advocate debate with JSONL logging 10. `judge_agent.py` — weighted verdict + verdict JSON logging 11. Update `graph.py` — full M2 topology
+
+**Wave 5 (depends on Wave 4):** 12. Integration tests: full pipeline on 2 sample claims
+
+### Phase 2 — Demo App (REQ 5)
+
+13. `demo_app/backend/main.py` — FastAPI + SSE endpoint
+14. `demo_app/frontend/` — React/Vite/TS
+15. CORS, heartbeat, StrictMode safety
+
+## Demo App Integration
+
+**Backend ↔ Pipeline:**
+
+-   Direct Python import of `run_fact_check()` from `factcheck_agents`
+-   FastAPI background task runs pipeline; yields SSE events via `asyncio.Queue`
+-   No subprocess; no network hop between demo and pipeline
+
+**SSE API contract:**
+
+```
+POST  /api/analyze         (JSON body: {statement, image_path?})
+GET   /api/analyze/stream  (EventSource, query param: request_id)
+
+SSE events:
+  stage_start  {"stage": "retrieval"|"verification"|"debate"|"judgment"}
+  turn_start   {"agent": "real_advocate"|"fake_advocate", "round": N}
+  chunk        {"content": "...text fragment..."}
+  turn_end     {"scores": {"factuality": N, "engagement": N, "grounding": N}}
+  verdict      {"verdict": "Real"|"Fake"|"NEI", "confidence": 0.0-1.0, "weight_breakdown": {...}}
+  heartbeat    {}  (every 5s)
+```
+
+**Frontend structure:**
+
+```
+demo_app/
+  backend/
+    main.py          FastAPI app
+    streaming.py     SSE generator + asyncio bridge
+  frontend/
+    src/
+      App.tsx
+      components/
+        DebateTranscript.tsx   alternating advocate bubbles
+        VerdictCard.tsx        label + confidence + weight bar
+        EvidencePanel.tsx      tier badges
+    package.json
+    vite.config.ts
+    tsconfig.json
+```
+
+## Test Breakage Risks
+
+| Test File                  | Risk                                                                | Mitigation                                                                 |
+| -------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `test_graph_wiring.py`     | New nodes change topology                                           | Update `route_after_verify` tests; add `route_after_agreement` tests       |
+| `test_conclusion_agent.py` | `conclusion_agent` still exists; no breakage if we don't replace it | Keep `conclusion_agent`; `judge_agent` is new additive component           |
+| `test_search_agent.py`     | `search_agent` unchanged                                            | No breakage; new source agents are additive                                |
+| All 83 existing tests      | New `total=False` state fields                                      | Safe — TypedDict optional fields don't require values in existing fixtures |
+
+**Key decision:** `conclusion_agent` stays in the codebase; `judge_agent` is a new additive node. `graph.py` continues to expose both `build_graph()` (M1 topology for backward compat) and a new `build_debate_graph()` for M2. This avoids breaking any callers that use the old graph.
+
+---
+
+_Research completed: 2026-08-02_

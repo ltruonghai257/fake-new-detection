@@ -1,219 +1,76 @@
-# Roadmap: factcheck_agents v2.0 Evidence-Graph Vietnamese Pipeline
+# Roadmap: factcheck_agents v3.0 Debate-Based Verification Pipeline and Demo App
 
-**Milestone:** v2.0 · **Status:** Active
+**Milestone:** v3.0 · **Status:** Active
 
 ## Overview
 
-Extend the `factcheck_agents` pipeline with an evidence graph, source-tier classification, concurrent model verification, social search, binary verdicts with Vietnamese labels, and full test coverage.
+Replace the single-pass evidence-overrides-models correctness bug with a full debate-based multi-agent architecture — dual-source evidence retrieval, BM25+embedding reranking, conditional social-search loop, agreement gate, bounded advocate debate with JSONL audit logging, and a weighted judge — then ship a local thesis defense demo web app (FastAPI + React/Vite/TypeScript) that streams the debate live turn-by-turn via SSE with a Vietnamese UI and a verdict card showing the 30/30/40 weight breakdown.
 
 ## Phases
 
--   [x] **Phase 1: State, Config & Evidence Graph Foundation** - Extend FactCheckState/config; implement in-memory evidence graph
--   [x] **Phase 2: Search / Evidence Agent** - Tier-separated queries, tagged results, evidence graph in state
--   [x] **Phase 3: Verify Agent** - Concurrent PhoBERT+COOLANT execution, reliability_signal computation
--   [x] **Phase 4: Social Search Sub-Node** - Site-restricted social queries merged into evidence graph
--   [x] **Phase 5: Conclusion Agent (Binary Verdict + Vietnamese)** - Binary verdict, verdict_label_vi, Vietnamese rationale
--   [x] **Phase 6: LangGraph Wiring** - Rewire graph.py with new nodes and conditional edge
--   [x] **Phase 7: Output Surface** - Surface new fields in CLI, Python API, MCP server
--   [x] **Phase 8: Tests** - Unit and integration tests for all new behaviour
+-   [ ] **Phase 1: Debate Pipeline** - Build all debate infrastructure: dual-source agents, reranker, social loop, agreement gate, bounded debate, weighted judge, graph wiring, and tests
+-   [ ] **Phase 2: Demo App** - FastAPI SSE backend + React/Vite/TypeScript frontend with live debate streaming and Vietnamese verdict card
 
 ## Phase Details
 
-### Phase 1: State, Config & Evidence Graph Foundation
+### Phase 1: Debate Pipeline
 
-**Goal**: Extend `FactCheckState` and `config.py` with new fields; implement the in-memory evidence graph structure.
-**Requirements**: EVGRAPH-01, EVGRAPH-02, EVGRAPH-03, CONFIG-01, CONFIG-02, CONFIG-03
+**Goal**: Implement the complete debate-based verification pipeline — from dual-source evidence retrieval through weighted judge — with JSONL/JSON audit logging and full unit + integration test coverage.
+**Requirements**: EVRET-01, EVRET-02, EVRET-03, EVRET-04, RERANK-01, RERANK-02, SOCLOOP-01, SOCLOOP-02, SOCLOOP-03, AGREE-01, AGREE-02, AGREE-03, DEBATE-01, DEBATE-02, DEBATE-03, JUDGE-01, JUDGE-02, JUDGE-03
 **Depends on**: Nothing (first phase)
 **Success Criteria** (what must be TRUE):
 
-1. `state.py` adds `evidence_graph: Optional[Any]`, `reliability_signal: Optional[bool]`, and `source_tier` to `Evidence`
-2. `config.py` reads `FACTCHECK_TRUSTED_DOMAINS`, `FACTCHECK_FLAGGED_DOMAINS`, `FACTCHECK_RELIABILITY_THRESHOLD` from env
-3. `graph_utils.py` `EvidenceGraph` supports build, add_node, add_edge, to_evidence_list
-4. `source_tier.py` `classify_domain(url)` returns correct tier for sample URLs
-5. Unit tests pass for tier tagging and evidence graph node/edge creation (TEST-01, TEST-02)
-   **Plans**: TBD
+1. `state.py` adds all M2 fields (`evidence_real`, `evidence_fake`, `social_loop_fired`, `request_id`, `agreement_score`, `debate_turns`, `debate_exit_reason`, `weight_breakdown`) with `total=False`; all existing tests continue to pass unchanged
+2. `reranker.py` BM25 + embedding rerank selects top-k evidence snippets within PhoBERT's 256-token budget; RERANK-02 unit test passes recall@k on a labeled sample of ≥ 5 claim–snippet pairs
+3. Social loop fires at most once per request; SOCLOOP-03 unit test asserts that when `social_loop_fired=True` is present on the input state, the routing function short-circuits to `verify` and never reaches `social_loop_node` again
+4. `agreement_gate.py` computes `0.30 × phobert_confidence + 0.30 × coolant_confidence + 0.40 × evidence_credibility` and routes directly to judge when score ≥ `FACTCHECK_AGREEMENT_THRESHOLD`, logging `debate_exit_reason = "skipped_high_agreement"` to state and a `{"debate_skipped": true, ...}` line to `logs/debates/<request_id>.jsonl`
+5. `debate_node.py` runs a bounded real/fake advocate debate (default `max_debate_rounds=2`); every turn (agent, round, ISO timestamp, full text) is printed to stdout **and** appended atomically to `logs/debates/<request_id>.jsonl` with `ensure_ascii=False`
+6. `judge_agent.py` scores each argument on three 1–5 dimensions and produces `{verdict, confidence, explanation, weight_breakdown}`; full breakdown written atomically to `logs/verdicts/<request_id>.json`
+7. `graph.py` exposes `build_debate_graph()` for M2 callers and keeps `build_graph()` for M1 backward compat; integration tests pass end-to-end on 2 sample Vietnamese claims
 
 Plans:
 
--   [x] 01-01: state.py and config.py field extensions
--   [x] 01-02: graph_utils.py and source_tier.py new modules
+-   [ ] 01-01: Wave 1 — Extend `state.py` with all M2 `TypedDict` fields (`total=False`) and update `initial_state()` defaults; add new env vars to `config.py` (`FACTCHECK_AGREEMENT_THRESHOLD`, `FACTCHECK_MAX_DEBATE_ROUNDS`, `GOOGLE_FACTCHECK_API_KEY`, social loop thresholds)
+-   [ ] 01-02: Wave 2 — Implement `reranker.py` (BM25 + embedding rerank, top-k selection within 256-token budget); implement `agents/real_source_agent.py` (credible Vietnamese outlets → `evidence_real`) and `agents/fake_source_agent.py` (tingia.gov.vn + Google Fact Check API stub → `evidence_fake`)
+-   [ ] 01-03: Wave 3 — Implement `agents/social_loop_agent.py` (one-shot weak-evidence social search, sets `social_loop_fired=True`) and `agents/agreement_gate.py` (0.30/0.30/0.40 formula, evidence-credibility sub-components, routing logic); write unit tests for reranker recall@k and social loop fire-once guard
+-   [ ] 01-04: Wave 4 — Implement `agents/debate_node.py` (bounded Python `for` loop advocate debate, atomic JSONL logging to `logs/debates/`) and `agents/judge_agent.py` (1–5 dimension scoring, weighted verdict, atomic JSON logging to `logs/verdicts/`); update `graph.py` with full M2 topology and `build_debate_graph()` function
+-   [ ] 01-05: Wave 5 — Integration tests: run full M2 pipeline on 2 sample Vietnamese claims end-to-end; assert verdict structure, log files created, no test regressions against existing 83 tests
 
 ---
 
-### Phase 2: Search / Evidence Agent
+### Phase 2: Demo App
 
-**Goal**: Rewrite the search agent to run tier-separated queries, tag results, build the evidence graph, and store it in state.
-**Requirements**: SEARCH-01, SEARCH-02, SEARCH-03
-**Depends on**: Phase 1
+**Goal**: Ship a local-only thesis defense demo web app with a FastAPI SSE backend and a React/Vite/TypeScript frontend that streams the debate live and displays a Vietnamese verdict card.
+**Requirements**: DEMO-01, DEMO-02, DEMO-03, DEMO-04
+**Depends on**: Phase 1 (stable `run_fact_check()` programmatic entry point with SSE-compatible streaming hooks)
 **Success Criteria** (what must be TRUE):
 
-1. `search_agent.py` runs separate trusted-domain and flagged-domain queries
-2. Each `Evidence` item tagged with `source_tier`
-3. `EvidenceGraph.build_from_evidence()` called and result written to `state["evidence_graph"]`
-4. `SEARCH_QUERY_PROMPT` instructs Vietnamese queries
-5. `web_search.py` passes `include_domains` / `exclude_domains` to Tavily and Google CSE
-6. Search agent produces `state["evidence_graph"]` with tagged nodes on a sample statement
-   **Plans**: 02-01, 02-02
+1. `demo_app/backend/main.py` starts with `uvicorn`; `POST /api/analyze` accepts `{statement: str, image_path?: str}` and initiates the debate pipeline via direct Python import (no subprocess)
+2. SSE stream emits all required event types — `stage_start`, `turn_start`, `chunk`, `turn_end`, `verdict`, `heartbeat` (every 5 s) — and client disconnect is detected and aborts the pipeline loop
+3. Debate stage streams character-level chunks (~8 chars / 20 ms) in real time; React frontend renders alternating chat bubbles (blue = `real_advocate`, red = `fake_advocate`) with argument quality score badges per turn
+4. Final verdict card shows label, confidence gauge, 30/30/40 weight breakdown bar, and working download buttons for `logs/debates/<id>.jsonl` and `logs/verdicts/<id>.json`
+5. All UI copy is in Vietnamese; CORS allows only `http://localhost:5173`; `useEffect` SSE cleanup closes `EventSource` on unmount (React StrictMode safe); no auth, no public deployment path
 
 Plans:
 
--   [x] 02-01: search_agent.py tier-separated queries and evidence graph integration
--   [x] 02-02: prompts.py and web_search.py domain filter updates
-
----
-
-### Phase 3: Verify Agent
-
-**Goal**: Replace `evaluate_agent` with `verify_agent` — concurrent model execution, `reliability_signal` computation.
-**Requirements**: VERIFY-01, VERIFY-02, VERIFY-03
-**Depends on**: Phase 1
-**Success Criteria** (what must be TRUE):
-
-1. `verify_agent.py` runs PhoBERT + COOLANT concurrently via `ThreadPoolExecutor`
-2. `reliability_signal` computed from fused outputs and written to state
-3. `phobert_checker.py` `build_evidence_text()` prefers trusted-tier snippets first
-4. With no checkpoints → `reliability_signal=False`, pipeline does not crash (TEST-03, TEST-06 partial)
-   **Plans**: 03-01, 03-02
-
-Plans:
-
--   [x] 03-01: verify_agent.py with concurrent execution and reliability_signal
--   [x] 03-02: phobert_checker.py trusted-tier evidence ordering
-
----
-
-### Phase 4: Social Search Sub-Node
-
-**Goal**: Implement the `social_search` node — site-restricted Tavily/Google CSE queries, tier-tagged results merged into the evidence graph.
-**Requirements**: SOCIAL-01, SOCIAL-02, SOCIAL-03
-**Depends on**: Phase 2, Phase 3
-**Success Criteria** (what must be TRUE):
-
-1. `social_search_agent.py` queries `site:twitter.com OR site:facebook.com`, max 3 results per query
-2. Results tagged `source_tier="social"` and merged into `state["evidence_graph"]`
-3. `social_search` node never called when `reliability_signal=False`
-   **Plans**: TBD
-
-Plans:
-
--   [x] 04-01: social_search_agent.py + helpers refactor
-
----
-
-### Phase 5: Conclusion Agent (Binary Verdict + Vietnamese)
-
-**Goal**: Extend the conclusion agent to produce a binary verdict, `verdict_label_vi`, and Vietnamese rationale.
-**Requirements**: CONCL-01, CONCL-02, CONCL-03, CONCL-04, CONCL-05, CONCL-06
-**Depends on**: Phase 3, Phase 4
-**Success Criteria** (what must be TRUE):
-
-1. `conclusion_agent.py` reads `state["evidence_graph"]` for cross-source conflict detection
-2. Binary rule applied: SUPPORTED→REAL, REFUTED→FAKE, NEI/UNVERIFIED/MISLEADING→FAKE
-3. `verdict_binary` and `verdict_label_vi` written to `Verdict`
-4. `state.py` `Verdict` TypedDict includes `verdict_binary` and `verdict_label_vi`
-5. `CONCLUSION_SYSTEM_PROMPT` requests Vietnamese rationale with binary verdict instruction
-6. `_fallback_verdict` returns binary fields (TEST-04, TEST-05)
-   **Plans**: 05-01, 05-02
-
-Plans:
-
--   [x] 05-01: state.py Verdict fields + conclusion_agent.py binary rule and evidence graph
--   [x] 05-02: prompts.py CONCLUSION_SYSTEM_PROMPT Vietnamese and binary update
-
----
-
-### Phase 6: LangGraph Wiring
-
-**Goal**: Rewire `graph.py` with the new node names and conditional edge for social search, and add checkpoint/resume support so interrupted runs don't restart from search.
-**Requirements**: GRAPH-01, GRAPH-02, GRAPH-03, GRAPH-04
-**Depends on**: Phase 5
-**Success Criteria** (what must be TRUE):
-
-1. `graph.py` replaces `evaluate` node with `verify`
-2. `social_search` node added with conditional edge from `verify`
-3. `route_after_verify(state)` reads `state["reliability_signal"]` synchronously
-4. Graph compiles without error
-5. Invoke with no checkpoints routes directly to conclusion (not social_search)
-6. LangGraph checkpointer (SqliteSaver, falling back to MemorySaver if the sqlite extra is unavailable) is added via `g.compile(checkpointer=...)`; callers pass a `thread_id` in the invoke config; an interrupted run resumes from the last completed node instead of restarting from search
-   **Plans**: 06-01, 06-02
-
-Plans:
-
--   [ ] 06-01: graph.py rewiring with new nodes and conditional edges
--   [ ] 06-02: graph.py checkpointer (SqliteSaver/MemorySaver) + thread_id config plumbing
-
----
-
-### Phase 7: Output Surface
-
-**Goal**: Surface `verdict_binary` and `verdict_label_vi` in CLI, Python API, and MCP server additively.
-**Requirements**: OUTPUT-01, OUTPUT-02, OUTPUT-03, OUTPUT-04
-**Depends on**: Phase 6
-**Success Criteria** (what must be TRUE):
-
-1. `cli.py` `_print_human()` shows `verdict_label_vi` as primary, 4-class label as parenthetical
-2. `--json` output includes `verdict_binary` and `verdict_label_vi`
-3. `run_fact_check()` return dict includes both new fields at top level
-4. `mcp_server.py` `fact_check` tool response includes new fields
-5. Existing `verdict` dict still present; no callers broken
-   **Plans**: TBD
-   Plans:
-
--   [x] 07-01: cli.py, **init**.py, mcp_server.py, README.md output updates
-
----
-
-### Phase 8: Tests
-
-**Goal**: Write unit and integration tests covering all new behaviour.
-**Requirements**: TEST-01, TEST-02, TEST-03, TEST-04, TEST-05, TEST-06
-**Depends on**: Phase 6, Phase 7
-**Success Criteria** (what must be TRUE):
-
-1. `tests/test_source_tier.py` passes tier classification from URL domains
-2. `tests/test_evidence_graph.py` passes graph construction, node/edge attributes
-3. `tests/test_reliability_signal.py` passes signal computation under all model availability combinations
-4. `tests/test_binary_verdict.py` passes 4-class → binary mapping + Vietnamese labels
-5. `tests/test_graceful_degrade.py` passes full pipeline with no checkpoints
-6. `pytest tests/` passes; all TEST-01..06 requirements satisfied
-   **Plans**: TBD
-
-Plans:
-
--   [x] 08-01: test_source_tier.py and test_evidence_graph.py
--   [x] 08-02: test_reliability_signal.py, test_binary_verdict.py, test_graceful_degrade.py
+-   [ ] 02-01: FastAPI backend — `demo_app/backend/main.py` (app, CORS, `/api/analyze` POST + SSE GET), `demo_app/backend/streaming.py` (SSE generator + `asyncio.Queue` bridge to pipeline), heartbeat task, client disconnect handling
+-   [ ] 02-02: React/Vite/TypeScript frontend — scaffold `demo_app/frontend/` with Vite + Tailwind; implement `App.tsx`, `DebateTranscript.tsx` (alternating bubbles, score badges), `VerdictCard.tsx` (label, confidence, weight bar, log downloads), `EvidencePanel.tsx` (tier badges); native `EventSource` SSE client with StrictMode-safe cleanup
 
 ---
 
 ## Dependency Map
 
 ```
-Phase 1 (State+Config+Graph) ──► Phase 2 (Search)
-                               ──► Phase 3 (Verify)
-Phase 2 ──► Phase 4 (Social)
-Phase 3 ──► Phase 4 (Social)
-Phase 3 ──► Phase 5 (Conclusion)
-Phase 4 ──► Phase 5 (Conclusion)
-Phase 5 ──► Phase 6 (Wiring)
-Phase 6 ──► Phase 7 (Output)
-Phase 6 ──► Phase 8 (Tests)
-Phase 7 ──► Phase 8 (Tests)
+Phase 1 (Debate Pipeline) ──► Phase 2 (Demo App)
 ```
 
-Phases 2 and 3 can be worked in parallel after Phase 1.
-Phase 4 requires both 2 and 3.
+Phase 1 must be complete and `build_debate_graph()` stable before Phase 2 begins.
 
 ## Progress
 
-| Phase                                             | Plans Complete | Status   | Completed  |
-| ------------------------------------------------- | -------------- | -------- | ---------- |
-| 1. State, Config & Evidence Graph Foundation      | 2/2            | Complete | 2026-07-19 |
-| 2. Search / Evidence Agent                        | 2/2            | Complete | 2026-07-19 |
-| 3. Verify Agent                                   | 2/2            | Complete | 2026-07-19 |
-| 4. Social Search Sub-Node                         | 1/1            | Complete | 2026-07-19 |
-| 5. Conclusion Agent (Binary Verdict + Vietnamese) | 2/2            | Complete | 2026-07-27 |
-| 6. LangGraph Wiring                               | 2/2            | Complete | 2026-07-27 |
-| 7. Output Surface                                 | 1/1            | Complete | 2026-07-27 |
-| 8. Tests                                          | 2/2            | Complete | 2026-08-01 |
+| Phase | Name            | Plans | Status  |
+| ----- | --------------- | ----- | ------- |
+| 1     | Debate Pipeline | 0/5   | Planned |
+| 2     | Demo App        | 0/2   | Planned |
 
-_Created: 2026-07-19_
+_Created: 2026-08-02_
