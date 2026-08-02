@@ -17,6 +17,7 @@ class Evidence(TypedDict, total=False):
     title: str
     url: str
     snippet: str
+    content: str  # Full content from search API
     source: str  # search provider that returned it (tavily/google_cse)
     score: float  # provider relevance score, if any
     source_tier: Literal["trusted", "flagged", "social", "unknown"]
@@ -74,3 +75,15 @@ class FactCheckState(TypedDict, total=False):
     messages: Annotated[list, add_messages]
     errors: List[str]
     meta: dict[str, Any]
+
+    # M2 debate pipeline fields
+    evidence_real: List[Evidence]
+    evidence_fake: List[Evidence]
+    evidence_social: List[Evidence]
+    social_loop_fired: bool
+    request_id: str
+    consistency_score: float
+    agreement_score: float
+    debate_turns: List[dict]
+    debate_exit_reason: str
+    weight_breakdown: dict

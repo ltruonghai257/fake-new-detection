@@ -91,6 +91,25 @@ class Settings:
         default_factory=lambda: int(os.getenv("FACTCHECK_DEBATE_ROUNDS", "0"))
     )
 
+    # ── Debate pipeline (Phase 1 / M2) ────────────────────────────────────────
+    agreement_threshold: float = field(
+        default_factory=lambda: float(os.getenv("FACTCHECK_AGREEMENT_THRESHOLD", "0.7"))
+    )
+    max_debate_rounds: int = field(
+        default_factory=lambda: int(os.getenv("FACTCHECK_MAX_DEBATE_ROUNDS", "2"))
+    )
+    google_factcheck_api_key: Optional[str] = field(
+        default_factory=lambda: os.getenv("GOOGLE_FACTCHECK_API_KEY")
+    )
+    social_loop_min_count: int = field(
+        default_factory=lambda: int(os.getenv("FACTCHECK_SOCIAL_LOOP_MIN_COUNT", "3"))
+    )
+    social_loop_min_credibility: float = field(
+        default_factory=lambda: float(
+            os.getenv("FACTCHECK_SOCIAL_LOOP_MIN_CREDIBILITY", "0.6")
+        )
+    )
+
     # ── LangGraph checkpoint ─────────────────────────────────────────────────
     checkpoint_db: str = field(
         default_factory=lambda: os.getenv(

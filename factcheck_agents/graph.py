@@ -6,6 +6,8 @@ the shared-state design used by TradingAgents.
 
 from __future__ import annotations
 
+import uuid
+
 from langgraph.graph import END, START, StateGraph
 
 from .agents import (
@@ -72,4 +74,10 @@ def initial_state(
         messages=[],
         errors=[],
         meta={},
+        request_id=str(uuid.uuid4()),
+        social_loop_fired=False,
+        evidence_real=[],
+        evidence_fake=[],
+        evidence_social=[],
+        debate_turns=[],
     )
