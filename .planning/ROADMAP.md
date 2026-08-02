@@ -30,11 +30,11 @@ Replace the single-pass evidence-overrides-models correctness bug with a full de
 
 Plans:
 
--   [ ] 01-01: Wave 1 — Extend `state.py` with all M2 `TypedDict` fields (`total=False`) and update `initial_state()` defaults; add new env vars to `config.py` (`FACTCHECK_AGREEMENT_THRESHOLD`, `FACTCHECK_MAX_DEBATE_ROUNDS`, `GOOGLE_FACTCHECK_API_KEY`, social loop thresholds)
--   [ ] 01-02: Wave 2 — Implement `reranker.py` (BM25 + embedding rerank, top-k selection within 256-token budget); implement `agents/real_source_agent.py` (credible Vietnamese outlets → `evidence_real`) and `agents/fake_source_agent.py` (tingia.gov.vn + Google Fact Check API stub → `evidence_fake`)
--   [ ] 01-03: Wave 3 — Implement `agents/social_loop_agent.py` (one-shot weak-evidence social search, sets `social_loop_fired=True`) and `agents/agreement_gate.py` (0.30/0.30/0.40 formula, evidence-credibility sub-components, routing logic); write unit tests for reranker recall@k and social loop fire-once guard
--   [ ] 01-04: Wave 4 — Implement `agents/debate_node.py` (bounded Python `for` loop advocate debate, atomic JSONL logging to `logs/debates/`) and `agents/judge_agent.py` (1–5 dimension scoring, weighted verdict, atomic JSON logging to `logs/verdicts/`); update `graph.py` with full M2 topology and `build_debate_graph()` function
--   [ ] 01-05: Wave 5 — Integration tests: run full M2 pipeline on 2 sample Vietnamese claims end-to-end; assert verdict structure, log files created, no test regressions against existing 83 tests
+-   [x] 01-01: Wave 1 — Extend `state.py` with all M2 `TypedDict` fields (`total=False`) and update `initial_state()` defaults; add new env vars to `config.py` (`FACTCHECK_AGREEMENT_THRESHOLD`, `FACTCHECK_MAX_DEBATE_ROUNDS`, `GOOGLE_FACTCHECK_API_KEY`, social loop thresholds)
+-   [x] 01-02: Wave 2 — Implement `reranker.py` (BM25 + embedding rerank, top-k selection within 256-token budget); implement `agents/real_source_agent.py` (credible Vietnamese outlets → `evidence_real`) and `agents/fake_source_agent.py` (tingia.gov.vn + Google Fact Check API stub → `evidence_fake`)
+-   [x] 01-03: Wave 3 — Implement `agents/social_loop_agent.py` (one-shot weak-evidence social search, sets `social_loop_fired=True`) and `agents/agreement_gate.py` (0.30/0.30/0.40 formula, evidence-credibility sub-components, routing logic); write unit tests for reranker recall@k and social loop fire-once guard
+-   [x] 01-04: Wave 4 — Implement `agents/debate_node.py` (bounded Python `for` loop advocate debate, atomic JSONL logging to `logs/debates/`) and `agents/judge_agent.py` (1–5 dimension scoring, weighted verdict, atomic JSON logging to `logs/verdicts/`); update `graph.py` with full M2 topology and `build_debate_graph()` function
+-   [x] 01-05: Wave 5 — Integration tests: run full M2 pipeline on 2 sample Vietnamese claims end-to-end; assert verdict structure, log files created, no test regressions against existing 83 tests
 
 ---
 
@@ -70,7 +70,7 @@ Phase 1 must be complete and `build_debate_graph()` stable before Phase 2 begins
 
 | Phase | Name            | Plans | Status  |
 | ----- | --------------- | ----- | ------- |
-| 1     | Debate Pipeline | 0/5   | Planned |
+| 1     | Debate Pipeline | 5/5   | Planned |
 | 2     | Demo App        | 0/2   | Planned |
 
 _Created: 2026-08-02_
