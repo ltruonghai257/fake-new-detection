@@ -16,7 +16,14 @@ from .agents import (
     social_search_agent,
     verify_agent,
 )
+from .agents.agreement_gate import agreement_gate, route_after_agreement
+from .agents.debate_node import debate_node
+from .agents.fake_source_agent import fake_source_agent
+from .agents.judge_agent import judge_agent
+from .agents.real_source_agent import real_source_agent
+from .agents.social_loop_agent import social_loop_agent
 from .config import settings
+from .reranker import reranker as reranker_node
 from .state import FactCheckState
 
 
@@ -79,6 +86,51 @@ def build_graph(checkpointer=None):
     # Note for Phase 7: g.invoke(state) without config={"configurable":
     # {"thread_id": "..."}} uses LangGraph's null default thread — safe for
     # existing callers. Wire thread_id into cli.py / run_fact_check() in Phase 7.
+    return g.compile(checkpointer=checkpointer)
+
+
+def build_debate_graph(checkpointer=None):
+    """Build M2 debate graph topology with static fan-out (D-12).
+
+    Topology: START -> (real_source, fake_source) -> nei_gate -> (reranker -> social_loop? -> verify -> agreement_gate -> debate? -> judge) -> END
+    """
+    from langgraph.checkpoint.memory import MemorySaver
+
+    if checkpointer is None:
+        checkpointer = MemorySaver()
+
+    g = StateGraph(FactCheckState)
+    g.add_node("real_source", real_source_agent)
+    g.add_node("fake_source", fake_source_agent)
+    g.add_node("nei_gate", lambda state: {})  # barrier; routing via conditional edge
+    g.add_node("reranker", reranker_node)
+    g.add_node("social_loop", social_loop_agent)
+    g.add_node("verify", verify_agent)
+    g.add_node("agreement_gate", agreement_gate)
+    g.add_node("debate", debate_node)
+    g.add_node("judge", judge_agent)
+
+    g.add_edge(START, "real_source")  # D-12: static fan-out
+    g.add_edge(START, "fake_source")
+    g.add_edge("real_source", "nei_gate")  # implicit barrier merge
+    g.add_edge("fake_source", "nei_gate")
+    g.add_conditional_edges(
+        "nei_gate", route_nei_check, {"reranker": "reranker", "judge": "judge"}
+    )
+    g.add_conditional_edges(
+        "reranker",
+        route_social_loop,
+        {"social_loop": "social_loop", "verify": "verify"},
+    )
+    g.add_edge("social_loop", "verify")
+    g.add_edge("verify", "agreement_gate")
+    g.add_conditional_edges(
+        "agreement_gate",
+        route_after_agreement,
+        {"debate": "debate", "judge": "judge"},
+    )
+    g.add_edge("debate", "judge")
+    g.add_edge("judge", END)
     return g.compile(checkpointer=checkpointer)
 
 
