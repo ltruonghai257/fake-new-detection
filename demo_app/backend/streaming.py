@@ -24,12 +24,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 # NODE_STAGE_MAP: maps LangGraph node names to D-10 stage name values (D-09)
 NODE_STAGE_MAP: dict[str, str] = {
     "real_source": "evidence_retrieval",
-    "fake_source":  "evidence_retrieval",  # dedup via emitted_stages set
-    "reranker":     "reranking",
-    "social_loop":  "reranking",           # same stage, dedup
-    "verify":       "verification",
-    "debate":       "debate",
-    "judge":        "verdict",
+    "fake_source": "evidence_retrieval",  # dedup via emitted_stages set
+    "reranker": "reranking",
+    "social_loop": "reranking",  # same stage, dedup
+    "verify": "verification",
+    "debate": "debate",
+    "judge": "verdict",
     # nei_gate and agreement_gate return {} — no stage emitted
 }
 
@@ -38,7 +38,7 @@ def rechunk(text: str, chunk_size: int = 8) -> list[str]:
     """Split text into fixed-size chunks for re-emission (D-01)."""
     if not text:
         return []
-    return [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+    return [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
 
 
 async def sse_stream(
@@ -69,9 +69,13 @@ async def sse_stream(
         try:
             from factcheck_agents.graph import build_debate_graph, initial_state  # D-03
 
-            graph = build_debate_graph(checkpointer=None)  # no persistence needed for demo
+            graph = build_debate_graph(
+                checkpointer=None
+            )  # no persistence needed for demo
             state = initial_state(statement, image_path, language="vi")
-            state["request_id"] = request_id  # override so log files match client's request_id
+            state["request_id"] = (
+                request_id  # override so log files match client's request_id
+            )
 
             accumulated: dict = {}
             emitted_stages: set[str] = set()
@@ -83,6 +87,8 @@ async def sse_stream(
                 if done.is_set():
                     break
                 node_name, node_output = next(iter(chunk.items()))
+                if node_output is None:
+                    continue  # LangGraph 1.2.x emits None for nodes returning {} (no-op updates)
                 accumulated.update(node_output)
 
                 # Emit stage_start for node transitions (D-09, D-10)
@@ -96,31 +102,37 @@ async def sse_stream(
                     for turn in node_output.get("debate_turns", []):
                         if done.is_set():
                             break
-                        _post({
-                            "type": "turn_start",
-                            "agent": turn.get("agent", ""),
-                            "round": turn.get("round", 0),
-                        })
+                        _post(
+                            {
+                                "type": "turn_start",
+                                "agent": turn.get("agent", ""),
+                                "round": turn.get("round", 0),
+                            }
+                        )
                         for text_chunk in rechunk(turn.get("text", ""), 8):
                             if done.is_set():
                                 break
                             time.sleep(0.02)  # ~20 ms per chunk (D-01)
                             _post({"type": "chunk", "text": text_chunk})
-                        _post({
-                            "type": "turn_end",
-                            "agent": turn.get("agent", ""),
-                            "round": turn.get("round", 0),
-                        })
+                        _post(
+                            {
+                                "type": "turn_end",
+                                "agent": turn.get("agent", ""),
+                                "round": turn.get("round", 0),
+                            }
+                        )
 
             # Emit final verdict with all accumulated state (D-05 payload)
-            _post({
-                "type": "verdict",
-                "verdict": accumulated.get("verdict"),
-                "weight_breakdown": accumulated.get("weight_breakdown"),
-                "evidence_real": accumulated.get("evidence_real", []),
-                "evidence_fake": accumulated.get("evidence_fake", []),
-                "debate_turns": accumulated.get("debate_turns", []),
-            })
+            _post(
+                {
+                    "type": "verdict",
+                    "verdict": accumulated.get("verdict"),
+                    "weight_breakdown": accumulated.get("weight_breakdown"),
+                    "evidence_real": accumulated.get("evidence_real", []),
+                    "evidence_fake": accumulated.get("evidence_fake", []),
+                    "debate_turns": accumulated.get("debate_turns", []),
+                }
+            )
         except Exception as exc:
             _post({"type": "error", "error": str(exc)})
         finally:
