@@ -8,7 +8,7 @@ __pycache__/
 .venv/
 venv/
 ENV/
-
+demo_app/backend/logs/*
 # Distribution / packaging
 build/
 dist/
@@ -20,6 +20,7 @@ dist/
 # macOS system files
 .DS_Store
 ._*
+demo_app/frontend/node_modules/*
 
 # PyCharm project files
 .idea/

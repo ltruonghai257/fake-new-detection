@@ -1,4 +1,5 @@
 """Agreement gate: compute weighted agreement score, optionally skip debate."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -19,6 +20,9 @@ def agreement_gate(state: FactCheckState) -> dict:
     co_available = False
 
     # AGREE-01: NEI forces agreement_score = 0.0 immediately
+    ph_label = ""
+    co_label = ""
+
     for result in model_results:
         if result.get("available") and result.get("label") == "NEI":
             # Force zero agreement if any available model returns NEI
@@ -32,11 +36,13 @@ def agreement_gate(state: FactCheckState) -> dict:
             ph_available = result.get("available", False)
             if ph_available:
                 ph_conf = result.get("confidence", 0.0)
+                ph_label = result.get("label", "")
 
         if result.get("model") == "coolant":
             co_available = result.get("available", False)
             if co_available:
                 co_conf = result.get("confidence", 0.0)
+                co_label = result.get("label", "")
 
     # AGREE-02: Evidence credibility score
     evidence_real = state.get("evidence_real") or []
@@ -44,7 +50,9 @@ def agreement_gate(state: FactCheckState) -> dict:
 
     tier_score = 0.0
     if evidence_real:
-        trusted_count = len([e for e in evidence_real if e.get("source_tier") == "trusted"])
+        trusted_count = len(
+            [e for e in evidence_real if e.get("source_tier") == "trusted"]
+        )
         tier_score = trusted_count / len(evidence_real)
 
     count_score = min(1.0, (len(evidence_real) + len(evidence_fake)) / 5)
@@ -64,6 +72,14 @@ def agreement_gate(state: FactCheckState) -> dict:
         agreement_score = 0.0
     else:
         agreement_score = (w_ph * ph_conf + w_co * co_conf + w_ev * cred) / total_weight
+
+    # AGREE-01b: If both models available but disagree on binary label → force debate
+    _REAL_LABELS = {"REAL", "SUPPORTED", "TRUE"}
+    if ph_available and co_available and ph_label and co_label:
+        ph_binary = "REAL" if ph_label.upper() in _REAL_LABELS else "FAKE"
+        co_binary = "REAL" if co_label.upper() in _REAL_LABELS else "FAKE"
+        if ph_binary != co_binary:
+            agreement_score = 0.0  # disagreement → always debate
 
     # AGREE-03: Log skipped debates to logs/debates/<request_id>.jsonl
     if agreement_score >= settings.agreement_threshold:
@@ -91,9 +107,11 @@ def agreement_gate(state: FactCheckState) -> dict:
             "coolant": co_conf,
             "evidence": round(cred, 4),
         },
-        "debate_exit_reason": "skipped_high_agreement"
-        if agreement_score >= settings.agreement_threshold
-        else "",
+        "debate_exit_reason": (
+            "skipped_high_agreement"
+            if agreement_score >= settings.agreement_threshold
+            else ""
+        ),
     }
 
 
