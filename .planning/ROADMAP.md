@@ -53,8 +53,8 @@ Plans:
 
 Plans:
 
--   [ ] 02-01: FastAPI backend — `demo_app/backend/main.py` (app, CORS, `/api/analyze` POST + SSE GET), `demo_app/backend/streaming.py` (SSE generator + `asyncio.Queue` bridge to pipeline), heartbeat task, client disconnect handling
--   [ ] 02-02: React/Vite/TypeScript frontend — scaffold `demo_app/frontend/` with Vite + Tailwind; implement `App.tsx`, `DebateTranscript.tsx` (alternating bubbles, score badges), `VerdictCard.tsx` (label, confidence, weight bar, log downloads), `EvidencePanel.tsx` (tier badges); native `EventSource` SSE client with StrictMode-safe cleanup
+-   [x] 02-01: FastAPI backend — `demo_app/backend/main.py` (app, CORS, `/api/analyze` POST + SSE GET), `demo_app/backend/streaming.py` (SSE generator + `asyncio.Queue` bridge to pipeline), heartbeat task, client disconnect handling
+-   [x] 02-02: React/Vite/TypeScript frontend — scaffold `demo_app/frontend/` with Vite + Tailwind; implement `App.tsx`, `DebateTranscript.tsx` (alternating bubbles, score badges), `VerdictCard.tsx` (label, confidence, weight bar, log downloads), `EvidencePanel.tsx` (tier badges); native `EventSource` SSE client with StrictMode-safe cleanup
 
 ---
 
@@ -71,6 +71,6 @@ Phase 1 must be complete and `build_debate_graph()` stable before Phase 2 begins
 | Phase | Name            | Plans | Status   |
 | ----- | --------------- | ----- | -------- |
 | 1     | Debate Pipeline | 5/5   | Complete |
-| 2     | Demo App        | 0/2   | Planned  |
+| 2     | Demo App        | 2/2   | Planned  |
 
 _Created: 2026-08-02_
