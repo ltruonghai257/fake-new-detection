@@ -155,7 +155,8 @@ async def sse_stream(
             evt = await queue.get()
             if evt.get("type") == "_done":
                 break
-            yield f"data: {json.dumps(evt, ensure_ascii=False)}\n\n"
+            evt_type = evt.get("type", "message")
+            yield f"event: {evt_type}\ndata: {json.dumps(evt, ensure_ascii=False)}\n\n"
     except (asyncio.CancelledError, GeneratorExit):
         # Client disconnected — signal thread to abort (DEMO-02)
         done.set()
