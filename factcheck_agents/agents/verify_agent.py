@@ -43,8 +43,26 @@ def _run_phobert(statement: str, evidence_text: str) -> ModelResult:
 
 def _run_coolant(statement: str, image_path: Optional[str]) -> ModelResult:
     try:
-        return _coolant().predict(statement, image_path)
+        result = _coolant().predict(statement, image_path)
+        # Log warning if COOLANT is unavailable
+        if not result.get("available"):
+            import warnings
+
+            warnings.warn(
+                f"COOLANT model unavailable: {result.get('note', 'unknown')}. "
+                "Continuing with PhoBERT-only verification.",
+                UserWarning,
+                stacklevel=3,
+            )
+        return result
     except Exception as exc:
+        import warnings
+
+        warnings.warn(
+            f"COOLANT inference error: {exc}. Continuing with PhoBERT-only verification.",
+            UserWarning,
+            stacklevel=3,
+        )
         return ModelResult(model="coolant", available=False, note=str(exc))
 
 
@@ -69,9 +87,10 @@ def _compute_reliability_signal(results: List[ModelResult]) -> bool:
     if total_weight == 0.0:
         return False
 
-    weighted_score = sum(
-        weights.get(r["model"], 0.0) * r.get("confidence", 0.0) for r in available
-    ) / total_weight
+    weighted_score = (
+        sum(weights.get(r["model"], 0.0) * r.get("confidence", 0.0) for r in available)
+        / total_weight
+    )
 
     return weighted_score >= settings.reliability_threshold
 

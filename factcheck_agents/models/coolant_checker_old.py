@@ -17,8 +17,6 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-import warnings
-
 from ..config import settings
 from ..state import ModelResult
 
@@ -143,28 +141,18 @@ class CoolantChecker:
 
     def predict(self, statement: str, image_path: Optional[str]) -> ModelResult:
         if not image_path:
-            warnings.warn(
-                "COOLANT skipped: no image provided. Multimodal verification requires an image. "
-                "System will continue with PhoBERT-only verification.",
-                UserWarning,
-                stacklevel=2
-            )
             return ModelResult(
                 model="coolant",
                 available=False,
                 note="skipped: multimodal model requires an image alongside the statement",
             )
         if not Path(image_path).exists():
-            warnings.warn(
-                f"COOLANT skipped: image not found ({image_path}). "
-                "System will continue with PhoBERT-only verification.",
-                UserWarning,
-                stacklevel=2
-            )
             return ModelResult(
                 model="coolant", available=False, note=f"image not found: {image_path}"
             )
         if not self.load():
+            import warnings
+
             warnings.warn(
                 f"COOLANT model unavailable: {self._load_error or 'unknown error'}. "
                 "System will continue with PhoBERT-only verification. "
@@ -226,11 +214,6 @@ class CoolantChecker:
                 note="multimodal (statement + image) prediction",
             )
         except Exception as exc:  # pragma: no cover - defensive
-            warnings.warn(
-                f"COOLANT inference error: {exc}. Continuing with PhoBERT-only verification.",
-                UserWarning,
-                stacklevel=3
-            )
             return ModelResult(
                 model="coolant", available=False, note=f"inference error: {exc}"
             )

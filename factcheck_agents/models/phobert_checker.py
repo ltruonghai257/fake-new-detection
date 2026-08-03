@@ -337,7 +337,8 @@ def build_evidence_text(evidence: List[dict], max_chars: int = 2000) -> str:
     )
     parts, total = [], 0
     for e in evidence:
-        snippet = (e.get("snippet") or "").strip()
+        # Try multiple keys for evidence content
+        snippet = (e.get("snippet") or e.get("content") or "").strip()
         if not snippet:
             continue
         parts.append(snippet)

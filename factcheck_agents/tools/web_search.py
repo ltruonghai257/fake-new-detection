@@ -44,9 +44,10 @@ def _search_tavily(
             Evidence(
                 title=r.get("title", ""),
                 url=r.get("url", ""),
-                snippet=r.get("content", ""),
+                snippet=r.get("content", ""),  # Tavily's content → snippet
                 source="tavily",
                 score=float(r.get("score", 0.0) or 0.0),
+                content=r.get("content", ""),  # Keep original content field
             )
         )
     return out
@@ -82,6 +83,7 @@ def _search_google_cse(
                 title=r.get("title", ""),
                 url=r.get("link", ""),
                 snippet=r.get("snippet", ""),
+                content=r.get("snippet", ""),  # Google uses snippet for both
                 source="google_cse",
                 score=0.0,
             )
