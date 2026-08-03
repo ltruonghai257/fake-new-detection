@@ -19,12 +19,14 @@ from typing import Annotated
 
 # Project root on path so factcheck_agents is importable
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+# backend/ on path so `streaming` is importable when run as a plain script
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 
-from .streaming import sse_stream
+from streaming import sse_stream
 
 app = FastAPI(title="Fact-Check Demo API")
 
@@ -69,13 +71,15 @@ async def stream(request_id: str) -> StreamingResponse:
     """SSE endpoint — EventSource connects here (DEMO-02)."""
     params = _pending.pop(request_id, None)
     if params is None:
-        raise HTTPException(status_code=404, detail="request_id not found or already consumed")
+        raise HTTPException(
+            status_code=404, detail="request_id not found or already consumed"
+        )
 
     return StreamingResponse(
         sse_stream(request_id, params["statement"], params.get("image_path")),
         media_type="text/event-stream",
         headers={
-            "X-Accel-Buffering": "no",   # disable nginx buffering
+            "X-Accel-Buffering": "no",  # disable nginx buffering
             "Cache-Control": "no-cache",
         },
     )
@@ -101,4 +105,5 @@ async def download_verdict(request_id: str) -> FileResponse:
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
