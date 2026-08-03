@@ -11,8 +11,10 @@ CORS: allows only http://localhost:5173 (Vite dev server) per DEMO-04.
 
 from __future__ import annotations
 
+import asyncio
 import sys
 import tempfile
+import urllib.request
 import uuid
 from pathlib import Path
 from typing import Annotated
@@ -30,10 +32,10 @@ from streaming import sse_stream
 
 app = FastAPI(title="Fact-Check Demo API")
 
-# CORS — allows only Vite dev server (DEMO-04)
+# CORS — allow any localhost port for local dev (DEMO-04)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origin_regex=r"http://localhost:\d+",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,6 +45,24 @@ app.add_middleware(
 _pending: dict[str, dict] = {}
 
 
+async def _download_image(url: str) -> str | None:
+    """Download image URL to a temp file; return local path or None on failure.
+
+    COOLANT.predict() requires a local file path — it calls Path(image_path).exists().
+    """
+    try:
+        suffix = Path(url.split("?")[0]).suffix or ".jpg"
+        if not suffix.startswith("."):
+            suffix = ".jpg"
+        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+        tmp.close()
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, urllib.request.urlretrieve, url, tmp.name)
+        return tmp.name
+    except Exception:
+        return None
+
+
 @app.post("/api/analyze")
 async def analyze(
     statement: Annotated[str, Form()],
@@ -50,10 +70,13 @@ async def analyze(
     image_file: Annotated[UploadFile | None, File()] = None,
 ) -> dict:
     """Accept statement + optional image (D-04: URL takes priority over file)."""
-    # D-04: URL wins
-    image_path: str | None = image_url or None
+    image_path: str | None = None
 
-    # D-04: save uploaded file to temp path if no URL
+    # D-04: URL takes priority — download to temp file so COOLANT gets a local path
+    if image_url and image_url.strip():
+        image_path = await _download_image(image_url.strip())
+
+    # D-04: save uploaded file if no URL (or URL download failed)
     if image_file and not image_path:
         suffix = Path(image_file.filename or "").suffix or ".tmp"
         tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
