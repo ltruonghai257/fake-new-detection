@@ -18,17 +18,17 @@ from .llm import get_llm
 
 
 REAL_ADVOCATE_PROMPT = (
-    "You are the REAL advocate. Your job is to argue that the claim is TRUE/REAL "
-    "using ONLY the evidence provided in the [TRUSTED] section. Do NOT cite any "
-    "evidence from [FLAGGED] or other sources. Be concise but thorough. "
-    "If no supporting evidence is available, state that clearly."
+    "Bạn là luật sư bào chữa THẬT. Nhiệm vụ của bạn là lập luận rằng tuyên bố là ĐÚNG/THẬT "
+    "chỉ dựa trên bằng chứng ở phần [TRUSTED]. Không được trích dẫn bằng chứng từ [FLAGGED] "
+    "hoặc nguồn khác. Trình bày ngắn gọn nhưng đầy đủ. "
+    "Nếu không có bằng chứng hỗ trợ, hãy nói rõ điều đó."
 )
 
 FAKE_ADVOCATE_PROMPT = (
-    "You are the FAKE advocate. Your job is to argue that the claim is FALSE/FAKE "
-    "using ONLY the evidence provided in the [FLAGGED] or fact-checking section. "
-    "Do NOT cite any evidence from [TRUSTED] sources. Be concise but thorough. "
-    "If no refuting evidence is available, state that clearly."
+    "Bạn là luật sư phản biện GIẢ. Nhiệm vụ của bạn là lập luận rằng tuyên bố là SAI/GIẢ "
+    "chỉ dựa trên bằng chứng ở phần [FLAGGED] hoặc phần kiểm chứng. "
+    "Không được trích dẫn bằng chứng từ [TRUSTED]. Trình bày ngắn gọn nhưng đầy đủ. "
+    "Nếu không có bằng chứng phản bác, hãy nói rõ điều đó."
 )
 
 
@@ -40,7 +40,9 @@ def _format_evidence(evidence: List[Evidence]) -> str:
     for i, e in enumerate(evidence, 1):
         tier = e.get("source_tier", "unknown").upper()
         tag = f"[{tier}]"
-        lines.append(f"{tag} [{i}] {e.get('title')} — {e.get('url')}\n    {e.get('snippet')}")
+        lines.append(
+            f"{tag} [{i}] {e.get('title')} — {e.get('url')}\n    {e.get('snippet')}"
+        )
     return "\n".join(lines)
 
 
@@ -102,7 +104,8 @@ def debate_node(state: FactCheckState) -> dict:
 
         # Call LLM for real_advocate
         try:
-            real_resp = llm.invoke([("system", REAL_ADVOCATE_PROMPT), ("user", real_user)])
+            _real_prompt = settings.real_advocate_prompt or REAL_ADVOCATE_PROMPT
+            real_resp = llm.invoke([("system", _real_prompt), ("user", real_user)])
             real_text = str(getattr(real_resp, "content", ""))
         except Exception as exc:
             error_turn = {
@@ -136,7 +139,8 @@ def debate_node(state: FactCheckState) -> dict:
 
         # Call LLM for fake_advocate
         try:
-            fake_resp = llm.invoke([("system", FAKE_ADVOCATE_PROMPT), ("user", fake_user)])
+            _fake_prompt = settings.fake_advocate_prompt or FAKE_ADVOCATE_PROMPT
+            fake_resp = llm.invoke([("system", _fake_prompt), ("user", fake_user)])
             fake_text = str(getattr(fake_resp, "content", ""))
         except Exception as exc:
             error_turn = {
@@ -165,5 +169,10 @@ def debate_node(state: FactCheckState) -> dict:
     return {
         "debate_turns": turns,
         "debate_exit_reason": exit_reason or "max_rounds",
-        "messages": [("assistant", f"[Debate] {len(turns)} turns ({exit_reason or 'max_rounds'})")],
+        "messages": [
+            (
+                "assistant",
+                f"[Debate] {len(turns)} turns ({exit_reason or 'max_rounds'})",
+            )
+        ],
     }

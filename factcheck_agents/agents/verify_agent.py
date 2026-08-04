@@ -108,6 +108,16 @@ def verify_agent(state: FactCheckState) -> dict:
 
     evidence_text = build_evidence_text(evidence)
 
+    # Pre-import transformers classes in main thread to avoid race condition
+    # with lazy loading in ThreadPoolExecutor (transformers 5.x _LazyModule is
+    # not thread-safe — concurrent imports from 2 threads cause BertTokenizer
+    # to be missing from the transformers namespace).
+    if image_path:
+        try:
+            from transformers import BertTokenizer, BertModel  # noqa: F401
+        except ImportError:
+            pass  # COOLANT will handle the error gracefully
+
     with ThreadPoolExecutor(max_workers=2) as executor:
         future_phobert = executor.submit(_run_phobert, statement, evidence_text)
         future_coolant = executor.submit(_run_coolant, statement, image_path)

@@ -110,6 +110,14 @@ class Settings:
         )
     )
 
+    # ── Debate advocate prompts (override via env; empty string = use default) ─
+    real_advocate_prompt: str = field(
+        default_factory=lambda: os.getenv("FACTCHECK_REAL_ADVOCATE_PROMPT", "")
+    )
+    fake_advocate_prompt: str = field(
+        default_factory=lambda: os.getenv("FACTCHECK_FAKE_ADVOCATE_PROMPT", "")
+    )
+
     # ── LangGraph checkpoint ─────────────────────────────────────────────────
     checkpoint_db: str = field(
         default_factory=lambda: os.getenv(

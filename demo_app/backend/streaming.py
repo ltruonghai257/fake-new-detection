@@ -41,6 +41,60 @@ def rechunk(text: str, chunk_size: int = 8) -> list[str]:
     return [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
 
 
+def _summarize_node(node_name: str, node_output: dict, accumulated: dict) -> str:
+    """Build a Vietnamese human-readable summary of what a node produced."""
+    if node_name in ("real_source", "fake_source"):
+        ev_real = accumulated.get("evidence_real") or []
+        ev_fake = accumulated.get("evidence_fake") or []
+        parts = []
+        if ev_real:
+            trusted = sum(1 for e in ev_real if e.get("source_tier") == "trusted")
+            parts.append(f"{len(ev_real)} nguồn ủng hộ ({trusted} tin cậy)")
+        if ev_fake:
+            parts.append(f"{len(ev_fake)} nguồn phản bác")
+        if not parts:
+            return "Chưa tìm thấy bằng chứng phù hợp."
+        return "Tìm thấy: " + ", ".join(parts) + "."
+
+    if node_name == "reranker":
+        ev_real = accumulated.get("evidence_real") or []
+        ev_fake = accumulated.get("evidence_fake") or []
+        return f"Xếp hạng xong: {len(ev_real)} nguồn ủng hộ, {len(ev_fake)} nguồn phản bác."
+
+    if node_name == "verify":
+        model_results = accumulated.get("model_results") or []
+        parts = []
+        for r in model_results:
+            name = r.get("model", "?")
+            if not r.get("available"):
+                parts.append(f"{name}: không khả dụng")
+            else:
+                label = r.get("label", "?")
+                conf = r.get("confidence", 0.0)
+                parts.append(f"{name}: {label} ({conf*100:.0f}%)")
+        return "Kết quả mô hình: " + " | ".join(parts) + "."
+
+    if node_name == "debate":
+        turns = node_output.get("debate_turns") or []
+        exit_reason = node_output.get("debate_exit_reason", "")
+        reason_vi = {
+            "no_llm": "không có LLM",
+            "llm_error": "lỗi LLM",
+            "max_rounds": "đạt số vòng tối đa",
+        }.get(exit_reason, exit_reason)
+        if not turns:
+            return f"Tranh luận bị bỏ qua ({reason_vi})."
+        return f"Tranh luận {len(turns)} lượt ({reason_vi})."
+
+    if node_name == "judge":
+        verdict = accumulated.get("verdict") or {}
+        label = verdict.get("verdict_label_vi", verdict.get("label", "?"))
+        conf = verdict.get("confidence", 0.0)
+        return f"Phán quyết: {label} ({conf*100:.0f}% tin cậy)."
+
+    return ""
+
+
 async def sse_stream(
     request_id: str,
     statement: str,
@@ -97,6 +151,17 @@ async def sse_stream(
                     emitted_stages.add(stage)
                     _post({"type": "stage_start", "name": stage})
 
+                # Emit stage_log: human-readable summary of what this node produced
+                log_msg = _summarize_node(node_name, node_output, accumulated)
+                if log_msg:
+                    _post(
+                        {
+                            "type": "stage_log",
+                            "stage": stage or node_name,
+                            "message": log_msg,
+                        }
+                    )
+
                 # Debate turn re-chunking (D-01)
                 if node_name == "debate":
                     for turn in node_output.get("debate_turns", []):
@@ -122,12 +187,62 @@ async def sse_stream(
                             }
                         )
 
+            # Extract per-model labels and probabilities for UI display
+            model_results = accumulated.get("model_results") or []
+            phobert_result = next(
+                (
+                    r
+                    for r in model_results
+                    if r.get("model") == "phobert_vifactcheck" and r.get("available")
+                ),
+                None,
+            )
+            coolant_result = next(
+                (
+                    r
+                    for r in model_results
+                    if r.get("model") == "coolant" and r.get("available")
+                ),
+                None,
+            )
+
+            # Compute evidence breakdown components for UI transparency
+            ev_real = accumulated.get("evidence_real") or []
+            ev_fake = accumulated.get("evidence_fake") or []
+            trusted_count = sum(1 for e in ev_real if e.get("source_tier") == "trusted")
+            tier_score = trusted_count / len(ev_real) if ev_real else 0.0
+            count_score = min(1.0, (len(ev_real) + len(ev_fake)) / 5)
+            consistency_score = max(0.1, accumulated.get("consistency_score", 0.1))
+
+            weight_breakdown = dict(accumulated.get("weight_breakdown") or {})
+            weight_breakdown["phobert_label"] = (
+                phobert_result.get("label") if phobert_result else None
+            )
+            weight_breakdown["phobert_probabilities"] = (
+                phobert_result.get("probabilities") if phobert_result else None
+            )
+            weight_breakdown["coolant_label"] = (
+                coolant_result.get("label") if coolant_result else None
+            )
+            weight_breakdown["coolant_probabilities"] = (
+                coolant_result.get("probabilities") if coolant_result else None
+            )
+            weight_breakdown["evidence_breakdown"] = {
+                "tier_score": round(tier_score, 4),
+                "count_score": round(count_score, 4),
+                "consistency_score": round(consistency_score, 4),
+                "trusted_count": trusted_count,
+                "total_real": len(ev_real),
+                "total_fake": len(ev_fake),
+                "total_evidence": len(ev_real) + len(ev_fake),
+            }
+
             # Emit final verdict with all accumulated state (D-05 payload)
             _post(
                 {
                     "type": "verdict",
                     "verdict": accumulated.get("verdict"),
-                    "weight_breakdown": accumulated.get("weight_breakdown"),
+                    "weight_breakdown": weight_breakdown,
                     "evidence_real": accumulated.get("evidence_real", []),
                     "evidence_fake": accumulated.get("evidence_fake", []),
                     "debate_turns": accumulated.get("debate_turns", []),
