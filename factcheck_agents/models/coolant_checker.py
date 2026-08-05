@@ -147,7 +147,7 @@ class CoolantChecker:
                 "COOLANT skipped: no image provided. Multimodal verification requires an image. "
                 "System will continue with PhoBERT-only verification.",
                 UserWarning,
-                stacklevel=2
+                stacklevel=2,
             )
             return ModelResult(
                 model="coolant",
@@ -159,7 +159,7 @@ class CoolantChecker:
                 f"COOLANT skipped: image not found ({image_path}). "
                 "System will continue with PhoBERT-only verification.",
                 UserWarning,
-                stacklevel=2
+                stacklevel=2,
             )
             return ModelResult(
                 model="coolant", available=False, note=f"image not found: {image_path}"
@@ -216,6 +216,41 @@ class CoolantChecker:
             prob_map = {
                 _LABELS.get(i, str(i)): round(p, 4) for i, p in enumerate(probs)
             }
+
+            # Build workflow steps for UI
+            workflow_steps = [
+                {
+                    "step": "1. Preprocess text",
+                    "description": "Encode statement with PhoBERT tokenizer to get embeddings",
+                    "input": f"Statement ({len(statement)} chars)",
+                    "output": f"text_feat shape: {text_feat.shape if hasattr(text_feat, 'shape') else 'list'}",
+                },
+                {
+                    "step": "2. Preprocess image",
+                    "description": f"Extract ResNet50 features from image ({self._image_model})",
+                    "input": f"Image path: {image_path}",
+                    "output": f"image_feat shape: {image_feat.shape if hasattr(image_feat, 'shape') else 'list'}",
+                },
+                {
+                    "step": "3. Reshape tensors",
+                    "description": "Text: [seq, 768] -> [1, 768, seq] | Image: [2048] -> [1, 2048]",
+                    "input": f"text_raw: {text_raw.shape}, image_raw: {image_raw.shape}",
+                    "output": f"batch_size workaround: duplicate to batch=2",
+                },
+                {
+                    "step": "4. Multimodal fusion",
+                    "description": "Pass through COOLANT model (text + image fusion)",
+                    "input": f"text_raw [2, 768, seq], image_raw [2, 2048] (device: {self._device})",
+                    "output": f"detection_logits: {logits.shape}",
+                },
+                {
+                    "step": "5. Classify",
+                    "description": "Apply softmax to logits to get probabilities",
+                    "input": f"logits -> softmax",
+                    "output": f"probabilities: {prob_map}",
+                },
+            ]
+
             return ModelResult(
                 model="coolant",
                 available=True,
@@ -224,12 +259,13 @@ class CoolantChecker:
                 probabilities=prob_map,
                 confidence=round(probs[label_id], 4),
                 note="multimodal (statement + image) prediction",
+                workflow_steps=workflow_steps,
             )
         except Exception as exc:  # pragma: no cover - defensive
             warnings.warn(
                 f"COOLANT inference error: {exc}. Continuing with PhoBERT-only verification.",
                 UserWarning,
-                stacklevel=3
+                stacklevel=3,
             )
             return ModelResult(
                 model="coolant", available=False, note=f"inference error: {exc}"

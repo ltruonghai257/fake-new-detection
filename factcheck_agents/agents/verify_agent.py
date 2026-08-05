@@ -34,9 +34,11 @@ def _coolant() -> CoolantChecker:
     return CoolantChecker()
 
 
-def _run_phobert(statement: str, evidence_text: str) -> ModelResult:
+def _run_phobert(
+    statement: str, evidence_text: str, evidence_count: int = 0
+) -> ModelResult:
     try:
-        return _phobert().predict(statement, evidence_text)
+        return _phobert().predict(statement, evidence_text, evidence_count)
     except Exception as exc:
         return ModelResult(model="phobert_vifactcheck", available=False, note=str(exc))
 
@@ -106,7 +108,8 @@ def verify_agent(state: FactCheckState) -> dict:
                 image_path = e["image_path"]
                 break
 
-    evidence_text = build_evidence_text(evidence)
+    evidence_text = build_evidence_text(evidence, statement)
+    evidence_count = len(evidence)
 
     # Pre-import transformers classes in main thread to avoid race condition
     # with lazy loading in ThreadPoolExecutor (transformers 5.x _LazyModule is
@@ -119,7 +122,9 @@ def verify_agent(state: FactCheckState) -> dict:
             pass  # COOLANT will handle the error gracefully
 
     with ThreadPoolExecutor(max_workers=2) as executor:
-        future_phobert = executor.submit(_run_phobert, statement, evidence_text)
+        future_phobert = executor.submit(
+            _run_phobert, statement, evidence_text, evidence_count
+        )
         future_coolant = executor.submit(_run_coolant, statement, image_path)
 
     phobert_result = future_phobert.result()

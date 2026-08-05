@@ -35,6 +35,8 @@ class ModelResult(TypedDict, total=False):
     probabilities: dict  # {label: prob}
     confidence: float
     note: str  # why it was skipped, or extra context
+    evidence_text: Optional[str]  # full evidence text used as context (PhoBERT)
+    workflow_steps: Optional[List[dict]]  # [{step, description, input, output}]
 
 
 class Verdict(TypedDict, total=False):
@@ -87,3 +89,6 @@ class FactCheckState(TypedDict, total=False):
     debate_turns: List[dict]
     debate_exit_reason: str
     weight_breakdown: dict
+    evidence_workflow_steps: Optional[
+        List[dict]
+    ]  # [{step, description, count, filtered}]

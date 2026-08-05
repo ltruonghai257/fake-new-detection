@@ -187,6 +187,28 @@ async def sse_stream(
                             }
                         )
 
+            # Emit model results to UI (for debate context display)
+            if accumulated.get("model_results"):
+                model_results = accumulated.get("model_results")
+                formatted_results = []
+                for r in model_results:
+                    if r.get("available"):
+                        formatted_results.append(
+                            {
+                                "model": r.get("model"),
+                                "label": r.get("label"),
+                                "confidence": r.get("confidence"),
+                                "probabilities": r.get("probabilities"),
+                            }
+                        )
+                if formatted_results:
+                    _post(
+                        {
+                            "type": "model_results",
+                            "results": formatted_results,
+                        }
+                    )
+
             # Extract per-model labels and probabilities for UI display
             model_results = accumulated.get("model_results") or []
             phobert_result = next(
@@ -221,11 +243,20 @@ async def sse_stream(
             weight_breakdown["phobert_probabilities"] = (
                 phobert_result.get("probabilities") if phobert_result else None
             )
+            weight_breakdown["phobert_evidence_text"] = (
+                phobert_result.get("evidence_text") if phobert_result else None
+            )
+            weight_breakdown["phobert_workflow_steps"] = (
+                phobert_result.get("workflow_steps") if phobert_result else None
+            )
             weight_breakdown["coolant_label"] = (
                 coolant_result.get("label") if coolant_result else None
             )
             weight_breakdown["coolant_probabilities"] = (
                 coolant_result.get("probabilities") if coolant_result else None
+            )
+            weight_breakdown["coolant_workflow_steps"] = (
+                coolant_result.get("workflow_steps") if coolant_result else None
             )
             weight_breakdown["evidence_breakdown"] = {
                 "tier_score": round(tier_score, 4),
@@ -236,6 +267,9 @@ async def sse_stream(
                 "total_fake": len(ev_fake),
                 "total_evidence": len(ev_real) + len(ev_fake),
             }
+            weight_breakdown["evidence_workflow_steps"] = accumulated.get(
+                "evidence_workflow_steps", []
+            )
 
             # Emit final verdict with all accumulated state (D-05 payload)
             _post(

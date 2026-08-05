@@ -87,7 +87,29 @@ def debate_node(state: FactCheckState) -> dict:
     statement = state["statement"]
     evidence_real = state.get("evidence_real") or []
     evidence_fake = state.get("evidence_fake") or []
+    model_results = state.get("model_results") or []
     request_id = state.get("request_id", "unknown")
+
+    print(f"[Debate] State keys: {list(state.keys())}")
+    print(f"[Debate] Model results count: {len(model_results)}")
+    print(f"[Debate] Model results: {model_results}")
+
+    # Format model outputs for debate context
+    def _format_model_results(results: List[dict]) -> str:
+        if not results:
+            return "(no model predictions available)"
+        lines = []
+        for r in results:
+            if not r.get("available"):
+                continue
+            model = r.get("model", "unknown")
+            label = r.get("label", "N/A")
+            confidence = r.get("confidence", 0.0)
+            lines.append(f"- {model.upper()}: {label} ({confidence:.1%} confidence)")
+        return "\n".join(lines) if lines else "(no model predictions available)"
+
+    model_output_text = _format_model_results(model_results)
+    print(f"[Debate] Model outputs:\n{model_output_text}")  # Debug
 
     turns = []
     exit_reason = None
@@ -96,7 +118,7 @@ def debate_node(state: FactCheckState) -> dict:
     for round_num in range(settings.max_debate_rounds):
         # Build real_advocate prompt (DEBATE-01)
         real_evidence_text = _format_evidence(evidence_real)
-        real_user = f"CLAIM:\n{statement}\n\nEVIDENCE:\n{real_evidence_text}\n"
+        real_user = f"CLAIM:\n{statement}\n\nMODEL PREDICTIONS:\n{model_output_text}\n\nEVIDENCE:\n{real_evidence_text}\n"
         if round_num > 0 and turns:
             # Include last fake_advocate turn for context
             last_fake = [t for t in turns if t["agent"] == "fake_advocate"][-1]
@@ -133,7 +155,7 @@ def debate_node(state: FactCheckState) -> dict:
 
         # Build fake_advocate prompt (DEBATE-01)
         fake_evidence_text = _format_evidence(evidence_fake)
-        fake_user = f"CLAIM:\n{statement}\n\nEVIDENCE:\n{fake_evidence_text}\n"
+        fake_user = f"CLAIM:\n{statement}\n\nMODEL PREDICTIONS:\n{model_output_text}\n\nEVIDENCE:\n{fake_evidence_text}\n"
         # Include last real_advocate turn for context
         fake_user += f"\nOPPOSING ARGUMENT:\n{real_text}\n"
 

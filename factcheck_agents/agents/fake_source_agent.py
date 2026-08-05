@@ -8,17 +8,20 @@ from __future__ import annotations
 
 import requests
 from typing import List
+from dateutil import parser as date_parser
 
 from ..config import settings
 from ..helpers import _fetch_evidence_image
 from ..source_tier import classify_domain
 from ..state import Evidence, FactCheckState
 from ..tools.web_search import web_search
+from ..tools.article_crawler import crawl_article, is_within_days
 
 
 def fake_source_agent(state: FactCheckState) -> dict:
     """Search fact-checking sources for fake evidence.
 
+    Crawls full article content and filters to last 7 days.
     Returns {"evidence_fake": results, "messages": [...]}.
     Never raises; returns empty list on all failures (EVRET-03).
     """
@@ -38,10 +41,31 @@ def fake_source_agent(state: FactCheckState) -> dict:
                     continue
                 if url:
                     seen.add(url)
+
+                # Crawl full article content
+                full_content, publish_date = crawl_article(url)
+
+                # Filter: only include if within last 7 days
+                if not is_within_days(publish_date, days=7):
+                    continue
+
                 e["source_tier"] = classify_domain(url) if url else "unknown"
                 e["image_path"], e["image_caption"] = (
                     _fetch_evidence_image(url) if url else (None, None)
                 )
+
+                # Use full content if available
+                if full_content:
+                    e["content"] = full_content
+                    e["snippet"] = (
+                        full_content[:500] + "..."
+                        if len(full_content) > 500
+                        else full_content
+                    )
+                    e["publish_date"] = (
+                        publish_date.isoformat() if publish_date else None
+                    )
+
                 results.append(e)
         except Exception:
             # Skip tingia.gov.vn on failure
@@ -64,7 +88,9 @@ def fake_source_agent(state: FactCheckState) -> dict:
                     # Extract relevant fields from Google Fact Check API response
                     claim_text = claim.get("text", "")
                     claimant = claim.get("claimant", "")
-                    review_date = claim.get("claimReview", [{}])[0].get("reviewDate", "")
+                    review_date = claim.get("claimReview", [{}])[0].get(
+                        "reviewDate", ""
+                    )
                     publisher = (
                         claim.get("claimReview", [{}])[0]
                         .get("publisher", {})
@@ -75,11 +101,21 @@ def fake_source_agent(state: FactCheckState) -> dict:
                         .get("publisher", {})
                         .get("site", "")
                     )
-                    textual_rating = (
-                        claim.get("claimReview", [{}])[0].get("textualRating", "")
+                    textual_rating = claim.get("claimReview", [{}])[0].get(
+                        "textualRating", ""
                     )
                     title = f"{publisher}: {textual_rating}"
                     snippet = f"{claim_text} - {claimant} ({review_date})"
+
+                    # Parse review date and filter
+                    try:
+                        parsed_date = date_parser.parse(review_date)
+                        if not is_within_days(parsed_date, days=7):
+                            continue
+                    except Exception:
+                        # If date parsing fails, include it (conservative)
+                        pass
+
                     if url and url in seen:
                         continue
                     if url:
@@ -101,5 +137,5 @@ def fake_source_agent(state: FactCheckState) -> dict:
                 # Stub to [] on Google Fact Check API failure
                 pass
 
-    msg = f"[FakeSource] {len(results)} items"
+    msg = f"[FakeSource] {len(results)} items (last 7 days)"
     return {"evidence_fake": results, "messages": [("assistant", msg)]}

@@ -38,10 +38,11 @@ def evaluate_agent(state: FactCheckState) -> dict:
                 image_path = e["image_path"]
                 break
 
-    evidence_text = build_evidence_text(evidence)
+    evidence_text = build_evidence_text(evidence, statement)
+    evidence_count = len(evidence)
 
     results = [
-        _phobert().predict(statement, evidence_text),
+        _phobert().predict(statement, evidence_text, evidence_count),
         _coolant().predict(statement, image_path),
     ]
 

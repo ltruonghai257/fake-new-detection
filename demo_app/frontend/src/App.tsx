@@ -87,6 +87,32 @@ export default function App() {
     const [statement, setStatement] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    // Load image preview when URL changes (real-time, debounced)
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (imageUrl.trim()) {
+                setImagePreview(imageUrl.trim());
+            } else {
+                setImagePreview(null);
+            }
+        }, 300); // 300ms debounce to avoid flickering while typing
+        return () => clearTimeout(timer);
+    }, [imageUrl]);
+
+    // Load preview when file selected
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] ?? null;
+        setImageFile(file);
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => setImagePreview(reader.result as string);
+            reader.readAsDataURL(file);
+        } else {
+            setImagePreview(null);
+        }
+    };
 
     // Analysis state
     const [requestId, setRequestId] = useState<string | null>(null);
@@ -146,6 +172,19 @@ export default function App() {
                 ...prev,
                 { stage: data.stage, message: data.message },
             ]);
+        });
+
+        es.addEventListener('model_results', e => {
+            const data = JSON.parse(e.data) as {
+                type: string;
+                results: Array<{
+                    model: string;
+                    label: string;
+                    confidence: number;
+                    probabilities: Record<string, number>;
+                }>;
+            };
+            setModelResults(data.results);
         });
 
         es.addEventListener('turn_start', e => {
@@ -295,9 +334,22 @@ export default function App() {
                     type="file"
                     accept="image/*"
                     className="w-full border border-gray-300 rounded-lg p-3 mb-4"
-                    onChange={e => setImageFile(e.target.files?.[0] ?? null)}
+                    onChange={handleFileChange}
                     disabled={isStreaming}
                 />
+                {/* Image preview */}
+                {imagePreview && (
+                    <div className="mb-4">
+                        <div className="text-sm font-medium text-gray-700 mb-1">
+                            Xem trước hình ảnh
+                        </div>
+                        <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="max-h-48 rounded-lg border border-gray-200 object-contain"
+                        />
+                    </div>
+                )}
                 <button
                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
                     onClick={handleSubmit}
