@@ -1,0 +1,36 @@
+factcheck_agents/agents/judge_agent.py
+  s_0616d8535d203d::t_0d75231c54f83a 125-130,136-144,147-152
+  s_0616d8535d203d::t_d488891311e444 303-314,348-350,358-361
+  s_0616d8535d203d::t_047ffec3718595 279-286
+  s_0616d8535d203d::t_080be3d49b6cad 112-120
+  s_0616d8535d203d::t_d9d2ba235ed190 257-262,265,268-269
+  s_0616d8535d203d::t_c0b5031990f5ac 174,178,189-190,193-201
+  s_0616d8535d203d::t_faa5a002c7437e 213-220
+  s_0616d8535d203d::t_1b3530b9b73f93 235-242
+  s_0616d8535d203d::t_e3dd08ff53d4e0 202
+factcheck_agents/agents/debate_node.py
+  s_0616d8535d203d::t_720c5750150c50 1,3-5,13,22-30,36-44,56,61-78,80-114,118,125-128,132-135,143-144,157-158,160-163,166-174,178-179,185-188,200-203,208-215,219-220,226-229,241-244,249-257,261-262,266-267
+factcheck_agents/config.py
+  s_0616d8535d203d::t_734bf7ceb52b5a 99
+factcheck_agents/state.py
+  s_0616d8535d203d::t_94693cc48a5f0e 95-96
+  s_0616d8535d203d::t_9b21604ec325a2 52-55
+factcheck_agents/graph.py
+  s_0616d8535d203d::t_1b3f84a5cd4e1a 157-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "315d4113aaa88c71e0070a3dd30f78ef8181d721",
+  "prompts": {},
+  "sessions": {
+    "s_0616d8535d203d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_02a404fb4ffeSCem1ec1J16CYi",
+        "model": "databricks-claude-sonnet-4-6"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
