@@ -49,6 +49,10 @@ class Verdict(TypedDict, total=False):
     rationale: str
     citations: List[str]  # URLs backing the verdict
     recommendation: str
+    # structured explanation sections (judge_agent)
+    explanation: dict  # {model_summary, debate_winner, evidence_summary, confidence_breakdown}
+    debate_transcript: List[dict]  # full debate turns
+    model_detail: dict  # {phobert: ModelResult, coolant: ModelResult}
 
 
 class FactCheckState(TypedDict, total=False):
@@ -88,6 +92,8 @@ class FactCheckState(TypedDict, total=False):
     agreement_score: float
     debate_turns: List[dict]
     debate_exit_reason: str
+    debate_converged: bool  # True when both advocates agreed on same verdict
+    debate_agreed_verdict: Optional[str]  # "REAL" | "FAKE" | None
     weight_breakdown: dict
     evidence_workflow_steps: Optional[
         List[dict]

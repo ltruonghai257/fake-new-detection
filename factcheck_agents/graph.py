@@ -154,4 +154,6 @@ def initial_state(
         evidence_fake=[],
         evidence_social=[],
         debate_turns=[],
+        debate_converged=False,
+        debate_agreed_verdict=None,
     )
