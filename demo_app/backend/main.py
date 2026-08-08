@@ -68,6 +68,9 @@ async def analyze(
     statement: Annotated[str, Form()],
     image_url: Annotated[str | None, Form()] = None,
     image_file: Annotated[UploadFile | None, File()] = None,
+    use_phobert: Annotated[str, Form()] = "true",
+    use_coolant: Annotated[str, Form()] = "true",
+    use_evidence: Annotated[str, Form()] = "true",
 ) -> dict:
     """Accept statement + optional image (D-04: URL takes priority over file)."""
     image_path: str | None = None
@@ -85,7 +88,13 @@ async def analyze(
         image_path = tmp.name
 
     request_id = str(uuid.uuid4())
-    _pending[request_id] = {"statement": statement, "image_path": image_path}
+    _pending[request_id] = {
+        "statement": statement,
+        "image_path": image_path,
+        "use_phobert": use_phobert.lower() != "false",
+        "use_coolant": use_coolant.lower() != "false",
+        "use_evidence": use_evidence.lower() != "false",
+    }
     return {"request_id": request_id}
 
 
@@ -99,7 +108,14 @@ async def stream(request_id: str) -> StreamingResponse:
         )
 
     return StreamingResponse(
-        sse_stream(request_id, params["statement"], params.get("image_path")),
+        sse_stream(
+            request_id,
+            params["statement"],
+            params.get("image_path"),
+            use_phobert=params.get("use_phobert", True),
+            use_coolant=params.get("use_coolant", True),
+            use_evidence=params.get("use_evidence", True),
+        ),
         media_type="text/event-stream",
         headers={
             "X-Accel-Buffering": "no",  # disable nginx buffering

@@ -18,6 +18,7 @@ from .agents import (
 )
 from .agents.agreement_gate import agreement_gate, route_after_agreement
 from .agents.debate_node import debate_node
+from .agents.expert_agent import expert_agent
 from .agents.fake_source_agent import fake_source_agent
 from .agents.judge_agent import judge_agent
 from .agents.real_source_agent import real_source_agent
@@ -89,10 +90,17 @@ def build_graph(checkpointer=None):
     return g.compile(checkpointer=checkpointer)
 
 
+def route_after_start(state: FactCheckState) -> str:
+    """Skip evidence retrieval when use_evidence=False (ablation)."""
+    if not state.get("use_evidence", True):
+        return "nei_gate"
+    return "fan_out"
+
+
 def build_debate_graph(checkpointer=None):
     """Build M2 debate graph topology with static fan-out (D-12).
 
-    Topology: START -> (real_source, fake_source) -> nei_gate -> (reranker -> social_loop? -> verify -> agreement_gate -> debate? -> judge) -> END
+    Topology: START -> conditional(use_evidence?) -> (real_source, fake_source) or nei_gate -> (reranker -> social_loop? -> verify -> agreement_gate -> debate? -> judge) -> END
     """
     from langgraph.checkpoint.memory import MemorySaver
 
@@ -109,9 +117,13 @@ def build_debate_graph(checkpointer=None):
     g.add_node("agreement_gate", agreement_gate)
     g.add_node("debate", debate_node)
     g.add_node("judge", judge_agent)
+    g.add_node("expert", expert_agent)
 
-    g.add_edge(START, "real_source")  # D-12: static fan-out
-    g.add_edge(START, "fake_source")
+    # LangGraph supports both conditional + static edges from START for fan-out
+    g.add_conditional_edges(
+        START, route_after_start, {"fan_out": "real_source", "nei_gate": "nei_gate"}
+    )
+    g.add_edge(START, "fake_source")  # static fan-out; still fires even when use_evidence=False
     g.add_edge("real_source", "nei_gate")  # implicit barrier merge
     g.add_edge("fake_source", "nei_gate")
     g.add_conditional_edges(
@@ -130,7 +142,8 @@ def build_debate_graph(checkpointer=None):
         {"debate": "debate", "judge": "judge"},
     )
     g.add_edge("debate", "judge")
-    g.add_edge("judge", END)
+    g.add_edge("judge", "expert")
+    g.add_edge("expert", END)
     return g.compile(checkpointer=checkpointer)
 
 
@@ -142,6 +155,7 @@ def initial_state(
         image_path=image_path,
         language=language,
         search_queries=[],
+        claim_variants=[],
         evidence=[],
         model_results=[],
         verdict={},
@@ -156,4 +170,7 @@ def initial_state(
         debate_turns=[],
         debate_converged=False,
         debate_agreed_verdict=None,
+        use_phobert=True,
+        use_coolant=True,
+        use_evidence=True,
     )

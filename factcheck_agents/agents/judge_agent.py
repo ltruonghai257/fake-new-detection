@@ -1,81 +1,28 @@
-"""Judge agent: weighted judge with 1-5 dimension scoring and NEI short-circuit.
+"""Judge agent: scores debate turns on 1-5 dimensions and produces weight breakdown.
 
-Evaluates model results, evidence, and debate turns to produce a final verdict.
-If no evidence is retrieved from either source, returns NEI without LLM call (EVRET-04).
+Does NOT produce a final verdict — that's done by expert_agent.
+This node only scores the debate and computes component signals for downstream.
 """
 
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional
 
-from ..state import Evidence, FactCheckState, ModelResult, Verdict
+from ..state import (
+    FAKE_MODEL_LABELS,
+    REAL_MODEL_LABELS,
+    Evidence,
+    FactCheckState,
+    ModelResult,
+)
 from .llm import get_llm, parse_json
 
-
 _BINARY_REAL_LABELS = {"SUPPORTED", "REAL", "TRUE"}
-_BINARY_FAKE_LABELS = {"REFUTED", "FAKE", "FALSE", "MISLEADING", "UNVERIFIED", "NEI"}
-
-
-def _has_cross_source_conflict(evidence_graph: Optional[Any]) -> bool:
-    if evidence_graph is None:
-        return False
-    tiers = {
-        data.get("source_tier")
-        for _, data in evidence_graph.graph.nodes(data=True)
-        if data.get("node_type") == "evidence"
-    }
-    return "trusted" in tiers and bool(tiers & {"flagged", "social"})
-
-
-def _map_to_binary(label: str, conflict: bool) -> Tuple[str, str]:
-    if conflict:
-        return "FAKE", "Giả"
-    label_upper = str(label).upper()
-    if label_upper in _BINARY_REAL_LABELS:
-        return "REAL", "Thật"
-    return "FAKE", "Giả"
-
-
-def _fallback_verdict(
-    model_results: List[ModelResult],
-    evidence: List[Evidence],
-    evidence_graph: Optional[Any] = None,
-) -> Verdict:
-    """Rule-based fallback when LLM is unavailable or fails."""
-    avail = [m for m in model_results if m.get("available")]
-    citations = [e.get("url", "") for e in evidence if e.get("url")][:5]
-    if not avail:
-        return Verdict(
-            label="UNVERIFIED",
-            verdict_binary="FAKE",
-            verdict_label_vi="Giả",
-            confidence=0.2,
-            rationale="No trained model was available and no LLM was configured to weigh evidence.",
-            citations=citations,
-            recommendation="Configure model checkpoints and/or an LLM key, or review evidence manually.",
-        )
-    top = max(avail, key=lambda m: m.get("confidence", 0.0))
-    label_map = {
-        "REFUTED": "FALSE",
-        "FAKE": "FALSE",
-        "SUPPORTED": "TRUE",
-        "REAL": "TRUE",
-        "NEI": "UNVERIFIED",
-    }
-    label = label_map.get(top.get("label", ""), "UNVERIFIED")
-    conflict = _has_cross_source_conflict(evidence_graph)
-    binary, label_vi = _map_to_binary(label, conflict)
-    return Verdict(
-        label=label,
-        verdict_binary=binary,
-        verdict_label_vi=label_vi,
-        confidence=round(float(top.get("confidence", 0.0)) * 0.7, 3),
-        rationale=f"Rule-based fallback from {top['model']} ({top.get('label')}).",
-        citations=citations,
-        recommendation="Heuristic verdict; enable an LLM for evidence-weighted reasoning.",
-    )
+_BINARY_NEI_LABELS = {"NEI", "UNVERIFIED"}
+# FAKE: REFUTED, FAKE, FALSE, MISLEADING — explicit falsehoods
 
 
 def _format_models(model_results: List[ModelResult]) -> str:
@@ -122,36 +69,46 @@ def _format_debate_turns(debate_turns: List[dict]) -> str:
 
 
 JUDGE_SYSTEM_PROMPT = (
-    "You are the final judge in a fact-checking debate. You are given:\n"
-    "- A claim to verify\n"
-    "- PhoBERT and COOLANT model predictions with full per-class probabilities\n"
-    "- Web evidence from trusted and flagged sources\n"
-    "- A debate transcript between a REAL advocate and a FAKE advocate\n"
-    "- Whether the debate converged (both advocates agreed) and what they agreed on\n\n"
-    "Your task:\n"
-    "1. Score each debate turn on three dimensions (1-5 scale):\n"
-    "   - Factuality: How factual is the argument?\n"
-    "   - Rebuttal Engagement: How well does it address opposing arguments?\n"
-    "   - Evidence Grounding: How well is it grounded in the provided evidence?\n"
-    "2. Identify the debate winner (real_advocate or fake_advocate) based on scores.\n"
-    "3. Produce a structured explanation with sections:\n"
-    "   - model_summary: what PhoBERT and COOLANT say, including probabilities\n"
-    "   - debate_winner: which advocate won and why\n"
-    "   - evidence_summary: key evidence supporting the verdict\n"
-    "   - confidence_breakdown: how PhoBERT, COOLANT, evidence, and debate each contributed\n"
-    "4. Produce a final verdict.\n\n"
-    "If debate_converged=true, treat the agreed_verdict as a strong prior but you may override with reasoning.\n\n"
-    "Respond ONLY as JSON:\n"
+    "Bạn là GIÁM KHẢO tranh luận, trung lập, trong một phiên xác minh tin tức tiếng Việt. "
+    "Bạn KHÔNG ra phán quyết cuối về claim — nhiệm vụ của bạn là chấm điểm màn tranh luận. "
+    "Chỉ đánh giá dựa trên dữ liệu được cung cấp, TUYỆT ĐỐI không dùng kiến thức ngoài.\n\n"
+    "Bạn được cung cấp:\n"
+    "- Claim cần xác minh (tiếng Việt)\n"
+    "- Kết quả dự đoán của PhoBERT và COOLANT kèm phân phối xác suất đầy đủ theo từng lớp\n"
+    "- Bằng chứng web từ nguồn tin cậy và nguồn bị gắn cờ (mỗi nguồn có tier)\n"
+    "- Biên bản tranh luận giữa luật sư phe REAL và luật sư phe FAKE\n"
+    "- Việc tranh luận có hội tụ hay không và verdict được đồng thuận (nếu có)\n\n"
+    "NHIỆM VỤ:\n"
+    "1. Chấm điểm TỪNG lượt tranh luận trên ba tiêu chí (số nguyên 1-5):\n"
+    "   - factuality: các khẳng định trong lượt đó có đúng sự thật theo bằng chứng không?\n"
+    "   - rebuttal_engagement: có phản bác trực tiếp lập luận gần nhất của đối thủ không?\n"
+    "   - evidence_grounding: có bám vào kết quả model/bằng chứng đã cho không (không bịa)?\n"
+    "   Trừ điểm mạnh mọi lượt trích số liệu không có trong kết quả model, hoặc bịa nguồn.\n"
+    "2. Xác định bên thắng dựa trên điểm số: 'real_advocate', 'fake_advocate', hoặc 'tie'.\n"
+    "3. Viết explanation gồm các mục:\n"
+    "   - model_summary: PhoBERT và COOLANT nói gì, kèm phân phối xác suất, có thống nhất không.\n"
+    "   - debate_winner: bên nào thắng và tại sao (dựa trên điểm số).\n"
+    "   - evidence_summary: tóm tắt bằng chứng then chốt.\n"
+    "   - confidence_breakdown: mức đóng góp của PhoBERT, COOLANT, bằng chứng và tranh luận "
+    "(bốn trọng số là số thực, PHẢI cộng lại bằng 1.0).\n\n"
+    "Nếu debate_converged=true, coi agreed_verdict là tiên nghiệm mạnh khi cân nhắc, "
+    "nhưng việc chấm điểm phải phản ánh chất lượng lập luận thực tế của từng lượt.\n\n"
+    "QUY TẮC:\n"
+    "- Chỉ dùng dữ liệu được cung cấp; không bịa số liệu hay nguồn.\n"
+    "- Viết model_summary và evidence_summary bằng tiếng Việt.\n\n"
+    "CHỈ trả về DUY NHẤT một object JSON hợp lệ, không markdown, không văn bản trước/sau:\n"
     "{\n"
-    '  "turn_scores": [{"agent": "real_advocate", "round": 0, "factuality": 4, "rebuttal_engagement": 3, "evidence_grounding": 5}, ...],\n'
+    '  "turn_scores": [\n'
+    '    {"agent": "real_advocate", "round": 0, "factuality": 4, "rebuttal_engagement": 3, "evidence_grounding": 5}\n'
+    "  ],\n"
     '  "explanation": {\n'
-    '    "model_summary": "...",\n'
-    '    "debate_winner": "real_advocate | fake_advocate",\n'
-    '    "evidence_summary": "...",\n'
+    '    "model_summary": "PhoBERT/COOLANT nói gì, kèm phân phối xác suất.",\n'
+    '    "debate_winner": "real_advocate | fake_advocate | tie",\n'
+    '    "evidence_summary": "Tóm tắt bằng chứng then chốt.",\n'
     '    "confidence_breakdown": {"phobert": 0.3, "coolant": 0.3, "evidence": 0.2, "debate": 0.2}\n'
-    "  },\n"
-    '  "verdict": {"label": "TRUE", "confidence": 0.85, "rationale": "...", "citations": ["..."], "recommendation": "..."}\n'
+    "  }\n"
     "}\n"
+    "Không thêm giải thích ngoài JSON."
 )
 
 
@@ -171,26 +128,20 @@ def _write_verdict_log(request_id: str, data: dict) -> None:
 
 
 def judge_agent(state: FactCheckState) -> dict:
-    """Weighted judge with dimension scoring, convergence prior, and structured explanation.
+    """Score debate turns and compute weight breakdown for downstream expert.
 
-    Returns:
-        dict with keys:
-            - verdict: Verdict TypedDict (includes explanation, debate_transcript, model_detail)
-            - weight_breakdown: dict with phobert, coolant, evidence, argument_scores
-            - messages: list of message tuples
+    Does NOT produce a final verdict. Returns turn_scores, debate_winner,
+    and computed weights only. The expert_agent produces the final verdict.
     """
     statement = state["statement"]
     model_results = state.get("model_results", []) or []
     evidence_real = state.get("evidence_real") or []
     evidence_fake = state.get("evidence_fake") or []
-    evidence = evidence_real + evidence_fake
-    evidence_graph = state.get("evidence_graph")
     debate_turns = state.get("debate_turns") or []
     debate_converged = state.get("debate_converged", False)
     debate_agreed_verdict = state.get("debate_agreed_verdict")
     request_id = state.get("request_id", "unknown")
 
-    # Build model_detail for embedding in verdict
     model_detail: dict = {}
     for m in model_results:
         if m.get("available"):
@@ -200,65 +151,51 @@ def judge_agent(state: FactCheckState) -> dict:
                 "probabilities": m.get("probabilities"),
             }
 
-    # NEI short-circuit (EVRET-04)
-    if not evidence_real and not evidence_fake:
-        nei_verdict = Verdict(
-            label="NEI",
-            verdict_binary="FAKE",
-            verdict_label_vi="Giả",
-            confidence=0.1,
-            rationale="No evidence retrieved from either source.",
-            citations=[],
-            recommendation="Unable to verify without evidence sources.",
-            explanation={
-                "model_summary": _format_models(model_results),
-                "debate_winner": "none",
-                "evidence_summary": "No evidence retrieved.",
-                "confidence_breakdown": {"phobert": 0.0, "coolant": 0.0, "evidence": 0.0, "debate": 0.0},
-            },
-            debate_transcript=debate_turns,
-            model_detail=model_detail,
-        )
+    # No debate → no scores, minimal breakdown
+    if not debate_turns:
         return {
-            "verdict": nei_verdict,
-            "weight_breakdown": {},
-            "messages": [("assistant", "[Judge] NEI — no evidence")],
+            "weight_breakdown": {
+                "phobert": 0.0,
+                "coolant": 0.0,
+                "evidence": 0.0,
+                "debate": 0.0,
+                "phobert_conf": 0.0,
+                "coolant_conf": 0.0,
+                "debate_conf": 0.0,
+                "debate_direction": 0.0,
+                "argument_scores": [],
+                "debate_winner": "none",
+                "model_signal": 0.0,
+            },
+            "messages": [("assistant", "[Judge] No debate — skipping scoring")],
         }
 
-    # Dir creation (JUDGE-03)
     Path("logs/verdicts").mkdir(parents=True, exist_ok=True)
 
-    # Fallback if no LLM
     llm = get_llm()
     if llm is None:
-        verdict = _fallback_verdict(model_results, evidence, evidence_graph)
-        verdict["explanation"] = {
-            "model_summary": _format_models(model_results),
-            "debate_winner": "none (no LLM)",
-            "evidence_summary": _format_evidence(evidence[:3]),
-            "confidence_breakdown": {"phobert": 0.0, "coolant": 0.0, "evidence": 0.0, "debate": 0.0},
-        }
-        verdict["debate_transcript"] = debate_turns
-        verdict["model_detail"] = model_detail
-        weight_breakdown = {
-            "phobert": 0.0,
-            "coolant": 0.0,
-            "evidence": 0.0,
-            "argument_scores": [],
-        }
-        _write_verdict_log(request_id, {"verdict": verdict, "weight_breakdown": weight_breakdown})
         return {
-            "verdict": verdict,
-            "weight_breakdown": weight_breakdown,
-            "messages": [("assistant", f"[Judge] {verdict['label']} (fallback)")],
+            "weight_breakdown": {
+                "phobert": 0.0,
+                "coolant": 0.0,
+                "evidence": 0.0,
+                "debate": 0.0,
+                "phobert_conf": 0.0,
+                "coolant_conf": 0.0,
+                "debate_conf": 0.0,
+                "debate_direction": 0.0,
+                "argument_scores": [],
+                "debate_winner": "none (no LLM)",
+                "model_signal": 0.0,
+            },
+            "messages": [("assistant", "[Judge] No LLM — skipping debate scoring")],
         }
 
-    # Build user prompt (JUDGE-01)
     convergence_note = ""
     if debate_converged and debate_agreed_verdict:
         convergence_note = (
             f"\nDEBATE CONVERGENCE: Both advocates agreed on verdict={debate_agreed_verdict}. "
-            "Treat this as a strong prior unless evidence clearly contradicts it.\n"
+            "Treat this as a strong prior.\n"
         )
     user = (
         f"CLAIM:\n{statement}\n\n"
@@ -269,103 +206,105 @@ def judge_agent(state: FactCheckState) -> dict:
         f"{convergence_note}"
     )
 
-    # Call LLM
     try:
         resp = llm.invoke([("system", JUDGE_SYSTEM_PROMPT), ("user", user)])
         data = parse_json(getattr(resp, "content", "") or "") or {}
-    except Exception as exc:
-        verdict = _fallback_verdict(model_results, evidence, evidence_graph)
-        verdict["rationale"] += f" (LLM error: {exc})"
-        verdict["explanation"] = {
-            "model_summary": _format_models(model_results),
-            "debate_winner": "none (LLM error)",
-            "evidence_summary": _format_evidence(evidence[:3]),
-            "confidence_breakdown": {"phobert": 0.0, "coolant": 0.0, "evidence": 0.0, "debate": 0.0},
-        }
-        verdict["debate_transcript"] = debate_turns
-        verdict["model_detail"] = model_detail
-        weight_breakdown = {
-            "phobert": 0.0,
-            "coolant": 0.0,
-            "evidence": 0.0,
-            "argument_scores": [],
-        }
-        _write_verdict_log(request_id, {"verdict": verdict, "weight_breakdown": weight_breakdown})
+    except Exception:
         return {
-            "verdict": verdict,
-            "weight_breakdown": weight_breakdown,
-            "messages": [("assistant", f"[Judge] {verdict['label']} (fallback)")],
+            "weight_breakdown": {
+                "phobert": 0.0,
+                "coolant": 0.0,
+                "evidence": 0.0,
+                "debate": 0.0,
+                "phobert_conf": 0.0,
+                "coolant_conf": 0.0,
+                "debate_conf": 0.0,
+                "debate_direction": 0.0,
+                "argument_scores": [],
+                "debate_winner": "unknown (LLM error)",
+                "model_signal": 0.0,
+            },
+            "messages": [("assistant", "[Judge] LLM error — skipping debate scoring")],
         }
 
-    # Extract turn scores (JUDGE-01)
     turn_scores = data.get("turn_scores", [])
-
-    # Extract structured explanation
     explanation_data = data.get("explanation", {})
-    explanation = {
-        "model_summary": explanation_data.get("model_summary", _format_models(model_results)),
-        "debate_winner": explanation_data.get("debate_winner", "unknown"),
-        "evidence_summary": explanation_data.get("evidence_summary", ""),
-        "confidence_breakdown": explanation_data.get(
-            "confidence_breakdown",
-            {"phobert": 0.0, "coolant": 0.0, "evidence": 0.0, "debate": 0.0},
-        ),
-    }
+    debate_winner = explanation_data.get("debate_winner", "unknown")
 
-    # Extract verdict data
-    verdict_data = data.get("verdict", {})
-    label = str(verdict_data.get("label", "UNVERIFIED")).upper()
-    conflict = _has_cross_source_conflict(evidence_graph)
-    binary, label_vi = _map_to_binary(label, conflict)
-
-    # Weight computation (JUDGE-02)
+    # Compute model signal direction
     ph_conf = 0.0
     co_conf = 0.0
+    ph_avail = False
+    co_avail = False
     for m in model_results:
         if m.get("model") == "phobert_vifactcheck" and m.get("available"):
             ph_conf = m.get("confidence", 0.0)
+            ph_avail = True
         elif m.get("model") == "coolant" and m.get("available"):
             co_conf = m.get("confidence", 0.0)
+            co_avail = True
 
-    ev_cred = state.get("weight_breakdown", {}).get("evidence", 0.1)
-    confidence = ph_conf * 0.30 + co_conf * 0.30 + ev_cred * 0.40
+    model_signal = 0.0
+    if ph_avail:
+        ph_label = str(
+            model_detail.get("phobert_vifactcheck", {}).get("label", "")
+        ).upper()
+        if ph_label in REAL_MODEL_LABELS:
+            model_signal += ph_conf
+        elif ph_label in FAKE_MODEL_LABELS:
+            model_signal -= ph_conf
+    if co_avail:
+        co_label = str(model_detail.get("coolant", {}).get("label", "")).upper()
+        if co_label in REAL_MODEL_LABELS:
+            model_signal += co_conf
+        elif co_label in FAKE_MODEL_LABELS:
+            model_signal -= co_conf
+    model_signal = max(-1.0, min(1.0, model_signal))
 
-    # Cap confidence if no debate turns (JUDGE-02)
-    if not debate_turns:
-        confidence = min(confidence, 0.7)
+    # Debate signal
+    debate_direction = 0.0
+    debate_conf = 0.0
+    if debate_turns:
+        if debate_winner == "real_advocate":
+            debate_direction = 1.0
+        elif debate_winner == "fake_advocate":
+            debate_direction = -1.0
+        debate_conf = 0.7 if debate_converged else 0.4
 
-    verdict = Verdict(
-        label=label,
-        verdict_binary=binary,
-        verdict_label_vi=label_vi,
-        confidence=float(verdict_data.get("confidence", confidence)),
-        rationale=str(verdict_data.get("rationale", "")),
-        citations=list(
-            verdict_data.get("citations", [])
-            or [e.get("url", "") for e in evidence if e.get("url")][:5]
-        ),
-        recommendation=str(verdict_data.get("recommendation", "")),
-        explanation=explanation,
-        debate_transcript=debate_turns,
-        model_detail=model_detail,
-    )
-
+    _jw_ph = float(os.getenv("FACTCHECK_JUDGE_PHOBERT_WEIGHT", "0.35"))
+    _jw_co = float(os.getenv("FACTCHECK_JUDGE_COOLANT_WEIGHT", "0.35"))
+    _jw_ev = float(os.getenv("FACTCHECK_JUDGE_EVIDENCE_WEIGHT", "0.15"))
+    _jw_db = float(os.getenv("FACTCHECK_JUDGE_DEBATE_WEIGHT", "0.15"))
     weight_breakdown = {
-        "phobert": ph_conf,
-        "coolant": co_conf,
-        "evidence": ev_cred,
+        "phobert": _jw_ph if ph_avail else 0.0,
+        "coolant": _jw_co if co_avail else 0.0,
+        "evidence": _jw_ev,
+        "debate": _jw_db,
+        "phobert_conf": ph_conf,
+        "coolant_conf": co_conf,
+        "debate_conf": debate_conf,
+        "debate_direction": debate_direction,
         "argument_scores": turn_scores,
+        "debate_winner": debate_winner,
+        "model_signal": model_signal,
         "phobert_label": model_detail.get("phobert_vifactcheck", {}).get("label"),
-        "phobert_probabilities": model_detail.get("phobert_vifactcheck", {}).get("probabilities"),
+        "phobert_probabilities": model_detail.get("phobert_vifactcheck", {}).get(
+            "probabilities"
+        ),
         "coolant_label": model_detail.get("coolant", {}).get("label"),
         "coolant_probabilities": model_detail.get("coolant", {}).get("probabilities"),
     }
 
-    # Log write (JUDGE-03)
-    _write_verdict_log(request_id, {"verdict": verdict, "weight_breakdown": weight_breakdown})
+    _write_verdict_log(
+        request_id, {"weight_breakdown": weight_breakdown, "turn_scores": turn_scores}
+    )
 
     return {
-        "verdict": verdict,
         "weight_breakdown": weight_breakdown,
-        "messages": [("assistant", f"[Judge] {verdict['label']} ({verdict['confidence']:.2f})")],
+        "messages": [
+            (
+                "assistant",
+                f"[Judge] {len(turn_scores)} turns scored, winner={debate_winner}",
+            )
+        ],
     }

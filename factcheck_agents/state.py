@@ -6,9 +6,55 @@ through every node, and each node writes its own slice.
 
 from __future__ import annotations
 
-from typing import Annotated, Any, List, Literal, Optional, TypedDict
+from typing import Annotated, Any, Dict, List, Literal, Optional, Tuple, TypedDict
 
 from langgraph.graph.message import add_messages
+
+
+# ── Canonical label vocabulary ──────────────────────────────────────────────
+# Single source of truth for all agent <-> verdict conversions.
+# Model outputs:  PhoBERT → SUPPORTED|REFUTED|NEI,  COOLANT → REAL|FAKE
+# Verdict output: binary → REAL|FAKE|NEI,  label_vi → Thật|Giả|Chưa xác thực
+# 4-class label:  TRUE|FALSE|MISLEADING|UNVERIFIED
+
+REAL_MODEL_LABELS = frozenset({"SUPPORTED", "REAL", "TRUE"})
+FAKE_MODEL_LABELS = frozenset({"REFUTED", "FAKE", "FALSE", "MISLEADING"})
+NEI_MODEL_LABELS = frozenset({"NEI", "UNVERIFIED"})
+
+_BINARY_SYNONYMS: Dict[str, str] = {
+    "SUPPORTED": "REAL", "REAL": "REAL", "TRUE": "REAL",
+    "REFUTED": "FAKE", "FAKE": "FAKE", "FALSE": "FAKE", "MISLEADING": "FAKE",
+    "NEI": "NEI", "UNVERIFIED": "NEI",
+}
+_LABEL_VI: Dict[str, str] = {
+    "REAL": "Thật", "FAKE": "Giả", "NEI": "Chưa xác thực",
+}
+_4CLASS_SYNONYMS: Dict[str, str] = {
+    "SUPPORTED": "TRUE", "REAL": "TRUE", "TRUE": "TRUE",
+    "REFUTED": "FALSE", "FAKE": "FALSE", "FALSE": "FALSE",
+    "MISLEADING": "MISLEADING",
+    "NEI": "UNVERIFIED", "UNVERIFIED": "UNVERIFIED",
+}
+
+
+def canonicalize_binary(label: str) -> str:
+    """Normalize any model/LLM label to REAL | FAKE | NEI."""
+    return _BINARY_SYNONYMS.get(str(label).strip().upper(), "NEI")
+
+
+def binary_to_vi(binary: str) -> str:
+    return _LABEL_VI.get(binary, "Chưa xác thực")
+
+
+def canonicalize_4class(label: str) -> str:
+    """Normalize any label to TRUE | FALSE | MISLEADING | UNVERIFIED."""
+    return _4CLASS_SYNONYMS.get(str(label).strip().upper(), "UNVERIFIED")
+
+
+def label_to_binary_vi(label: str) -> Tuple[str, str]:
+    """Canonicalize a flexible label → (binary, label_vi)."""
+    binary = canonicalize_binary(label)
+    return binary, binary_to_vi(binary)
 
 
 class Evidence(TypedDict, total=False):
@@ -43,8 +89,8 @@ class Verdict(TypedDict, total=False):
     """Final synthesized decision from the conclusion agent."""
 
     label: str  # TRUE | FALSE | MISLEADING | UNVERIFIED
-    verdict_binary: Literal["REAL", "FAKE"]
-    verdict_label_vi: Literal["Thật", "Giả"]
+    verdict_binary: Literal["REAL", "FAKE", "NEI"]
+    verdict_label_vi: Literal["Thật", "Giả", "Chưa xác thực"]
     confidence: float  # 0..1
     rationale: str
     citations: List[str]  # URLs backing the verdict
@@ -62,9 +108,13 @@ class FactCheckState(TypedDict, total=False):
     statement: str
     image_path: Optional[str]
     language: str  # "vi" | "en" | "auto"
+    use_phobert: bool  # ablation toggle — skip PhoBERT when False
+    use_coolant: bool  # ablation toggle — skip COOLANT when False
+    use_evidence: bool  # ablation toggle — skip web search when False
 
     # search agent
     search_queries: List[str]
+    claim_variants: List[str]  # LLM-generated variant claims for deeper search
     evidence: List[Evidence]
 
     # evaluate agent

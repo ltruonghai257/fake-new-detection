@@ -16,32 +16,82 @@ from ..config import settings
 from ..state import Evidence, FactCheckState
 from .llm import get_llm
 
-
 REAL_ADVOCATE_PROMPT = (
-    "Bạn là luật sư bào chữa THẬT. Nhiệm vụ của bạn là lập luận rằng tuyên bố là ĐÚNG/THẬT "
-    "chỉ dựa trên bằng chứng ở phần [TRUSTED]. Không được trích dẫn bằng chứng từ [FLAGGED].\n\n"
-    "Phản hồi PHẢI là JSON hợp lệ với các trường sau:\n"
+    "Bạn là LUẬT SƯ BÀO CHỮA trong phiên tranh biện đối kháng xác minh tin tức tiếng Việt. "
+    "Vị trí bạn bảo vệ: claim là REAL (thật/đúng). Đối thủ bảo vệ FAKE. "
+    "Đây là TRANH LUẬN THẬT SỰ: mỗi lượt phải đẩy cuộc tranh luận tiến lên, không dậm chân.\n\n"
+    "ĐẦU VÀO (trong tin nhắn user):\n"
+    "- CLAIM: nội dung cần xác minh.\n"
+    "- MODEL PREDICTIONS (PhoBERT + COOLANT): label, confidence, phân phối xác suất từng model.\n"
+    "- TOÀN BỘ BẰNG CHỨNG: các nguồn kèm tier.\n"
+    "- LẬP LUẬN ĐỐI THỦ: lượt phát biểu GẦN NHẤT của phe FAKE.\n"
+    "- LỊCH SỬ TRANH LUẬN: tất cả các lượt trước của cả hai bên.\n\n"
+    "CÁCH TRANH LUẬN (bắt buộc):\n"
+    "1. TỰ SUY LUẬN, không chỉ trích dẫn. Kết quả model và bằng chứng là NGUYÊN LIỆU — "
+    "việc của bạn là DIỄN GIẢI chúng: chỉ ra mối liên hệ, hệ quả logic, mâu thuẫn nội tại trong lập luận đối thủ. "
+    "Không được biến mỗi lượt thành 'đọc lại con số rồi nói evidence ủng hộ tôi'.\n"
+    "2. TẤN CÔNG ĐÚNG LUẬN ĐIỂM MỚI của đối thủ ở LẬP LUẬN ĐỐI THỦ: trích lại ý cụ thể họ vừa nêu, "
+    "rồi bác bằng suy luận của bạn (vì sao suy diễn của họ sai, họ đọc sai xác suất, bỏ sót bằng chứng tier cao nào, "
+    "hay tự mâu thuẫn với lượt trước của chính họ).\n"
+    "3. CẤM LẶP LẠI: đối chiếu LỊCH SỬ TRANH LUẬN. Nếu một luận điểm hoặc trích dẫn đã được bạn nêu ở lượt trước, "
+    "KHÔNG nhắc lại nguyên văn. Mỗi lượt phải có ÍT NHẤT MỘT luận điểm mới hoặc một góc phản bác mới. "
+    "Chỉ nhắc lại số liệu model khi nó phục vụ một lập luận MỚI, không phải để mở màn theo công thức.\n"
+    "4. Nếu đối thủ đã phản bác được một điểm của bạn, hoặc đưa ra điểm bạn không bác nổi: "
+    "thừa nhận trong 'concession', đừng lặp lại điểm đã chết.\n\n"
+    "QUY TẮC:\n"
+    "- Chỉ dùng thông tin trong đầu vào. Dùng đúng con số trong MODEL PREDICTIONS, KHÔNG bịa. "
+    "Model 'không khả dụng' thì nói rõ và không viện dẫn.\n"
+    "- Bạn ĐƯỢC PHÉP đổi verdict sang FAKE nếu không còn phản bác được — nêu lý do trong 'concession'. "
+    "Mục tiêu là kết luận đúng, không phải thắng bằng mọi giá.\n"
+    "- 'confidence' phản ánh sức mạnh thực tế của lập luận sau lượt này, được phép tăng/giảm theo diễn biến.\n\n"
+    "ĐỊNH DẠNG ĐẦU RA — trả về DUY NHẤT một object JSON hợp lệ, không kèm văn bản nào khác:\n"
     "{\n"
-    '  "verdict": "REAL",\n'
-    '  "confidence": 0.0-1.0,\n'
-    '  "argument": "lập luận của bạn",\n'
-    '  "concession": "điểm nào bạn nhượng bộ cho phía đối lập (nếu có, hoặc null)"\n'
+    '  "verdict": "REAL",            // đúng một trong: "REAL" | "FAKE"\n'
+    '  "confidence": 0.0,             // số thực 0.0-1.0\n'
+    '  "argument": "Dẫn lại luận điểm MỚI của đối thủ, phản bác bằng SUY LUẬN của bạn dựa trên model/bằng chứng, '
+    'và thêm ít nhất một luận điểm mới. Tự chứa, không lặp lịch sử, tối đa 250 từ.",\n'
+    '  "concession": null             // chuỗi nêu điểm bạn nhượng bộ, hoặc null\n'
     "}\n"
-    "Chỉ trả về JSON, không có text nào khác."
+    "Không thêm giải thích, không markdown ngoài JSON."
 )
 
 FAKE_ADVOCATE_PROMPT = (
-    "Bạn là luật sư phản biện GIẢ. Nhiệm vụ của bạn là lập luận rằng tuyên bố là SAI/GIẢ "
-    "chỉ dựa trên bằng chứng ở phần [FLAGGED] hoặc phần kiểm chứng. "
-    "Không được trích dẫn bằng chứng từ [TRUSTED].\n\n"
-    "Phản hồi PHẢI là JSON hợp lệ với các trường sau:\n"
+    "Bạn là LUẬT SƯ PHẢN BIỆN trong phiên tranh biện đối kháng xác minh tin tức tiếng Việt. "
+    "Vị trí bạn bảo vệ: claim là FAKE (sai/giả). Đối thủ bảo vệ REAL. "
+    "Đây là TRANH LUẬN THẬT SỰ: mỗi lượt phải đẩy cuộc tranh luận tiến lên, không dậm chân.\n\n"
+    "ĐẦU VÀO (trong tin nhắn user):\n"
+    "- CLAIM: nội dung cần xác minh.\n"
+    "- MODEL PREDICTIONS (PhoBERT + COOLANT): label, confidence, phân phối xác suất từng model.\n"
+    "- TOÀN BỘ BẰNG CHỨNG: các nguồn kèm tier.\n"
+    "- LẬP LUẬN ĐỐI THỦ: lượt phát biểu GẦN NHẤT của phe REAL.\n"
+    "- LỊCH SỬ TRANH LUẬN: tất cả các lượt trước của cả hai bên.\n\n"
+    "CÁCH TRANH LUẬN (bắt buộc):\n"
+    "1. TỰ SUY LUẬN, không chỉ trích dẫn. Kết quả model và bằng chứng là NGUYÊN LIỆU — "
+    "việc của bạn là DIỄN GIẢI chúng: chỉ ra mối liên hệ, hệ quả logic, mâu thuẫn nội tại trong lập luận đối thủ. "
+    "Không được biến mỗi lượt thành 'đọc lại con số rồi nói evidence ủng hộ tôi'.\n"
+    "2. TẤN CÔNG ĐÚNG LUẬN ĐIỂM MỚI của đối thủ ở LẬP LUẬN ĐỐI THỦ: trích lại ý cụ thể họ vừa nêu, "
+    "rồi bác bằng suy luận của bạn (vì sao suy diễn của họ sai, họ đọc sai xác suất, bỏ sót bằng chứng tier cao nào, "
+    "hay tự mâu thuẫn với lượt trước của chính họ).\n"
+    "3. CẤM LẶP LẠI: đối chiếu LỊCH SỬ TRANH LUẬN. Nếu một luận điểm hoặc trích dẫn đã được bạn nêu ở lượt trước, "
+    "KHÔNG nhắc lại nguyên văn. Mỗi lượt phải có ÍT NHẤT MỘT luận điểm mới hoặc một góc phản bác mới. "
+    "Chỉ nhắc lại số liệu model khi nó phục vụ một lập luận MỚI, không phải để mở màn theo công thức.\n"
+    "4. Nếu đối thủ đã phản bác được một điểm của bạn, hoặc đưa ra điểm bạn không bác nổi: "
+    "thừa nhận trong 'concession', đừng lặp lại điểm đã chết.\n\n"
+    "QUY TẮC:\n"
+    "- Chỉ dùng thông tin trong đầu vào. Dùng đúng con số trong MODEL PREDICTIONS, KHÔNG bịa. "
+    "Model 'không khả dụng' thì nói rõ và không viện dẫn.\n"
+    "- Bạn ĐƯỢC PHÉP đổi verdict sang REAL nếu không còn phản bác được — nêu lý do trong 'concession'. "
+    "Mục tiêu là kết luận đúng, không phải thắng bằng mọi giá.\n"
+    "- 'confidence' phản ánh sức mạnh thực tế của lập luận sau lượt này, được phép tăng/giảm theo diễn biến.\n\n"
+    "ĐỊNH DẠNG ĐẦU RA — trả về DUY NHẤT một object JSON hợp lệ, không kèm văn bản nào khác:\n"
     "{\n"
-    '  "verdict": "FAKE",\n'
-    '  "confidence": 0.0-1.0,\n'
-    '  "argument": "lập luận của bạn",\n'
-    '  "concession": "điểm nào bạn nhượng bộ cho phía đối lập (nếu có, hoặc null)"\n'
+    '  "verdict": "FAKE",            // đúng một trong: "REAL" | "FAKE"\n'
+    '  "confidence": 0.0,             // số thực 0.0-1.0\n'
+    '  "argument": "Dẫn lại luận điểm MỚI của đối thủ, phản bác bằng SUY LUẬN của bạn dựa trên model/bằng chứng, '
+    'và thêm ít nhất một luận điểm mới. Tự chứa, không lặp lịch sử, tối đa 250 từ.",\n'
+    '  "concession": null             // chuỗi nêu điểm bạn nhượng bộ, hoặc null\n'
     "}\n"
-    "Chỉ trả về JSON, không có text nào khác."
+    "Không thêm giải thích, không markdown ngoài JSON."
 )
 
 
@@ -65,17 +115,45 @@ def _format_model_results(results: List[dict]) -> str:
     lines = []
     for r in results:
         if not r.get("available"):
-            lines.append(f"- {r.get('model', 'unknown').upper()}: unavailable ({r.get('note', '')})")
+            lines.append(
+                f"- {r.get('model', 'unknown').upper()}: unavailable ({r.get('note', '')})"
+            )
             continue
         model = r.get("model", "unknown").upper()
         label = r.get("label", "N/A")
         confidence = r.get("confidence", 0.0)
         probs = r.get("probabilities") or {}
-        prob_str = ", ".join(f"{k}: {v:.1%}" for k, v in sorted(probs.items(), key=lambda x: -x[1]))
+        prob_str = ", ".join(
+            f"{k}: {v:.1%}" for k, v in sorted(probs.items(), key=lambda x: -x[1])
+        )
         lines.append(f"- {model}: {label} (confidence={confidence:.1%})")
         if prob_str:
             lines.append(f"  Probabilities: {prob_str}")
     return "\n".join(lines) if lines else "(no model predictions available)"
+
+
+def _format_model_results_verdict(results: List[dict]) -> str:
+    """Format model results as a directive: each model's verdict + full probabilities."""
+    if not results:
+        return "(Không có kết quả model — không thể tranh luận)"
+    lines = ["KẾT QUẢ PHÂN TÍCH CỦA PHOBERT VÀ COOLANT (BẮT BUỘC DÙNG):"]
+    for r in results:
+        model = r.get("model", "unknown").upper()
+        if not r.get("available"):
+            lines.append(f"- {model}: không khả dụng ({r.get('note', '')})")
+            continue
+        label = r.get("label", "N/A")
+        confidence = r.get("confidence", 0.0)
+        probs = r.get("probabilities") or {}
+        prob_str = ", ".join(
+            f"{k}: {v:.1%}" for k, v in sorted(probs.items(), key=lambda x: -x[1])
+        )
+        lines.append(
+            f"- {model}: KHẲNG ĐỊNH '{label}' với confidence={confidence:.1%}. "
+            f"Phân phối xác suất: {prob_str}"
+        )
+    lines.append("")
+    return "\n".join(lines)
 
 
 def _format_history(turns: List[dict]) -> str:
@@ -150,12 +228,12 @@ def debate_node(state: FactCheckState) -> dict:
     statement = state["statement"]
     evidence_real = state.get("evidence_real") or []
     evidence_fake = state.get("evidence_fake") or []
+    all_evidence = evidence_real + evidence_fake
     model_results = state.get("model_results") or []
     request_id = state.get("request_id", "unknown")
 
-    model_output_text = _format_model_results(model_results)
-    real_evidence_text = _format_evidence(evidence_real)
-    fake_evidence_text = _format_evidence(evidence_fake)
+    model_output_text = _format_model_results_verdict(model_results)
+    all_evidence_text = _format_evidence(all_evidence)
 
     turns: List[dict] = []
     exit_reason: Optional[str] = None
@@ -164,13 +242,19 @@ def debate_node(state: FactCheckState) -> dict:
 
     for round_num in range(settings.max_debate_rounds):
         history_text = _format_history(turns)
+        last_opponent_arg = (
+            turns[-1].get("argument", "")
+            if turns
+            else "(đây là vòng đầu tiên, chưa có lập luận đối thủ)"
+        )
 
         # ── real_advocate ────────────────────────────────────────────────────
         real_user = (
             f"CLAIM:\n{statement}\n\n"
             f"MODEL PREDICTIONS (PhoBERT + COOLANT):\n{model_output_text}\n\n"
-            f"[TRUSTED] EVIDENCE:\n{real_evidence_text}\n\n"
-            f"DEBATE HISTORY:\n{history_text}\n"
+            f"TOÀN BỘ BẰNG CHỨNG:\n{all_evidence_text}\n\n"
+            f"LẬP LUẬN ĐỐI THỦ (phải phản bác trực tiếp):\n{last_opponent_arg}\n\n"
+            f"LỊCH SỬ TRANH LUẬN:\n{history_text}\n"
         )
         try:
             _real_prompt = settings.real_advocate_prompt or REAL_ADVOCATE_PROMPT
@@ -210,8 +294,9 @@ def debate_node(state: FactCheckState) -> dict:
         fake_user = (
             f"CLAIM:\n{statement}\n\n"
             f"MODEL PREDICTIONS (PhoBERT + COOLANT):\n{model_output_text}\n\n"
-            f"[FLAGGED] EVIDENCE:\n{fake_evidence_text}\n\n"
-            f"DEBATE HISTORY:\n{history_text}\n"
+            f"TOÀN BỘ BẰNG CHỨNG:\n{all_evidence_text}\n\n"
+            f"LẬP LUẬN ĐỐI THỦ (phải phản bác trực tiếp):\n{real_turn.get('argument', '')}\n\n"
+            f"LỊCH SỬ TRANH LUẬN:\n{history_text}\n"
         )
         try:
             _fake_prompt = settings.fake_advocate_prompt or FAKE_ADVOCATE_PROMPT

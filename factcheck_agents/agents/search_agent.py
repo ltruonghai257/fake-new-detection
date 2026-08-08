@@ -17,7 +17,7 @@ from ..source_tier import classify_domain
 from ..state import Evidence, FactCheckState
 from ..tools.web_search import web_search
 from .llm import get_llm, parse_json
-from ..prompts import SEARCH_QUERY_PROMPT
+from ..prompts import CLAIM_MUTATION_PROMPT, SEARCH_QUERY_PROMPT
 
 
 def _draft_queries(statement: str) -> List[str]:
@@ -38,8 +38,27 @@ def _draft_queries(statement: str) -> List[str]:
     return [statement.strip()]
 
 
+def _mutate_claims(statement: str) -> List[str]:
+    """Generate variant claims (denial, narrower, rephrased) for deeper search."""
+    llm = get_llm()
+    if llm is None:
+        return []
+    try:
+        resp = llm.invoke(
+            CLAIM_MUTATION_PROMPT.format(n=3, statement=statement)
+        )
+        data = parse_json(getattr(resp, "content", "") or "")
+        if data and isinstance(data.get("variants"), list):
+            vs = [v.strip() for v in data["variants"] if v and v.strip()]
+            return vs[:3]
+    except Exception:
+        pass
+    return []
+
+
 def search_agent(state: FactCheckState) -> dict:
     statement = state["statement"]
+    claim_variants = _mutate_claims(statement)
     queries = _draft_queries(statement)
 
     trusted_list = [d.strip() for d in settings.trusted_domains.split(",") if d.strip()]
@@ -91,6 +110,7 @@ def search_agent(state: FactCheckState) -> dict:
 
     return {
         "search_queries": queries,
+        "claim_variants": claim_variants,
         "evidence": evidence,
         "evidence_graph": evidence_graph,
         "messages": [("assistant", msg)],

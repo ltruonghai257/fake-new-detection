@@ -1,7 +1,7 @@
-"""Fake source agent: gather evidence from fact-checking sources.
+"""Fake source agent: gather evidence from non-official / flagged sources.
 
-Searches tingia.gov.vn and the Google Fact Check API for evidence refuting
-or fact-checking the claim.
+Searches flagged domains (kenh14.vn, etc.), open web, and Google Fact Check
+API for evidence refuting or casting doubt on the claim.
 """
 
 from __future__ import annotations
@@ -18,60 +18,65 @@ from ..tools.web_search import web_search
 from ..tools.article_crawler import crawl_article, is_within_days
 
 
-def fake_source_agent(state: FactCheckState) -> dict:
-    """Search fact-checking sources for fake evidence.
+def _search_and_crawl(query: str, include_domains: list | None, seen: set) -> List[Evidence]:
+    """Run web search, crawl article content, filter by 7 days, deduplicate."""
+    try:
+        q_results = web_search(
+            query, max_results=settings.max_results, include_domains=include_domains
+        )
+    except Exception:
+        return []
 
-    Crawls full article content and filters to last 7 days.
+    out: List[Evidence] = []
+    for e in q_results:
+        url = e.get("url", "")
+        if url and url in seen:
+            continue
+        if url:
+            seen.add(url)
+
+        full_content, publish_date = crawl_article(url)
+        if not is_within_days(publish_date, days=7):
+            continue
+
+        e["source_tier"] = classify_domain(url) if url else "unknown"
+        e["image_path"], e["image_caption"] = (
+            _fetch_evidence_image(url) if url else (None, None)
+        )
+        if full_content:
+            e["content"] = full_content
+            e["snippet"] = (
+                full_content[:500] + "..." if len(full_content) > 500 else full_content
+            )
+            e["publish_date"] = publish_date.isoformat() if publish_date else None
+
+        out.append(e)
+    return out
+
+
+def fake_source_agent(state: FactCheckState) -> dict:
+    """Search flagged/non-official sources for evidence against the claim.
+
     Returns {"evidence_fake": results, "messages": [...]}.
     Never raises; returns empty list on all failures (EVRET-03).
     """
     queries = state.get("search_queries") or [state["statement"]]
+    claim_variants = state.get("claim_variants") or []
+    queries = list(dict.fromkeys(queries + claim_variants))  # deduplicate, preserve order
+
+    flagged_list = [d.strip() for d in settings.flagged_domains.split(",") if d.strip()]
     results: List[Evidence] = []
     seen: set = set()
 
     for q in queries:
-        # tingia.gov.vn path (EVRET-02)
-        try:
-            q_results = web_search(
-                q, max_results=settings.max_results, include_domains=["tingia.gov.vn"]
-            )
-            for e in q_results:
-                url = e.get("url", "")
-                if url and url in seen:
-                    continue
-                if url:
-                    seen.add(url)
+        # 1) flagged domains (kenh14.vn, etc.)
+        if flagged_list:
+            results.extend(_search_and_crawl(q, flagged_list, seen))
 
-                # Crawl full article content
-                full_content, publish_date = crawl_article(url)
+        # 2) open web (no domain filter) — catches non-official sources
+        results.extend(_search_and_crawl(q, None, seen))
 
-                # Filter: only include if within last 7 days
-                if not is_within_days(publish_date, days=7):
-                    continue
-
-                e["source_tier"] = classify_domain(url) if url else "unknown"
-                e["image_path"], e["image_caption"] = (
-                    _fetch_evidence_image(url) if url else (None, None)
-                )
-
-                # Use full content if available
-                if full_content:
-                    e["content"] = full_content
-                    e["snippet"] = (
-                        full_content[:500] + "..."
-                        if len(full_content) > 500
-                        else full_content
-                    )
-                    e["publish_date"] = (
-                        publish_date.isoformat() if publish_date else None
-                    )
-
-                results.append(e)
-        except Exception:
-            # Skip tingia.gov.vn on failure
-            pass
-
-        # Google Fact Check API path (EVRET-02)
+        # 3) Google Fact Check API
         if settings.google_factcheck_api_key is not None:
             try:
                 api_url = "https://factchecktools.googleapis.com/v1alpha1/claims:search"
@@ -85,12 +90,9 @@ def fake_source_agent(state: FactCheckState) -> dict:
                 data = resp.json()
                 claims = data.get("claims", [])
                 for claim in claims:
-                    # Extract relevant fields from Google Fact Check API response
                     claim_text = claim.get("text", "")
                     claimant = claim.get("claimant", "")
-                    review_date = claim.get("claimReview", [{}])[0].get(
-                        "reviewDate", ""
-                    )
+                    review_date = claim.get("claimReview", [{}])[0].get("reviewDate", "")
                     publisher = (
                         claim.get("claimReview", [{}])[0]
                         .get("publisher", {})
@@ -101,19 +103,15 @@ def fake_source_agent(state: FactCheckState) -> dict:
                         .get("publisher", {})
                         .get("site", "")
                     )
-                    textual_rating = claim.get("claimReview", [{}])[0].get(
-                        "textualRating", ""
-                    )
+                    textual_rating = claim.get("claimReview", [{}])[0].get("textualRating", "")
                     title = f"{publisher}: {textual_rating}"
                     snippet = f"{claim_text} - {claimant} ({review_date})"
 
-                    # Parse review date and filter
                     try:
                         parsed_date = date_parser.parse(review_date)
                         if not is_within_days(parsed_date, days=7):
                             continue
                     except Exception:
-                        # If date parsing fails, include it (conservative)
                         pass
 
                     if url and url in seen:
@@ -134,8 +132,7 @@ def fake_source_agent(state: FactCheckState) -> dict:
                     )
                     results.append(e)
             except Exception:
-                # Stub to [] on Google Fact Check API failure
                 pass
 
-    msg = f"[FakeSource] {len(results)} items (last 7 days)"
+    msg = f"[FakeSource] {len(results)} items from flagged+open+factcheck (last 7 days)"
     return {"evidence_fake": results, "messages": [("assistant", msg)]}

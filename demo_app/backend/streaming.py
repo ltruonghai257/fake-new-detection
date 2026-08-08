@@ -77,13 +77,18 @@ def _summarize_node(node_name: str, node_output: dict, accumulated: dict) -> str
     if node_name == "debate":
         turns = node_output.get("debate_turns") or []
         exit_reason = node_output.get("debate_exit_reason", "")
+        converged = node_output.get("debate_converged", False)
+        agreed = node_output.get("debate_agreed_verdict")
         reason_vi = {
             "no_llm": "không có LLM",
             "llm_error": "lỗi LLM",
             "max_rounds": "đạt số vòng tối đa",
+            "converged": "hai bên đồng thuận",
         }.get(exit_reason, exit_reason)
         if not turns:
             return f"Tranh luận bị bỏ qua ({reason_vi})."
+        if converged and agreed:
+            return f"Tranh luận {len(turns)} lượt → đồng thuận: {agreed}."
         return f"Tranh luận {len(turns)} lượt ({reason_vi})."
 
     if node_name == "judge":
@@ -99,6 +104,9 @@ async def sse_stream(
     request_id: str,
     statement: str,
     image_path: str | None,
+    use_phobert: bool = True,
+    use_coolant: bool = True,
+    use_evidence: bool = True,
 ) -> AsyncGenerator[str, None]:
     """Async generator yielding SSE-formatted event strings.
 
@@ -127,6 +135,9 @@ async def sse_stream(
                 checkpointer=None
             )  # no persistence needed for demo
             state = initial_state(statement, image_path, language="vi")
+            state["use_phobert"] = use_phobert
+            state["use_coolant"] = use_coolant
+            state["use_evidence"] = use_evidence
             state["request_id"] = (
                 request_id  # override so log files match client's request_id
             )
@@ -172,9 +183,13 @@ async def sse_stream(
                                 "type": "turn_start",
                                 "agent": turn.get("agent", ""),
                                 "round": turn.get("round", 0),
+                                "verdict": turn.get("verdict"),
+                                "confidence": turn.get("confidence"),
                             }
                         )
-                        for text_chunk in rechunk(turn.get("text", ""), 8):
+                        # argument field (new structured format); fallback to text for compat
+                        text = turn.get("argument") or turn.get("text", "")
+                        for text_chunk in rechunk(text, 8):
                             if done.is_set():
                                 break
                             time.sleep(0.02)  # ~20 ms per chunk (D-01)
@@ -184,6 +199,17 @@ async def sse_stream(
                                 "type": "turn_end",
                                 "agent": turn.get("agent", ""),
                                 "round": turn.get("round", 0),
+                                "verdict": turn.get("verdict"),
+                                "confidence": turn.get("confidence"),
+                                "concession": turn.get("concession"),
+                            }
+                        )
+                    # Emit convergence event after all turns
+                    if node_output.get("debate_converged"):
+                        _post(
+                            {
+                                "type": "debate_converged",
+                                "agreed_verdict": node_output.get("debate_agreed_verdict"),
                             }
                         )
 

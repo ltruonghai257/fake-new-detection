@@ -33,6 +33,8 @@ def real_source_agent(state: FactCheckState) -> dict:
     Never raises; returns empty list on all failures (EVRET-03).
     """
     queries = state.get("search_queries") or [state["statement"]]
+    claim_variants = state.get("claim_variants") or []
+    queries = list(dict.fromkeys(queries + claim_variants))  # deduplicate, preserve order
     results: List[Evidence] = []
     seen: set = set()
     workflow_steps = []

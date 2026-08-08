@@ -3,7 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 .opencode/
-
+cache/*
+.pi/*
+training/*
 # Virtual environments
 .venv/
 venv/
@@ -35,7 +37,7 @@ processed_data/**/*
 **/*.h5
 **/*.npz
 placeholder_images/**/*
-src/lib/**/*    
+src/lib/**/*
 notebooks/data/**/*
 notebooks/**/*.jpg
 notebooks/**/*.jpeg
