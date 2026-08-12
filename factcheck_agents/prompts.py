@@ -65,3 +65,17 @@ DEBATE_SYSTEM_PROMPT = os.getenv(
         'Trả lời ĐÚNG theo JSON: {"support": "...", "refute": "..."}'
     ),
 )
+
+# ── Claim Mutation ───────────────────────────────────────────────────────
+# ponytail: single LLM call generates variant claims so both search agents
+# get probing queries beyond the original statement. Cap at 3 variants.
+CLAIM_MUTATION_PROMPT = os.getenv(
+    "FACTCHECK_CLAIM_MUTATION_PROMPT",
+    (
+        "Rewrite the following claim into {n} short, independent Vietnamese "
+        "search queries that probe different angles of the same topic — "
+        "include at least one denial/negation variant (e.g. 'X không...') and "
+        "at least one narrower variant. Keep each under 120 characters.\n\n"
+        'Claim: {statement}\n\nRespond ONLY as JSON: {{"variants": ["...", "..."]}}'
+    ),
+)

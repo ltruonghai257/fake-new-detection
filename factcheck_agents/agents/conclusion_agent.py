@@ -17,7 +17,8 @@ from ..prompts import CONCLUSION_SYSTEM_PROMPT, DEBATE_SYSTEM_PROMPT
 
 
 _BINARY_REAL_LABELS = {"SUPPORTED", "REAL", "TRUE"}
-_BINARY_FAKE_LABELS = {"REFUTED", "FAKE", "FALSE", "MISLEADING", "UNVERIFIED", "NEI"}
+_BINARY_NEI_LABELS = {"NEI", "UNVERIFIED"}
+# FAKE: REFUTED, FAKE, FALSE, MISLEADING — explicit falsehoods
 
 
 def _has_cross_source_conflict(evidence_graph: Optional[Any]) -> bool:
@@ -37,6 +38,8 @@ def _map_to_binary(label: str, conflict: bool) -> Tuple[str, str]:
     label_upper = str(label).upper()
     if label_upper in _BINARY_REAL_LABELS:
         return "REAL", "Thật"
+    if label_upper in _BINARY_NEI_LABELS:
+        return "NEI", "Chưa xác thực"
     return "FAKE", "Giả"
 
 

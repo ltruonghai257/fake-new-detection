@@ -6,14 +6,28 @@ import EvidencePanel from './components/EvidencePanel';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
+export interface VerdictExplanation {
+    model_summary: string;
+    debate_winner: string;
+    evidence_summary: string;
+    confidence_breakdown: {
+        phobert: number;
+        coolant: number;
+        evidence: number;
+        debate: number;
+    };
+}
+
 export interface Verdict {
     label: string;
-    verdict_binary: 'REAL' | 'FAKE';
-    verdict_label_vi: 'Thật' | 'Giả';
+    verdict_binary: 'REAL' | 'FAKE' | 'NEI';
+    verdict_label_vi: 'Thật' | 'Giả' | 'Chưa xác thực';
     confidence: number;
     rationale: string;
     citations: string[];
     recommendation: string;
+    explanation?: VerdictExplanation | null;
+    model_detail?: Record<string, { label: string; confidence: number; probabilities: Record<string, number> }> | null;
 }
 
 export interface ArgumentScore {
@@ -58,6 +72,9 @@ export interface DebateTurn {
     round: number;
     text: string;
     timestamp: string;
+    verdict?: 'REAL' | 'FAKE' | null;
+    confidence?: number | null;
+    concession?: string | null;
     error?: string;
 }
 
@@ -88,6 +105,9 @@ export default function App() {
     const [imageUrl, setImageUrl] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [usePhobert, setUsePhobert] = useState(true);
+    const [useCoolant, setUseCoolant] = useState(true);
+    const [useEvidence, setUseEvidence] = useState(true);
 
     // Load image preview when URL changes (real-time, debounced)
     useEffect(() => {
@@ -131,6 +151,10 @@ export default function App() {
     const [currentTurnRound, setCurrentTurnRound] = useState<number>(0);
     const currentTurnTextRef = useRef('');
     const [currentTurnText, setCurrentTurnText] = useState('');
+
+    // Debate convergence state
+    const [debateConverged, setDebateConverged] = useState(false);
+    const [debateAgreedVerdict, setDebateAgreedVerdict] = useState<string | null>(null);
 
     // Verdict + evidence state (revealed together at verdict event, D-05/D-07)
     const [verdict, setVerdict] = useState<Verdict | null>(null);
@@ -210,6 +234,9 @@ export default function App() {
                 type: string;
                 agent: string;
                 round: number;
+                verdict?: string | null;
+                confidence?: number | null;
+                concession?: string | null;
             };
             const finalText = currentTurnTextRef.current;
             setAllTurns(prev => [
@@ -219,12 +246,24 @@ export default function App() {
                     round: data.round,
                     text: finalText,
                     timestamp: new Date().toISOString(),
+                    verdict: (data.verdict as 'REAL' | 'FAKE') ?? null,
+                    confidence: data.confidence ?? null,
+                    concession: data.concession ?? null,
                 },
             ]);
             setCurrentTurnAgent(null);
             setCurrentTurnRound(0);
             currentTurnTextRef.current = '';
             setCurrentTurnText('');
+        });
+
+        es.addEventListener('debate_converged', e => {
+            const data = JSON.parse(e.data) as {
+                type: string;
+                agreed_verdict: string | null;
+            };
+            setDebateConverged(true);
+            setDebateAgreedVerdict(data.agreed_verdict);
         });
 
         es.addEventListener('verdict', e => {
@@ -273,11 +312,16 @@ export default function App() {
         setShowEvidence(false);
         setShowBadges(false);
         setStageLogs([]);
+        setDebateConverged(false);
+        setDebateAgreedVerdict(null);
 
         const fd = new FormData();
         fd.append('statement', statement);
         if (imageUrl.trim()) fd.append('image_url', imageUrl.trim());
         if (imageFile) fd.append('image_file', imageFile);
+        fd.append('use_phobert', usePhobert ? 'true' : 'false');
+        fd.append('use_coolant', useCoolant ? 'true' : 'false');
+        fd.append('use_evidence', useEvidence ? 'true' : 'false');
 
         try {
             const res = await fetch('http://localhost:8000/api/analyze', {
@@ -350,10 +394,49 @@ export default function App() {
                         />
                     </div>
                 )}
+                {/* Ablation toggles */}
+                <div className="flex items-center gap-6 mb-4">
+                    <span className="text-sm font-medium text-gray-600">Mô hình:</span>
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={usePhobert}
+                            onChange={e => setUsePhobert(e.target.checked)}
+                            disabled={isStreaming}
+                            className="w-4 h-4 accent-purple-500"
+                        />
+                        <span className="text-sm text-gray-700">PhoBERT</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={useCoolant}
+                            onChange={e => setUseCoolant(e.target.checked)}
+                            disabled={isStreaming}
+                            className="w-4 h-4 accent-teal-500"
+                        />
+                        <span className="text-sm text-gray-700">COOLANT</span>
+                    </label>
+                    <span className="text-gray-300">|</span>
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={useEvidence}
+                            onChange={e => setUseEvidence(e.target.checked)}
+                            disabled={isStreaming}
+                            className="w-4 h-4 accent-amber-500"
+                        />
+                        <span className="text-sm text-gray-700">Bằng chứng</span>
+                    </label>
+                    {!usePhobert && !useCoolant && !useEvidence && (
+                        <span className="text-xs text-amber-600">⚠ Cần ít nhất 1 thành phần</span>
+                    )}
+                </div>
+
                 <button
                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
                     onClick={handleSubmit}
-                    disabled={isStreaming || !statement.trim()}>
+                    disabled={isStreaming || !statement.trim() || (!usePhobert && !useCoolant && !useEvidence)}>
                     {isStreaming ? 'Đang kiểm tra...' : 'Kiểm tra'}
                 </button>
             </div>
@@ -411,6 +494,8 @@ export default function App() {
                         currentTurnText={currentTurnText}
                         weightBreakdown={weightBreakdown}
                         showBadges={showBadges}
+                        debateConverged={debateConverged}
+                        debateAgreedVerdict={debateAgreedVerdict}
                     />
                 </div>
             )}

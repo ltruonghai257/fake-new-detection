@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Verdict, WeightBreakdown, EvidenceBreakdown } from '../App';
+import { Verdict, WeightBreakdown, EvidenceBreakdown, VerdictExplanation } from '../App';
 
 interface Props {
     verdict: Verdict;
@@ -15,6 +15,9 @@ export default function VerdictCard({
     requestId,
 }: Props) {
     const isReal = verdict.verdict_binary === 'REAL';
+    const isNei = verdict.verdict_binary === 'NEI';
+    const verdictColor = isReal ? 'text-green-600' : isNei ? 'text-yellow-600' : 'text-red-600';
+    const gaugeColor = isReal ? 'bg-green-500' : isNei ? 'bg-yellow-400' : 'bg-red-500';
     const confidencePct = Math.round(verdict.confidence * 100);
     const [openPanel, setOpenPanel] = useState<DetailPanel>(null);
 
@@ -29,10 +32,7 @@ export default function VerdictCard({
 
             {/* Label + confidence */}
             <div className="flex items-center gap-4 mb-4">
-                <span
-                    className={`text-4xl font-bold ${
-                        isReal ? 'text-green-600' : 'text-red-600'
-                    }`}>
+                <span className={`text-4xl font-bold ${verdictColor}`}>
                     {verdict.verdict_label_vi}
                 </span>
                 <span className="text-gray-500 text-sm">{verdict.label}</span>
@@ -44,9 +44,7 @@ export default function VerdictCard({
             {/* Confidence gauge */}
             <div className="w-full bg-gray-200 rounded-full h-3 mb-6">
                 <div
-                    className={`h-3 rounded-full transition-all ${
-                        isReal ? 'bg-green-500' : 'bg-red-500'
-                    }`}
+                    className={`h-3 rounded-full transition-all ${gaugeColor}`}
                     style={{ width: `${confidencePct}%` }}
                 />
             </div>
@@ -142,6 +140,11 @@ export default function VerdictCard({
                 {verdict.recommendation}
             </p>
 
+            {/* Tại sao? — structured explanation */}
+            {verdict.explanation && (
+                <ExplanationSection explanation={verdict.explanation} modelDetail={verdict.model_detail} />
+            )}
+
             {/* Citations */}
             {verdict.citations.length > 0 && (
                 <div className="mb-4">
@@ -179,6 +182,129 @@ export default function VerdictCard({
                     Tải bản phán quyết
                 </a>
             </div>
+        </div>
+    );
+}
+
+// ── Explanation section ──────────────────────────────────────────────────────
+
+function ExplanationSection({
+    explanation,
+    modelDetail,
+}: {
+    explanation: VerdictExplanation;
+    modelDetail?: Verdict['model_detail'];
+}) {
+    const [open, setOpen] = useState(false);
+    const bd = explanation.confidence_breakdown;
+
+    return (
+        <div className="mb-4 border border-gray-200 rounded-lg overflow-hidden">
+            <button
+                type="button"
+                onClick={() => setOpen(o => !o)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 text-sm font-medium text-gray-700 transition-colors">
+                <span>🔍 Tại sao phán quyết này?</span>
+                <span className="text-gray-400">{open ? '▲' : '▼'}</span>
+            </button>
+
+            {open && (
+                <div className="px-4 py-4 space-y-4 text-sm text-gray-700">
+
+                    {/* Model outputs */}
+                    <div>
+                        <div className="font-semibold text-gray-800 mb-1">📊 Kết quả mô hình</div>
+                        {modelDetail && Object.keys(modelDetail).length > 0 ? (
+                            <div className="space-y-2">
+                                {Object.entries(modelDetail).map(([name, m]) => (
+                                    <div key={name} className="bg-gray-50 rounded-lg p-3">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="font-medium uppercase text-xs text-gray-500">{name}</span>
+                                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                                                m.label === 'SUPPORTED' || m.label === 'REAL'
+                                                    ? 'bg-green-100 text-green-700'
+                                                    : m.label === 'NEI'
+                                                    ? 'bg-yellow-100 text-yellow-700'
+                                                    : 'bg-red-100 text-red-700'
+                                            }`}>{m.label}</span>
+                                            <span className="text-gray-400 text-xs ml-auto">{Math.round(m.confidence * 100)}%</span>
+                                        </div>
+                                        {m.probabilities && (
+                                            <div className="space-y-1">
+                                                {Object.entries(m.probabilities)
+                                                    .sort(([, a], [, b]) => b - a)
+                                                    .map(([lbl, prob]) => (
+                                                        <div key={lbl} className="flex items-center gap-2">
+                                                            <span className="w-24 text-xs text-gray-500">{lbl}</span>
+                                                            <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                                                <div
+                                                                    className="bg-blue-400 h-2 rounded-full"
+                                                                    style={{ width: `${prob * 100}%` }}
+                                                                />
+                                                            </div>
+                                                            <span className="text-xs text-gray-500 w-10 text-right">{(prob * 100).toFixed(1)}%</span>
+                                                        </div>
+                                                    ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-gray-500 text-xs">{explanation.model_summary}</p>
+                        )}
+                    </div>
+
+                    {/* Debate winner */}
+                    {explanation.debate_winner && explanation.debate_winner !== 'none' && explanation.debate_winner !== 'unknown' && (
+                        <div>
+                            <div className="font-semibold text-gray-800 mb-1">⚖️ Kết quả tranh luận</div>
+                            <p className="text-gray-600">
+                                Bên thắng:{' '}
+                                <span className={`font-medium ${
+                                    explanation.debate_winner === 'real_advocate' ? 'text-blue-600' : 'text-orange-600'
+                                }`}>
+                                    {explanation.debate_winner === 'real_advocate' ? 'Bảo vệ (THẬT)' : 'Phản biện (GIẢ)'}
+                                </span>
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Evidence summary */}
+                    {explanation.evidence_summary && (
+                        <div>
+                            <div className="font-semibold text-gray-800 mb-1">📰 Tóm tắt bằng chứng</div>
+                            <p className="text-gray-600">{explanation.evidence_summary}</p>
+                        </div>
+                    )}
+
+                    {/* Confidence breakdown */}
+                    {bd && (
+                        <div>
+                            <div className="font-semibold text-gray-800 mb-2">🧮 Đóng góp vào điểm tin cậy</div>
+                            <div className="space-y-1">
+                                {[
+                                    { label: 'PhoBERT', value: bd.phobert, color: 'bg-purple-400' },
+                                    { label: 'COOLANT', value: bd.coolant, color: 'bg-teal-400' },
+                                    { label: 'Bằng chứng', value: bd.evidence, color: 'bg-amber-400' },
+                                    { label: 'Tranh luận', value: bd.debate, color: 'bg-blue-400' },
+                                ].map(({ label, value, color }) => (
+                                    <div key={label} className="flex items-center gap-2">
+                                        <span className="w-24 text-xs text-gray-500">{label}</span>
+                                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                            <div
+                                                className={`${color} h-2 rounded-full`}
+                                                style={{ width: `${Math.min(value * 100, 100)}%` }}
+                                            />
+                                        </div>
+                                        <span className="text-xs text-gray-500 w-10 text-right">{(value * 100).toFixed(0)}%</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
@@ -261,7 +387,7 @@ function CoolantDetail({
             </div>
             <p className="text-gray-600 mb-3">
                 COOLANT là mô hình đa phương thức: nhận claim (text) + hình ảnh,
-                xuất ra 2 logit cho REAL / FAKE. Áp dụng{' '}
+                    xuất ra 3 logit cho SUPPORTED / REFUTED / NEI. Áp dụng{' '}
                 <code className="bg-teal-100 px-1 rounded">softmax</code> để
                 được xác suất, nhãn cao nhất được chọn.
             </p>

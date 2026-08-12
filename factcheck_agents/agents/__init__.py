@@ -10,6 +10,7 @@ from .fake_source_agent import fake_source_agent
 from .social_loop_agent import social_loop_agent
 from .debate_node import debate_node
 from .judge_agent import judge_agent
+from .expert_agent import expert_agent
 from ..reranker import reranker
 
 __all__ = [
@@ -23,5 +24,6 @@ __all__ = [
     "social_loop_agent",
     "debate_node",
     "judge_agent",
+    "expert_agent",
     "reranker",
 ]

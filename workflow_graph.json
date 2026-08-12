@@ -1,0 +1,60 @@
+{
+  "direction": "TB",
+  "nodes": [
+    {"id": "claim", "label": "Claim + Image", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;", "width": 140, "height": 50, "group": "input", "groupLabel": "Input"},
+    {"id": "toggles", "label": "Ablation Toggles\nPhoBERT | COOLANT | Evidence", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;", "width": 170, "height": 60, "group": "input"},
+
+    {"id": "route_start", "label": "route_after_start", "style": "shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;", "width": 130, "height": 60},
+
+    {"id": "real_source", "label": "real_source_agent\nTavily/Google CSE\n→ evidence_real", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;", "width": 160, "height": 65, "group": "evidence", "groupLabel": "Evidence Retrieval"},
+    {"id": "fake_source", "label": "fake_source_agent\nGoogle FactCheck API\n→ evidence_fake", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;", "width": 160, "height": 65, "group": "evidence"},
+
+    {"id": "nei_gate", "label": "nei_gate\nroute_nei_check", "style": "shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;", "width": 130, "height": 60},
+
+    {"id": "reranker", "label": "reranker\nBM25 re-rank\nevidence by relevance", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;", "width": 150, "height": 60, "group": "process", "groupLabel": "Ranking"},
+
+    {"id": "social_loop", "label": "social_loop_agent\nAdditional social\nsearch when weak", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;", "width": 150, "height": 60, "group": "process"},
+
+    {"id": "verify", "label": "verify_agent\nPhoBERT (text) || COOLANT (image)\n→ model_results", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;", "width": 180, "height": 70, "group": "models", "groupLabel": "Model Verification"},
+
+    {"id": "agreement_gate", "label": "agreement_gate\nWeighted agreement score\ndisagree → debate\nagree → skip debate", "style": "shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;", "width": 160, "height": 80},
+
+    {"id": "debate", "label": "debate_node\nreal_advocate ↔ fake_advocate\nconvergence: same verdict\nmax 10 rounds", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;", "width": 180, "height": 80, "group": "debate_group", "groupLabel": "Debate (LLM)"},
+
+    {"id": "judge", "label": "judge_agent\nWeighted verdict\n30/30/40 → REAL|FAKE|NEI", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;", "width": 170, "height": 70, "group": "verdict", "groupLabel": "Final Verdict"},
+
+    {"id": "output", "label": "Verdict + Explanation\nREAL / FAKE / NEI", "style": "rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;", "width": 150, "height": 55, "group": "output_group", "groupLabel": "Output"},
+
+    {"id": "ablation_skip", "label": "skip evidence retrieval\n→ nei_gate shortcut", "style": "rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;", "width": 160, "height": 50},
+
+    {"id": "ablation_model", "label": "use_phobert / use_coolant\nskip disabled models", "style": "rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;", "width": 170, "height": 50}
+  ],
+  "edges": [
+    {"source": "claim", "target": "toggles"},
+    {"source": "toggles", "target": "route_start"},
+
+    {"source": "route_start", "target": "real_source", "label": "fan_out\n(use_evidence=true)"},
+    {"source": "route_start", "target": "fake_source", "label": "fan_out\n(always)"},
+    {"source": "route_start", "target": "ablation_skip", "label": "nei_gate\n(use_evidence=false)"},
+
+    {"source": "real_source", "target": "nei_gate"},
+    {"source": "fake_source", "target": "nei_gate"},
+    {"source": "ablation_skip", "target": "nei_gate"},
+
+    {"source": "nei_gate", "target": "reranker", "label": "reranker\n(evidence found)"},
+    {"source": "nei_gate", "target": "judge", "label": "judge\n(no evidence)"},
+
+    {"source": "reranker", "target": "social_loop", "label": "social_loop\n(weak evidence)"},
+    {"source": "reranker", "target": "verify", "label": "verify\n(sufficient)"},
+    {"source": "social_loop", "target": "verify"},
+
+    {"source": "verify", "target": "ablation_model"},
+    {"source": "ablation_model", "target": "agreement_gate"},
+
+    {"source": "agreement_gate", "target": "debate", "label": "debate\n(disagree / low score)"},
+    {"source": "agreement_gate", "target": "judge", "label": "judge\n(high agreement)"},
+
+    {"source": "debate", "target": "judge"},
+    {"source": "judge", "target": "output"}
+  ]
+}

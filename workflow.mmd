@@ -1,0 +1,47 @@
+flowchart TD
+    claim["📝 Claim + Image<br>(user input)"]
+
+    claim --> toggles["⚙️ Ablation Toggles<br>PhoBERT / COOLANT / Evidence"]
+
+    toggles --> route_start{"route_after_start<br>use_evidence?"}
+
+    route_start -->|"fan_out<br>(use_evidence=true)"| real["real_source_agent<br>Tavily / Google CSE<br>→ evidence_real"]
+    route_start -->|"fan_out<br>(always)"| fake["fake_source_agent<br>Google FactCheck API<br>→ evidence_fake"]
+    route_start -->|"nei_gate<br>(use_evidence=false)"| nei_gate{"nei_gate<br>route_nei_check"}
+
+    real --> nei_gate
+    fake --> nei_gate
+
+    nei_gate -->|"reranker<br>(evidence found)"| reranker["reranker<br>BM25 re-rank evidence"]
+    nei_gate -->|"judge<br>(no evidence)"| judge
+
+    reranker -->|"social_loop<br>(weak evidence)"| social["social_loop_agent<br>additional social search"]
+    reranker -->|"verify<br>(sufficient)"| verify["verify_agent<br><br>PhoBERT (text) || COOLANT (image)<br>→ model_results"]
+
+    social --> verify
+
+    verify --> model_toggle["🔘 use_phobert / use_coolant<br>skip disabled models"]
+
+    model_toggle --> agreement{"agreement_gate<br>weighted agreement score"}
+
+    agreement -->|"debate<br>(disagree / low score)"| debate["debate_node<br><br>real_advocate ↔ fake_advocate<br>convergence: same verdict<br>max 10 rounds"]
+    agreement -->|"judge<br>(high agreement)"| judge["judge_agent<br><br>weighted verdict<br>dynamic 30/30/40 redistribution<br>→ REAL | FAKE | NEI"]
+
+    debate --> judge
+
+    judge --> output["✅ Verdict + Explanation<br>REAL / FAKE / NEI"]
+
+    style claim fill:#e1d5e7,stroke:#9673a6
+    style toggles fill:#fff2cc,stroke:#d6b656
+    style route_start fill:#f5f5f5,stroke:#666
+    style real fill:#dae8fc,stroke:#6c8ebf
+    style fake fill:#dae8fc,stroke:#6c8ebf
+    style nei_gate fill:#f5f5f5,stroke:#666
+    style reranker fill:#dae8fc,stroke:#6c8ebf
+    style social fill:#dae8fc,stroke:#6c8ebf
+    style verify fill:#d5e8d4,stroke:#82b366
+    style model_toggle fill:#fff2cc,stroke:#d6b656
+    style agreement fill:#f5f5f5,stroke:#666
+    style debate fill:#ffe6cc,stroke:#d79b00
+    style judge fill:#f8cecc,stroke:#b85450
+    style output fill:#e1d5e7,stroke:#9673a6

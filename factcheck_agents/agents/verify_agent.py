@@ -11,6 +11,7 @@ is True only when at least one model is available, confident, and not NEI.
 
 from __future__ import annotations
 
+import os
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 from typing import List, Optional
@@ -20,8 +21,8 @@ from ..models import CoolantChecker, PhoBERTChecker
 from ..models.phobert_checker import build_evidence_text
 from ..state import FactCheckState, ModelResult
 
-_PHOBERT_WEIGHT = 0.6
-_COOLANT_WEIGHT = 0.4
+_PHOBERT_WEIGHT = float(os.getenv("FACTCHECK_PHOBERT_WEIGHT", "0.4"))
+_COOLANT_WEIGHT = float(os.getenv("FACTCHECK_COOLANT_WEIGHT", "0.6"))
 
 
 @lru_cache(maxsize=1)
@@ -121,14 +122,31 @@ def verify_agent(state: FactCheckState) -> dict:
         except ImportError:
             pass  # COOLANT will handle the error gracefully
 
-    with ThreadPoolExecutor(max_workers=2) as executor:
-        future_phobert = executor.submit(
-            _run_phobert, statement, evidence_text, evidence_count
-        )
-        future_coolant = executor.submit(_run_coolant, statement, image_path)
+    use_phobert = state.get("use_phobert", True)
+    use_coolant = state.get("use_coolant", True)
 
-    phobert_result = future_phobert.result()
-    coolant_result = future_coolant.result()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        future_phobert = (
+            executor.submit(_run_phobert, statement, evidence_text, evidence_count)
+            if use_phobert
+            else None
+        )
+        future_coolant = (
+            executor.submit(_run_coolant, statement, image_path)
+            if use_coolant
+            else None
+        )
+
+    phobert_result = (
+        future_phobert.result()
+        if future_phobert
+        else ModelResult(model="phobert_vifactcheck", available=False, note="disabled by ablation toggle")
+    )
+    coolant_result = (
+        future_coolant.result()
+        if future_coolant
+        else ModelResult(model="coolant", available=False, note="disabled by ablation toggle")
+    )
 
     results = [phobert_result, coolant_result]
     signal = _compute_reliability_signal(results)
