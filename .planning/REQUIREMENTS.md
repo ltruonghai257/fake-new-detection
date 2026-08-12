@@ -1,9 +1,46 @@
-# Requirements: factcheck_agents v3.0
+# Requirements: factcheck_agents v3.1
 
-**Defined:** 2026-08-02
+**Defined:** 2026-08-13 (v3.1 — A2A Protocol Integration; v3.0 shipped 2026-08-03)
 **Core Value:** A user submits a Vietnamese claim and gets back a weighted, debate-tested verdict — with live streaming debate transcript and full audit log — even when model checkpoints are missing.
 
-## v3.0 Requirements
+## v3.1 Requirements
+
+### A2A SDK & Agent Handlers (Phase 1)
+
+-   [ ] **A2A-01**: `a2a-sdk[http-server,fastapi]` (≥ 1.1.0) added to `factcheck_agents/` dependencies; each of the 10 agent modules (`search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`, `social_loop_agent`, `agreement_gate`, `real_advocate`, `fake_advocate`, `judge_agent`, `conclusion_agent`) gains a `TaskHandler` class that accepts an A2A `Task` object and returns an A2A `TaskResult`
+-   [ ] **A2A-02**: Each agent's uvicorn app exposes `GET /.well-known/agent.json` containing its A2A Agent Card: `name`, `description`, `version`, `skills` list (one skill per agent), and `url` matching its assigned port; all fields conform to the A2A Agent Card JSON schema
+
+### Agent Launch Scripts (Phase 1)
+
+-   [ ] **A2A-03**: `scripts/start_agents.sh` starts all 10 uvicorn processes in the background, one per port (search=9001, evaluate=9002, real_source=9003, fake_source=9004, social_loop=9005, agreement_gate=9006, real_advocate=9007, fake_advocate=9008, judge=9009, conclusion=9010); writes a PID file (`scripts/.agent_pids`) for clean shutdown
+-   [ ] **A2A-03b**: `scripts/stop_agents.sh` reads the PID file and sends `SIGTERM` to each process; handles missing PIDs gracefully; exits 0
+
+### A2A Client Module (Phase 2)
+
+-   [ ] **A2A-04**: `factcheck_agents/a2a_client.py` implements typed wrapper functions (one per agent) that construct an A2A `Task` message, call the appropriate local port via `httpx`, and deserialize the `TaskResult` back to the existing Python types used by the LangGraph state (`Evidence`, `VerifyResult`, `DebateTurn`, etc.); timeouts and connection errors propagate as `AgentUnavailableError`
+
+### LangGraph Graph Refactor (Phase 2)
+
+-   [ ] **A2A-05**: `factcheck_agents/graph.py` — all 10 node functions updated to call `a2a_client.*` functions instead of importing agent functions directly; conditional routing edges (`social_loop_router`, `agreement_router`, `nei_gate`) remain unchanged; `build_graph()` and `build_debate_graph()` signatures and return types unchanged
+-   [ ] **A2A-05b**: `AgentUnavailableError` caught at each node and mapped to the existing graceful-degrade path (same behaviour as a missing model checkpoint in v3.0)
+
+### Demo App SSE Bridge Update (Phase 3)
+
+-   [ ] **A2A-06**: `demo_app/backend/streaming.py` updated to call A2A agent HTTP endpoints via `a2a_client`; the SSE event schema (`stage_start`, `turn_start`, `chunk`, `turn_end`, `verdict`, `heartbeat`) is **unchanged** — the React frontend requires no changes
+-   [ ] **A2A-06b**: If an A2A agent is unreachable when the demo app calls it, the SSE stream emits a `stage_error` event with a Vietnamese-language error message and closes gracefully (no 500)
+
+### Test Updates (Phase 3)
+
+-   [ ] **A2A-07**: Each of the 10 agent `TaskHandler`s is unit-tested by spinning up the uvicorn server in-process (via `pytest-anyio` or `asyncio` loop), sending a real A2A `Task`, and asserting the `TaskResult` schema; existing Python-level unit tests (non-HTTP) are retained for regression
+-   [ ] **A2A-07b**: Existing graph integration tests (2 sample Vietnamese claims end-to-end) are updated to start agent servers before the test session (session-scoped fixture) and tear down after; total test run still passes in < 60 s on developer hardware
+
+### Backward Compatibility (Phase 3)
+
+-   [ ] **A2A-08**: `factcheck_agents/cli.py` — no changes; `run_fact_check()` in `__init__.py` — no signature or return-type changes; `mcp_server.py` — no changes; external callers of v3.0 remain unaffected
+
+---
+
+## v3.0 Requirements (Shipped 2026-08-03)
 
 ### Evidence Retrieval (Phase 1)
 
@@ -78,35 +115,54 @@
 
 ## Traceability
 
+### v3.0 (Shipped)
+
 | Requirement | Phase   | Status  |
 | ----------- | ------- | ------- |
-| EVRET-01    | Phase 1 | Pending |
-| EVRET-02    | Phase 1 | Pending |
-| EVRET-03    | Phase 1 | Pending |
-| EVRET-04    | Phase 1 | Pending |
-| RERANK-01   | Phase 1 | Pending |
-| RERANK-02   | Phase 1 | Pending |
-| SOCLOOP-01  | Phase 1 | Pending |
-| SOCLOOP-02  | Phase 1 | Pending |
-| SOCLOOP-03  | Phase 1 | Pending |
-| AGREE-01    | Phase 1 | Pending |
-| AGREE-02    | Phase 1 | Pending |
-| AGREE-03    | Phase 1 | Pending |
-| DEBATE-01   | Phase 1 | Pending |
-| DEBATE-02   | Phase 1 | Pending |
-| DEBATE-03   | Phase 1 | Pending |
-| JUDGE-01    | Phase 1 | Pending |
-| JUDGE-02    | Phase 1 | Pending |
-| JUDGE-03    | Phase 1 | Pending |
-| DEMO-01     | Phase 2 | Pending |
-| DEMO-02     | Phase 2 | Pending |
-| DEMO-03     | Phase 2 | Pending |
-| DEMO-04     | Phase 2 | Pending |
+| EVRET-01    | Phase 1 | Shipped |
+| EVRET-02    | Phase 1 | Shipped |
+| EVRET-03    | Phase 1 | Shipped |
+| EVRET-04    | Phase 1 | Shipped |
+| RERANK-01   | Phase 1 | Shipped |
+| RERANK-02   | Phase 1 | Shipped |
+| SOCLOOP-01  | Phase 1 | Shipped |
+| SOCLOOP-02  | Phase 1 | Shipped |
+| SOCLOOP-03  | Phase 1 | Shipped |
+| AGREE-01    | Phase 1 | Shipped |
+| AGREE-02    | Phase 1 | Shipped |
+| AGREE-03    | Phase 1 | Shipped |
+| DEBATE-01   | Phase 1 | Shipped |
+| DEBATE-02   | Phase 1 | Shipped |
+| DEBATE-03   | Phase 1 | Shipped |
+| JUDGE-01    | Phase 1 | Shipped |
+| JUDGE-02    | Phase 1 | Shipped |
+| JUDGE-03    | Phase 1 | Shipped |
+| DEMO-01     | Phase 2 | Shipped |
+| DEMO-02     | Phase 2 | Shipped |
+| DEMO-03     | Phase 2 | Shipped |
+| DEMO-04     | Phase 2 | Shipped |
+
+### v3.1 (Active)
+
+| Requirement | Phase   | Status  |
+| ----------- | ------- | ------- |
+| A2A-01      | Phase 1 | Pending |
+| A2A-02      | Phase 1 | Pending |
+| A2A-03      | Phase 1 | Pending |
+| A2A-03b     | Phase 1 | Pending |
+| A2A-04      | Phase 2 | Pending |
+| A2A-05      | Phase 2 | Pending |
+| A2A-05b     | Phase 2 | Pending |
+| A2A-06      | Phase 3 | Pending |
+| A2A-06b     | Phase 3 | Pending |
+| A2A-07      | Phase 3 | Pending |
+| A2A-07b     | Phase 3 | Pending |
+| A2A-08      | Phase 3 | Pending |
 
 **Coverage:**
 
--   v3.0 requirements: 22 total
--   Mapped to phases: 22
+-   v3.1 requirements: 12 total
+-   Mapped to phases: 12
 -   Unmapped: 0 ✓
 
 ---

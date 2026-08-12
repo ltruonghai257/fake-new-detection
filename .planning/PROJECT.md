@@ -13,20 +13,31 @@ every failure degrades gracefully.
 A user submits a Vietnamese claim and gets back a binary verdict — **Thật** or **Giả** — with a
 Vietnamese-language rationale and citations they can verify, even when model checkpoints are missing.
 
-## Current Milestone: v3.0 Debate-Based Verification Pipeline and Demo App
+## Previous Milestone: v3.0 Debate-Based Verification Pipeline and Demo App ✓
 
 **Goal:** Replace the evidence-overrides-models correctness bug with a debate-based multi-agent
 architecture and ship a local thesis defense demo web app with live streaming.
 
+**Shipped:** Dual-source evidence retrieval, BM25+embedding reranking, social loop, agreement gate,
+bounded advocate debate with JSONL logging, weighted judge (30/30/40), FastAPI + React/Vite/TypeScript
+demo app with live SSE debate streaming and Vietnamese verdict card.
+
+---
+
+## Current Milestone: v3.1 A2A Protocol Integration
+
+**Goal:** Refactor all factcheck agents to conform to the Google Agent2Agent (A2A) protocol
+(`a2a-sdk`), running as independent HTTP services, while keeping LangGraph as the routing
+orchestrator and preserving the demo app's SSE streaming.
+
 **Target features:**
 
--   Dual-source evidence retrieval: `real_source_agent` (credible Vietnamese outlets) + `fake_source_agent` (tingia.gov.vn + Google Fact Check Tools API stub); outputs as separate typed lists `evidence_real` / `evidence_fake`; both empty → NEI gate
--   M-ReRank evidence reranking: BM25 + embedding rerank (or cross-encoder) of all snippets before PhoBERT 256-token truncation; top-k selected for maximum recall; unit-tested on labeled sample
--   Conditional social-search loop: one-shot extra social search (TikTok FactCheckVN + flagged pages) when evidence non-empty but weak (count + credibility below concrete thresholds); hard-capped at 1 execution per request
--   Agreement gate: compute agreement score across PhoBERT, COOLANT, and evidence signals; skip debate at ≥ 0.8 threshold (configurable), log "debate_skipped: high agreement"
--   Bounded debate loop: `real_advocate` + `fake_advocate` LLM agents, rebuttal-based, default `max_debate_rounds=2` (configurable); every turn logged to stdout AND `logs/debates/<request_id>.jsonl`
--   Weighted judge: argument quality scoring (1-5) + PhoBERT 30% + COOLANT 30% + evidence-credibility 40% (tier + count + directional consistency); `{verdict, confidence, explanation, weight_breakdown}`; full breakdown to `logs/verdicts/<request_id>.json`
--   Demo web app: `demo_app/` — FastAPI + React/Vite/TypeScript; SSE debate streaming turn-by-turn; Vietnamese UI; verdict card with weight bar + log download; local-only
+-   All 10 agents wrapped as A2A `TaskHandler`s (`a2a-sdk[http-server,fastapi]`): `search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`, `social_loop_agent`, `agreement_gate`, `real_advocate`, `fake_advocate`, `judge_agent`, `conclusion_agent`
+-   Each agent served by its own uvicorn HTTP server on a dedicated port (9001–9010) in local dev; `scripts/start_agents.sh` starts all; `scripts/stop_agents.sh` stops all
+-   Agent Card (`/.well-known/agent.json`) per agent for standard A2A service discovery
+-   LangGraph edges refactored: graph nodes call `A2AClient` over HTTP instead of invoking agent functions directly; LangGraph retained for routing/conditional edges only
+-   Demo app FastAPI SSE bridge updated to call A2A agent HTTP endpoints; streaming still delivered turn-by-turn to the React frontend unchanged
+-   No breaking changes to existing CLI, Python API (`run_fact_check()`), or MCP server interfaces
 
 ## Requirements
 
@@ -48,23 +59,16 @@ architecture and ship a local thesis defense demo web app with live streaming.
 
 ### Active
 
-<!-- v3.0 scope — M2: Debate-Based Verification Pipeline and Demo App -->
+<!-- v3.1 scope — A2A Protocol Integration -->
 
--   [ ] **EVRET-01**: `real_source_agent` searches credible Vietnamese outlets only (vnexpress.net, tuoitre.vn, thanhnien.vn, ttxvn.gov.vn, vtv.vn, dantri.com.vn)
--   [ ] **EVRET-02**: `fake_source_agent` searches tingia.gov.vn and Google Fact Check Tools API (stubbed without API key; gated on user providing key)
--   [ ] **EVRET-03**: Outputs stay as separate typed lists (`evidence_real`, `evidence_fake`) — never merged into a boolean
--   [ ] **EVRET-04**: Both lists empty → NEI gate with confidence 0.0; rest of pipeline skipped
--   [ ] **AGREE-01**: Agreement score computed across PhoBERT, COOLANT, and evidence signals after parallel model run + evidence collection
--   [ ] **AGREE-02**: Agreement ≥ configurable threshold (default 0.8) → skip debate, log "debate_skipped: high agreement"
--   [ ] **DEBATE-01**: `real_advocate` and `fake_advocate` LLM agents run rebuttal-based debate (`max_debate_rounds=2`, configurable via env)
--   [ ] **DEBATE-02**: Every turn (agent, round, timestamp, full text) printed to stdout AND appended to `logs/debates/<request_id>.jsonl`
--   [ ] **JUDGE-01**: Judge scores each argument 1-5 (factuality + engagement with rebuttal) and combines PhoBERT 30% + COOLANT 30% + evidence-credibility 40%
--   [ ] **JUDGE-02**: Evidence-credibility computed from source tier + count + directional consistency (never a binary flag)
--   [ ] **JUDGE-03**: Output `{verdict: Real|Fake|NEI, confidence, explanation, weight_breakdown}`; full breakdown to `logs/verdicts/<request_id>.json`
--   [ ] **RERANK-01**: Before truncating evidence to PhoBERT's 256-token limit, rerank all snippets from `evidence_real` + `evidence_fake` by relevance to the claim using BM25 + embedding rerank (or cross-encoder if available in repo); select top-k that maximize recall within budget; unit test asserts recall@k ≥ acceptable threshold on a small labeled sample
--   [ ] **SOCLOOP-01**: Conditional edge between evidence retrieval (REQ 1) and agreement gate (REQ 2): if `evidence_real` and `evidence_fake` are both non-empty but weak (count < threshold AND/OR credibility score < threshold — concrete values defined in implementation), trigger exactly ONE additional social-media search round (TikTok FactCheckVN, previously flagged pages); hard cap: loop never fires more than once per request; unit test asserts second execution is blocked
--   [ ] **DEMO-01**: `demo_app/` — FastAPI backend + React/Vite/TypeScript frontend; POST `/analyze` with SSE streaming
--   [ ] **DEMO-02**: Debate stage streams turn-by-turn live as alternating advocate chat bubbles; Vietnamese UI; local-only
+-   [ ] **A2A-01**: `a2a-sdk[http-server,fastapi]` added to `factcheck_agents/pyproject.toml` (or requirements); all 10 agent modules implement `TaskHandler` protocol
+-   [ ] **A2A-02**: Each agent exposes `GET /.well-known/agent.json` (A2A Agent Card) with name, description, skills, and port
+-   [ ] **A2A-03**: `scripts/start_agents.sh` starts all 10 uvicorn servers (ports 9001–9010) and writes a PID file; `scripts/stop_agents.sh` stops them cleanly
+-   [ ] **A2A-04**: `factcheck_agents/a2a_client.py` wraps `A2AClient` calls; LangGraph nodes import this module instead of agent functions; state passing uses A2A `Task` messages
+-   [ ] **A2A-05**: LangGraph `graph.py` updated — `build_debate_graph()` and `build_graph()` call A2A clients; conditional routing edges unchanged
+-   [ ] **A2A-06**: `demo_app/backend/streaming.py` updated to call A2A agent HTTP endpoints; SSE `turn_start`/`chunk`/`turn_end` events unchanged for the React frontend
+-   [ ] **A2A-07**: Unit tests updated: each agent tested via its A2A HTTP interface (spin up in-process uvicorn); existing graph integration tests adapted for A2A client calls
+-   [ ] **A2A-08**: CLI (`cli.py`), Python API (`run_fact_check()`), and MCP server (`mcp_server.py`) remain externally unchanged; they call `build_debate_graph()` as before
 
 ### Out of Scope
 
@@ -73,10 +77,12 @@ architecture and ship a local thesis defense demo web app with live streaming.
 -   Public deployment of the demo app
 -   Paid X/Twitter API or Meta Graph API
 -   Modifying `training/`, model checkpoints, or notebooks
+-   gRPC or cloud A2A deployment (local HTTP only for v3.1)
+-   Changing the React frontend — only the backend SSE bridge is updated
 
 ## Context
 
--   **Stack**: Python, LangGraph, PhoBERT (vinai/phobert-base-v2 via HuggingFace), COOLANT (custom checkpoint), Tavily/Google CSE, FastMCP, FastAPI, React/Vite/TypeScript (demo_app/)
+-   **Stack**: Python, LangGraph, PhoBERT (vinai/phobert-base-v2 via HuggingFace), COOLANT (custom checkpoint), Tavily/Google CSE, FastMCP, FastAPI, React/Vite/TypeScript (demo_app/), `a2a-sdk` (Google Agent2Agent Protocol)
 -   **Architecture reference**: TradingAgents (shared state, Bull/Bear debate → judge), ViFactCheck AAAI 2025, Debate-to-Detect / TruEDebate / DebateCV (multi-dimensional argument scoring)
 -   **Evidence graph pattern**: plain Python networkx structure, built once, queried downstream
 -   **Binary mapping default**: MISLEADING → FAKE, UNVERIFIED → FAKE ("not verifiably real" cannot be reported as Thật)
@@ -93,17 +99,19 @@ architecture and ship a local thesis defense demo web app with live streaming.
 
 ## Key Decisions
 
-| Decision                                                 | Rationale                                                                                   | Outcome        |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------- |
-| LangGraph for orchestration                              | Shared-state, conditional edges, composable nodes                                           | ✓ Good         |
-| Lazy model loading with `lru_cache`                      | Avoids import-time torch overhead; degrades when checkpoint missing                         | ✓ Good         |
-| `unavailable` result (not raise) for missing checkpoints | Pipeline must always complete; callers check `available` field                              | ✓ Good         |
-| Tavily primary / Google CSE fallback                     | Tavily returns cleaner LLM-ready snippets; CSE as resilience fallback                       | ✓ Good         |
-| 4-class verdict → 2-class binary (v2.0)                  | MISLEADING/UNVERIFIED cannot be reported as Thật; binary is user-facing                     | ✓ Shipped v2.0 |
-| Evidence graph as plain Python structure (v2.0)          | Avoid new heavy deps; "build once" pattern without npm                                      | ✓ Shipped v2.0 |
-| Debate architecture over single-pass verdict (v3.0)      | Single-pass evidence silently overrides model predictions; debate forces explicit weighting | — Pending      |
-| 30/30/40 weight split (v3.0)                             | Equal model weight, evidence-credibility plurality; tunable default in STATE.md             | — Pending      |
-| Google Fact Check API stubbed until key provided (v3.0)  | Avoid silent failures; user must opt in explicitly                                          | — Pending      |
+| Decision                                                 | Rationale                                                                                     | Outcome        |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------- |
+| LangGraph for orchestration                              | Shared-state, conditional edges, composable nodes                                             | ✓ Good         |
+| Lazy model loading with `lru_cache`                      | Avoids import-time torch overhead; degrades when checkpoint missing                           | ✓ Good         |
+| `unavailable` result (not raise) for missing checkpoints | Pipeline must always complete; callers check `available` field                                | ✓ Good         |
+| Tavily primary / Google CSE fallback                     | Tavily returns cleaner LLM-ready snippets; CSE as resilience fallback                         | ✓ Good         |
+| 4-class verdict → 2-class binary (v2.0)                  | MISLEADING/UNVERIFIED cannot be reported as Thật; binary is user-facing                       | ✓ Shipped v2.0 |
+| Evidence graph as plain Python structure (v2.0)          | Avoid new heavy deps; "build once" pattern without npm                                        | ✓ Shipped v2.0 |
+| Debate architecture over single-pass verdict (v3.0)      | Single-pass evidence silently overrides model predictions; debate forces explicit weighting   | ✓ Shipped v3.0 |
+| 30/30/40 weight split (v3.0)                             | Equal model weight, evidence-credibility plurality; tunable default in STATE.md               | ✓ Shipped v3.0 |
+| Google Fact Check API stubbed until key provided (v3.0)  | Avoid silent failures; user must opt in explicitly                                            | ✓ Shipped v3.0 |
+| A2A protocol for agent communication (v3.1)              | Standardized HTTP-based agent interface; each agent becomes independently testable/deployable | — Pending      |
+| LangGraph retained as routing-only orchestrator (v3.1)   | A2A handles message passing; LangGraph handles conditional graph edges — minimal coupling     | — Pending      |
 
 ## Evolution
 
@@ -126,4 +134,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-08-02 — Milestone v3.0 started (M2: Debate-Based Verification Pipeline and Demo App)_
+_Last updated: 2026-08-13 — Milestone v3.1 started (A2A Protocol Integration)_

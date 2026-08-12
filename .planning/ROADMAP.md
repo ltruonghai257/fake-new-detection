@@ -1,76 +1,103 @@
-# Roadmap: factcheck_agents v3.0 Debate-Based Verification Pipeline and Demo App
+# Roadmap: factcheck_agents v3.1 A2A Protocol Integration
 
-**Milestone:** v3.0 · **Status:** Active
+**Milestone:** v3.1 · **Status:** Active
 
 ## Overview
 
-Replace the single-pass evidence-overrides-models correctness bug with a full debate-based multi-agent architecture — dual-source evidence retrieval, BM25+embedding reranking, conditional social-search loop, agreement gate, bounded advocate debate with JSONL audit logging, and a weighted judge — then ship a local thesis defense demo web app (FastAPI + React/Vite/TypeScript) that streams the debate live turn-by-turn via SSE with a Vietnamese UI and a verdict card showing the 30/30/40 weight breakdown.
+Refactor all 10 factcheck agents to conform to the Google Agent2Agent (A2A) protocol (`a2a-sdk`).
+Each agent becomes an independent HTTP service with a standard `TaskHandler` interface and an
+Agent Card. LangGraph is retained as the routing orchestrator but its nodes call agents via
+`A2AClient` HTTP requests instead of direct Python imports. The demo app's SSE bridge is updated
+to route through A2A. The CLI, Python API, and MCP server remain externally unchanged.
 
 ## Phases
 
--   [x] **Phase 1: Debate Pipeline** - Build all debate infrastructure: dual-source agents, reranker, social loop, agreement gate, bounded debate, weighted judge, graph wiring, and tests
--   [x] **Phase 2: Demo App** - FastAPI SSE backend + React/Vite/TypeScript frontend with live debate streaming and Vietnamese verdict card
+-   [ ] **Phase 3: A2A Agent Wrappers & Launch Scripts** - Add `TaskHandler` to all 10 agents; serve each on its own uvicorn port; expose Agent Cards; write start/stop scripts
+-   [ ] **Phase 4: LangGraph → A2A Client Wiring** - Implement `a2a_client.py`; refactor `graph.py` nodes to call A2A HTTP instead of local functions; graceful-degrade for unreachable agents
+-   [ ] **Phase 5: Demo App + Tests** - Update FastAPI SSE bridge to call A2A endpoints; update/add agent HTTP tests; update graph integration tests; verify backward compat
 
 ## Phase Details
 
-### Phase 1: Debate Pipeline
+### Phase 3: A2A Agent Wrappers & Launch Scripts
 
-**Goal**: Implement the complete debate-based verification pipeline — from dual-source evidence retrieval through weighted judge — with JSONL/JSON audit logging and full unit + integration test coverage.
-**Requirements**: EVRET-01, EVRET-02, EVRET-03, EVRET-04, RERANK-01, RERANK-02, SOCLOOP-01, SOCLOOP-02, SOCLOOP-03, AGREE-01, AGREE-02, AGREE-03, DEBATE-01, DEBATE-02, DEBATE-03, JUDGE-01, JUDGE-02, JUDGE-03
-**Depends on**: Nothing (first phase)
+**Goal**: Wrap all 10 agents as A2A `TaskHandler` HTTP services and provide developer tooling to
+start/stop the full agent fleet locally.
+**Requirements**: A2A-01, A2A-02, A2A-03, A2A-03b
+**Depends on**: Nothing (first v3.1 phase; v3.0 code stable)
 **Success Criteria** (what must be TRUE):
 
-1. `state.py` adds all M2 fields (`evidence_real`, `evidence_fake`, `social_loop_fired`, `request_id`, `agreement_score`, `debate_turns`, `debate_exit_reason`, `weight_breakdown`) with `total=False`; all existing tests continue to pass unchanged
-2. `reranker.py` BM25 + embedding rerank selects top-k evidence snippets within PhoBERT's 256-token budget; RERANK-02 unit test passes recall@k on a labeled sample of ≥ 5 claim–snippet pairs
-3. Social loop fires at most once per request; SOCLOOP-03 unit test asserts that when `social_loop_fired=True` is present on the input state, the routing function short-circuits to `verify` and never reaches `social_loop_node` again
-4. `agreement_gate.py` computes `0.30 × phobert_confidence + 0.30 × coolant_confidence + 0.40 × evidence_credibility` and routes directly to judge when score ≥ `FACTCHECK_AGREEMENT_THRESHOLD`, logging `debate_exit_reason = "skipped_high_agreement"` to state and a `{"debate_skipped": true, ...}` line to `logs/debates/<request_id>.jsonl`
-5. `debate_node.py` runs a bounded real/fake advocate debate (default `max_debate_rounds=2`); every turn (agent, round, ISO timestamp, full text) is printed to stdout **and** appended atomically to `logs/debates/<request_id>.jsonl` with `ensure_ascii=False`
-6. `judge_agent.py` scores each argument on three 1–5 dimensions and produces `{verdict, confidence, explanation, weight_breakdown}`; full breakdown written atomically to `logs/verdicts/<request_id>.json`
-7. `graph.py` exposes `build_debate_graph()` for M2 callers and keeps `build_graph()` for M1 backward compat; integration tests pass end-to-end on 2 sample Vietnamese claims
+1. `pip install "a2a-sdk[http-server,fastapi]"` installs without conflicts; version pinned in `factcheck_agents/` dependencies
+2. Each of the 10 agent modules exposes a `TaskHandler` class with `async def process(task: Task) -> TaskResult`; `Task.input` carries the same fields the LangGraph state previously supplied
+3. `GET /.well-known/agent.json` on each agent's port returns a valid A2A Agent Card JSON with `name`, `description`, `version`, `skills`, and `url`; validated against the A2A schema
+4. `scripts/start_agents.sh` starts all 10 uvicorn processes on ports 9001–9010 in under 15 s on developer hardware; each port responds to `GET /.well-known/agent.json` within 5 s of startup
+5. `scripts/stop_agents.sh` sends `SIGTERM` to all 10 processes and exits 0; no zombie processes; PID file cleaned up
 
 Plans:
 
--   [x] 01-01: Wave 1 — Extend `state.py` with all M2 `TypedDict` fields (`total=False`) and update `initial_state()` defaults; add new env vars to `config.py` (`FACTCHECK_AGREEMENT_THRESHOLD`, `FACTCHECK_MAX_DEBATE_ROUNDS`, `GOOGLE_FACTCHECK_API_KEY`, social loop thresholds)
--   [x] 01-02: Wave 2 — Implement `reranker.py` (BM25 + embedding rerank, top-k selection within 256-token budget); implement `agents/real_source_agent.py` (credible Vietnamese outlets → `evidence_real`) and `agents/fake_source_agent.py` (tingia.gov.vn + Google Fact Check API stub → `evidence_fake`)
--   [x] 01-03: Wave 3 — Implement `agents/social_loop_agent.py` (one-shot weak-evidence social search, sets `social_loop_fired=True`) and `agents/agreement_gate.py` (0.30/0.30/0.40 formula, evidence-credibility sub-components, routing logic); write unit tests for reranker recall@k and social loop fire-once guard
--   [x] 01-04: Wave 4 — Implement `agents/debate_node.py` (bounded Python `for` loop advocate debate, atomic JSONL logging to `logs/debates/`) and `agents/judge_agent.py` (1–5 dimension scoring, weighted verdict, atomic JSON logging to `logs/verdicts/`); update `graph.py` with full M2 topology and `build_debate_graph()` function
--   [x] 01-05: Wave 5 — Integration tests: run full M2 pipeline on 2 sample Vietnamese claims end-to-end; assert verdict structure, log files created, no test regressions against existing 83 tests
+-   [ ] 03-01: Wave 1 — Install `a2a-sdk[http-server,fastapi]` and add to dependencies; create `factcheck_agents/a2a_server.py` base module with shared uvicorn factory and Agent Card builder; define A2A port constants in `config.py` (A2A*PORT*\* env vars, defaults 9001–9010)
+-   [ ] 03-02: Wave 2 — Add `TaskHandler` + uvicorn app to evidence-side agents: `search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`; each handler deserializes `Task.input` → existing agent function input types and serializes the return value to `TaskResult`
+-   [ ] 03-03: Wave 3 — Add `TaskHandler` + uvicorn app to pipeline agents: `social_loop_agent`, `agreement_gate`, `real_advocate` (in `debate_node`), `fake_advocate` (in `debate_node`), `judge_agent`, `conclusion_agent`
+-   [ ] 03-04: Wave 4 — Write `scripts/start_agents.sh` and `scripts/stop_agents.sh`; smoke-test script that curls all 10 `/.well-known/agent.json` endpoints and asserts HTTP 200
 
 ---
 
-### Phase 2: Demo App
+### Phase 4: LangGraph → A2A Client Wiring
 
-**Goal**: Ship a local-only thesis defense demo web app with a FastAPI SSE backend and a React/Vite/TypeScript frontend that streams the debate live and displays a Vietnamese verdict card.
-**Requirements**: DEMO-01, DEMO-02, DEMO-03, DEMO-04
-**Depends on**: Phase 1 (stable `run_fact_check()` programmatic entry point with SSE-compatible streaming hooks)
+**Goal**: Replace direct agent function calls inside LangGraph nodes with `A2AClient` HTTP calls;
+handle agent unavailability gracefully.
+**Requirements**: A2A-04, A2A-05, A2A-05b
+**Depends on**: Phase 3 (all 10 A2A servers stable and testable)
 **Success Criteria** (what must be TRUE):
 
-1. `demo_app/backend/main.py` starts with `uvicorn`; `POST /api/analyze` accepts `{statement: str, image_path?: str}` and initiates the debate pipeline via direct Python import (no subprocess)
-2. SSE stream emits all required event types — `stage_start`, `turn_start`, `chunk`, `turn_end`, `verdict`, `heartbeat` (every 5 s) — and client disconnect is detected and aborts the pipeline loop
-3. Debate stage streams character-level chunks (~8 chars / 20 ms) in real time; React frontend renders alternating chat bubbles (blue = `real_advocate`, red = `fake_advocate`) with argument quality score badges per turn
-4. Final verdict card shows label, confidence gauge, 30/30/40 weight breakdown bar, and working download buttons for `logs/debates/<id>.jsonl` and `logs/verdicts/<id>.json`
-5. All UI copy is in Vietnamese; CORS allows only `http://localhost:5173`; `useEffect` SSE cleanup closes `EventSource` on unmount (React StrictMode safe); no auth, no public deployment path
+1. `factcheck_agents/a2a_client.py` provides 10 typed wrapper functions (one per agent); each constructs a valid A2A `Task`, calls the agent HTTP endpoint via `httpx.AsyncClient`, and returns the deserialized Python type; connection errors → `AgentUnavailableError`
+2. `graph.py` node functions contain no direct imports of agent functions; every agent invocation goes through `a2a_client.*`; `build_graph()` and `build_debate_graph()` signatures unchanged
+3. `AgentUnavailableError` in any node triggers the same graceful-degrade behaviour as a missing checkpoint in v3.0 (pipeline continues; affected field marked `unavailable`)
+4. Running `python -m factcheck_agents.cli "Tin tức test"` with all 10 agent servers running produces a verdict within 60 s; running it with all servers down produces `unavailable` gracefully (no crash, no unhandled exception)
+5. Existing 83 unit tests (non-HTTP) still pass unchanged
 
 Plans:
 
--   [x] 02-01: FastAPI backend — `demo_app/backend/main.py` (app, CORS, `/api/analyze` POST + SSE GET), `demo_app/backend/streaming.py` (SSE generator + `asyncio.Queue` bridge to pipeline), heartbeat task, client disconnect handling
--   [x] 02-02: React/Vite/TypeScript frontend — scaffold `demo_app/frontend/` with Vite + Tailwind; implement `App.tsx`, `DebateTranscript.tsx` (alternating bubbles, score badges), `VerdictCard.tsx` (label, confidence, weight bar, log downloads), `EvidencePanel.tsx` (tier badges); native `EventSource` SSE client with StrictMode-safe cleanup
+-   [ ] 04-01: Wave 1 — Implement `factcheck_agents/a2a_client.py`: `AgentUnavailableError`, `async def call_agent(port, task_input)` base, then 10 typed wrapper functions with correct input/output types
+-   [ ] 04-02: Wave 2 — Refactor `graph.py` node functions to call `a2a_client.*`; update `build_graph()` and `build_debate_graph()` to wire the async calls; add `AgentUnavailableError` handlers in each node; run existing unit tests to verify no regressions
+
+---
+
+### Phase 5: Demo App + Tests
+
+**Goal**: Update the demo app SSE bridge to call A2A endpoints; add HTTP-level agent tests;
+update graph integration tests; confirm the CLI/API/MCP interfaces are unchanged.
+**Requirements**: A2A-06, A2A-06b, A2A-07, A2A-07b, A2A-08
+**Depends on**: Phase 4 (stable A2A client + refactored graph)
+**Success Criteria** (what must be TRUE):
+
+1. `demo_app/backend/streaming.py` calls `a2a_client.*` for agent invocations; the SSE event schema (`stage_start`, `turn_start`, `chunk`, `turn_end`, `verdict`, `heartbeat`) is byte-for-byte identical to v3.0 output from the frontend's perspective; React frontend requires zero changes
+2. If an A2A agent is unreachable during a demo session, the SSE stream emits `{"event":"stage_error","data":{"message":"..."}}` in Vietnamese and closes with HTTP 200 (no 500)
+3. Each of the 10 `TaskHandler`s has a pytest test that spins up the uvicorn server in-process, sends a real A2A `Task`, and asserts the `TaskResult` fields match expected types
+4. Graph integration tests (2 sample Vietnamese claims) run end-to-end with agent servers started as a session-scoped pytest fixture; full test suite passes in < 60 s on developer hardware
+5. `factcheck_agents/cli.py`, `run_fact_check()`, and `mcp_server.py` pass their existing tests without modification; no breaking change detectable by callers
+
+Plans:
+
+-   [ ] 05-01: Wave 1 — Update `demo_app/backend/streaming.py` to call A2A agents; add `stage_error` SSE event type; manual smoke test confirms debate streaming still works end-to-end in the browser
+-   [ ] 05-02: Wave 2 — Write 10 agent HTTP tests (one per `TaskHandler`); update graph integration tests with session-scoped agent-server fixture; run full suite and confirm < 60 s; verify CLI + MCP backward compat with existing callers
 
 ---
 
 ## Dependency Map
 
 ```
-Phase 1 (Debate Pipeline) ──► Phase 2 (Demo App)
+Phase 3 (A2A Wrappers) ──► Phase 4 (LangGraph Wiring) ──► Phase 5 (Demo + Tests)
 ```
 
-Phase 1 must be complete and `build_debate_graph()` stable before Phase 2 begins.
+Phase 3 must be complete and all 10 agent servers stable before Phase 4 begins.
+Phase 4 must be complete and the A2A client stable before Phase 5 begins.
 
 ## Progress
 
-| Phase | Name            | Plans | Status   |
-| ----- | --------------- | ----- | -------- |
-| 1     | Debate Pipeline | 5/5   | Complete |
-| 2     | Demo App        | 2/2   | Complete ||
+| Phase | Name                   | Plans | Status  |
+| ----- | ---------------------- | ----- | ------- |
+| 3     | A2A Agent Wrappers     | 4/4   | Pending |
+| 4     | LangGraph → A2A Wiring | 2/2   | Pending |
+| 5     | Demo App + Tests       | 2/2   | Pending |
 
-_Created: 2026-08-02_
+_Created: 2026-08-13_
