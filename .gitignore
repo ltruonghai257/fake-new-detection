@@ -32,6 +32,9 @@ demo_app/frontend/node_modules/*
 /src/data/
 src/failed_urls.json
 logs/*
+!logs/.gitkeep
+.pids/*
+!.pids/.gitkeep
 src/logs/app.log
 processed_data/**/*
 **/*.h5
