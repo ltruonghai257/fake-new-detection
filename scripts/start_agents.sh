@@ -8,6 +8,10 @@
 #   D-12  after starting, block until every agent answers /.well-known/agent.json
 #   D-13  per-agent .pid files in .pids/ for stop_agents.sh
 #
+# On any failure (port conflict, readiness timeout) agents started by THIS run
+# are terminated and their pid files removed, so a failed run never leaves
+# orphans behind (WR-03).
+#
 # Ports are read from factcheck_agents.config.a2a_ports() so A2A_PORT_* env
 # overrides are honored everywhere.
 
@@ -18,6 +22,21 @@ PYTHON="${PYTHON:-.venv/bin/python}"
 mkdir -p logs .pids
 START_TS=$(date +%s)
 
+STARTED_PIDFILES=()
+ALL_READY=0
+
+cleanup_on_failure() {
+  if [ "${ALL_READY}" -ne 1 ]; then
+    echo "Cleaning up started agent process(es)..." >&2
+    for pidfile in "${STARTED_PIDFILES[@]:-}"; do
+      [ -f "${pidfile}" ] || continue
+      kill -TERM "$(cat "${pidfile}")" 2>/dev/null || true
+      rm -f "${pidfile}"
+    done
+  fi
+}
+trap cleanup_on_failure EXIT
+
 started=0
 while read -r name port; do
   if lsof -ti :"${port}" >/dev/null 2>&1; then
@@ -26,6 +45,7 @@ while read -r name port; do
   fi
   "$PYTHON" -m "factcheck_agents.agents.${name}" > "logs/agent_${name}.log" 2>&1 &
   echo $! > ".pids/${name}.pid"
+  STARTED_PIDFILES+=(".pids/${name}.pid")
   echo "started ${name} (pid $!, port ${port})"
   started=$((started + 1))
   sleep 0.5
@@ -51,4 +71,5 @@ if [ "${ready}" -ne "${started}" ]; then
   echo "ERROR: only ${ready}/${started} agents ready within 30s — check logs/agent_*.log" >&2
   exit 1
 fi
+ALL_READY=1
 echo "✓ All ${started} agents ready ($(( $(date +%s) - START_TS ))s)"

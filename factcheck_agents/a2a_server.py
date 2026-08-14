@@ -17,6 +17,7 @@ Task contract (see .planning/phases/03 CONTEXT.md, decisions D-01..D-15):
 
 from __future__ import annotations
 
+import asyncio
 import inspect
 import logging
 from dataclasses import dataclass, field
@@ -175,7 +176,12 @@ class BaseTaskHandler(AgentExecutor):
         try:
             state = self._extract_state(context)
             diff = await self._run_agent(state)
-            await updater.add_artifact(parts=[new_data_part(diff)], name="output")
+            # Normalize the diff (datetime/Path/non-JSON-safe objects such as
+            # the in-memory EvidenceGraph) so protobuf ParseDict always accepts
+            # it — a serialization failure must never surface as a failed task.
+            await updater.add_artifact(
+                parts=[new_data_part(serialize_state(diff))], name="output"
+            )
             await updater.complete(
                 message=new_text_message("Task completed successfully")
             )
@@ -215,9 +221,18 @@ class BaseTaskHandler(AgentExecutor):
         )
 
     async def _run_agent(self, state: FactCheckState) -> dict:
+        # All agent bodies are blocking (web search, requests, sync LLM, model
+        # loading); run the whole body in a worker thread so the uvicorn event
+        # loop (and the /.well-known/agent.json health probe) stays responsive.
+        # asyncio.CancelledError is a BaseException, so an in-flight task cancel
+        # propagates here without being swallowed by the except-Exception in
+        # execute() and no late COMPLETED event is enqueued (WR-02).
+        return await asyncio.to_thread(self._run_agent_sync, state)
+
+    def _run_agent_sync(self, state: FactCheckState) -> dict:
         result = self.agent_fn(state)
         if inspect.isawaitable(result):
-            result = await result
+            result = asyncio.run(result)
         return result
 
 
