@@ -1,8 +1,8 @@
-"""Debate node: convergence-driven debate between real_advocate and fake_advocate.
+"""Shared debate utilities for the real/fake advocate agents (D-08).
 
-Each advocate outputs structured JSON with verdict, confidence, argument, concession.
-Full turn history is passed each round. Debate exits when both advocates agree on the
-same verdict (REAL/FAKE), or when max_debate_rounds is hit as a safety cap.
+Extracted from the former ``debate_node.py``: advocate prompt templates,
+evidence/model/history formatting helpers, JSON parsing, and the JSONL
+turn logger. Both ``real_advocate`` and ``fake_advocate`` import from here.
 """
 
 from __future__ import annotations
@@ -12,9 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from ..config import settings
-from ..state import Evidence, FactCheckState
-from .llm import get_llm
+from ..state import Evidence
 
 REAL_ADVOCATE_PROMPT = (
     "Bạn là LUẬT SƯ BÀO CHỮA trong phiên tranh biện đối kháng xác minh tin tức tiếng Việt. "
@@ -199,157 +197,25 @@ def _append_turn(request_id: str, turn: dict) -> None:
         pass
 
 
-def debate_node(state: FactCheckState) -> dict:
-    """Run convergence-driven debate between real_advocate and fake_advocate.
-
-    Exits when both advocates agree on the same verdict (REAL/FAKE), or when
-    max_debate_rounds is hit. Full history passed each round.
-
-    Returns:
-        dict with keys:
-            - debate_turns: list of structured turn dicts
-            - debate_exit_reason: "converged" | "max_rounds" | "no_llm" | "llm_error"
-            - debate_converged: bool
-            - debate_agreed_verdict: "REAL" | "FAKE" | None
-            - messages: list of message tuples
-    """
-    llm = get_llm()
-    if llm is None:
-        return {
-            "debate_turns": [],
-            "debate_exit_reason": "no_llm",
-            "debate_converged": False,
-            "debate_agreed_verdict": None,
-            "messages": [("assistant", "[Debate] skipped — no LLM configured")],
-        }
-
-    Path("logs/debates").mkdir(parents=True, exist_ok=True)
-
-    statement = state["statement"]
-    evidence_real = state.get("evidence_real") or []
-    evidence_fake = state.get("evidence_fake") or []
-    all_evidence = evidence_real + evidence_fake
-    model_results = state.get("model_results") or []
-    request_id = state.get("request_id", "unknown")
-
+def _build_advocate_user_message(
+    statement: str,
+    model_results: List[dict],
+    all_evidence: List[Evidence],
+    turns: List[dict],
+) -> str:
+    """Assemble the single-turn user message for an advocate call."""
     model_output_text = _format_model_results_verdict(model_results)
     all_evidence_text = _format_evidence(all_evidence)
-
-    turns: List[dict] = []
-    exit_reason: Optional[str] = None
-    converged = False
-    agreed_verdict: Optional[str] = None
-
-    for round_num in range(settings.max_debate_rounds):
-        history_text = _format_history(turns)
-        last_opponent_arg = (
-            turns[-1].get("argument", "")
-            if turns
-            else "(đây là vòng đầu tiên, chưa có lập luận đối thủ)"
-        )
-
-        # ── real_advocate ────────────────────────────────────────────────────
-        real_user = (
-            f"CLAIM:\n{statement}\n\n"
-            f"MODEL PREDICTIONS (PhoBERT + COOLANT):\n{model_output_text}\n\n"
-            f"TOÀN BỘ BẰNG CHỨNG:\n{all_evidence_text}\n\n"
-            f"LẬP LUẬN ĐỐI THỦ (phải phản bác trực tiếp):\n{last_opponent_arg}\n\n"
-            f"LỊCH SỬ TRANH LUẬN:\n{history_text}\n"
-        )
-        try:
-            _real_prompt = settings.real_advocate_prompt or REAL_ADVOCATE_PROMPT
-            real_resp = llm.invoke([("system", _real_prompt), ("user", real_user)])
-            real_content = str(getattr(real_resp, "content", ""))
-            real_data = _parse_advocate_json(real_content) or {}
-        except Exception as exc:
-            error_turn = {
-                "agent": "real_advocate",
-                "round": round_num,
-                "timestamp": datetime.utcnow().isoformat(),
-                "verdict": None,
-                "confidence": 0.0,
-                "argument": "",
-                "concession": None,
-                "error": str(exc),
-            }
-            turns.append(error_turn)
-            _append_turn(request_id, error_turn)
-            exit_reason = "llm_error"
-            break
-
-        real_turn = {
-            "agent": "real_advocate",
-            "round": round_num,
-            "timestamp": datetime.utcnow().isoformat(),
-            "verdict": real_data.get("verdict", "REAL"),
-            "confidence": float(real_data.get("confidence", 0.5)),
-            "argument": real_data.get("argument", real_content[:500]),
-            "concession": real_data.get("concession"),
-        }
-        turns.append(real_turn)
-        _append_turn(request_id, real_turn)
-
-        # ── fake_advocate ────────────────────────────────────────────────────
-        history_text = _format_history(turns)
-        fake_user = (
-            f"CLAIM:\n{statement}\n\n"
-            f"MODEL PREDICTIONS (PhoBERT + COOLANT):\n{model_output_text}\n\n"
-            f"TOÀN BỘ BẰNG CHỨNG:\n{all_evidence_text}\n\n"
-            f"LẬP LUẬN ĐỐI THỦ (phải phản bác trực tiếp):\n{real_turn.get('argument', '')}\n\n"
-            f"LỊCH SỬ TRANH LUẬN:\n{history_text}\n"
-        )
-        try:
-            _fake_prompt = settings.fake_advocate_prompt or FAKE_ADVOCATE_PROMPT
-            fake_resp = llm.invoke([("system", _fake_prompt), ("user", fake_user)])
-            fake_content = str(getattr(fake_resp, "content", ""))
-            fake_data = _parse_advocate_json(fake_content) or {}
-        except Exception as exc:
-            error_turn = {
-                "agent": "fake_advocate",
-                "round": round_num,
-                "timestamp": datetime.utcnow().isoformat(),
-                "verdict": None,
-                "confidence": 0.0,
-                "argument": "",
-                "concession": None,
-                "error": str(exc),
-            }
-            turns.append(error_turn)
-            _append_turn(request_id, error_turn)
-            exit_reason = "llm_error"
-            break
-
-        fake_turn = {
-            "agent": "fake_advocate",
-            "round": round_num,
-            "timestamp": datetime.utcnow().isoformat(),
-            "verdict": fake_data.get("verdict", "FAKE"),
-            "confidence": float(fake_data.get("confidence", 0.5)),
-            "argument": fake_data.get("argument", fake_content[:500]),
-            "concession": fake_data.get("concession"),
-        }
-        turns.append(fake_turn)
-        _append_turn(request_id, fake_turn)
-
-        # ── convergence check ────────────────────────────────────────────────
-        real_v = str(real_turn["verdict"]).upper()
-        fake_v = str(fake_turn["verdict"]).upper()
-        if real_v == fake_v and real_v in {"REAL", "FAKE"}:
-            converged = True
-            agreed_verdict = real_v
-            exit_reason = "converged"
-            break
-
-    return {
-        "debate_turns": turns,
-        "debate_exit_reason": exit_reason or "max_rounds",
-        "debate_converged": converged,
-        "debate_agreed_verdict": agreed_verdict,
-        "messages": [
-            (
-                "assistant",
-                f"[Debate] {len(turns)} turns ({exit_reason or 'max_rounds'})"
-                + (f" → agreed={agreed_verdict}" if converged else ""),
-            )
-        ],
-    }
+    history_text = _format_history(turns)
+    last_opponent_arg = (
+        turns[-1].get("argument", "")
+        if turns
+        else "(đây là vòng đầu tiên, chưa có lập luận đối thủ)"
+    )
+    return (
+        f"CLAIM:\n{statement}\n\n"
+        f"MODEL PREDICTIONS (PhoBERT + COOLANT):\n{model_output_text}\n\n"
+        f"TOÀN BỘ BẰNG CHỨNG:\n{all_evidence_text}\n\n"
+        f"LẬP LUẬN ĐỐI THỦ (phải phản bác trực tiếp):\n{last_opponent_arg}\n\n"
+        f"LỊCH SỬ TRANH LUẬN:\n{history_text}\n"
+    )

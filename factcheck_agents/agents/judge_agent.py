@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 from typing import Any, List, Optional
 
+from ..config import settings
 from ..state import (
     FAKE_MODEL_LABELS,
     REAL_MODEL_LABELS,
@@ -308,3 +309,32 @@ def judge_agent(state: FactCheckState) -> dict:
             )
         ],
     }
+
+
+# ── A2A service wrapper ─────────────────────────────────────────────────────
+from ..a2a_server import AgentCardConfig, BaseTaskHandler, run_server
+
+
+class JudgeAgentHandler(BaseTaskHandler):
+    """A2A TaskHandler exposing :func:`judge_agent` over HTTP (port 9009)."""
+
+    agent_card_config = AgentCardConfig(
+        name="judge_agent",
+        description="Scores debate turns on 1-5 dimensions; computes weight breakdown",
+        version="1.0",
+        skills=[
+            {
+                "id": "judging",
+                "name": "Debate Judging",
+                "description": "Score turns and compute weighted verdict breakdown",
+            }
+        ],
+        port=settings.a2a_port_judge,
+    )
+
+    async def agent_fn(self, state: FactCheckState) -> dict:
+        return judge_agent(state)
+
+
+if __name__ == "__main__":
+    run_server(JudgeAgentHandler(), JudgeAgentHandler.agent_card_config)

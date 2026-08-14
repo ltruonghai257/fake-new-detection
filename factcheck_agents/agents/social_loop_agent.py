@@ -3,6 +3,7 @@
 Fires at most once (SOCLOOP-03) when evidence is weak, writes results to
 evidence_social only (never merged into evidence_real/evidence_fake per EVRET-03).
 """
+
 from __future__ import annotations
 
 from typing import List
@@ -20,14 +21,18 @@ def social_loop_agent(state: FactCheckState) -> dict:
     errors: List[str] = state.get("errors") or []
 
     # D-08: Target domains evaluated at call time
-    targets = ["tiktok.com"] + [d.strip() for d in settings.flagged_domains.split(",") if d.strip()]
+    targets = ["tiktok.com"] + [
+        d.strip() for d in settings.flagged_domains.split(",") if d.strip()
+    ]
 
     results: List[Evidence] = []
     seen: set = set()
 
     for q in queries:
         try:
-            search_results = web_search(q, max_results=settings.max_results, include_domains=targets)
+            search_results = web_search(
+                q, max_results=settings.max_results, include_domains=targets
+            )
         except Exception as e:
             errors.append(f"[SocialLoop] web_search failed for '{q}': {e}")
             continue
@@ -60,3 +65,32 @@ def social_loop_agent(state: FactCheckState) -> dict:
         "messages": [("assistant", f"[SocialLoop] {len(results)} items")],
         "errors": errors,
     }
+
+
+# ── A2A service wrapper ─────────────────────────────────────────────────────
+from ..a2a_server import AgentCardConfig, BaseTaskHandler, run_server
+
+
+class SocialLoopAgentHandler(BaseTaskHandler):
+    """A2A TaskHandler exposing :func:`social_loop_agent` over HTTP (port 9005)."""
+
+    agent_card_config = AgentCardConfig(
+        name="social_loop_agent",
+        description="Searches tiktok.com + flagged domains when evidence is weak",
+        version="1.0",
+        skills=[
+            {
+                "id": "social_search",
+                "name": "Social Media Search",
+                "description": "Search tiktok.com and flagged domains",
+            }
+        ],
+        port=settings.a2a_port_social_loop,
+    )
+
+    async def agent_fn(self, state: FactCheckState) -> dict:
+        return social_loop_agent(state)
+
+
+if __name__ == "__main__":
+    run_server(SocialLoopAgentHandler(), SocialLoopAgentHandler.agent_card_config)

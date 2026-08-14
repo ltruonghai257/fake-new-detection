@@ -199,3 +199,32 @@ def conclusion_agent(state: FactCheckState) -> dict:
             )
         ],
     }
+
+
+# ── A2A service wrapper ─────────────────────────────────────────────────────
+from ..a2a_server import AgentCardConfig, BaseTaskHandler, run_server
+
+
+class ConclusionAgentHandler(BaseTaskHandler):
+    """A2A TaskHandler exposing :func:`conclusion_agent` over HTTP (port 9010)."""
+
+    agent_card_config = AgentCardConfig(
+        name="conclusion_agent",
+        description="Fuses model verdicts + evidence into final 4-class decision",
+        version="1.0",
+        skills=[
+            {
+                "id": "conclusion",
+                "name": "Final Verdict",
+                "description": "Synthesize model + evidence into the final 4-class label",
+            }
+        ],
+        port=settings.a2a_port_conclusion,
+    )
+
+    async def agent_fn(self, state: FactCheckState) -> dict:
+        return conclusion_agent(state)
+
+
+if __name__ == "__main__":
+    run_server(ConclusionAgentHandler(), ConclusionAgentHandler.agent_card_config)

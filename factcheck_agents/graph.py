@@ -17,10 +17,11 @@ from .agents import (
     verify_agent,
 )
 from .agents.agreement_gate import agreement_gate, route_after_agreement
-from .agents.debate_node import debate_node
 from .agents.expert_agent import expert_agent
+from .agents.fake_advocate import fake_advocate
 from .agents.fake_source_agent import fake_source_agent
 from .agents.judge_agent import judge_agent
+from .agents.real_advocate import real_advocate
 from .agents.real_source_agent import real_source_agent
 from .agents.social_loop_agent import social_loop_agent
 from .config import settings
@@ -90,6 +91,82 @@ def build_graph(checkpointer=None):
     return g.compile(checkpointer=checkpointer)
 
 
+def debate_node(state: FactCheckState) -> dict:
+    """Run convergence-driven debate between real/fake advocate agents.
+
+    The advocates (``real_advocate`` / ``fake_advocate``) are single-turn
+    services (D-07); this node orchestrates the loop: full history is passed
+    each round, the debate exits when both advocates agree on the same
+    verdict (REAL/FAKE) or when ``max_debate_rounds`` is hit. Phase 4 will
+    replace these direct calls with A2A client invocations.
+
+    Returns the same keys as the former ``debate_node``:
+    ``debate_turns``, ``debate_exit_reason``, ``debate_converged``,
+    ``debate_agreed_verdict``, ``messages``.
+    """
+    from pathlib import Path
+
+    from .agents.llm import get_llm
+
+    llm = get_llm()
+    if llm is None:
+        return {
+            "debate_turns": [],
+            "debate_exit_reason": "no_llm",
+            "debate_converged": False,
+            "debate_agreed_verdict": None,
+            "messages": [("assistant", "[Debate] skipped — no LLM configured")],
+        }
+
+    Path("logs/debates").mkdir(parents=True, exist_ok=True)
+
+    turns = list(state.get("debate_turns") or [])
+    exit_reason = None
+    converged = False
+    agreed_verdict = None
+
+    for round_num in range(settings.max_debate_rounds):
+        real_out = real_advocate(
+            {**state, "debate_turns": turns, "debate_role": "real"}
+        )
+        real_turn = real_out["debate_turn"]
+        turns.append(real_turn)
+        if real_turn is None or real_turn.get("error"):
+            exit_reason = "llm_error" if real_turn else "no_llm"
+            break
+
+        fake_out = fake_advocate(
+            {**state, "debate_turns": turns, "debate_role": "fake"}
+        )
+        fake_turn = fake_out["debate_turn"]
+        turns.append(fake_turn)
+        if fake_turn is None or fake_turn.get("error"):
+            exit_reason = "llm_error" if fake_turn else "no_llm"
+            break
+
+        real_v = str(real_turn.get("verdict", "")).upper()
+        fake_v = str(fake_turn.get("verdict", "")).upper()
+        if real_v == fake_v and real_v in {"REAL", "FAKE"}:
+            converged = True
+            agreed_verdict = real_v
+            exit_reason = "converged"
+            break
+
+    return {
+        "debate_turns": turns,
+        "debate_exit_reason": exit_reason or "max_rounds",
+        "debate_converged": converged,
+        "debate_agreed_verdict": agreed_verdict,
+        "messages": [
+            (
+                "assistant",
+                f"[Debate] {len(turns)} turns ({exit_reason or 'max_rounds'})"
+                + (f" → agreed={agreed_verdict}" if converged else ""),
+            )
+        ],
+    }
+
+
 def route_after_start(state: FactCheckState) -> str:
     """Skip evidence retrieval when use_evidence=False (ablation)."""
     if not state.get("use_evidence", True):
@@ -123,7 +200,9 @@ def build_debate_graph(checkpointer=None):
     g.add_conditional_edges(
         START, route_after_start, {"fan_out": "real_source", "nei_gate": "nei_gate"}
     )
-    g.add_edge(START, "fake_source")  # static fan-out; still fires even when use_evidence=False
+    g.add_edge(
+        START, "fake_source"
+    )  # static fan-out; still fires even when use_evidence=False
     g.add_edge("real_source", "nei_gate")  # implicit barrier merge
     g.add_edge("fake_source", "nei_gate")
     g.add_conditional_edges(

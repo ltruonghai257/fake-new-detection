@@ -196,7 +196,7 @@ def test_nei_short_circuit():
 def test_logs_dirs_exist():
     """Test that logs/debates and logs/verdicts directories are created."""
     # Import modules
-    from factcheck_agents.agents.debate_node import debate_node
+    from factcheck_agents.graph import debate_node
     from factcheck_agents.agents.judge_agent import judge_agent
 
     # Call functions to trigger directory creation (happens at function call time)

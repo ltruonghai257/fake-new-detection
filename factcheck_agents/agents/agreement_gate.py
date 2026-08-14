@@ -64,9 +64,19 @@ def agreement_gate(state: FactCheckState) -> dict:
     cred = 0.40 * tier_score + 0.30 * count_score + 0.30 * consistency_score
 
     # AGREE-01: Weighted agreement score, normalized over available signals
-    w_ph = float(os.getenv("FACTCHECK_AGREE_PHOBERT_WEIGHT", "0.40")) if ph_available else 0.0
-    w_co = float(os.getenv("FACTCHECK_AGREE_COOLANT_WEIGHT", "0.40")) if co_available else 0.0
-    w_ev = float(os.getenv("FACTCHECK_AGREE_EVIDENCE_WEIGHT", "0.20"))  # Always included
+    w_ph = (
+        float(os.getenv("FACTCHECK_AGREE_PHOBERT_WEIGHT", "0.40"))
+        if ph_available
+        else 0.0
+    )
+    w_co = (
+        float(os.getenv("FACTCHECK_AGREE_COOLANT_WEIGHT", "0.40"))
+        if co_available
+        else 0.0
+    )
+    w_ev = float(
+        os.getenv("FACTCHECK_AGREE_EVIDENCE_WEIGHT", "0.20")
+    )  # Always included
 
     total_weight = w_ph + w_co + w_ev
     if total_weight == 0:
@@ -125,3 +135,32 @@ def route_after_agreement(state: FactCheckState) -> str:
     if agreement_score >= settings.agreement_threshold:
         return "judge"
     return "debate"
+
+
+# ── A2A service wrapper ─────────────────────────────────────────────────────
+from ..a2a_server import AgentCardConfig, BaseTaskHandler, run_server
+
+
+class AgreementGateHandler(BaseTaskHandler):
+    """A2A TaskHandler exposing :func:`agreement_gate` over HTTP (port 9006)."""
+
+    agent_card_config = AgentCardConfig(
+        name="agreement_gate",
+        description="Computes weighted agreement score; decides whether to skip debate",
+        version="1.0",
+        skills=[
+            {
+                "id": "agreement",
+                "name": "Agreement Scoring",
+                "description": "Weighted model+evidence agreement computation",
+            }
+        ],
+        port=settings.a2a_port_agreement_gate,
+    )
+
+    async def agent_fn(self, state: FactCheckState) -> dict:
+        return agreement_gate(state)
+
+
+if __name__ == "__main__":
+    run_server(AgreementGateHandler(), AgreementGateHandler.agent_card_config)
