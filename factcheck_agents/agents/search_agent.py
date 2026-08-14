@@ -44,9 +44,7 @@ def _mutate_claims(statement: str) -> List[str]:
     if llm is None:
         return []
     try:
-        resp = llm.invoke(
-            CLAIM_MUTATION_PROMPT.format(n=3, statement=statement)
-        )
+        resp = llm.invoke(CLAIM_MUTATION_PROMPT.format(n=3, statement=statement))
         data = parse_json(getattr(resp, "content", "") or "")
         if data and isinstance(data.get("variants"), list):
             vs = [v.strip() for v in data["variants"] if v and v.strip()]
@@ -115,3 +113,33 @@ def search_agent(state: FactCheckState) -> dict:
         "evidence_graph": evidence_graph,
         "messages": [("assistant", msg)],
     }
+
+
+# ── A2A service wrapper ─────────────────────────────────────────────────────
+from ..a2a_server import AgentCardConfig, BaseTaskHandler, run_server
+from ..config import settings
+
+
+class SearchAgentHandler(BaseTaskHandler):
+    """A2A TaskHandler exposing :func:`search_agent` over HTTP (port 9001)."""
+
+    agent_card_config = AgentCardConfig(
+        name="search_agent",
+        description="Drafts search queries and retrieves web evidence",
+        version="1.0",
+        skills=[
+            {
+                "id": "web_search",
+                "name": "Web Search",
+                "description": "Query web search providers",
+            }
+        ],
+        port=settings.a2a_port_search,
+    )
+
+    async def agent_fn(self, state: FactCheckState) -> dict:
+        return search_agent(state)
+
+
+if __name__ == "__main__":
+    run_server(SearchAgentHandler(), SearchAgentHandler.agent_card_config)

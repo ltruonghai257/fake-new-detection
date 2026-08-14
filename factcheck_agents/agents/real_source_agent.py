@@ -34,7 +34,9 @@ def real_source_agent(state: FactCheckState) -> dict:
     """
     queries = state.get("search_queries") or [state["statement"]]
     claim_variants = state.get("claim_variants") or []
-    queries = list(dict.fromkeys(queries + claim_variants))  # deduplicate, preserve order
+    queries = list(
+        dict.fromkeys(queries + claim_variants)
+    )  # deduplicate, preserve order
     results: List[Evidence] = []
     seen: set = set()
     workflow_steps = []
@@ -110,3 +112,33 @@ def real_source_agent(state: FactCheckState) -> dict:
         "messages": [("assistant", msg)],
         "evidence_workflow_steps": workflow_steps,
     }
+
+
+# ── A2A service wrapper ─────────────────────────────────────────────────────
+from ..a2a_server import AgentCardConfig, BaseTaskHandler, run_server
+from ..config import settings
+
+
+class RealSourceAgentHandler(BaseTaskHandler):
+    """A2A TaskHandler exposing :func:`real_source_agent` over HTTP (port 9003)."""
+
+    agent_card_config = AgentCardConfig(
+        name="real_source_agent",
+        description="Searches trusted Vietnamese news domains for real evidence",
+        version="1.0",
+        skills=[
+            {
+                "id": "trusted_search",
+                "name": "Trusted Domain Search",
+                "description": "Search vnexpress, tuoitre, thanhnien, ...",
+            }
+        ],
+        port=settings.a2a_port_real_source,
+    )
+
+    async def agent_fn(self, state: FactCheckState) -> dict:
+        return real_source_agent(state)
+
+
+if __name__ == "__main__":
+    run_server(RealSourceAgentHandler(), RealSourceAgentHandler.agent_card_config)

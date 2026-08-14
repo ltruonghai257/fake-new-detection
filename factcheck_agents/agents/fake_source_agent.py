@@ -18,7 +18,9 @@ from ..tools.web_search import web_search
 from ..tools.article_crawler import crawl_article, is_within_days
 
 
-def _search_and_crawl(query: str, include_domains: list | None, seen: set) -> List[Evidence]:
+def _search_and_crawl(
+    query: str, include_domains: list | None, seen: set
+) -> List[Evidence]:
     """Run web search, crawl article content, filter by 7 days, deduplicate."""
     try:
         q_results = web_search(
@@ -62,7 +64,9 @@ def fake_source_agent(state: FactCheckState) -> dict:
     """
     queries = state.get("search_queries") or [state["statement"]]
     claim_variants = state.get("claim_variants") or []
-    queries = list(dict.fromkeys(queries + claim_variants))  # deduplicate, preserve order
+    queries = list(
+        dict.fromkeys(queries + claim_variants)
+    )  # deduplicate, preserve order
 
     flagged_list = [d.strip() for d in settings.flagged_domains.split(",") if d.strip()]
     results: List[Evidence] = []
@@ -92,7 +96,9 @@ def fake_source_agent(state: FactCheckState) -> dict:
                 for claim in claims:
                     claim_text = claim.get("text", "")
                     claimant = claim.get("claimant", "")
-                    review_date = claim.get("claimReview", [{}])[0].get("reviewDate", "")
+                    review_date = claim.get("claimReview", [{}])[0].get(
+                        "reviewDate", ""
+                    )
                     publisher = (
                         claim.get("claimReview", [{}])[0]
                         .get("publisher", {})
@@ -103,7 +109,9 @@ def fake_source_agent(state: FactCheckState) -> dict:
                         .get("publisher", {})
                         .get("site", "")
                     )
-                    textual_rating = claim.get("claimReview", [{}])[0].get("textualRating", "")
+                    textual_rating = claim.get("claimReview", [{}])[0].get(
+                        "textualRating", ""
+                    )
                     title = f"{publisher}: {textual_rating}"
                     snippet = f"{claim_text} - {claimant} ({review_date})"
 
@@ -136,3 +144,38 @@ def fake_source_agent(state: FactCheckState) -> dict:
 
     msg = f"[FakeSource] {len(results)} items from flagged+open+factcheck (last 7 days)"
     return {"evidence_fake": results, "messages": [("assistant", msg)]}
+
+
+# ── A2A service wrapper ─────────────────────────────────────────────────────
+from ..a2a_server import AgentCardConfig, BaseTaskHandler, run_server
+from ..config import settings
+
+
+class FakeSourceAgentHandler(BaseTaskHandler):
+    """A2A TaskHandler exposing :func:`fake_source_agent` over HTTP (port 9004)."""
+
+    agent_card_config = AgentCardConfig(
+        name="fake_source_agent",
+        description="Searches flagged/non-official sources and Google Fact Check API",
+        version="1.0",
+        skills=[
+            {
+                "id": "flagged_search",
+                "name": "Flagged Domain Search",
+                "description": "Search flagged + open web",
+            },
+            {
+                "id": "factcheck_api",
+                "name": "Google Fact Check API",
+                "description": "Query the factchecktools API",
+            },
+        ],
+        port=settings.a2a_port_fake_source,
+    )
+
+    async def agent_fn(self, state: FactCheckState) -> dict:
+        return fake_source_agent(state)
+
+
+if __name__ == "__main__":
+    run_server(FakeSourceAgentHandler(), FakeSourceAgentHandler.agent_card_config)

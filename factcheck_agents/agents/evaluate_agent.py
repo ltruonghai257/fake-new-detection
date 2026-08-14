@@ -55,3 +55,38 @@ def evaluate_agent(state: FactCheckState) -> dict:
         "model_results": results,
         "messages": [("assistant", f"[Evaluate] {summary}")],
     }
+
+
+# ── A2A service wrapper ─────────────────────────────────────────────────────
+from ..a2a_server import AgentCardConfig, BaseTaskHandler, run_server
+from ..config import settings
+
+
+class EvaluateAgentHandler(BaseTaskHandler):
+    """A2A TaskHandler exposing :func:`evaluate_agent` over HTTP (port 9002)."""
+
+    agent_card_config = AgentCardConfig(
+        name="evaluate_agent",
+        description="Runs PhoBERT and COOLANT models on the statement",
+        version="1.0",
+        skills=[
+            {
+                "id": "phobert",
+                "name": "PhoBERT ViFactCheck",
+                "description": "Text model scoring",
+            },
+            {
+                "id": "coolant",
+                "name": "COOLANT",
+                "description": "Multimodal image+text model",
+            },
+        ],
+        port=settings.a2a_port_evaluate,
+    )
+
+    async def agent_fn(self, state: FactCheckState) -> dict:
+        return evaluate_agent(state)
+
+
+if __name__ == "__main__":
+    run_server(EvaluateAgentHandler(), EvaluateAgentHandler.agent_card_config)
