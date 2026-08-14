@@ -125,6 +125,38 @@ class Settings:
         )
     )
 
+    # ── A2A agent server ports (9001–9010) ───────────────────────────────────
+    a2a_port_search: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_SEARCH", "9001"))
+    )
+    a2a_port_evaluate: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_EVALUATE", "9002"))
+    )
+    a2a_port_real_source: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_REAL_SOURCE", "9003"))
+    )
+    a2a_port_fake_source: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_FAKE_SOURCE", "9004"))
+    )
+    a2a_port_social_loop: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_SOCIAL_LOOP", "9005"))
+    )
+    a2a_port_agreement_gate: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_AGREEMENT_GATE", "9006"))
+    )
+    a2a_port_real_advocate: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_REAL_ADVOCATE", "9007"))
+    )
+    a2a_port_fake_advocate: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_FAKE_ADVOCATE", "9008"))
+    )
+    a2a_port_judge: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_JUDGE", "9009"))
+    )
+    a2a_port_conclusion: int = field(
+        default_factory=lambda: int(os.getenv("A2A_PORT_CONCLUSION", "9010"))
+    )
+
     def phobert_search_root(self) -> Path:
         return self.data_root / "training" / "checkpoints_vifactcheck"
 
@@ -144,3 +176,19 @@ class Settings:
 
 
 settings = Settings()
+
+
+def a2a_ports() -> dict[str, int]:
+    """Map agent name → A2A server port (contract with start_agents.sh / Phase 4)."""
+    return {
+        "search_agent": settings.a2a_port_search,
+        "evaluate_agent": settings.a2a_port_evaluate,
+        "real_source_agent": settings.a2a_port_real_source,
+        "fake_source_agent": settings.a2a_port_fake_source,
+        "social_loop_agent": settings.a2a_port_social_loop,
+        "agreement_gate": settings.a2a_port_agreement_gate,
+        "real_advocate": settings.a2a_port_real_advocate,
+        "fake_advocate": settings.a2a_port_fake_advocate,
+        "judge_agent": settings.a2a_port_judge,
+        "conclusion_agent": settings.a2a_port_conclusion,
+    }

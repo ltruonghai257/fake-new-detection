@@ -39,8 +39,8 @@ dependencies = [
     "jupyter",
     "jupyterlab",
     "ipykernel",
-    # Compatibility fix (protobuf descriptor error with older mlflow)
-    "protobuf==3.20.3",
+    # Compatibility: a2a-sdk requires protobuf>=5.29.5; mlflow >=2.11 supports it.
+    "protobuf>=5.29.5,<7",
     # Google Drive upload
     "google-api-python-client>=2.120.0",
     "google-auth>=2.29.0",
@@ -64,6 +64,7 @@ agents = [
     "networkx>=3.0",
     "openai>=1.40.0",
     "rank_bm25>=0.2.2",
+    "a2a-sdk[http-server,fastapi]>=1.0.1,<2",
 ]
 dev = [
     "pytest>=8.0",
