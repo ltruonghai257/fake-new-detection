@@ -216,3 +216,12 @@ handler classes with the D-01/D-02/D-04 lifecycle, valid Agent Cards on all 10
 ports, start (14.2s with A2A_PORT_* overrides; 9001 held by the user's Jupyter
 kernel) → smoke 10/10 → stop clean with `.pids/` empty, and A2A-01/A2A-02/
 A2A-03/A2A-03b all traced to working mechanisms. Status: passed.
+
+---
+
+## Final confirmation (2026-08-15)
+
+Docs-only changes (SUMMARY.md key-files frontmatter, ROADMAP/REQUIREMENTS/
+PROJECT.md tracking, A2A-03b checkbox) landed after the previous
+re-confirmation; no source code changed since e61d4f6. Verification result
+unchanged: **passed**. Phase 3 closed complete, next phase 4.
