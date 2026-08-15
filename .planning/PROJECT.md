@@ -32,6 +32,12 @@ orchestrator and preserving the demo app's SSE streaming.
 
 **Target features:**
 
+**Phase 3 complete (2026-08-15):** all 10 agents wrapped as A2A services
+(`a2a_sdk`-based `AgentExecutor` handlers on ports 9001–9010, Agent Cards at
+`/.well-known/agent.json`, start/stop/smoke scripts shipped). `debate_node`
+split into single-turn `real_advocate`/`fake_advocate` services. Phase 4
+(LangGraph → A2A client wiring) is next.
+
 -   All 10 agents wrapped as A2A `TaskHandler`s (`a2a-sdk[http-server,fastapi]`): `search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`, `social_loop_agent`, `agreement_gate`, `real_advocate`, `fake_advocate`, `judge_agent`, `conclusion_agent`
 -   Each agent served by its own uvicorn HTTP server on a dedicated port (9001–9010) in local dev; `scripts/start_agents.sh` starts all; `scripts/stop_agents.sh` stops all
 -   Agent Card (`/.well-known/agent.json`) per agent for standard A2A service discovery
@@ -56,14 +62,14 @@ orchestrator and preserving the demo app's SSE streaming.
 -   ✓ **CONCL-01**: Conclusion agent fuses model verdicts + evidence into 4-class verdict (TRUE/FALSE/MISLEADING/UNVERIFIED) — v1.0
 -   ✓ **CONCL-02**: Rule-based fallback verdict when LLM is unavailable — v1.0
 -   ✓ **CFG-01**: All settings come from env vars (no hardcoded secrets) — v1.0
+-   ✓ **A2A-01**: `a2a-sdk[http-server,fastapi]` added to `factcheck_agents/pyproject.toml` (or requirements); all 10 agent modules implement `TaskHandler` protocol — v3.1 Phase 3, validated 2026-08-15
+-   ✓ **A2A-02**: Each agent exposes `GET /.well-known/agent.json` (A2A Agent Card) with name, description, skills, and port — v3.1 Phase 3, validated 2026-08-15
+-   ✓ **A2A-03**: `scripts/start_agents.sh` starts all 10 uvicorn servers (ports 9001–9010) and writes a PID file; `scripts/stop_agents.sh` stops them cleanly — v3.1 Phase 3, validated 2026-08-15
 
 ### Active
 
 <!-- v3.1 scope — A2A Protocol Integration -->
 
--   [ ] **A2A-01**: `a2a-sdk[http-server,fastapi]` added to `factcheck_agents/pyproject.toml` (or requirements); all 10 agent modules implement `TaskHandler` protocol
--   [ ] **A2A-02**: Each agent exposes `GET /.well-known/agent.json` (A2A Agent Card) with name, description, skills, and port
--   [ ] **A2A-03**: `scripts/start_agents.sh` starts all 10 uvicorn servers (ports 9001–9010) and writes a PID file; `scripts/stop_agents.sh` stops them cleanly
 -   [ ] **A2A-04**: `factcheck_agents/a2a_client.py` wraps `A2AClient` calls; LangGraph nodes import this module instead of agent functions; state passing uses A2A `Task` messages
 -   [ ] **A2A-05**: LangGraph `graph.py` updated — `build_debate_graph()` and `build_graph()` call A2A clients; conditional routing edges unchanged
 -   [ ] **A2A-06**: `demo_app/backend/streaming.py` updated to call A2A agent HTTP endpoints; SSE `turn_start`/`chunk`/`turn_end` events unchanged for the React frontend
@@ -134,4 +140,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-08-13 — Milestone v3.1 started (A2A Protocol Integration)_
+_Last updated: 2026-08-15 — v3.1 Phase 3 (A2A Agent Wrappers) complete_

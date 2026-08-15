@@ -7,13 +7,13 @@
 
 ### A2A SDK & Agent Handlers (Phase 1)
 
--   [ ] **A2A-01**: `a2a-sdk[http-server,fastapi]` (≥ 1.1.0) added to `factcheck_agents/` dependencies; each of the 10 agent modules (`search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`, `social_loop_agent`, `agreement_gate`, `real_advocate`, `fake_advocate`, `judge_agent`, `conclusion_agent`) gains a `TaskHandler` class that accepts an A2A `Task` object and returns an A2A `TaskResult`
--   [ ] **A2A-02**: Each agent's uvicorn app exposes `GET /.well-known/agent.json` containing its A2A Agent Card: `name`, `description`, `version`, `skills` list (one skill per agent), and `url` matching its assigned port; all fields conform to the A2A Agent Card JSON schema
+-   [x] **A2A-01**: `a2a-sdk[http-server,fastapi]` (≥ 1.1.0) added to `factcheck_agents/` dependencies; each of the 10 agent modules (`search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`, `social_loop_agent`, `agreement_gate`, `real_advocate`, `fake_advocate`, `judge_agent`, `conclusion_agent`) gains a `TaskHandler` class that accepts an A2A `Task` object and returns an A2A `TaskResult`
+-   [x] **A2A-02**: Each agent's uvicorn app exposes `GET /.well-known/agent.json` containing its A2A Agent Card: `name`, `description`, `version`, `skills` list (one skill per agent), and `url` matching its assigned port; all fields conform to the A2A Agent Card JSON schema
 
 ### Agent Launch Scripts (Phase 1)
 
--   [ ] **A2A-03**: `scripts/start_agents.sh` starts all 10 uvicorn processes in the background, one per port (search=9001, evaluate=9002, real_source=9003, fake_source=9004, social_loop=9005, agreement_gate=9006, real_advocate=9007, fake_advocate=9008, judge=9009, conclusion=9010); writes a PID file (`scripts/.agent_pids`) for clean shutdown
--   [ ] **A2A-03b**: `scripts/stop_agents.sh` reads the PID file and sends `SIGTERM` to each process; handles missing PIDs gracefully; exits 0
+-   [x] **A2A-03**: `scripts/start_agents.sh` starts all 10 uvicorn processes in the background, one per port (search=9001, evaluate=9002, real_source=9003, fake_source=9004, social_loop=9005, agreement_gate=9006, real_advocate=9007, fake_advocate=9008, judge=9009, conclusion=9010); writes a PID file (`scripts/.agent_pids`) for clean shutdown
+-   [x] **A2A-03b**: `scripts/stop_agents.sh` reads the PID file and sends `SIGTERM` to each process; handles missing PIDs gracefully; exits 0
 
 ### A2A Client Module (Phase 2)
 
@@ -144,20 +144,20 @@
 
 ### v3.1 (Active)
 
-| Requirement | Phase   | Status  |
-| ----------- | ------- | ------- |
-| A2A-01      | Phase 1 | Pending |
-| A2A-02      | Phase 1 | Pending |
-| A2A-03      | Phase 1 | Pending |
-| A2A-03b     | Phase 1 | Pending |
-| A2A-04      | Phase 2 | Pending |
-| A2A-05      | Phase 2 | Pending |
-| A2A-05b     | Phase 2 | Pending |
-| A2A-06      | Phase 3 | Pending |
-| A2A-06b     | Phase 3 | Pending |
-| A2A-07      | Phase 3 | Pending |
-| A2A-07b     | Phase 3 | Pending |
-| A2A-08      | Phase 3 | Pending |
+| Requirement | Phase   | Status   |
+| ----------- | ------- | -------- |
+| A2A-01      | Phase 1 | Complete |
+| A2A-02      | Phase 1 | Complete |
+| A2A-03      | Phase 1 | Complete |
+| A2A-03b     | Phase 1 | Complete |
+| A2A-04      | Phase 2 | Pending  |
+| A2A-05      | Phase 2 | Pending  |
+| A2A-05b     | Phase 2 | Pending  |
+| A2A-06      | Phase 3 | Pending  |
+| A2A-06b     | Phase 3 | Pending  |
+| A2A-07      | Phase 3 | Pending  |
+| A2A-07b     | Phase 3 | Pending  |
+| A2A-08      | Phase 3 | Pending  |
 
 **Coverage:**
 

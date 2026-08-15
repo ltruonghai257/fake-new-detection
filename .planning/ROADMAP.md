@@ -12,7 +12,7 @@ to route through A2A. The CLI, Python API, and MCP server remain externally unch
 
 ## Phases
 
--   [~] **Phase 3: A2A Agent Wrappers & Launch Scripts** - Add `TaskHandler` to all 10 agents; serve each on its own uvicorn port; expose Agent Cards; write start/stop scripts
+-   [x] **Phase 3: A2A Agent Wrappers & Launch Scripts** - Add `TaskHandler` to all 10 agents; serve each on its own uvicorn port; expose Agent Cards; write start/stop scripts
 -   [ ] **Phase 4: LangGraph → A2A Client Wiring** - Implement `a2a_client.py`; refactor `graph.py` nodes to call A2A HTTP instead of local functions; graceful-degrade for unreachable agents
 -   [ ] **Phase 5: Demo App + Tests** - Update FastAPI SSE bridge to call A2A endpoints; update/add agent HTTP tests; update graph integration tests; verify backward compat
 
@@ -34,10 +34,10 @@ start/stop the full agent fleet locally.
 
 Plans:
 
--   [~] 03-01: Wave 1 — Install `a2a-sdk[http-server,fastapi]` and add to dependencies; create `factcheck_agents/a2a_server.py` base module with shared uvicorn factory and Agent Card builder; define A2A port constants in `config.py` (A2A*PORT*\* env vars, defaults 9001–9010)
--   [~] 03-02: Wave 2 — Add `TaskHandler` + uvicorn app to evidence-side agents: `search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`; each handler deserializes `Task.input` → existing agent function input types and serializes the return value to `TaskResult`
--   [~] 03-03: Wave 3 — Add `TaskHandler` + uvicorn app to pipeline agents: `social_loop_agent`, `agreement_gate`, `real_advocate` (split from `debate_node`), `fake_advocate` (split from `debate_node`), `judge_agent`, `conclusion_agent`
--   [~] 03-04: Wave 4 — Write `scripts/start_agents.sh` and `scripts/stop_agents.sh`; smoke-test script that curls all 10 `/.well-known/agent.json` endpoints and asserts HTTP 200
+-   [x] 03-01: Wave 1 — Install `a2a-sdk[http-server,fastapi]` and add to dependencies; create `factcheck_agents/a2a_server.py` base module with shared uvicorn factory and Agent Card builder; define A2A port constants in `config.py` (A2A*PORT*\* env vars, defaults 9001–9010)
+-   [x] 03-02: Wave 2 — Add `TaskHandler` + uvicorn app to evidence-side agents: `search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`; each handler deserializes `Task.input` → existing agent function input types and serializes the return value to `TaskResult`
+-   [x] 03-03: Wave 3 — Add `TaskHandler` + uvicorn app to pipeline agents: `social_loop_agent`, `agreement_gate`, `real_advocate` (split from `debate_node`), `fake_advocate` (split from `debate_node`), `judge_agent`, `conclusion_agent`
+-   [x] 03-04: Wave 4 — Write `scripts/start_agents.sh` and `scripts/stop_agents.sh`; smoke-test script that curls all 10 `/.well-known/agent.json` endpoints and asserts HTTP 200
 
 ---
 
@@ -94,10 +94,10 @@ Phase 4 must be complete and the A2A client stable before Phase 5 begins.
 
 ## Progress
 
-| Phase | Name                   | Plans | Status  |
-| ----- | ---------------------- | ----- | ------- |
-| 3     | A2A Agent Wrappers     | 4/4   | Planned |
-| 4     | LangGraph → A2A Wiring | 2/2   | Pending |
-| 5     | Demo App + Tests       | 2/2   | Pending |
+| Phase | Name                   | Plans | Status   |
+| ----- | ---------------------- | ----- | -------- |
+| 3     | A2A Agent Wrappers     | 4/4   | Complete |
+| 4     | LangGraph → A2A Wiring | 2/2   | Pending  |
+| 5     | Demo App + Tests       | 2/2   | Pending  |
 
 _Created: 2026-08-13_
