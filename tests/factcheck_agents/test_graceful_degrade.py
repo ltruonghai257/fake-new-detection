@@ -5,10 +5,10 @@ from langgraph.checkpoint.memory import MemorySaver
 from factcheck_agents.graph import build_graph, initial_state
 
 
-@patch("factcheck_agents.a2a_client.conclusion_agent")
+@patch("factcheck_agents.graph.conclusion_agent")
 @patch("factcheck_agents.graph.social_search_agent")
 @patch("factcheck_agents.graph.verify_agent")
-@patch("factcheck_agents.a2a_client.search_agent")
+@patch("factcheck_agents.graph.search_agent")
 def test_graceful_degrade_no_crash(mock_search, mock_verify, mock_social, mock_concl):
     mock_search.return_value = {
         "evidence": [],
