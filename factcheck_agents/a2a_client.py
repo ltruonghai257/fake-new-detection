@@ -199,3 +199,66 @@ _DEGRADE_EVALUATE = {
     "model_results": [],
     "messages": [("assistant", "[Evaluate] agent unavailable — degraded")],
 }
+
+
+# ── Typed wrapper functions (one per A2A agent) ───────────────────────────
+
+
+@degrade_on_unavailable("search_agent", _DEGRADE_SEARCH)
+def search_agent(state: FactCheckState) -> dict:
+    """Call search_agent via A2A (port 9001); rebuild the EvidenceGraph locally (D-03)."""
+    diff = call_agent("search_agent", state)
+    evidence = diff.get("evidence", [])
+    if evidence:
+        from factcheck_agents.graph_utils import EvidenceGraph
+
+        diff["evidence_graph"] = EvidenceGraph.build_from_evidence(evidence)
+    else:
+        diff["evidence_graph"] = None
+    return diff
+
+
+@degrade_on_unavailable("conclusion_agent", _DEGRADE_CONCLUSION)
+def conclusion_agent(state: FactCheckState) -> dict:
+    return call_agent("conclusion_agent", state)
+
+
+@degrade_on_unavailable("real_source_agent", _DEGRADE_REAL_SOURCE)
+def real_source_agent(state: FactCheckState) -> dict:
+    return call_agent("real_source_agent", state)
+
+
+@degrade_on_unavailable("fake_source_agent", _DEGRADE_FAKE_SOURCE)
+def fake_source_agent(state: FactCheckState) -> dict:
+    return call_agent("fake_source_agent", state)
+
+
+@degrade_on_unavailable("social_loop_agent", _DEGRADE_SOCIAL_LOOP)
+def social_loop_agent(state: FactCheckState) -> dict:
+    return call_agent("social_loop_agent", state)
+
+
+@degrade_on_unavailable("agreement_gate", _DEGRADE_AGREEMENT)
+def agreement_gate(state: FactCheckState) -> dict:
+    return call_agent("agreement_gate", state)
+
+
+@degrade_on_unavailable("real_advocate", _DEGRADE_REAL_ADVOCATE)
+def real_advocate(state: FactCheckState) -> dict:
+    return call_agent("real_advocate", state)
+
+
+@degrade_on_unavailable("fake_advocate", _DEGRADE_FAKE_ADVOCATE)
+def fake_advocate(state: FactCheckState) -> dict:
+    return call_agent("fake_advocate", state)
+
+
+@degrade_on_unavailable("judge_agent", _DEGRADE_JUDGE)
+def judge_agent(state: FactCheckState) -> dict:
+    return call_agent("judge_agent", state)
+
+
+@degrade_on_unavailable("evaluate_agent", _DEGRADE_EVALUATE)
+def evaluate_agent(state: FactCheckState) -> dict:
+    """A2A wrapper for evaluate_agent (port 9002). Note: no graph node calls this — MCP server uses evaluate_agent in-process."""
+    return call_agent("evaluate_agent", state)
