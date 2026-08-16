@@ -157,6 +157,49 @@ class Settings:
         default_factory=lambda: int(os.getenv("A2A_PORT_CONCLUSION", "9010"))
     )
 
+    # ── A2A client timeouts (Phase 4) ─────────────────────────────────────
+    # Global override via A2A_CLIENT_TIMEOUT; per-agent fields default to
+    # 120s (LLM agents), 60s (model inference), or 30s (calculation/search).
+    a2a_client_timeout: Optional[int] = field(
+        default_factory=lambda: os.getenv("A2A_CLIENT_TIMEOUT")
+    )
+    a2a_client_timeout_search: int = field(
+        default_factory=lambda: int(os.getenv("A2A_CLIENT_TIMEOUT_SEARCH", "120"))
+    )
+    a2a_client_timeout_evaluate: int = field(
+        default_factory=lambda: int(os.getenv("A2A_CLIENT_TIMEOUT_EVALUATE", "60"))
+    )
+    a2a_client_timeout_real_source: int = field(
+        default_factory=lambda: int(os.getenv("A2A_CLIENT_TIMEOUT_REAL_SOURCE", "120"))
+    )
+    a2a_client_timeout_fake_source: int = field(
+        default_factory=lambda: int(os.getenv("A2A_CLIENT_TIMEOUT_FAKE_SOURCE", "120"))
+    )
+    a2a_client_timeout_social_loop: int = field(
+        default_factory=lambda: int(os.getenv("A2A_CLIENT_TIMEOUT_SOCIAL_LOOP", "30"))
+    )
+    a2a_client_timeout_agreement_gate: int = field(
+        default_factory=lambda: int(
+            os.getenv("A2A_CLIENT_TIMEOUT_AGREEMENT_GATE", "30")
+        )
+    )
+    a2a_client_timeout_real_advocate: int = field(
+        default_factory=lambda: int(
+            os.getenv("A2A_CLIENT_TIMEOUT_REAL_ADVOCATE", "120")
+        )
+    )
+    a2a_client_timeout_fake_advocate: int = field(
+        default_factory=lambda: int(
+            os.getenv("A2A_CLIENT_TIMEOUT_FAKE_ADVOCATE", "120")
+        )
+    )
+    a2a_client_timeout_judge: int = field(
+        default_factory=lambda: int(os.getenv("A2A_CLIENT_TIMEOUT_JUDGE", "120"))
+    )
+    a2a_client_timeout_conclusion: int = field(
+        default_factory=lambda: int(os.getenv("A2A_CLIENT_TIMEOUT_CONCLUSION", "120"))
+    )
+
     def phobert_search_root(self) -> Path:
         return self.data_root / "training" / "checkpoints_vifactcheck"
 
