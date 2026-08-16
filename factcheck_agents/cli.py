@@ -66,7 +66,8 @@ def main(argv: list[str] | None = None) -> int:
 
     graph = build_graph()
     result = graph.invoke(
-        initial_state(args.statement, image_path=args.image, language=args.language)
+        initial_state(args.statement, image_path=args.image, language=args.language),
+        config={"configurable": {"thread_id": f"cli-{hash(args.statement)}"}},
     )
 
     if args.json:
