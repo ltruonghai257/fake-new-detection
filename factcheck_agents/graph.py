@@ -10,20 +10,21 @@ import uuid
 
 from langgraph.graph import END, START, StateGraph
 
-from .agents import (
-    conclusion_agent,
-    search_agent,
-    social_search_agent,
-    verify_agent,
-)
-from .agents.agreement_gate import agreement_gate, route_after_agreement
+from .agents import social_search_agent, verify_agent
+from .agents.agreement_gate import route_after_agreement
 from .agents.expert_agent import expert_agent
-from .agents.fake_advocate import fake_advocate
-from .agents.fake_source_agent import fake_source_agent
-from .agents.judge_agent import judge_agent
-from .agents.real_advocate import real_advocate
-from .agents.real_source_agent import real_source_agent
-from .agents.social_loop_agent import social_loop_agent
+from .a2a_client import (
+    AgentUnavailableError,
+    agreement_gate,
+    conclusion_agent,
+    fake_advocate,
+    fake_source_agent,
+    judge_agent,
+    real_advocate,
+    real_source_agent,
+    search_agent,
+    social_loop_agent,
+)
 from .config import settings
 from .reranker import reranker as reranker_node
 from .state import FactCheckState
