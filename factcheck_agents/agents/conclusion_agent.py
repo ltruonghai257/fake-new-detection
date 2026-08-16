@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 from typing import Any, List, Optional, Tuple
 
+from ..graph_utils import EvidenceGraph
 from ..state import Evidence, FactCheckState, ModelResult, Verdict
 from .llm import get_llm, parse_json
 from ..config import settings
@@ -143,6 +144,12 @@ def conclusion_agent(state: FactCheckState) -> dict:
     model_results = state.get("model_results", []) or []
     evidence = state.get("evidence", []) or []
     evidence_graph = state.get("evidence_graph")
+    # Over A2A the graph arrives as its repr string (serialize_state fallback);
+    # rebuild it from evidence so the cross-source conflict check still works.
+    if isinstance(evidence_graph, str):
+        evidence_graph = (
+            EvidenceGraph.build_from_evidence(evidence) if evidence else None
+        )
 
     llm = get_llm()
     if llm is None:

@@ -72,7 +72,8 @@ def call_agent(agent_name: str, state: FactCheckState) -> dict:
     payload = serialize_state(dict(state))
     request_body = {
         "message": {
-            "role": "user",
+            # SDK 1.1.x protobuf REST transport expects lf.a2a.v1.Role enum values
+            "role": "ROLE_USER",
             "parts": [{"data": payload}],
             "messageId": f"msg-{uuid.uuid4()}",
         }
@@ -81,12 +82,15 @@ def call_agent(agent_name: str, state: FactCheckState) -> dict:
         resp = httpx.Client(timeout=timeout).post(
             f"http://localhost:{port}/message:send",
             json=request_body,
+            headers={"A2A-Version": "1.0"},
         )
         resp.raise_for_status()
     except httpx.HTTPError as exc:
         raise AgentUnavailableError(agent_name, port, str(exc)) from exc
 
-    task = resp.json()
+    data = resp.json()
+    # SDK 1.1.x REST wraps the Task in a "task" key: {"task": {...}}
+    task = data.get("task") or data
     task_state = task.get("status", {}).get("state", "")
     artifacts = task.get("artifacts", [])
 
