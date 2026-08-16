@@ -4,17 +4,17 @@ milestone: v3.1
 milestone_name: A2A Protocol Integration
 current_phase: 04
 current_phase_name: langgraph-a2a-client-wiring
-status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-08-16T18:28:11.778Z"
+status: verifying
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-08-16T19:30:04.016Z"
 last_activity: 2026-08-17
 last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 3
-  completed_plans: 2
-  percent: 33
+  completed_plans: 3
+  percent: 67
 ---
 
 # Project State
@@ -23,7 +23,7 @@ progress:
 
 Phase: 04 (langgraph-a2a-client-wiring) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-17 — Phase 04 execution started
 
 ## Milestone v3.1 Requirements Index
@@ -50,8 +50,8 @@ Last activity: 2026-08-17 — Phase 04 execution started
 
 ## Session
 
-**Last session:** 2026-08-16T18:28:04.944Z
-**Stopped at:** Completed 04-01-PLAN.md
+**Last session:** 2026-08-16T19:30:04.008Z
+**Stopped at:** Completed 04-02-PLAN.md
 **Resume file:** None
 
 ## Performance Metrics
@@ -59,8 +59,11 @@ Last activity: 2026-08-17 — Phase 04 execution started
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 04 P01 | 14 | 5 tasks | 3 files |
+| Phase 04 P02 | 74 | 7 tasks | 5 files |
 
 ## Decisions
 
 - [Phase 04]: Sync httpx.Client bridge for A2A calls (D-01) — Sync httpx.Client bridge for A2A calls (D-01)
 - [Phase 04]: EvidenceGraph rebuilt locally in search_agent wrapper (D-03) — EvidenceGraph rebuilt locally in search_agent wrapper (D-03)
+- [Phase 04]: Patch targets stay on factcheck_agents.graph (a2a_client patches ineffective with from-import bindings) — Patch targets stay on factcheck_agents.graph (a2a_client patches ineffective with from-import bindings)
+- [Phase 04]: EvidenceGraph made checkpointer-serializable via _asdict()/graph_data round-trip — EvidenceGraph made checkpointer-serializable via _asdict()/graph_data round-trip

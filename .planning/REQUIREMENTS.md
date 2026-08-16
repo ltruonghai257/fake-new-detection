@@ -21,8 +21,8 @@
 
 ### LangGraph Graph Refactor (Phase 2)
 
--   [ ] **A2A-05**: `factcheck_agents/graph.py` — all 10 node functions updated to call `a2a_client.*` functions instead of importing agent functions directly; conditional routing edges (`social_loop_router`, `agreement_router`, `nei_gate`) remain unchanged; `build_graph()` and `build_debate_graph()` signatures and return types unchanged
--   [ ] **A2A-05b**: `AgentUnavailableError` caught at each node and mapped to the existing graceful-degrade path (same behaviour as a missing model checkpoint in v3.0)
+-   [x] **A2A-05**: `factcheck_agents/graph.py` — all 10 node functions updated to call `a2a_client.*` functions instead of importing agent functions directly; conditional routing edges (`social_loop_router`, `agreement_router`, `nei_gate`) remain unchanged; `build_graph()` and `build_debate_graph()` signatures and return types unchanged
+-   [x] **A2A-05b**: `AgentUnavailableError` caught at each node and mapped to the existing graceful-degrade path (same behaviour as a missing model checkpoint in v3.0)
 
 ### Demo App SSE Bridge Update (Phase 3)
 
@@ -151,8 +151,8 @@
 | A2A-03      | Phase 1 | Complete |
 | A2A-03b     | Phase 1 | Complete |
 | A2A-04      | Phase 2 | Complete |
-| A2A-05      | Phase 2 | Pending  |
-| A2A-05b     | Phase 2 | Pending  |
+| A2A-05      | Phase 2 | Complete |
+| A2A-05b     | Phase 2 | Complete |
 | A2A-06      | Phase 3 | Pending  |
 | A2A-06b     | Phase 3 | Pending  |
 | A2A-07      | Phase 3 | Pending  |
