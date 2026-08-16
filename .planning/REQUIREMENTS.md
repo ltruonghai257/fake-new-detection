@@ -17,7 +17,7 @@
 
 ### A2A Client Module (Phase 2)
 
--   [ ] **A2A-04**: `factcheck_agents/a2a_client.py` implements typed wrapper functions (one per agent) that construct an A2A `Task` message, call the appropriate local port via `httpx`, and deserialize the `TaskResult` back to the existing Python types used by the LangGraph state (`Evidence`, `VerifyResult`, `DebateTurn`, etc.); timeouts and connection errors propagate as `AgentUnavailableError`
+-   [x] **A2A-04**: `factcheck_agents/a2a_client.py` implements typed wrapper functions (one per agent) that construct an A2A `Task` message, call the appropriate local port via `httpx`, and deserialize the `TaskResult` back to the existing Python types used by the LangGraph state (`Evidence`, `VerifyResult`, `DebateTurn`, etc.); timeouts and connection errors propagate as `AgentUnavailableError`
 
 ### LangGraph Graph Refactor (Phase 2)
 
@@ -150,7 +150,7 @@
 | A2A-02      | Phase 1 | Complete |
 | A2A-03      | Phase 1 | Complete |
 | A2A-03b     | Phase 1 | Complete |
-| A2A-04      | Phase 2 | Pending  |
+| A2A-04      | Phase 2 | Complete |
 | A2A-05      | Phase 2 | Pending  |
 | A2A-05b     | Phase 2 | Pending  |
 | A2A-06      | Phase 3 | Pending  |
