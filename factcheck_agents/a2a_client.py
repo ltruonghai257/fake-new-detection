@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import functools
 import logging
 import uuid
 from typing import Any
@@ -103,3 +104,98 @@ def call_agent(agent_name: str, state: FactCheckState) -> dict:
         return {}
     # TASK_STATE_COMPLETED (or unknown) — extract the diff.
     return _extract_artifact_data(artifacts)
+
+
+def degrade_on_unavailable(agent_name: str, degrade_diff: dict):
+    """Decorator factory: catch :class:`AgentUnavailableError`, return ``degrade_diff``."""
+
+    def decorator(fn):
+        @functools.wraps(fn)
+        def wrapper(state, *args, **kwargs):
+            try:
+                return fn(state, *args, **kwargs)
+            except AgentUnavailableError as exc:
+                logger.warning(
+                    "[%s] agent unavailable (port %s): %s — degraded",
+                    agent_name,
+                    exc.port,
+                    exc.cause,
+                )
+                return dict(degrade_diff)  # shallow copy to avoid mutation
+
+        return wrapper
+
+    return decorator
+
+
+# ── Per-agent degrade diffs (total=False — only keys the agent produces) ──
+
+
+_DEGRADE_SEARCH = {
+    "evidence": [],
+    "search_queries": [],
+    "evidence_graph": None,
+    "claim_variants": [],
+    "messages": [("assistant", "[Search] agent unavailable — degraded")],
+}
+
+_DEGRADE_CONCLUSION = {
+    "verdict": {
+        "label": "UNVERIFIED",
+        "confidence": 0.0,
+        "verdict_binary": "NEI",
+        "verdict_label_vi": "Chưa xác thực",
+        "rationale": "Conclusion agent unavailable",
+        "citations": [],
+        "recommendation": "",
+    }
+}
+
+_DEGRADE_REAL_SOURCE = {
+    "evidence_real": [],
+    "messages": [("assistant", "[RealSource] agent unavailable — degraded")],
+}
+
+_DEGRADE_FAKE_SOURCE = {
+    "evidence_fake": [],
+    "messages": [("assistant", "[FakeSource] agent unavailable — degraded")],
+}
+
+_DEGRADE_SOCIAL_LOOP = {
+    "evidence_social": [],
+    "social_loop_fired": True,  # prevents re-entry (SOCLOOP-03)
+    "messages": [("assistant", "[SocialLoop] agent unavailable — degraded")],
+}
+
+_DEGRADE_AGREEMENT = {
+    "agreement_score": 0.0,
+    "messages": [("assistant", "[AgreementGate] agent unavailable — degraded")],
+}
+
+_DEGRADE_REAL_ADVOCATE = {
+    "debate_turn": {"agent": "real_advocate", "error": "agent_unavailable"},
+    "messages": [("assistant", "[RealAdvocate] agent unavailable — degraded")],
+}
+
+_DEGRADE_FAKE_ADVOCATE = {
+    "debate_turn": {"agent": "fake_advocate", "error": "agent_unavailable"},
+    "messages": [("assistant", "[FakeAdvocate] agent unavailable — degraded")],
+}
+
+_DEGRADE_JUDGE = {
+    "verdict": {
+        "label": "UNVERIFIED",
+        "confidence": 0.0,
+        "verdict_binary": "NEI",
+        "verdict_label_vi": "Chưa xác thực",
+        "rationale": "Judge agent unavailable",
+        "citations": [],
+        "recommendation": "",
+    },
+    "weight_breakdown": {},
+}
+
+_DEGRADE_EVALUATE = {
+    "model_results": [],
+    "messages": [("assistant", "[Evaluate] agent unavailable — degraded")],
+}
