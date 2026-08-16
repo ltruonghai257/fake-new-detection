@@ -35,8 +35,14 @@ orchestrator and preserving the demo app's SSE streaming.
 **Phase 3 complete (2026-08-15):** all 10 agents wrapped as A2A services
 (`a2a_sdk`-based `AgentExecutor` handlers on ports 9001–9010, Agent Cards at
 `/.well-known/agent.json`, start/stop/smoke scripts shipped). `debate_node`
-split into single-turn `real_advocate`/`fake_advocate` services. Phase 4
-(LangGraph → A2A client wiring) is next.
+split into single-turn `real_advocate`/`fake_advocate` services.
+
+**Phase 4 complete (2026-08-17):** LangGraph nodes now invoke every agent via
+`a2a_client.py` over A2A HTTP (sync `httpx.Client` bridge, `AgentUnavailableError`
+→ per-agent degrade diffs, partial-debate semantics in `debate_node`). Verified
+end-to-end: CLI smoke test produced a live verdict in 58s with all servers up,
+and a graceful UNVERIFIED degrade with all servers down. Phase 5 (Demo App +
+Tests) is next.
 
 -   All 10 agents wrapped as A2A `TaskHandler`s (`a2a-sdk[http-server,fastapi]`): `search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`, `social_loop_agent`, `agreement_gate`, `real_advocate`, `fake_advocate`, `judge_agent`, `conclusion_agent`
 -   Each agent served by its own uvicorn HTTP server on a dedicated port (9001–9010) in local dev; `scripts/start_agents.sh` starts all; `scripts/stop_agents.sh` stops all
@@ -65,13 +71,14 @@ split into single-turn `real_advocate`/`fake_advocate` services. Phase 4
 -   ✓ **A2A-01**: `a2a-sdk[http-server,fastapi]` added to `factcheck_agents/pyproject.toml` (or requirements); all 10 agent modules implement `TaskHandler` protocol — v3.1 Phase 3, validated 2026-08-15
 -   ✓ **A2A-02**: Each agent exposes `GET /.well-known/agent.json` (A2A Agent Card) with name, description, skills, and port — v3.1 Phase 3, validated 2026-08-15
 -   ✓ **A2A-03**: `scripts/start_agents.sh` starts all 10 uvicorn servers (ports 9001–9010) and writes a PID file; `scripts/stop_agents.sh` stops them cleanly — v3.1 Phase 3, validated 2026-08-15
+-   ✓ **A2A-04**: `factcheck_agents/a2a_client.py` wraps `A2AClient` calls; LangGraph nodes import this module instead of agent functions; state passing uses A2A `Task` messages — v3.1 Phase 4, validated 2026-08-17
+-   ✓ **A2A-05**: LangGraph `graph.py` updated — `build_debate_graph()` and `build_graph()` call A2A clients; conditional routing edges unchanged — v3.1 Phase 4, validated 2026-08-17
+-   ✓ **A2A-05b**: `debate_node` handles per-advocate `AgentUnavailableError` with partial-debate semantics (available advocate continues; both down → `agent_unavailable`) — v3.1 Phase 4, validated 2026-08-17
 
 ### Active
 
 <!-- v3.1 scope — A2A Protocol Integration -->
 
--   [ ] **A2A-04**: `factcheck_agents/a2a_client.py` wraps `A2AClient` calls; LangGraph nodes import this module instead of agent functions; state passing uses A2A `Task` messages
--   [ ] **A2A-05**: LangGraph `graph.py` updated — `build_debate_graph()` and `build_graph()` call A2A clients; conditional routing edges unchanged
 -   [ ] **A2A-06**: `demo_app/backend/streaming.py` updated to call A2A agent HTTP endpoints; SSE `turn_start`/`chunk`/`turn_end` events unchanged for the React frontend
 -   [ ] **A2A-07**: Unit tests updated: each agent tested via its A2A HTTP interface (spin up in-process uvicorn); existing graph integration tests adapted for A2A client calls
 -   [ ] **A2A-08**: CLI (`cli.py`), Python API (`run_fact_check()`), and MCP server (`mcp_server.py`) remain externally unchanged; they call `build_debate_graph()` as before
@@ -116,8 +123,9 @@ split into single-turn `real_advocate`/`fake_advocate` services. Phase 4
 | Debate architecture over single-pass verdict (v3.0)      | Single-pass evidence silently overrides model predictions; debate forces explicit weighting   | ✓ Shipped v3.0 |
 | 30/30/40 weight split (v3.0)                             | Equal model weight, evidence-credibility plurality; tunable default in STATE.md               | ✓ Shipped v3.0 |
 | Google Fact Check API stubbed until key provided (v3.0)  | Avoid silent failures; user must opt in explicitly                                            | ✓ Shipped v3.0 |
-| A2A protocol for agent communication (v3.1)              | Standardized HTTP-based agent interface; each agent becomes independently testable/deployable | — Pending      |
-| LangGraph retained as routing-only orchestrator (v3.1)   | A2A handles message passing; LangGraph handles conditional graph edges — minimal coupling     | — Pending      |
+| A2A protocol for agent communication (v3.1)              | Standardized HTTP-based agent interface; each agent becomes independently testable/deployable | ✓ Shipped v3.1 |
+| LangGraph retained as routing-only orchestrator (v3.1)   | A2A handles message passing; LangGraph handles conditional graph edges — minimal coupling     | ✓ Shipped v3.1 |
+| Sync httpx.Client bridge for graph → agent calls (v3.1)  | Graph nodes are sync; per-call client avoids event-loop/async churn — zero caller changes     | ✓ Shipped v3.1 |
 
 ## Evolution
 
@@ -140,4 +148,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-08-15 — v3.1 Phase 3 (A2A Agent Wrappers) complete_
+_Last updated: 2026-08-17 — v3.1 Phase 4 (LangGraph → A2A Client Wiring) complete_
