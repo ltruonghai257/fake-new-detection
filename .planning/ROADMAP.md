@@ -57,8 +57,8 @@ handle agent unavailability gracefully.
 
 Plans:
 
--   [ ] 04-01: Wave 1 — Implement `factcheck_agents/a2a_client.py`: `AgentUnavailableError`, `async def call_agent(port, task_input)` base, then 10 typed wrapper functions with correct input/output types
--   [ ] 04-02: Wave 2 — Refactor `graph.py` node functions to call `a2a_client.*`; update `build_graph()` and `build_debate_graph()` to wire the async calls; add `AgentUnavailableError` handlers in each node; run existing unit tests to verify no regressions
+-   [ ] 04-01: Wave 1 — Implement `factcheck_agents/a2a_client.py`: `AgentUnavailableError`, sync `call_agent(agent_name, state)` using `httpx.Client`, then 10 typed wrapper functions with correct input/output types
+-   [ ] 04-02: Wave 2 — Refactor `graph.py` node functions to call `a2a_client.*`; add `AgentUnavailableError` handlers in each node; update test patch targets; run existing unit tests to verify no regressions
 
 ---
 
