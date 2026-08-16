@@ -13,7 +13,7 @@ to route through A2A. The CLI, Python API, and MCP server remain externally unch
 ## Phases
 
 -   [x] **Phase 3: A2A Agent Wrappers & Launch Scripts** - Add `TaskHandler` to all 10 agents; serve each on its own uvicorn port; expose Agent Cards; write start/stop scripts
--   [ ] **Phase 4: LangGraph → A2A Client Wiring** - Implement `a2a_client.py`; refactor `graph.py` nodes to call A2A HTTP instead of local functions; graceful-degrade for unreachable agents
+-   [~] **Phase 4: LangGraph → A2A Client Wiring** - Implement `a2a_client.py`; refactor `graph.py` nodes to call A2A HTTP instead of local functions; graceful-degrade for unreachable agents
 -   [ ] **Phase 5: Demo App + Tests** - Update FastAPI SSE bridge to call A2A endpoints; update/add agent HTTP tests; update graph integration tests; verify backward compat
 
 ## Phase Details
@@ -57,8 +57,8 @@ handle agent unavailability gracefully.
 
 Plans:
 
--   [ ] 04-01: Wave 1 — Implement `factcheck_agents/a2a_client.py`: `AgentUnavailableError`, sync `call_agent(agent_name, state)` using `httpx.Client`, then 10 typed wrapper functions with correct input/output types
--   [ ] 04-02: Wave 2 — Refactor `graph.py` node functions to call `a2a_client.*`; add `AgentUnavailableError` handlers in each node; update test patch targets; run existing unit tests to verify no regressions
+-   [~] 04-01: Wave 1 — Implement `factcheck_agents/a2a_client.py`: `AgentUnavailableError`, sync `call_agent(agent_name, state)` using `httpx.Client`, then 10 typed wrapper functions with correct input/output types
+-   [~] 04-02: Wave 2 — Refactor `graph.py` node functions to call `a2a_client.*`; add `AgentUnavailableError` handlers in each node; update test patch targets; run existing unit tests to verify no regressions
 
 ---
 
@@ -97,7 +97,7 @@ Phase 4 must be complete and the A2A client stable before Phase 5 begins.
 | Phase | Name                   | Plans | Status   |
 | ----- | ---------------------- | ----- | -------- |
 | 3     | A2A Agent Wrappers     | 4/4   | Complete |
-| 4     | LangGraph → A2A Wiring | 2/2   | Pending  |
+| 4     | LangGraph → A2A Wiring | 2/2   | Planned  |
 | 5     | Demo App + Tests       | 2/2   | Pending  |
 
 _Created: 2026-08-13_
