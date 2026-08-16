@@ -57,7 +57,11 @@ handle agent unavailability gracefully.
 
 Plans:
 
--   [~] 04-01: Wave 1 — Implement `factcheck_agents/a2a_client.py`: `AgentUnavailableError`, sync `call_agent(agent_name, state)` using `httpx.Client`, then 10 typed wrapper functions with correct input/output types
+- [x] 04-01-PLAN.md
+- [ ] 04-02-PLAN.md
+
+1/2 plans executed
+
 -   [~] 04-02: Wave 2 — Refactor `graph.py` node functions to call `a2a_client.*`; add `AgentUnavailableError` handlers in each node; update test patch targets; run existing unit tests to verify no regressions
 
 ---
@@ -97,7 +101,7 @@ Phase 4 must be complete and the A2A client stable before Phase 5 begins.
 | Phase | Name                   | Plans | Status   |
 | ----- | ---------------------- | ----- | -------- |
 | 3     | A2A Agent Wrappers     | 4/4   | Complete |
-| 4     | LangGraph → A2A Wiring | 2/2   | Planned  |
+| 4     | LangGraph → A2A Wiring | 2/2   | In Progress|
 | 5     | Demo App + Tests       | 2/2   | Pending  |
 
 _Created: 2026-08-13_
