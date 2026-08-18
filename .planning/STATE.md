@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: A2A Protocol Integration
+status: planning
+stopped_at: Phase 04 complete — UAT 5/5 passed, ready to plan Phase 05
+last_updated: '2026-08-18T13:44:57.552Z'
+last_activity: 2026-08-18
+last_activity_desc: Phase 04 UAT complete — 5/5 passed
+progress:
+    total_phases: 3
+    completed_phases: 2
+    total_plans: 3
+    completed_plans: 3
+    percent: 67
 current_phase: 5
 current_phase_name: Demo App + Tests
-status: planning
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-08-16T19:33:17.449Z"
-last_activity: 2026-08-17
-last_activity_desc: Phase 04 execution started
-progress:
-  total_phases: 3
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
-  percent: 67
 ---
 
 # Project State
@@ -24,7 +24,7 @@ progress:
 Phase: 5 — Demo App + Tests
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-08-17 — Phase 04 complete, transitioned to Phase 5
+Last activity: 2026-08-18 — Phase 04 UAT complete (5/5), transitioned to Phase 5
 
 ## Milestone v3.1 Requirements Index
 
@@ -50,20 +50,20 @@ Last activity: 2026-08-17 — Phase 04 complete, transitioned to Phase 5
 
 ## Session
 
-**Last session:** 2026-08-16T19:30:04.008Z
-**Stopped at:** Completed 04-02-PLAN.md
+**Last session:** 2026-08-18
+**Stopped at:** Phase 04 complete, ready to plan Phase 05
 **Resume file:** None
 
 ## Performance Metrics
 
-| Plan | Duration | Tasks | Files |
-|------|----------|-------|-------|
-| Phase 04 P01 | 14 | 5 tasks | 3 files |
-| Phase 04 P02 | 74 | 7 tasks | 5 files |
+| Plan         | Duration | Tasks   | Files   |
+| ------------ | -------- | ------- | ------- |
+| Phase 04 P01 | 14       | 5 tasks | 3 files |
+| Phase 04 P02 | 74       | 7 tasks | 5 files |
 
 ## Decisions
 
-- [Phase 04]: Sync httpx.Client bridge for A2A calls (D-01) — Sync httpx.Client bridge for A2A calls (D-01)
-- [Phase 04]: EvidenceGraph rebuilt locally in search_agent wrapper (D-03) — EvidenceGraph rebuilt locally in search_agent wrapper (D-03)
-- [Phase 04]: Patch targets stay on factcheck_agents.graph (a2a_client patches ineffective with from-import bindings) — Patch targets stay on factcheck_agents.graph (a2a_client patches ineffective with from-import bindings)
-- [Phase 04]: EvidenceGraph made checkpointer-serializable via _asdict()/graph_data round-trip — EvidenceGraph made checkpointer-serializable via _asdict()/graph_data round-trip
+-   [Phase 04]: Sync httpx.Client bridge for A2A calls (D-01) — Sync httpx.Client bridge for A2A calls (D-01)
+-   [Phase 04]: EvidenceGraph rebuilt locally in search_agent wrapper (D-03) — EvidenceGraph rebuilt locally in search_agent wrapper (D-03)
+-   [Phase 04]: Patch targets stay on factcheck_agents.graph (a2a_client patches ineffective with from-import bindings) — Patch targets stay on factcheck_agents.graph (a2a_client patches ineffective with from-import bindings)
+-   [Phase 04]: EvidenceGraph made checkpointer-serializable via \_asdict()/graph_data round-trip — EvidenceGraph made checkpointer-serializable via \_asdict()/graph_data round-trip
