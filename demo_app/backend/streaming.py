@@ -156,6 +156,23 @@ async def sse_stream(
                     continue  # LangGraph 1.2.x emits None for nodes returning {} (no-op updates)
                 accumulated.update(node_output)
 
+                messages = node_output.get("messages", [])
+                if any(
+                    "unavailable" in str(part)
+                    for msg in messages
+                    for part in (msg if isinstance(msg, (list, tuple)) else [msg])
+                ):
+                    _post(
+                        {
+                            "type": "stage_error",
+                            "data": {
+                                "message": "Một số dịch vụ tạm thời không khả dụng. Không thể hoàn thành phân tích."
+                            },
+                        }
+                    )
+                    done.set()
+                    break
+
                 # Emit stage_start for node transitions (D-09, D-10)
                 stage = NODE_STAGE_MAP.get(node_name)
                 if stage and stage not in emitted_stages:
@@ -209,7 +226,9 @@ async def sse_stream(
                         _post(
                             {
                                 "type": "debate_converged",
-                                "agreed_verdict": node_output.get("debate_agreed_verdict"),
+                                "agreed_verdict": node_output.get(
+                                    "debate_agreed_verdict"
+                                ),
                             }
                         )
 
