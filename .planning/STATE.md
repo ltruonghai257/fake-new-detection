@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: milestone
 status: executing
-stopped_at: Phase 5 plans approved — ready to execute
-last_updated: "2026-08-22T09:37:34.922Z"
-last_activity: 2026-08-22 -- Phase 05 execution started
+stopped_at: Phase 5 plan 05-02 complete — milestone v3.1 all phases done
+last_updated: '2026-08-22T10:15:00Z'
+last_activity: 2026-08-22 -- Phase 05 plan 05-02 executed
 progress:
-  total_phases: 3
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 3
-  percent: 60
+    total_phases: 3
+    completed_phases: 3
+    total_plans: 5
+    completed_plans: 5
+    percent: 100
 current_phase: 5
 current_phase_name: Demo App + Tests
 ---
@@ -20,10 +20,10 @@ current_phase_name: Demo App + Tests
 
 ## Current Position
 
-Phase: 05 (demo-app-tests) — EXECUTING
-Plan: 1 of 2
-Status: Executing Phase 05
-Last activity: 2026-08-22 -- Phase 05 execution started
+Phase: 05 (demo-app-tests) — COMPLETE
+Plan: 2 of 2 (all plans done)
+Status: Phase 05 complete — all 3 phases of v3.1 complete
+Last activity: 2026-08-22 -- Phase 05 plan 05-02 executed
 
 ## Milestone v3.1 Requirements Index
 
@@ -50,8 +50,8 @@ Last activity: 2026-08-22 -- Phase 05 execution started
 ## Session
 
 **Last session:** 2026-08-22
-**Stopped at:** Phase 5 plans approved — ready to execute
-**Resume file:** .planning/phases/05-demo-app-tests/05-01-PLAN.md
+**Stopped at:** Phase 5 plan 05-02 complete — all v3.1 plans done
+**Resume file:** (none — milestone complete)
 
 ## Performance Metrics
 
@@ -66,3 +66,6 @@ Last activity: 2026-08-22 -- Phase 05 execution started
 -   [Phase 04]: EvidenceGraph rebuilt locally in search_agent wrapper (D-03) — EvidenceGraph rebuilt locally in search_agent wrapper (D-03)
 -   [Phase 04]: Patch targets stay on factcheck_agents.graph (a2a_client patches ineffective with from-import bindings) — Patch targets stay on factcheck_agents.graph (a2a_client patches ineffective with from-import bindings)
 -   [Phase 04]: EvidenceGraph made checkpointer-serializable via \_asdict()/graph_data round-trip — EvidenceGraph made checkpointer-serializable via \_asdict()/graph_data round-trip
+-   [Phase 05]: Integration tests use @pytest.mark.integration and are excluded from default pytest run — prevents CI flakiness and API key leakage
+-   [Phase 05]: evaluate_agent HTTP test skips when VIFACTCHECK_CKPT_DIR unset — avoids heavy model loading in environments without checkpoints
+-   [Phase 05]: uuid4 per invocation in run_fact_check() and mcp_server.py — prevents MemorySaver state bleed across concurrent calls (D-10)

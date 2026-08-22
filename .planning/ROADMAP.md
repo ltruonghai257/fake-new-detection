@@ -14,7 +14,7 @@ to route through A2A. The CLI, Python API, and MCP server remain externally unch
 
 -   [x] **Phase 3: A2A Agent Wrappers & Launch Scripts** - Add `TaskHandler` to all 10 agents; serve each on its own uvicorn port; expose Agent Cards; write start/stop scripts
 -   [x] **Phase 4: LangGraph → A2A Client Wiring** - Implement `a2a_client.py`; refactor `graph.py` nodes to call A2A HTTP instead of local functions; graceful-degrade for unreachable agents
--   [ ] **Phase 5: Demo App + Tests** - Update FastAPI SSE bridge to call A2A endpoints; update/add agent HTTP tests; update graph integration tests; verify backward compat
+-   [x] **Phase 5: Demo App + Tests** - Update FastAPI SSE bridge to call A2A endpoints; update/add agent HTTP tests; update graph integration tests; verify backward compat
 
 ## Phase Details
 
@@ -79,7 +79,7 @@ update graph integration tests; confirm the CLI/API/MCP interfaces are unchanged
 Plans:
 
 -   [x] 05-01: Wave 1 — Update `demo_app/backend/streaming.py` to call A2A agents; add `stage_error` SSE event type; manual smoke test confirms debate streaming still works end-to-end in the browser
--   [ ] 05-02: Wave 2 — Write 10 agent HTTP tests (one per `TaskHandler`); update graph integration tests with session-scoped agent-server fixture; run full suite and confirm < 60 s; verify CLI + MCP backward compat with existing callers
+-   [x] 05-02: Wave 2 — Write 10 agent HTTP tests (one per `TaskHandler`); update graph integration tests with session-scoped agent-server fixture; run full suite and confirm < 60 s; verify CLI + MCP backward compat with existing callers
 
 ---
 
@@ -98,6 +98,6 @@ Phase 4 must be complete and the A2A client stable before Phase 5 begins.
 | ----- | ---------------------- | ----- | -------- |
 | 3     | A2A Agent Wrappers     | 4/4   | Complete |
 | 4     | LangGraph → A2A Wiring | 2/2   | Complete |
-| 5     | 1/2 | In Progress|  |
+| 5     | Demo App + Tests       | 2/2   | Complete |
 
 _Created: 2026-08-13_
