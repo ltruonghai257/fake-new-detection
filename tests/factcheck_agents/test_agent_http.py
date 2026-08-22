@@ -35,10 +35,8 @@ from factcheck_agents.config import a2a_ports
 
 
 def _port_in_use(port: int) -> bool:
-    s = socket.socket()
-    result = s.connect_ex(("127.0.0.1", port))
-    s.close()
-    return result == 0
+    with socket.socket() as s:
+        return s.connect_ex(("127.0.0.1", port)) == 0
 
 
 def _start_agent_server(handler_cls, port: int) -> uvicorn.Server:

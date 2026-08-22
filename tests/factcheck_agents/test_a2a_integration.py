@@ -47,9 +47,8 @@ def a2a_agent_servers():
     ]
     servers = []
     for handler_cls, port in agents_to_start:
-        s = socket.socket()
-        result = s.connect_ex(("127.0.0.1", port))
-        s.close()
+        with socket.socket() as s:
+            result = s.connect_ex(("127.0.0.1", port))
         if result == 0:
             pytest.skip(f"Port {port} already in use — cannot start session fixture")
         app = create_app(handler_cls(), handler_cls.agent_card_config)
