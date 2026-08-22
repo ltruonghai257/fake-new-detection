@@ -98,6 +98,6 @@ Phase 4 must be complete and the A2A client stable before Phase 5 begins.
 | ----- | ---------------------- | ----- | -------- |
 | 3     | A2A Agent Wrappers     | 4/4   | Complete |
 | 4     | LangGraph → A2A Wiring | 2/2   | Complete |
-| 5     | Demo App + Tests       | 2/2   | Pending  |
+| 5     | Demo App + Tests       | 2/2   | Planned  |
 
 _Created: 2026-08-13_
