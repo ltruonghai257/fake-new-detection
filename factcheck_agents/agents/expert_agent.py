@@ -147,20 +147,8 @@ def expert_agent(state: FactCheckState) -> dict:
 
     llm = get_llm()
     if llm is None:
-        verdict = Verdict(
-            label="UNVERIFIED",
-            verdict_binary="NEI",
-            verdict_label_vi="Chưa xác thực",
-            confidence=0.1,
-            rationale=(
-                "Không có LLM để chạy chuyên gia kiểm duyệt. "
-                "Vui lòng cấu hình OPENAI_API_KEY để có kết luận chuyên sâu."
-            ),
-            citations=[],
-            recommendation="Kích hoạt LLM để nhận phân tích chuyên sâu.",
-        )
+        # No LLM — preserve the judge verdict unchanged (graceful degrade)
         return {
-            "verdict": verdict,
             "messages": [
                 ("assistant", "[Expert] Không có LLM — không thể phân tích chuyên sâu")
             ],
@@ -199,40 +187,30 @@ def expert_agent(state: FactCheckState) -> dict:
         resp = llm.invoke([("system", EXPERT_SYSTEM_PROMPT), ("user", user)])
         data = parse_json(getattr(resp, "content", "") or "") or {}
     except Exception as exc:
-        verdict = Verdict(
-            label="UNVERIFIED",
-            verdict_binary="NEI",
-            verdict_label_vi="Chưa xác thực",
-            confidence=0.1,
-            rationale=f"Lỗi LLM khi chạy chuyên gia kiểm duyệt: {exc}",
-            citations=[],
-            recommendation="Thử lại sau hoặc kiểm tra cấu hình LLM.",
-        )
+        # LLM error — preserve the judge verdict unchanged (graceful degrade)
         return {
-            "verdict": verdict,
             "messages": [("assistant", f"[Expert] Lỗi LLM: {exc}")],
         }
 
-    label = str(data.get("label", "UNVERIFIED")).upper()
-    confidence = float(data.get("confidence", 0.5) or 0.5)
-    binary, label_vi = (
-        canonicalize_binary(label),
-        binary_to_vi(canonicalize_binary(label)),
+    # Preserve judge's authoritative binary verdict — expert only augments rationale
+    existing_verdict = state.get("verdict") or {}
+    label = str(existing_verdict.get("label", data.get("label", "UNVERIFIED"))).upper()
+    binary = existing_verdict.get("verdict_binary") or canonicalize_binary(label)
+    label_vi = existing_verdict.get("verdict_label_vi") or binary_to_vi(binary)
+    confidence = float(
+        existing_verdict.get("confidence") or data.get("confidence", 0.5) or 0.5
     )
 
-    # Convergence override: nếu debate đồng thuận và expert đồng ý → boost confidence
+    # Convergence override: boost confidence when debate converged and expert agrees
     if debate_converged and debate_agreed_verdict and binary == debate_agreed_verdict:
         confidence = max(confidence, 0.85)
-    elif debate_converged and debate_agreed_verdict and binary != debate_agreed_verdict:
-        # Expert disagrees with debate — flag lower confidence
-        confidence = min(confidence, 0.6)
 
     verdict = Verdict(
         label=label,
         verdict_binary=binary,
         verdict_label_vi=label_vi,
         confidence=round(confidence, 3),
-        rationale=str(data.get("rationale", "")),
+        rationale=str(data.get("rationale", existing_verdict.get("rationale", ""))),
         citations=list(
             data.get("citations", [])
             or [e.get("url", "") for e in all_evidence if e.get("url")][:5]

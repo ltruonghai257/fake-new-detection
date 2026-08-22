@@ -22,18 +22,31 @@ FAKE_MODEL_LABELS = frozenset({"REFUTED", "FAKE", "FALSE", "MISLEADING"})
 NEI_MODEL_LABELS = frozenset({"NEI", "UNVERIFIED"})
 
 _BINARY_SYNONYMS: Dict[str, str] = {
-    "SUPPORTED": "REAL", "REAL": "REAL", "TRUE": "REAL",
-    "REFUTED": "FAKE", "FAKE": "FAKE", "FALSE": "FAKE", "MISLEADING": "FAKE",
-    "NEI": "NEI", "UNVERIFIED": "NEI",
+    "SUPPORTED": "REAL",
+    "REAL": "REAL",
+    "TRUE": "REAL",
+    "REFUTED": "FAKE",
+    "FAKE": "FAKE",
+    "FALSE": "FAKE",
+    "MISLEADING": "FAKE",
+    "NEI": "NEI",
+    "UNVERIFIED": "FAKE",
 }
 _LABEL_VI: Dict[str, str] = {
-    "REAL": "Thật", "FAKE": "Giả", "NEI": "Chưa xác thực",
+    "REAL": "Thật",
+    "FAKE": "Giả",
+    "NEI": "Chưa xác thực",
 }
 _4CLASS_SYNONYMS: Dict[str, str] = {
-    "SUPPORTED": "TRUE", "REAL": "TRUE", "TRUE": "TRUE",
-    "REFUTED": "FALSE", "FAKE": "FALSE", "FALSE": "FALSE",
+    "SUPPORTED": "TRUE",
+    "REAL": "TRUE",
+    "TRUE": "TRUE",
+    "REFUTED": "FALSE",
+    "FAKE": "FALSE",
+    "FALSE": "FALSE",
     "MISLEADING": "MISLEADING",
-    "NEI": "UNVERIFIED", "UNVERIFIED": "UNVERIFIED",
+    "NEI": "UNVERIFIED",
+    "UNVERIFIED": "UNVERIFIED",
 }
 
 
@@ -96,7 +109,9 @@ class Verdict(TypedDict, total=False):
     citations: List[str]  # URLs backing the verdict
     recommendation: str
     # structured explanation sections (judge_agent)
-    explanation: dict  # {model_summary, debate_winner, evidence_summary, confidence_breakdown}
+    explanation: (
+        dict  # {model_summary, debate_winner, evidence_summary, confidence_breakdown}
+    )
     debate_transcript: List[dict]  # full debate turns
     model_detail: dict  # {phobert: ModelResult, coolant: ModelResult}
 

@@ -84,11 +84,8 @@ def agreement_gate(state: FactCheckState) -> dict:
     else:
         agreement_score = (w_ph * ph_conf + w_co * co_conf + w_ev * cred) / total_weight
 
-    # AGREE-01b: "Agreement" requires at least 2 ML models; with only 1, force debate
-    if not (ph_available and co_available):
-        agreement_score = 0.0
     # AGREE-01c: Both available but disagree on binary label → force debate
-    elif ph_label and co_label:
+    if ph_available and co_available and ph_label and co_label:
         _REAL_LABELS = {"REAL", "SUPPORTED", "TRUE"}
         ph_binary = "REAL" if ph_label.upper() in _REAL_LABELS else "FAKE"
         co_binary = "REAL" if co_label.upper() in _REAL_LABELS else "FAKE"
