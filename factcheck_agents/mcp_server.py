@@ -24,6 +24,7 @@ Tools:
 
 from __future__ import annotations
 
+import uuid
 from typing import Optional
 
 from mcp.server.fastmcp import FastMCP
@@ -42,8 +43,10 @@ def fact_check(
 ) -> dict:
     """Run the full Search -> Evaluate -> Conclusion pipeline on a claim."""
     graph = build_graph()
+    thread_id = str(uuid.uuid4())
     result = graph.invoke(
-        initial_state(statement, image_path=image_path, language=language)
+        initial_state(statement, image_path=image_path, language=language),
+        config={"configurable": {"thread_id": thread_id}},
     )
     return {
         "statement": statement,
