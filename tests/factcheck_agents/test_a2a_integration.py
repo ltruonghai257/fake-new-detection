@@ -4,7 +4,7 @@ The ``a2a_agent_servers`` fixture starts 8 graph-path agents (ports 9003–9010)
 as daemon threads and tears them down after the session. Both tests invoke
 ``build_debate_graph()`` with real Vietnamese claims.
 
-All tests are @pytest.mark.integration — excluded from the default pytest run.
+All tests are marked integration — excluded from the default pytest run.
 """
 
 from __future__ import annotations
@@ -36,14 +36,14 @@ def a2a_agent_servers():
     """Start 8 graph-path A2A agents (ports 9003–9010) for the test session."""
     ports = a2a_ports()
     agents_to_start = [
-        (RealSourceAgentHandler, ports["real_source_agent"]),   # 9003
-        (FakeSourceAgentHandler, ports["fake_source_agent"]),   # 9004
-        (SocialLoopAgentHandler, ports["social_loop_agent"]),   # 9005
-        (AgreementGateHandler,   ports["agreement_gate"]),      # 9006
-        (RealAdvocateHandler,    ports["real_advocate"]),       # 9007
-        (FakeAdvocateHandler,    ports["fake_advocate"]),       # 9008
-        (JudgeAgentHandler,      ports["judge_agent"]),         # 9009
-        (ConclusionAgentHandler, ports["conclusion_agent"]),    # 9010
+        (RealSourceAgentHandler, ports["real_source_agent"]),  # 9003
+        (FakeSourceAgentHandler, ports["fake_source_agent"]),  # 9004
+        (SocialLoopAgentHandler, ports["social_loop_agent"]),  # 9005
+        (AgreementGateHandler, ports["agreement_gate"]),  # 9006
+        (RealAdvocateHandler, ports["real_advocate"]),  # 9007
+        (FakeAdvocateHandler, ports["fake_advocate"]),  # 9008
+        (JudgeAgentHandler, ports["judge_agent"]),  # 9009
+        (ConclusionAgentHandler, ports["conclusion_agent"]),  # 9010
     ]
     servers = []
     for handler_cls, port in agents_to_start:
@@ -62,7 +62,9 @@ def a2a_agent_servers():
         ready = False
         while time.time() < deadline:
             try:
-                r = httpx.get(f"http://127.0.0.1:{port}/.well-known/agent.json", timeout=1)
+                r = httpx.get(
+                    f"http://127.0.0.1:{port}/.well-known/agent.json", timeout=1
+                )
                 if r.status_code == 200:
                     ready = True
                     break

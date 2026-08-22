@@ -2,7 +2,7 @@
 
 Each test starts a real uvicorn server in a background daemon thread,
 sends a real A2A Task via httpx, and asserts TASK_STATE_COMPLETED.
-All tests are @pytest.mark.integration — excluded from the default
+All tests are marked integration — excluded from the default
 pytest run (`pytest tests/ -m "not integration"`).
 """
 
@@ -155,7 +155,9 @@ _CONCLUSION_STATE = {
 def test_search_agent_http():
     port = a2a_ports()["search_agent"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(SearchAgentHandler, port)
     try:
         resp = _send_task(port, _SEARCH_STATE)
@@ -173,10 +175,14 @@ def test_evaluate_agent_http():
     import os
 
     if not os.getenv("VIFACTCHECK_CKPT_DIR") and not os.getenv("COOLANT_CKPT_PATH"):
-        pytest.skip("VIFACTCHECK_CKPT_DIR not set — evaluate_agent test requires model checkpoints")
+        pytest.skip(
+            "VIFACTCHECK_CKPT_DIR not set — evaluate_agent test requires model checkpoints"
+        )
     port = a2a_ports()["evaluate_agent"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(EvaluateAgentHandler, port)
     try:
         resp = _send_task(port, _EVALUATE_STATE)
@@ -193,7 +199,9 @@ def test_evaluate_agent_http():
 def test_real_source_agent_http():
     port = a2a_ports()["real_source_agent"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(RealSourceAgentHandler, port)
     try:
         resp = _send_task(port, _SOURCE_STATE)
@@ -210,7 +218,9 @@ def test_real_source_agent_http():
 def test_fake_source_agent_http():
     port = a2a_ports()["fake_source_agent"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(FakeSourceAgentHandler, port)
     try:
         resp = _send_task(port, _SOURCE_STATE)
@@ -227,7 +237,9 @@ def test_fake_source_agent_http():
 def test_social_loop_agent_http():
     port = a2a_ports()["social_loop_agent"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(SocialLoopAgentHandler, port)
     try:
         resp = _send_task(port, _SOCIAL_STATE)
@@ -244,7 +256,9 @@ def test_social_loop_agent_http():
 def test_agreement_gate_http():
     port = a2a_ports()["agreement_gate"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(AgreementGateHandler, port)
     try:
         resp = _send_task(port, _AGREEMENT_STATE)
@@ -261,7 +275,9 @@ def test_agreement_gate_http():
 def test_real_advocate_http():
     port = a2a_ports()["real_advocate"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(RealAdvocateHandler, port)
     try:
         resp = _send_task(port, _ADVOCATE_STATE)
@@ -278,7 +294,9 @@ def test_real_advocate_http():
 def test_fake_advocate_http():
     port = a2a_ports()["fake_advocate"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(FakeAdvocateHandler, port)
     try:
         resp = _send_task(port, _ADVOCATE_STATE)
@@ -295,7 +313,9 @@ def test_fake_advocate_http():
 def test_judge_agent_http():
     port = a2a_ports()["judge_agent"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(JudgeAgentHandler, port)
     try:
         resp = _send_task(port, _JUDGE_STATE)
@@ -312,7 +332,9 @@ def test_judge_agent_http():
 def test_conclusion_agent_http():
     port = a2a_ports()["conclusion_agent"]
     if _port_in_use(port):
-        pytest.skip(f"Port {port} already in use — skip to avoid conflict with running agent server")
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
     server = _start_agent_server(ConclusionAgentHandler, port)
     try:
         resp = _send_task(port, _CONCLUSION_STATE)
