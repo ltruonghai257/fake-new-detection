@@ -18,6 +18,8 @@ checkpoints are loaded lazily and every model failure degrades gracefully so
 the pipeline stays runnable while the models are still being validated.
 """
 
+import uuid
+
 from .state import FactCheckState, Verdict, Evidence, ModelResult
 
 __all__ = ["FactCheckState", "Verdict", "Evidence", "ModelResult", "run_fact_check"]
@@ -33,7 +35,9 @@ def run_fact_check(
 
     graph = build_graph()
     state = initial_state(statement, image_path=image_path, language=language)
-    result = graph.invoke(state)
+    result = graph.invoke(
+        state, config={"configurable": {"thread_id": str(uuid.uuid4())}}
+    )
     result["verdict_binary"] = result.get("verdict", {}).get("verdict_binary")
     result["verdict_label_vi"] = result.get("verdict", {}).get("verdict_label_vi")
     return result
