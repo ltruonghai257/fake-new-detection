@@ -31,6 +31,7 @@ def get_data_root() -> Path:
             "Please create a .env file from the appropriate example:\n"
             "  - Vast.ai: cp .env.vastai.example .env\n"
             "  - Colab:   cp .env.colab.example .env\n"
+            "  - Kaggle:  cp .env.kaggle.example .env\n"
             "  - Windows: cp .env.windows.example .env\n"
             "  - macOS:   cp .env.mac.example .env\n"
             "Then update the DATA_ROOT path for your environment."
