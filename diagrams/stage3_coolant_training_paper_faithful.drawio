@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Stage 3: COOLANT Training (Paper-Faithful)">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="2" value="Stage 3: COOLANT Training — Paper-Faithful Variant  (§3.2.3–3.2.4)"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="20" width="1100" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Subtitle / key difference -->
+        <mxCell id="3" value="Key change: SimilarityModule provides soft semantic targets (detached) → supervises CLIP module (cross-module).  Baseline uses self-distillation (same logits for target + pred)."
+          style="text;html=1;align=center;fontStyle=2;fontSize=12;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="55" width="1100" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ── INPUTS ─────────────────────────────────────────────────────── -->
+
+        <mxCell id="4" value="&lt;b&gt;Caption Features&lt;/b&gt;&#xa;caption_features [N, 128, 768]&#xa;(PhoBERT-encoded)"
+          style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="100" y="95" width="250" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="5" value="&lt;b&gt;Image Features&lt;/b&gt;&#xa;image_features [N, 2048]&#xa;(ResNet50-encoded)"
+          style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="850" y="95" width="250" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="6" value="coolant_{split}.h5  (Phase 2 HDF5)"
+          style="text;html=1;align=center;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="380" y="122" width="440" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ── MODEL CONTAINER ───────────────────────────────────────────── -->
+
+        <mxCell id="7" value="ResNetCOOLANT.from_config()  —  make_coolant_pairs()  →  matched batch (cap_a, img_m)  +  unmatched batch (cap_a, img_u)"
+          style="swimlane;startSize=35;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="230" width="1040" height="125" as="geometry" />
+        </mxCell>
+
+        <mxCell id="8" value="&lt;b&gt;Dimension patches&lt;/b&gt;&#xa;Linear(2048→64)  |  Linear(768→64)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="7">
+          <mxGeometry x="20" y="45" width="250" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="9" value="&lt;b&gt;FastCNN caption encoder&lt;/b&gt;&#xa;[N, 128, 768] → [N, 768]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="7">
+          <mxGeometry x="395" y="45" width="250" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="&lt;b&gt;CLIP projections&lt;/b&gt;&#xa;text: Linear(768→64)  |  img: Linear(64→64)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="7">
+          <mxGeometry x="770" y="45" width="250" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ── 3 MODULES ─────────────────────────────────────────────────── -->
+
+        <!-- Similarity Module -->
+        <mxCell id="11" value="&lt;b&gt;Similarity Module&lt;/b&gt;&#xa;Cosine sim space  |  shared_dim=64&#xa;↓ text_aligned_sim [B, 64]&#xa;↓ image_aligned_sim [B, 64]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="420" width="270" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- CLIP Module -->
+        <mxCell id="12" value="&lt;b&gt;CLIP Module&lt;/b&gt;&#xa;Contrastive space  |  clip_embed_dim=64&#xa;↓ text_aligned_clip [B, 64]&#xa;↓ image_aligned_clip [B, 64]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="465" y="420" width="270" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Detection Module -->
+        <mxCell id="13" value="&lt;b&gt;Detection Module&lt;/b&gt;&#xa;Attention + Ambiguity&#xa;↓ detection_logits [B, 2]&#xa;↓ attention_weights  |  ambiguity_weights"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="850" y="420" width="270" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ── TASK 1 GROUP ───────────────────────────────────────────────── -->
+
+        <mxCell id="14" value="Task 1  —  Similarity + CLIP"
+          style="swimlane;startSize=28;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1;fontColor=#333333;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="590" width="780" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- L_cos inside Task 1 -->
+        <mxCell id="15" value="&lt;b&gt;L_CL  (§3.2.1)&lt;/b&gt;&#xa;Cross-modal Consistency Learning&#xa;CosineEmbeddingLoss(margin=0.2)&#xa;(ta_m, ia_m, +1) + (ta_u, ia_u, −1) × 0.5"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="14">
+          <mxGeometry x="15" y="40" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- L_clip inside Task 1 -->
+        <mxCell id="16" value="&lt;b&gt;L_Con  (§3.2.2)&lt;/b&gt;&#xa;Cross-modal Contrastive Learning&#xa;compute_clip_loss(clip_ta_m, clip_ia_m)&#xa;img→txt CE  +  txt→img CE"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="14">
+          <mxGeometry x="250" y="40" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- L_soft inside Task 1 — highlighted yellow, key change -->
+        <mxCell id="17" value="&lt;b&gt;⭐ L_SM  (§3.2.3–3.2.4)&lt;/b&gt;&#xa;Soft Semantic Matching&#xa;&lt;i&gt;soft_cross_entropy(clip_logits, soft_tgt)&lt;/i&gt;&#xa;soft_tgt  = softmax(ia_m · ta_m ᵀ · eˢ)  [no grad]&#xa;clip_logits = clip_ia_m · clip_ta_m ᵀ · eˢ"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;"
+          vertex="1" parent="14">
+          <mxGeometry x="485" y="40" width="280" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Task 1 combined formula -->
+        <mxCell id="18" value="&lt;b&gt;L_multi = 0.5 × L_CL  +  0.2 × (L_Con + L_SM)&lt;/b&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1;"
+          vertex="1" parent="14">
+          <mxGeometry x="100" y="145" width="580" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ── TASK 2 GROUP ───────────────────────────────────────────────── -->
+
+        <mxCell id="19" value="Task 2  —  Detection"
+          style="swimlane;startSize=28;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1;fontColor=#333333;"
+          vertex="1" parent="1">
+          <mxGeometry x="860" y="590" width="300" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- L_det inside Task 2 -->
+        <mxCell id="20" value="&lt;b&gt;L_D  (§3.4)&lt;/b&gt;&#xa;= L_CLS + γ·L_AG  (γ=0.5)&#xa;L_CLS: CrossEntropy(logits, labels)&#xa;L_AG:  KLDiv(attention, ambiguity)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="19">
+          <mxGeometry x="20" y="40" width="260" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Task 2 combined formula -->
+        <mxCell id="21" value="&lt;b&gt;L_D = L_CLS + γ·L_AG  (γ=0.5)&lt;/b&gt;"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontStyle=1;"
+          vertex="1" parent="19">
+          <mxGeometry x="30" y="148" width="240" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ── OPTIMIZERS ─────────────────────────────────────────────────── -->
+
+        <mxCell id="22" value="&lt;b&gt;optim_similarity + optim_clip&lt;/b&gt;  (Adam, lr=1e-4, wd=1e-5)&#xa;.zero_grad()  →  L_multi.backward()  →  clip_grad_norm_(1.0)  →  .step()&#xa;Warmup-cosine LR scheduler (step per epoch)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="50" y="835" width="580" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="23" value="&lt;b&gt;optim_detection&lt;/b&gt;  (Adam, lr=1e-4, wd=1e-5)&#xa;.zero_grad()  →  L_D.backward()  →  clip_grad_norm_(1.0)  →  .step()&#xa;Warmup-cosine LR scheduler (step per epoch)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="680" y="835" width="470" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- ── OUTPUTS ────────────────────────────────────────────────────── -->
+
+        <mxCell id="24" value="Stage 3 Outputs"
+          style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="940" width="1080" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="25" value="&lt;b&gt;best_model.pth&lt;/b&gt;&#xa;freeze_for_stage2=True&#xa;similarity + clip + detection"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="24">
+          <mxGeometry x="15" y="35" width="270" height="62" as="geometry" />
+        </mxCell>
+
+        <mxCell id="26" value="&lt;b&gt;checkpoint_manifest.json&lt;/b&gt;&#xa;stage2_output_keys:&#xa;text_aligned_clip, image_aligned_clip"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="24">
+          <mxGeometry x="365" y="35" width="270" height="62" as="geometry" />
+        </mxCell>
+
+        <mxCell id="27" value="&lt;b&gt;Aligned Features [64-dim]&lt;/b&gt;&#xa;text_aligned_clip [N, 64]&#xa;image_aligned_clip [N, 64]&#xa;→ Stage 4 / Stage 05a"
+          style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="24">
+          <mxGeometry x="755" y="15" width="285" height="82" as="geometry" />
+        </mxCell>
+
+        <!-- ── VS. BASELINE COMPARISON ──────────────────────────────────── -->
+
+        <mxCell id="28" value="vs. Baseline (03_coolant_training.ipynb)"
+          style="swimlane;startSize=28;fillColor=#f5f5f5;strokeColor=#999999;fontSize=12;fontStyle=1;fontColor=#666666;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="1070" width="1080" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="29" value="&lt;b&gt;Baseline L_Con&lt;/b&gt;&#xa;compute_clip_loss(ta_m, ia_m)&#xa;← uses SimilarityModule outputs ❌"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="28">
+          <mxGeometry x="15" y="35" width="280" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="&lt;b&gt;Paper-faithful L_Con&lt;/b&gt;&#xa;compute_clip_loss(clip_ta_m, clip_ia_m)&#xa;← uses CLIP module outputs ✅"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;"
+          vertex="1" parent="28">
+          <mxGeometry x="310" y="35" width="280" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="31" value="&lt;b&gt;Baseline L_SM&lt;/b&gt;&#xa;clip_logits = matmul(ia_m, ta_m.T) · eˢ&#xa;soft_tgt = softmax(clip_logits.detach())  ← same source ❌&#xa;soft_cross_entropy(clip_logits, soft_tgt)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;"
+          vertex="1" parent="28">
+          <mxGeometry x="620" y="35" width="195" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="32" value="&lt;b&gt;⭐ Paper-faithful L_SM&lt;/b&gt;&#xa;soft_tgt  ← SimilarityModule (no grad) ✅&#xa;clip_logits ← CLIP module ✅&#xa;soft_cross_entropy(clip_logits, soft_tgt)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;"
+          vertex="1" parent="28">
+          <mxGeometry x="830" y="35" width="235" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- ── EDGES ──────────────────────────────────────────────────────── -->
+
+        <!-- Inputs → model -->
+        <mxCell id="33" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="4" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="5" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Model → 3 modules -->
+        <mxCell id="35" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.18;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="7" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.52;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="7" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="37" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.87;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="7" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- SimilarityModule → L_cos (ta_m, ia_m) -->
+        <mxCell id="38" value="ta_m, ia_m" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;" edge="1" parent="1" source="11" target="15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- CLIP Module → L_clip (clip_ta_m, clip_ia_m) -->
+        <mxCell id="39" value="clip_ta_m, clip_ia_m" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;" edge="1" parent="1" source="12" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- CLIP Module → L_soft (predictions) -->
+        <mxCell id="40" value="predictions&#xa;clip_logits" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="12" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- SimilarityModule → L_soft (soft targets, dashed, no grad) -->
+        <mxCell id="41" value="soft targets&#xa;(torch.no_grad())" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;dashPattern=8 4;fontSize=10;endArrow=open;endFill=0;strokeColor=#d6b656;fontColor=#b46504;fontStyle=2;" edge="1" parent="1" source="11" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- DetectionModule → L_det (Task 2) -->
+        <mxCell id="42" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="13" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Task 1 → optim_similarity+clip -->
+        <mxCell id="43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="14" target="22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Task 2 → optim_detection -->
+        <mxCell id="44" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="19" target="23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Optimizers → outputs -->
+        <mxCell id="45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="22" target="24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="46" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="23" target="24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
