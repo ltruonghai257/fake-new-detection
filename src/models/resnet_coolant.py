@@ -10,19 +10,35 @@ The patch_* functions below handle dimension adaptation at init time.
 
 import torch
 import torch.nn as nn
-from .coolant_official import COOLANT_Official
+from .coolant_official import COOLANT_Official, GatedMLP
 
 
-def _apply_all_patches(model: "PatchedCOOLANT", image_dim: int, text_dim: int, dropout: float = 0.1) -> None:
+def _apply_all_patches(
+    model: "PatchedCOOLANT", image_dim: int, text_dim: int, dropout: float = 0.1
+) -> None:
     """Apply the full patch chain for a given image/text feature dimension pair."""
     patch_encoding(model.similarity_module.encoding, image_dim=image_dim)
     patch_encoding(model.detection_module.encoding, image_dim=image_dim)
-    patch_encoding(model.detection_module.ambiguity_module.encoding, image_dim=image_dim)
+    patch_encoding(
+        model.detection_module.ambiguity_module.encoding, image_dim=image_dim
+    )
     patch_clip_projection(model.clip_module, target_dim=image_dim, is_image=True)
     patch_clip_projection(model.clip_module, target_dim=text_dim, is_image=False)
-    patch_cnn_with_dropout(model.similarity_module.encoding.shared_text_encoding, input_dim=text_dim, dropout=dropout)
-    patch_cnn_with_dropout(model.detection_module.encoding.shared_text_encoding, input_dim=text_dim, dropout=dropout)
-    patch_cnn_with_dropout(model.detection_module.ambiguity_module.encoding.shared_text_encoding, input_dim=text_dim, dropout=dropout)
+    patch_cnn_with_dropout(
+        model.similarity_module.encoding.shared_text_encoding,
+        input_dim=text_dim,
+        dropout=dropout,
+    )
+    patch_cnn_with_dropout(
+        model.detection_module.encoding.shared_text_encoding,
+        input_dim=text_dim,
+        dropout=dropout,
+    )
+    patch_cnn_with_dropout(
+        model.detection_module.ambiguity_module.encoding.shared_text_encoding,
+        input_dim=text_dim,
+        dropout=dropout,
+    )
 
 
 class PatchedCOOLANT(COOLANT_Official):
@@ -89,9 +105,7 @@ class PatchedCOOLANT(COOLANT_Official):
             Encoded image features
         """
         # Create dummy text for encoding (will be ignored by shared_image)
-        dummy_txt = torch.zeros(
-            image.size(0), 768, 512, device=image.device
-        )
+        dummy_txt = torch.zeros(image.size(0), 768, 512, device=image.device)
         _, i = self.similarity_module.encoding(dummy_txt, image)
         return i
 
@@ -139,6 +153,20 @@ def patch_clip_projection(clip_module, target_dim, is_image=True):
     """
     proj = clip_module.image_projection if is_image else clip_module.text_projection
 
+    if isinstance(proj, GatedMLP):
+        # SwiGLU projection: replace the two input projections (gate & up) to
+        # accept target_dim. down_proj (hidden -> out) is unchanged.
+        proj.gate_proj = nn.Linear(
+            target_dim,
+            proj.gate_proj.out_features,
+            bias=proj.gate_proj.bias is not None,
+        )
+        proj.up_proj = nn.Linear(
+            target_dim, proj.up_proj.out_features, bias=proj.up_proj.bias is not None
+        )
+        return
+
+    # Legacy nn.Sequential projection
     layers, done = [], False
     for l in proj:
         if isinstance(l, nn.Linear) and not done:
@@ -189,6 +217,7 @@ def patch_cnn_with_dropout(m, input_dim, dropout=0.1):
         return torch.cat(x_out, 1)
 
     import types
+
     m.forward = types.MethodType(patched_forward, m)
 
 
