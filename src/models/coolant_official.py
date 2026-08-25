@@ -24,6 +24,30 @@ from .base import MultimodalModel, FastCNN
 from .senet import SEAttentionModule
 
 
+# ── SwiGLU Gated MLP ───────────────────────────────────────────────────────
+class GatedMLP(nn.Module):
+    """SwiGLU-activated MLP: silu(gate(x)) * up(x) → down(x).
+
+    Replaces Linear→ReLU→Linear with a gated variant used in LLaMA/PaLM.
+    Same parameter count: in_dim * hidden * 3 + hidden * out_dim
+    vs standard: in_dim * hidden + hidden + hidden * out_dim + out_dim
+    """
+
+    def __init__(
+        self, in_dim: int, hidden_dim: int, out_dim: int, dropout: float = 0.0
+    ):
+        super().__init__()
+        self.gate_proj = nn.Linear(in_dim, hidden_dim, bias=False)
+        self.up_proj = nn.Linear(in_dim, hidden_dim, bias=False)
+        self.down_proj = nn.Linear(hidden_dim, out_dim, bias=False)
+        self.dropout = nn.Dropout(dropout) if dropout > 0 else nn.Identity()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = F.silu(self.gate_proj(x)) * self.up_proj(x)
+        x = self.dropout(x)
+        return self.down_proj(x)
+
+
 class EncodingPart(nn.Module):
     """Shared encoding module for text and image features."""
 
@@ -90,33 +114,22 @@ class SimilarityModule(nn.Module):
             text_input_dim=text_input_dim, image_input_dim=image_input_dim
         )
 
-        # Alignment networks
+        # Alignment networks (SwiGLU)
         self.text_aligner = nn.Sequential(
-            nn.Linear(shared_dim, shared_dim),
-            nn.BatchNorm1d(shared_dim),
-            nn.ReLU(),
-            nn.Linear(shared_dim, sim_dim),
+            GatedMLP(shared_dim, shared_dim, sim_dim),
             nn.BatchNorm1d(sim_dim),
-            nn.ReLU(),
         )
 
         self.image_aligner = nn.Sequential(
-            nn.Linear(shared_dim, shared_dim),
-            nn.BatchNorm1d(shared_dim),
-            nn.ReLU(),
-            nn.Linear(shared_dim, sim_dim),
+            GatedMLP(shared_dim, shared_dim, sim_dim),
             nn.BatchNorm1d(sim_dim),
-            nn.ReLU(),
         )
 
-        # Similarity classifier
+        # Similarity classifier (SwiGLU)
         self.sim_classifier_dim = sim_dim * 2
         self.sim_classifier = nn.Sequential(
             nn.BatchNorm1d(self.sim_classifier_dim),
-            nn.Linear(self.sim_classifier_dim, 64),
-            nn.BatchNorm1d(64),
-            nn.ReLU(),
-            nn.Linear(64, 2),
+            GatedMLP(self.sim_classifier_dim, 64, 2),
         )
 
     def forward(
@@ -142,15 +155,11 @@ class CLIP(nn.Module):
         super(CLIP, self).__init__()
         self.embed_dim = embed_dim
 
-        # Text projection
-        self.text_projection = nn.Sequential(
-            nn.Linear(text_input_dim, 256), nn.ReLU(), nn.Linear(256, embed_dim)
-        )
+        # Text projection (SwiGLU)
+        self.text_projection = GatedMLP(text_input_dim, 256, embed_dim)
 
-        # Image projection
-        self.image_projection = nn.Sequential(
-            nn.Linear(image_input_dim, 256), nn.ReLU(), nn.Linear(256, embed_dim)
-        )
+        # Image projection (SwiGLU)
+        self.image_projection = GatedMLP(image_input_dim, 256, embed_dim)
 
         # Temperature parameter (learnable)
         self.temperature = nn.Parameter(torch.ones([]) * 0.07)
@@ -231,21 +240,13 @@ class UnimodalDetection(nn.Module):
         super(UnimodalDetection, self).__init__()
 
         self.text_uni = nn.Sequential(
-            nn.Linear(shared_dim, shared_dim),
-            nn.BatchNorm1d(shared_dim),
-            nn.ReLU(),
-            nn.Linear(shared_dim, prime_dim),
+            GatedMLP(shared_dim, shared_dim, prime_dim),
             nn.BatchNorm1d(prime_dim),
-            nn.ReLU(),
         )
 
         self.image_uni = nn.Sequential(
-            nn.Linear(shared_dim, shared_dim),
-            nn.BatchNorm1d(shared_dim),
-            nn.ReLU(),
-            nn.Linear(shared_dim, prime_dim),
+            GatedMLP(shared_dim, shared_dim, prime_dim),
             nn.BatchNorm1d(prime_dim),
-            nn.ReLU(),
         )
 
     def forward(
@@ -269,9 +270,8 @@ class CrossModule4Batch(nn.Module):
         self.pooling = nn.AdaptiveMaxPool1d(1)
 
         self.c_specific_2 = nn.Sequential(
-            nn.Linear(self.corre_dim, corre_out_dim),
+            GatedMLP(self.corre_dim, corre_out_dim, corre_out_dim),
             nn.BatchNorm1d(corre_out_dim),
-            nn.ReLU(),
         )
 
     def forward(self, text: torch.Tensor, image: torch.Tensor) -> torch.Tensor:
@@ -312,15 +312,11 @@ class DetectionModule(nn.Module):
         # SE attention module (using official SENet)
         self.senet = SEAttentionModule(text_dim=64, image_dim=64, correlation_dim=64)
 
-        # Final classifier
+        # Final classifier (SwiGLU)
         self.classifier_corre = nn.Sequential(
-            nn.Linear(feature_dim, h_dim),
+            GatedMLP(feature_dim, h_dim, h_dim),
             nn.BatchNorm1d(h_dim),
-            nn.ReLU(),
-            nn.Linear(h_dim, h_dim),
-            nn.BatchNorm1d(h_dim),
-            nn.ReLU(),
-            nn.Linear(h_dim, 2),
+            GatedMLP(h_dim, h_dim, 2),
         )
 
     def forward(
