@@ -1,0 +1,113 @@
+<mxfile host="Electron">
+  <diagram name="GatedMLP vs Original" id="0">
+    <mxGraphModel dx="2054" dy="1209" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="820" pageHeight="380" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=center;fontStyle=1;fontSize=15;fillColor=none;strokeColor=none;" value="Original Paper  vs  GatedMLP / SwiGLU" vertex="1">
+          <mxGeometry height="26" width="700" x="60" y="16" as="geometry" />
+        </mxCell>
+        <mxCell id="box_orig" parent="1" style="swimlane;startSize=28;fillColor=#EFF7FF;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="Original (ReLU)" vertex="1">
+          <mxGeometry height="315" width="208" x="60" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="ox" parent="box_orig" style="ellipse;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=13;fontStyle=1;" value="x" vertex="1">
+          <mxGeometry height="34" width="50" x="75" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="ol1" parent="box_orig" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Linear" vertex="1">
+          <mxGeometry height="30" width="90" x="55" y="78" as="geometry" />
+        </mxCell>
+        <mxCell id="obn1" parent="box_orig" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" value="BN" vertex="1">
+          <mxGeometry height="30" width="90" x="55" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="oru1" parent="box_orig" style="rounded=1;html=1;fillColor=#fce4ec;strokeColor=#e91e63;fontSize=12;" value="ReLU" vertex="1">
+          <mxGeometry height="30" width="90" x="55" y="166" as="geometry" />
+        </mxCell>
+        <mxCell id="ol2" parent="box_orig" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Linear" vertex="1">
+          <mxGeometry height="30" width="90" x="55" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="oout" parent="box_orig" style="ellipse;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=13;fontStyle=1;" value="out" vertex="1">
+          <mxGeometry height="34" width="50" x="75" y="258" as="geometry" />
+        </mxCell>
+        <mxCell id="oa1" edge="1" parent="box_orig" source="ox" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="ol1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oa2" edge="1" parent="box_orig" source="ol1" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="obn1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oa3" edge="1" parent="box_orig" source="obn1" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="oru1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oa4" edge="1" parent="box_orig" source="oru1" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="ol2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="oa5" edge="1" parent="box_orig" source="ol2" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="oout" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vs" parent="1" style="ellipse;html=1;fillColor=#ffcc00;strokeColor=#cc9900;fontStyle=1;fontSize=15;" value="VS" vertex="1">
+          <mxGeometry height="36" width="44" x="290" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="box_gate" parent="1" style="swimlane;startSize=28;fillColor=#FFF0F0;strokeColor=#b85450;fontStyle=1;fontSize=12;" value="GatedMLP / SwiGLU" vertex="1">
+          <mxGeometry height="315" width="388" x="364" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="gx" parent="box_gate" style="ellipse;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=13;fontStyle=1;" value="x" vertex="1">
+          <mxGeometry height="34" width="50" x="170" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="ggate" parent="box_gate" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" value="Linear" vertex="1">
+          <mxGeometry height="30" width="90" x="62" y="96" as="geometry" />
+        </mxCell>
+        <mxCell id="gsilu" parent="box_gate" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" value="SiLU" vertex="1">
+          <mxGeometry height="30" width="90" x="60" y="136" as="geometry" />
+        </mxCell>
+        <mxCell id="glbl1" parent="box_gate" style="text;html=1;align=center;fontSize=10;fontStyle=2;fillColor=none;strokeColor=none;" value="gate" vertex="1">
+          <mxGeometry height="16" width="86" x="62" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="glbl2" parent="box_gate" style="text;html=1;align=center;fontSize=10;fontStyle=2;fillColor=none;strokeColor=none;" value="content" vertex="1">
+          <mxGeometry height="16" width="86" x="240" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="gup" parent="box_gate" style="rounded=1;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" value="Linear" vertex="1">
+          <mxGeometry height="30" width="90" x="240" y="98" as="geometry" />
+        </mxCell>
+        <mxCell id="gmul" parent="box_gate" style="ellipse;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=18;fontStyle=1;" value="⊗" vertex="1">
+          <mxGeometry height="40" width="50" x="170" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="gdown" parent="box_gate" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="Linear" vertex="1">
+          <mxGeometry height="30" width="90" x="150" y="248" as="geometry" />
+        </mxCell>
+        <mxCell id="gout" parent="box_gate" style="ellipse;html=1;fillColor=#f5f5f5;strokeColor=#666;fontSize=13;fontStyle=1;" value="out" vertex="1">
+          <mxGeometry height="34" width="50" x="170" y="278" as="geometry" />
+        </mxCell>
+        <mxCell id="ga1" edge="1" parent="box_gate" source="gx" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="ggate" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="195" y="70" />
+              <mxPoint x="105" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ga2" edge="1" parent="box_gate" source="gx" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="gup" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="195" y="70" />
+              <mxPoint x="285" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ga3" edge="1" parent="box_gate" source="ggate" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="gsilu" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ga4" edge="1" parent="box_gate" source="gsilu" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.25;entryY=0;" target="gmul" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ga5" edge="1" parent="box_gate" source="gup" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.75;entryY=0;" target="gmul" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ga6" edge="1" parent="box_gate" source="gmul" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="gdown" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ga7" edge="1" parent="box_gate" source="gdown" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="gout" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

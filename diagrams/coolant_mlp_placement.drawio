@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio">
+  <diagram name="MLP Placement" id="mlp-placement">
+    <mxGraphModel dx="1500" dy="900" grid="0" gridSize="10" width="940" height="500">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="2" value="COOLANT — MLP trong paper gốc" style="text;html=1;align=center;fontStyle=1;fontSize=15;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="50" y="10" width="840" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend: MLP -->
+        <mxCell id="leg1" value="" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="50" y="46" width="22" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1_lbl" value="MLP  (Linear → ReLU → Linear)" style="text;html=1;align=left;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="78" y="45" width="230" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend: Linear -->
+        <mxCell id="leg2" value="" style="rounded=1;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="330" y="46" width="22" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2_lbl" value="Linear thuần  (không MLP)" style="text;html=1;align=left;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="358" y="45" width="210" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend: Other -->
+        <mxCell id="leg3" value="" style="rounded=1;html=1;fillColor=#fff9c4;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="590" y="46" width="22" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3_lbl" value="Module khác (attention, variational)" style="text;html=1;align=left;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="618" y="45" width="260" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- ENCODING PART -->
+        <!-- ============================================================ -->
+        <mxCell id="enc_sw" value="Encoding Part (Shared) — không MLP" style="swimlane;startSize=28;fillColor=#f0f0f0;strokeColor=#999999;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="74" width="840" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="enc_text" value="Text&#xa;FastCNN → Linear → BN → ReLU → Linear → BN → ReLU&#xa;(B,30,200) → (B,128)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="enc_sw">
+          <mxGeometry x="30" y="34" width="370" height="34" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="enc_img" value="Image&#xa;Linear → BN → ReLU → Linear → BN → ReLU&#xa;(B,512) → (B,128)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="enc_sw">
+          <mxGeometry x="430" y="34" width="370" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- TASK 1 — Cross-modal Contrastive Learning -->
+        <!-- ============================================================ -->
+        <mxCell id="t1_sw" value="(a) Cross-modal Contrastive Learning  [Task 1] — CÓ MLP ✓" style="swimlane;startSize=28;fillColor=#e8f5e9;strokeColor=#2e7d32;fontStyle=1;fontSize=12;fontColor=#1b5e20;" vertex="1" parent="1">
+          <mxGeometry x="50" y="164" width="840" height="106" as="geometry"/>
+        </mxCell>
+
+        <!-- text_aligner -->
+        <mxCell id="t1_ta" value="text_aligner&#xa;MLP(128 → 128 → 64)&#xa;+ BN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="t1_sw">
+          <mxGeometry x="20" y="36" width="200" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- image_aligner -->
+        <mxCell id="t1_ia" value="image_aligner&#xa;MLP(128 → 128 → 64)&#xa;+ BN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="t1_sw">
+          <mxGeometry x="240" y="36" width="200" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- sim_classifier -->
+        <mxCell id="t1_sc" value="sim_classifier&#xa;BN + MLP(128 → 64 → 2)&#xa;→ Similarity label" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="t1_sw">
+          <mxGeometry x="460" y="36" width="220" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- Concat arrow placeholder -->
+        <mxCell id="t1_arrow" value="concat&#xa;[text ‖ image]" style="text;html=1;align=center;fontSize=10;fontStyle=2;fillColor=none;strokeColor=none;" vertex="1" parent="t1_sw">
+          <mxGeometry x="688" y="44" width="130" height="38" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- TASK 2 — Cross-modal Fusion & Aggregation -->
+        <!-- ============================================================ -->
+        <mxCell id="t2_sw" value="(b) Cross-modal Fusion &amp; Aggregation  [Task 2] — KHÔNG có MLP" style="swimlane;startSize=28;fillColor=#e3f2fd;strokeColor=#1565c0;fontStyle=1;fontSize=12;fontColor=#0d47a1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="280" width="840" height="106" as="geometry"/>
+        </mxCell>
+
+        <!-- UnimodalDetection -->
+        <mxCell id="t2_uni" value="UnimodalDetection&#xa;Linear(128 → 16)&#xa;+ BN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="t2_sw">
+          <mxGeometry x="20" y="36" width="190" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- CrossModule -->
+        <mxCell id="t2_cross" value="CrossModule&#xa;c_specific_2: Linear(64 → 64)&#xa;+ BN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="t2_sw">
+          <mxGeometry x="228" y="36" width="200" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- SEAttention -->
+        <mxCell id="t2_se" value="SEAttentionModule&#xa;Squeeze-Excitation&#xa;→ attention weights" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="t2_sw">
+          <mxGeometry x="446" y="36" width="180" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- classifier_corre -->
+        <mxCell id="t2_cls" value="classifier_corre&#xa;Linear(96 → 2)&#xa;→ Fake/Real label" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="t2_sw">
+          <mxGeometry x="644" y="36" width="178" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- Summary note -->
+        <!-- ============================================================ -->
+        <mxCell id="note" value="⟹  Paper gốc: MLP chỉ ở Task 1  (text_aligner, image_aligner, sim_classifier).  Task 2 dùng Linear thuần." style="text;html=1;align=center;fontStyle=1;fontSize=11;fillColor=#fffde7;strokeColor=#f9a825;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="398" width="840" height="28" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

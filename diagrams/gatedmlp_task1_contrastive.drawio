@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio">
+  <diagram name="Task1" id="task1">
+    <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" width="860" height="268">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="ttl" value="(a) Cross-modal Contrastive Learning"
+          style="text;html=1;align=center;fontStyle=1;fontSize=13;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="8" width="820" height="26" as="geometry"/>
+        </mxCell>
+
+        <!-- MLP (Text) -->
+        <mxCell id="ta" value="&lt;b&gt;MLP (Text)&lt;/b&gt;&#xa;GatedMLP  128 → 128 → 64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="46" width="220" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- MLP (Visual) -->
+        <mxCell id="ia" value="&lt;b&gt;MLP (Visual)&lt;/b&gt;&#xa;GatedMLP  128 → 128 → 64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="580" y="46" width="220" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- Classifier -->
+        <mxCell id="sc" value="&lt;b&gt;Classifier&lt;/b&gt;&#xa;GatedMLP  128 → 64 → 2"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="310" y="164" width="240" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- Output -->
+        <mxCell id="out" value="Similarity Prediction"
+          style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="340" y="244" width="180" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrows -->
+        <mxCell id="a1" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.25;entryY=0;entryPerimeter=0;" edge="1" source="ta" target="sc" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a2" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.75;entryY=0;entryPerimeter=0;" edge="1" source="ia" target="sc" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="sc" target="out" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

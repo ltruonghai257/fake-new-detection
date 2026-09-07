@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio">
+  <diagram name="GatedMLP per Task" id="gatedmlp-per-task">
+    <mxGraphModel dx="1600" dy="1000" grid="0" gridSize="10" width="900" height="480">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="GatedMLP (SwiGLU) Replacement — Per Module"
+          style="text;html=1;align=center;fontStyle=1;fontSize=14;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="8" width="840" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Column headers -->
+        <mxCell id="hdr_orig" value="Original Paper"
+          style="text;html=1;align=center;fontStyle=1;fontSize=12;fillColor=#EFF7FF;strokeColor=#6c8ebf;rounded=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="60" y="36" width="330" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_gate" value="Proposed — GatedMLP (SwiGLU)"
+          style="text;html=1;align=center;fontStyle=1;fontSize=12;fillColor=#FFF0F0;strokeColor=#b85450;rounded=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="510" y="36" width="330" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- TASK 1 — Cross-modal Contrastive Learning                         -->
+        <!-- ================================================================ -->
+        <mxCell id="t1_sw" value="Task 1 — Cross-modal Contrastive Learning"
+          style="swimlane;startSize=24;fillColor=#f8f8ff;strokeColor=#5a6a8a;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="62" width="840" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Row 1: text_aligner -->
+        <mxCell id="t1r1_o" value="text_aligner&#xa;Linear(128→64) + BN + ReLU + Linear"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6c8ebf;fontSize=10;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="10" y="30" width="320" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t1r1_arr" value="→"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="336" y="30" width="40" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t1r1_g" value="text_aligner&#xa;GatedMLP( silu(gate(x)) · up(x) → down(x) )  128→128→64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="382" y="30" width="448" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Row 2: image_aligner -->
+        <mxCell id="t1r2_o" value="image_aligner&#xa;Linear(128→64) + BN + ReLU + Linear"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6c8ebf;fontSize=10;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="10" y="64" width="320" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t1r2_arr" value="→"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="336" y="64" width="40" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t1r2_g" value="image_aligner&#xa;GatedMLP( silu(gate(x)) · up(x) → down(x) )  128→128→64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="382" y="64" width="448" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Row 3: sim_classifier -->
+        <mxCell id="t1r3_o" value="sim_classifier&#xa;Linear(128→64) + ReLU + Linear(64→2)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6c8ebf;fontSize=10;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="10" y="98" width="320" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t1r3_arr" value="→"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="336" y="98" width="40" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t1r3_g" value="sim_classifier&#xa;GatedMLP( silu(gate(x)) · up(x) → down(x) )  128→64→2"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;"
+          vertex="1" parent="t1_sw">
+          <mxGeometry x="382" y="98" width="448" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- CLIP — New Module                                                 -->
+        <!-- ================================================================ -->
+        <mxCell id="clip_sw" value="CLIP Contrastive Learning  [Thêm mới]"
+          style="swimlane;startSize=24;fillColor=#F5EEF8;strokeColor=#7D3C98;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="198" width="840" height="98" as="geometry"/>
+        </mxCell>
+
+        <!-- Row 1: text_projection -->
+        <mxCell id="clr1_o" value="text_projection&#xa;(Module mới — không có trong paper gốc)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#aaaaaa;fontSize=10;fontStyle=2;"
+          vertex="1" parent="clip_sw">
+          <mxGeometry x="10" y="30" width="320" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="clr1_arr" value="→"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="clip_sw">
+          <mxGeometry x="336" y="30" width="40" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="clr1_g" value="text_projection&#xa;GatedMLP( silu(gate(x)) · up(x) → down(x) )  200→256→64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8DAEF;strokeColor=#7D3C98;fontSize=10;fontStyle=1;"
+          vertex="1" parent="clip_sw">
+          <mxGeometry x="382" y="30" width="448" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Row 2: image_projection -->
+        <mxCell id="clr2_o" value="image_projection&#xa;(Module mới — không có trong paper gốc)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#aaaaaa;fontSize=10;fontStyle=2;"
+          vertex="1" parent="clip_sw">
+          <mxGeometry x="10" y="64" width="320" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="clr2_arr" value="→"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="clip_sw">
+          <mxGeometry x="336" y="64" width="40" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="clr2_g" value="image_projection&#xa;GatedMLP( silu(gate(x)) · up(x) → down(x) )  512→256→64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8DAEF;strokeColor=#7D3C98;fontSize=10;fontStyle=1;"
+          vertex="1" parent="clip_sw">
+          <mxGeometry x="382" y="64" width="448" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- ================================================================ -->
+        <!-- TASK 2 — Cross-modal Fusion & Aggregation                         -->
+        <!-- ================================================================ -->
+        <mxCell id="t2_sw" value="Task 2 — Cross-modal Fusion &amp; Aggregation"
+          style="swimlane;startSize=24;fillColor=#f8f8ff;strokeColor=#5a6a8a;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="302" width="840" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Row 1: UnimodalDetection -->
+        <mxCell id="t2r1_o" value="UnimodalDetection&#xa;Linear(128→16) + BN"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6c8ebf;fontSize=10;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="10" y="30" width="320" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2r1_arr" value="→"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="336" y="30" width="40" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2r1_g" value="UnimodalDetection&#xa;GatedMLP( silu(gate(x)) · up(x) → down(x) )  128→128→16"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="382" y="30" width="448" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Row 2: CrossModule -->
+        <mxCell id="t2r2_o" value="CrossModule (c_specific_2)&#xa;Linear(64→64) + BN"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6c8ebf;fontSize=10;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="10" y="64" width="320" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2r2_arr" value="→"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="336" y="64" width="40" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2r2_g" value="CrossModule (c_specific_2)&#xa;GatedMLP( silu(gate(x)) · up(x) → down(x) )  64→64→64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="382" y="64" width="448" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Row 3: classifier_corre -->
+        <mxCell id="t2r3_o" value="classifier_corre&#xa;Linear(96→64) + ReLU + Linear(64→2)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6c8ebf;fontSize=10;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="10" y="98" width="320" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2r3_arr" value="→"
+          style="text;html=1;align=center;fontStyle=1;fontSize=16;fillColor=none;strokeColor=none;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="336" y="98" width="40" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2r3_g" value="classifier_corre&#xa;GatedMLP(96→64) → GatedMLP(64→2)  [hai lớp nối tiếp]"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;"
+          vertex="1" parent="t2_sw">
+          <mxGeometry x="382" y="98" width="448" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Bottom note -->
+        <mxCell id="note" value="silu(gate(x)) · up(x) → down(x)  :  gate_proj (Linear) → SiLU  ⊗  up_proj (Linear)  →  down_proj (Linear)"
+          style="text;html=1;align=center;fontStyle=2;fontSize=10;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="440" width="840" height="18" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

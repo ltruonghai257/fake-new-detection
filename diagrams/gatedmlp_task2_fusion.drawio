@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio">
+  <diagram name="Task2" id="task2">
+    <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" width="860" height="368">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="ttl" value="(b)(c) Cross-modal Fusion &amp; Aggregation"
+          style="text;html=1;align=center;fontStyle=1;fontSize=13;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="8" width="820" height="26" as="geometry"/>
+        </mxCell>
+
+        <!-- MLP (Text) — unimodal branch -->
+        <mxCell id="udt" value="&lt;b&gt;MLP (Text)&lt;/b&gt;&#xa;GatedMLP  128 → 128 → 16"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="46" width="200" height="76" as="geometry"/>
+        </mxCell>
+
+        <!-- Cross-modal Fusion -->
+        <mxCell id="cc" value="&lt;b&gt;Cross-modal Fusion&lt;/b&gt;&#xa;GatedMLP  64 → 64 → 64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="330" y="46" width="200" height="76" as="geometry"/>
+        </mxCell>
+
+        <!-- MLP (Visual) — unimodal branch -->
+        <mxCell id="udi" value="&lt;b&gt;MLP (Visual)&lt;/b&gt;&#xa;GatedMLP  128 → 128 → 16"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="630" y="46" width="200" height="76" as="geometry"/>
+        </mxCell>
+
+        <!-- Attention Mechanism -->
+        <mxCell id="se" value="&lt;b&gt;Attention Mechanism&lt;/b&gt;&#xa;Squeeze-Excitation (không đổi)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#d6b656;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="280" y="172" width="300" height="54" as="geometry"/>
+        </mxCell>
+
+        <!-- Classifier -->
+        <mxCell id="cls" value="&lt;b&gt;Classifier&lt;/b&gt;&#xa;GatedMLP (96 → 64) → GatedMLP (64 → 2)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="280" y="276" width="300" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- Output -->
+        <mxCell id="out" value="Fake / Real"
+          style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="360" y="356" width="140" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrows -->
+        <mxCell id="a1" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.2;entryY=0;entryPerimeter=0;" edge="1" source="udt" target="se" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a2" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;" edge="1" source="cc" target="se" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a3" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.8;entryY=0;entryPerimeter=0;" edge="1" source="udi" target="se" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="se" target="cls" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a5" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="cls" target="out" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

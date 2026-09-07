@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio">
+  <diagram name="CLIP" id="clip">
+    <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" width="860" height="188">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="ttl" value="CLIP Contrastive Learning"
+          style="text;html=1;align=center;fontStyle=1;fontSize=13;fillColor=none;strokeColor=none;"
+          vertex="1" parent="1">
+          <mxGeometry x="20" y="8" width="820" height="26" as="geometry"/>
+        </mxCell>
+
+        <!-- Text Projection -->
+        <mxCell id="tp" value="&lt;b&gt;Text Projection&lt;/b&gt;&#xa;GatedMLP  200 → 256 → 64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8DAEF;strokeColor=#7D3C98;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="46" width="250" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- Image Projection -->
+        <mxCell id="ip" value="&lt;b&gt;Image Projection&lt;/b&gt;&#xa;GatedMLP  512 → 256 → 64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8DAEF;strokeColor=#7D3C98;fontSize=12;"
+          vertex="1" parent="1">
+          <mxGeometry x="530" y="46" width="250" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- Outputs -->
+        <mxCell id="te" value="Text Embedding (L2)"
+          style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="100" y="156" width="210" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="ie" value="Image Embedding (L2)"
+          style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="550" y="156" width="210" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrows -->
+        <mxCell id="a1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="tp" target="te" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="ip" target="ie" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio">
+  <diagram name="COOLANT Impl" id="coolant-impl">
+    <mxGraphModel dx="1800" dy="1000" grid="0" gridSize="10" width="1480" height="780">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ============================================================ -->
+        <!-- INPUTS + ENCODERS                                            -->
+        <!-- ============================================================ -->
+
+        <!-- D' dataset -->
+        <mxCell id="dp" value="D'" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="10" y="80" width="48" height="36" as="geometry"/>
+        </mxCell>
+        <!-- D dataset -->
+        <mxCell id="d" value="D" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="10" y="260" width="48" height="36" as="geometry"/>
+        </mxCell>
+        <!-- Image sample -->
+        <mxCell id="img" value="Image" style="shape=mxgraph.flowchart.start_2;fillColor=#ffe6cc;strokeColor=#d79b00;html=1;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="66" y="88" width="58" height="42" as="geometry"/>
+        </mxCell>
+        <!-- Text sample -->
+        <mxCell id="txt" value="Text" style="shape=mxgraph.flowchart.start_2;fillColor=#d5e8d4;strokeColor=#82b366;html=1;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="66" y="300" width="58" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Visual Encoder -->
+        <mxCell id="venc" value="Visual&#xa;Encoder&#xa;(ResNet50)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="142" y="72" width="106" height="56" as="geometry"/>
+        </mxCell>
+        <!-- Text Encoder -->
+        <mxCell id="tenc" value="Text Encoder&#xa;(PhoBERT)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="142" y="318" width="106" height="56" as="geometry"/>
+        </mxCell>
+
+        <!-- e^v label -->
+        <mxCell id="ev_out" value="e^v" style="text;html=1;fontStyle=2;fontSize=12;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="252" y="88" width="28" height="18" as="geometry"/>
+        </mxCell>
+        <!-- e^t label -->
+        <mxCell id="et_out" value="e^t" style="text;html=1;fontStyle=2;fontSize=12;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="252" y="334" width="28" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- GatedMLP (Visual aligner) — CHANGED from MLP -->
+        <mxCell id="mlp_v" value="GatedMLP&#xa;(Visual)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="148" y="186" width="80" height="38" as="geometry"/>
+        </mxCell>
+        <!-- e^v' label -->
+        <mxCell id="evp" value="e^v'" style="text;html=1;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="234" y="194" width="32" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- GatedMLP (Text aligner) — CHANGED from MLP -->
+        <mxCell id="mlp_t" value="GatedMLP&#xa;(Text)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="148" y="402" width="80" height="38" as="geometry"/>
+        </mxCell>
+        <!-- e^t' label -->
+        <mxCell id="etp" value="e^t'" style="text;html=1;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="234" y="410" width="32" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- ⊕ concat for ITM classifier -->
+        <mxCell id="plus" value="⊕" style="text;html=1;fontSize=15;fillColor=none;strokeColor=none;align=center;" vertex="1" parent="1">
+          <mxGeometry x="232" y="256" width="24" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- Classifier (ITM) — CHANGED to GatedMLP -->
+        <mxCell id="cls_itm" value="GatedMLP&#xa;Classifier" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="222" y="288" width="90" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="litm" value="L_ITM" style="text;html=1;fontStyle=2+1;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="234" y="332" width="60" height="18" as="geometry"/>
+        </mxCell>
+        <!-- Consistency Learning label -->
+        <mxCell id="consist_lbl" value="Consistency Learning" style="text;html=1;fontSize=9;fillColor=none;strokeColor=none;align=center;" vertex="1" parent="1">
+          <mxGeometry x="134" y="448" width="160" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- SECTION (a): Cross-modal Contrastive Learning                -->
+        <!-- ============================================================ -->
+        <mxCell id="sec_a" value="(a) Cross-modal Contrastive Learning"
+          style="swimlane;startSize=28;fillColor=none;strokeColor=#555555;strokeWidth=2;dashed=1;dashPattern=8 4;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="296" y="20" width="466" height="464" as="geometry"/>
+        </mxCell>
+
+        <!-- e^v coming into (a) -->
+        <mxCell id="a_ev" value="e^v" style="text;html=1;fontStyle=2;fontSize=12;fillColor=none;strokeColor=none;" vertex="1" parent="sec_a">
+          <mxGeometry x="10" y="48" width="30" height="18" as="geometry"/>
+        </mxCell>
+        <!-- e^s^v -->
+        <mxCell id="a_esv" value="e_s^v" style="text;html=1;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="sec_a">
+          <mxGeometry x="50" y="48" width="36" height="18" as="geometry"/>
+        </mxCell>
+        <!-- e^t coming into (a) -->
+        <mxCell id="a_et" value="e^t" style="text;html=1;fontStyle=2;fontSize=12;fillColor=none;strokeColor=none;" vertex="1" parent="sec_a">
+          <mxGeometry x="10" y="200" width="30" height="18" as="geometry"/>
+        </mxCell>
+        <!-- e^s^t -->
+        <mxCell id="a_est" value="e_s^t" style="text;html=1;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="sec_a">
+          <mxGeometry x="50" y="200" width="36" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Semantic Similarity Matrix -->
+        <mxCell id="sem_mat" value="Semantic Similarity Matrix&#xa;(Build target)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;"
+          vertex="1" parent="sec_a">
+          <mxGeometry x="104" y="32" width="196" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="lsem" value="L_SEM" style="text;html=1;fontStyle=2+1;fontSize=12;fillColor=none;strokeColor=none;" vertex="1" parent="sec_a">
+          <mxGeometry x="308" y="50" width="64" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Predicted Similarity Matrix -->
+        <mxCell id="pred_mat" value="Predicted Similarity Matrix&#xa;(Contrastive Learning)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;"
+          vertex="1" parent="sec_a">
+          <mxGeometry x="104" y="186" width="196" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="litc" value="L_ITC" style="text;html=1;fontStyle=2+1;fontSize=12;fillColor=none;strokeColor=none;" vertex="1" parent="sec_a">
+          <mxGeometry x="308" y="204" width="64" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Contrastive Learning sub-label inside (a) -->
+        <mxCell id="a_cl_lbl" value="Contrastive Learning" style="text;html=1;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="sec_a">
+          <mxGeometry x="104" y="252" width="196" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- m^v output (right side of (a)) -->
+        <mxCell id="a_mv" value="m^v" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=2;fontSize=13;" vertex="1" parent="sec_a">
+          <mxGeometry x="398" y="100" width="52" height="36" as="geometry"/>
+        </mxCell>
+        <!-- m^t output (right side of (a)) -->
+        <mxCell id="a_mt" value="m^t" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=2;fontSize=13;" vertex="1" parent="sec_a">
+          <mxGeometry x="398" y="260" width="52" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrows inside (a) -->
+        <mxCell id="a_arr1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="a_ev" target="sem_mat" parent="sec_a" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_arr2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="a_et" target="pred_mat" parent="sec_a" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_arr3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="sem_mat" target="lsem" parent="sec_a" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_arr4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="pred_mat" target="litc" parent="sec_a" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- SECTION (a'): CLIP Contrastive Learning  [THÊM MỚI]         -->
+        <!-- ============================================================ -->
+        <mxCell id="sec_clip" value="(a') CLIP Contrastive Learning  [Thêm mới]"
+          style="swimlane;startSize=26;fillColor=#F5EEF8;strokeColor=#7D3C98;strokeWidth=2;dashed=1;dashPattern=8 4;fontStyle=1;fontSize=11;fontColor=#6C3483;"
+          vertex="1" parent="1">
+          <mxGeometry x="296" y="494" width="466" height="140" as="geometry"/>
+        </mxCell>
+
+        <!-- Image Projection inside (a') -->
+        <mxCell id="img_proj" value="Image Projection&#xa;GatedMLP  512 → 256 → 64  + L2"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8DAEF;strokeColor=#7D3C98;fontStyle=1;fontSize=10;"
+          vertex="1" parent="sec_clip">
+          <mxGeometry x="60" y="34" width="210" height="40" as="geometry"/>
+        </mxCell>
+        <!-- Text Projection inside (a') -->
+        <mxCell id="txt_proj" value="Text Projection&#xa;GatedMLP  200 → 256 → 64  + L2"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8DAEF;strokeColor=#7D3C98;fontStyle=1;fontSize=10;"
+          vertex="1" parent="sec_clip">
+          <mxGeometry x="60" y="84" width="210" height="40" as="geometry"/>
+        </mxCell>
+        <!-- L_CLIP label -->
+        <mxCell id="lclip" value="L_CLIP&#xa;(InfoNCE)" style="text;html=1;fontStyle=2+1;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="sec_clip">
+          <mxGeometry x="282" y="50" width="90" height="32" as="geometry"/>
+        </mxCell>
+        <!-- output labels -->
+        <mxCell id="clip_iv_lbl" value="image_aligned_clip →" style="text;html=1;fontStyle=2;fontSize=9;fillColor=none;strokeColor=none;align=right;" vertex="1" parent="sec_clip">
+          <mxGeometry x="276" y="34" width="130" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="clip_tv_lbl" value="text_aligned_clip →" style="text;html=1;fontStyle=2;fontSize=9;fillColor=none;strokeColor=none;align=right;" vertex="1" parent="sec_clip">
+          <mxGeometry x="276" y="96" width="130" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- SECTION (c): Cross-modal Aggregation                         -->
+        <!-- ============================================================ -->
+        <mxCell id="sec_c" value="(c) Cross-modal Aggregation"
+          style="swimlane;startSize=28;fillColor=none;strokeColor=#444444;strokeWidth=2;dashed=1;dashPattern=8 4;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="782" y="20" width="690" height="464" as="geometry"/>
+        </mxCell>
+
+        <!-- "Attention mechanism" sub-label -->
+        <mxCell id="c_attn_title" value="Attention mechanism" style="text;html=1;fontStyle=1;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="sec_c">
+          <mxGeometry x="10" y="32" width="140" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- F_m block -->
+        <mxCell id="c_fm" value="F_m (·)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="sec_c">
+          <mxGeometry x="10" y="54" width="80" height="32" as="geometry"/>
+        </mxCell>
+        <!-- F_ex block -->
+        <mxCell id="c_fex" value="F_ex (·, W)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="sec_c">
+          <mxGeometry x="10" y="96" width="80" height="32" as="geometry"/>
+        </mxCell>
+        <!-- F_scale block -->
+        <mxCell id="c_fscale" value="F_scale (·)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="sec_c">
+          <mxGeometry x="10" y="138" width="80" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- SE Attention Module -->
+        <mxCell id="c_se" value="Attention Mechanism&#xa;(SEAttentionModule)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=10;"
+          vertex="1" parent="sec_c">
+          <mxGeometry x="102" y="72" width="148" height="56" as="geometry"/>
+        </mxCell>
+
+        <!-- attention weights labels -->
+        <mxCell id="c_aw" value="a    g" style="text;html=1;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="sec_c">
+          <mxGeometry x="258" y="88" width="50" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- Attention guidance label -->
+        <mxCell id="c_ag_title" value="Attention guidance" style="text;html=1;fontStyle=1;fontSize=10;fillColor=none;strokeColor=none;" vertex="1" parent="sec_c">
+          <mxGeometry x="390" y="32" width="140" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- VAE blocks -->
+        <mxCell id="c_vae1" value="VAE&#xa;q(z^v|m^v)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="sec_c">
+          <mxGeometry x="410" y="52" width="100" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_vae2" value="VAE&#xa;q(z^t|m^t)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="sec_c">
+          <mxGeometry x="410" y="130" width="100" height="48" as="geometry"/>
+        </mxCell>
+        <!-- L_AG -->
+        <mxCell id="c_lag" value="L_AG" style="text;html=1;fontStyle=2+1;fontSize=12;fillColor=none;strokeColor=none;" vertex="1" parent="sec_c">
+          <mxGeometry x="520" y="110" width="60" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- m^v, m^t, m^f inputs (inside (c)) -->
+        <mxCell id="c_mv" value="m^v" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=2;fontSize=13;" vertex="1" parent="sec_c">
+          <mxGeometry x="10" y="216" width="54" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_mt" value="m^t" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=2;fontSize=13;" vertex="1" parent="sec_c">
+          <mxGeometry x="10" y="310" width="54" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_mf" value="m^f" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=2;fontSize=13;" vertex="1" parent="sec_c">
+          <mxGeometry x="10" y="390" width="54" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- attention weight labels a_v, a_f -->
+        <mxCell id="c_av" value="a_v" style="text;html=1;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="sec_c">
+          <mxGeometry x="80" y="226" width="36" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_af" value="a_f" style="text;html=1;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="sec_c">
+          <mxGeometry x="80" y="320" width="36" height="18" as="geometry"/>
+        </mxCell>
+
+        <!-- ⊗ multiply symbols -->
+        <mxCell id="c_x1" value="⊗" style="text;html=1;fontSize=15;fillColor=none;strokeColor=none;align=center;" vertex="1" parent="sec_c">
+          <mxGeometry x="124" y="218" width="24" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_x2" value="⊗" style="text;html=1;fontSize=15;fillColor=none;strokeColor=none;align=center;" vertex="1" parent="sec_c">
+          <mxGeometry x="124" y="312" width="24" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ⊕ sum/concat -->
+        <mxCell id="c_sum" value="⊕" style="text;html=1;fontSize=15;fillColor=none;strokeColor=none;align=center;" vertex="1" parent="sec_c">
+          <mxGeometry x="196" y="282" width="24" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- S_s aggregated feature label -->
+        <mxCell id="c_ss" value="S_s" style="text;html=1;fontStyle=2;fontSize=11;fillColor=none;strokeColor=none;" vertex="1" parent="sec_c">
+          <mxGeometry x="228" y="284" width="30" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Classifier in (c) — CHANGED to GatedMLP -->
+        <mxCell id="c_cls" value="Classifier [★]&#xa;GatedMLP  96 → 64 → 2"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;"
+          vertex="1" parent="sec_c">
+          <mxGeometry x="270" y="270" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <!-- L_CLS -->
+        <mxCell id="c_lcls" value="L_CLS" style="text;html=1;fontStyle=2+1;fontSize=12;fillColor=none;strokeColor=none;" vertex="1" parent="sec_c">
+          <mxGeometry x="440" y="284" width="60" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrows inside (c) -->
+        <mxCell id="ca1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="c_fm" target="c_se" parent="sec_c" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ca2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="c_fex" target="c_se" parent="sec_c" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ca3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="c_fscale" target="c_se" parent="sec_c" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ca4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="c_se" target="c_aw" parent="sec_c" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ca5" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="c_cls" target="c_lcls" parent="sec_c" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ca6" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="c_vae1" target="c_lag" parent="sec_c" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ca7" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="c_vae2" target="c_lag" parent="sec_c" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- SECTION (b): Cross-modal Fusion                              -->
+        <!-- ============================================================ -->
+        <mxCell id="sec_b" value="(b) Cross-modal Fusion"
+          style="swimlane;startSize=26;fillColor=none;strokeColor=#444444;strokeWidth=2;dashed=1;dashPattern=8 4;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="782" y="494" width="370" height="220" as="geometry"/>
+        </mxCell>
+
+        <!-- m^v in (b) -->
+        <mxCell id="b_mv" value="m^v" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=2;fontSize=13;" vertex="1" parent="sec_b">
+          <mxGeometry x="14" y="46" width="54" height="36" as="geometry"/>
+        </mxCell>
+        <!-- m^t in (b) -->
+        <mxCell id="b_mt" value="m^t" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=2;fontSize=13;" vertex="1" parent="sec_b">
+          <mxGeometry x="14" y="136" width="54" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- f_{t→v} CrossModule — CHANGED to GatedMLP -->
+        <mxCell id="b_ftv" value="f_{t→v}  CrossModule [★]&#xa;GatedMLP  64→64→64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=9;"
+          vertex="1" parent="sec_b">
+          <mxGeometry x="88" y="36" width="150" height="50" as="geometry"/>
+        </mxCell>
+        <!-- f_{v→t} CrossModule — CHANGED to GatedMLP -->
+        <mxCell id="b_fvt" value="f_{v→t}  CrossModule [★]&#xa;GatedMLP  64→64→64"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=9;"
+          vertex="1" parent="sec_b">
+          <mxGeometry x="88" y="128" width="150" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- m_f^v -->
+        <mxCell id="b_mfv" value="m_f^v" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=2;fontSize=11;" vertex="1" parent="sec_b">
+          <mxGeometry x="252" y="36" width="54" height="36" as="geometry"/>
+        </mxCell>
+        <!-- m_f^t -->
+        <mxCell id="b_mft" value="m_f^t" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=2;fontSize=11;" vertex="1" parent="sec_b">
+          <mxGeometry x="252" y="136" width="54" height="36" as="geometry"/>
+        </mxCell>
+        <!-- m^f output -->
+        <mxCell id="b_mf" value="m^f" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=2;fontSize=13;" vertex="1" parent="sec_b">
+          <mxGeometry x="320" y="86" width="36" height="64" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrows inside (b) -->
+        <mxCell id="ba1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="b_mv" target="b_ftv" parent="sec_b" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ba2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="b_mt" target="b_fvt" parent="sec_b" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ba3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="b_ftv" target="b_mfv" parent="sec_b" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ba4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="b_fvt" target="b_mft" parent="sec_b" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ba5" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="b_mfv" target="b_mf" parent="sec_b" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="ba6" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="b_mft" target="b_mf" parent="sec_b" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LEGEND                                                        -->
+        <!-- ============================================================ -->
+        <mxCell id="legend" value="Legend"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="1162" y="494" width="310" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg1s" value="" style="rounded=1;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="528" width="28" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg1t" value="m^v  Aligned visual representation" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1206" y="526" width="260" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg2s" value="" style="rounded=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="554" width="28" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg2t" value="m^t  Aligned textual representation" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1206" y="552" width="260" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg3s" value="" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="580" width="28" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg3t" value="m^f  Cross-modality correlations" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1206" y="578" width="260" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg4s" value="" style="rounded=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="606" width="28" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg4t" value="[★]  GatedMLP (SwiGLU) — differs from paper" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1206" y="604" width="260" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg5s" value="" style="rounded=1;html=1;fillColor=#E8DAEF;strokeColor=#7D3C98;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="632" width="28" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg5t" value="CLIP module — Thêm mới (không có trong paper)" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1206" y="630" width="260" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg6s" value="" style="rounded=1;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="1172" y="658" width="28" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg6t" value="VAE  Variational Autoencoder" style="text;html=1;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1206" y="656" width="260" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- GLOBAL ARROWS                                                 -->
+        <!-- ============================================================ -->
+
+        <!-- Image → Visual Encoder -->
+        <mxCell id="g1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="img" target="venc" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Text → Text Encoder -->
+        <mxCell id="g2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="txt" target="tenc" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Visual Encoder → GatedMLP (v) -->
+        <mxCell id="g3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="venc" target="mlp_v" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Text Encoder → GatedMLP (t) -->
+        <mxCell id="g4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="tenc" target="mlp_t" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- GatedMLP v → ⊕ → Classifier ITM -->
+        <mxCell id="g5" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="mlp_v" target="plus" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="g6" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="mlp_t" target="plus" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="g7" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="plus" target="cls_itm" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="g8" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="cls_itm" target="litm" parent="1" value="">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Visual Encoder → (a): e^v -->
+        <mxCell id="g9" value="e^v" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.12;" edge="1" source="venc" target="sec_a" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Text Encoder → (a): e^t -->
+        <mxCell id="g10" value="e^t" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.7;entryX=0;entryY=0.47;" edge="1" source="tenc" target="sec_a" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Visual Encoder → (a') CLIP -->
+        <mxCell id="g11" value="e^v" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.7;entryX=0;entryY=0.3;strokeColor=#7D3C98;dashed=1;" edge="1" source="venc" target="sec_clip" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Text Encoder → (a') CLIP -->
+        <mxCell id="g12" value="e^t" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.7;strokeColor=#7D3C98;dashed=1;" edge="1" source="tenc" target="sec_clip" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- (a) → (c): m^v -->
+        <mxCell id="g13" value="m^v" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.5;" edge="1" source="sec_a" target="sec_c" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- (a) → (c): m^t -->
+        <mxCell id="g14" value="m^t" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.6;entryX=0;entryY=0.7;" edge="1" source="sec_a" target="sec_c" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- (a) → (b): m^v, m^t -->
+        <mxCell id="g15" value="m^v, m^t" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0.1;entryY=0;" edge="1" source="sec_a" target="sec_b" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- (a') CLIP → (b): image/text_aligned_clip -->
+        <mxCell id="g16" value="image/text_aligned_clip" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.6;strokeColor=#7D3C98;strokeWidth=2;" edge="1" source="sec_clip" target="sec_b" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- (b) → (c): m^f -->
+        <mxCell id="g17" value="m^f" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.9;" edge="1" source="sec_b" target="sec_c" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
