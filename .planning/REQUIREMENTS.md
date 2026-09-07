@@ -27,12 +27,12 @@
 ### Demo App SSE Bridge Update (Phase 3)
 
 -   [x] **A2A-06**: `demo_app/backend/streaming.py` updated to call A2A agent HTTP endpoints via `a2a_client`; the SSE event schema (`stage_start`, `turn_start`, `chunk`, `turn_end`, `verdict`, `heartbeat`) is **unchanged** — the React frontend requires no changes
--   [ ] **A2A-06b**: If an A2A agent is unreachable when the demo app calls it, the SSE stream emits a `stage_error` event with a Vietnamese-language error message and closes gracefully (no 500)
+-   [x] **A2A-06b**: If an A2A agent is unreachable when the demo app calls it, the SSE stream emits a `stage_error` event with a Vietnamese-language error message and closes gracefully (no 500)
 
 ### Test Updates (Phase 3)
 
 -   [x] **A2A-07**: Each of the 10 agent `TaskHandler`s is unit-tested by spinning up the uvicorn server in-process (via `pytest-anyio` or `asyncio` loop), sending a real A2A `Task`, and asserting the `TaskResult` schema; existing Python-level unit tests (non-HTTP) are retained for regression
--   [ ] **A2A-07b**: Existing graph integration tests (2 sample Vietnamese claims end-to-end) are updated to start agent servers before the test session (session-scoped fixture) and tear down after; total test run still passes in < 60 s on developer hardware
+-   [x] **A2A-07b**: Existing graph integration tests (2 sample Vietnamese claims end-to-end) are updated to start agent servers before the test session (session-scoped fixture) and tear down after; total test run still passes in < 60 s on developer hardware
 
 ### Backward Compatibility (Phase 3)
 
@@ -153,11 +153,11 @@
 | A2A-04      | Phase 2 | Complete |
 | A2A-05      | Phase 2 | Complete |
 | A2A-05b     | Phase 2 | Complete |
-| A2A-06      | Phase 3 | Pending  |
-| A2A-06b     | Phase 3 | Pending  |
-| A2A-07      | Phase 3 | Pending  |
-| A2A-07b     | Phase 3 | Pending  |
-| A2A-08      | Phase 3 | Pending  |
+| A2A-06      | Phase 3 | Complete |
+| A2A-06b     | Phase 3 | Complete |
+| A2A-07      | Phase 3 | Complete |
+| A2A-07b     | Phase 3 | Complete |
+| A2A-08      | Phase 3 | Complete |
 
 **Coverage:**
 

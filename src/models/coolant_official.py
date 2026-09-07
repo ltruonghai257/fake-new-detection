@@ -2,14 +2,21 @@
 """
 COOLANT Official Implementation
 
-This implementation follows the official COOLANT repository:
-https://github.com/wishever/COOLANT/tree/main/twitter
+Follows the official COOLANT paper (ACM MM '23, arXiv:2302.14057):
+  §3.2.1  Consistency Learning  → L_ITM  (CosineEmbeddingLoss, margin=0.2)
+  §3.2.2  Contrastive Learning  → L_ITC  (symmetric InfoNCE)
+  §3.2.4  Semantic Matching     → L_SEM  (soft distillation ITM→ITC, Eq. 6)
+  §3.4    Cross-modal Detection → L_DET  (L_CE + 0.5·L_KL)
 
-Key differences from previous implementation:
-1. Added CLIP module for additional contrastive learning
-2. Separate training tasks with individual optimizers
-3. DetectionModule uses CLIP-aligned features, not similarity-aligned
-4. Proper loss computation matching official repository
+  Total: L_CL = L_ITC + λ·L_SEM   (Task 1, use_itc=True)
+         L     = L_CL + L_ITM + L_DET
+
+Module→paper notation:
+  SimilarityModule outputs  →  e_s^t, e_s^v  (shared embeddings for ITM & soft targets)
+  CLIPModule outputs        →  m^t,   m^v    (aligned representations for CrossModule)
+
+Key modification from paper:
+  GatedMLP (SwiGLU) replaces all standard Linear→ReLU throughout.
 """
 
 import torch
@@ -146,39 +153,25 @@ class SimilarityModule(nn.Module):
         return text_aligned, image_aligned, pred_similarity
 
 
-class CLIP(nn.Module):
-    """CLIP module for additional contrastive learning (Task 1)."""
+class CLIPModule(nn.Module):
+    """Optional CLIP-style InfoNCE contrastive module (use_itc=True)."""
 
     def __init__(
-        self, embed_dim: int = 64, text_input_dim: int = 768, image_input_dim: int = 512
+        self, embed_dim: int = 64, text_input_dim: int = 200, image_input_dim: int = 512
     ):
-        super(CLIP, self).__init__()
-        self.embed_dim = embed_dim
-
-        # Text projection (SwiGLU)
+        super(CLIPModule, self).__init__()
         self.text_projection = GatedMLP(text_input_dim, 256, embed_dim)
-
-        # Image projection (SwiGLU)
         self.image_projection = GatedMLP(image_input_dim, 256, embed_dim)
-
-        # Temperature parameter (learnable)
         self.temperature = nn.Parameter(torch.ones([]) * 0.07)
 
     def forward(
-        self, image: torch.Tensor, text: torch.Tensor
+        self, text: torch.Tensor, image: torch.Tensor
     ) -> Tuple[torch.Tensor, torch.Tensor]:
-        # Project features to shared embedding space
-        # text may be [B, embed_dim, seq_len] — mean-pool to [B, embed_dim]
         if text.dim() == 3:
             text = text.mean(dim=2)
-        text_embed = self.text_projection(text)  # (B, embed_dim)
-        image_embed = self.image_projection(image)  # (B, embed_dim)
-
-        # Normalize embeddings
-        text_embed = F.normalize(text_embed, dim=-1)
-        image_embed = F.normalize(image_embed, dim=-1)
-
-        return image_embed, text_embed
+        m_t = F.normalize(self.text_projection(text), dim=-1)
+        m_v = F.normalize(self.image_projection(image), dim=-1)
+        return m_t, m_v
 
 
 class Encoder(nn.Module):
@@ -334,7 +327,7 @@ class DetectionModule(nn.Module):
         text_se, image_se = self.uni_se(text_prime, image_prime)
         text_prime, image_prime = self.uni_repre(text_prime, image_prime)
 
-        # Cross-modal correlation (uses CLIP-aligned features)
+        # Cross-modal correlation (uses similarity-aligned features m^t, m^v)
         correlation = self.cross_module(text, image)
 
         # SE attention weights
@@ -349,7 +342,7 @@ class DetectionModule(nn.Module):
         final_corre = torch.cat([text_final, img_final, corre_final], 1)
         pre_label = self.classifier_corre(final_corre)
 
-        # Ambiguity learning (uses CLIP-aligned features)
+        # Ambiguity learning (uses similarity-aligned features m^t, m^v)
         skl = self.ambiguity_module(text, image)
         weight_uni = (1 - skl).unsqueeze(1)
         weight_corre = skl.unsqueeze(1)
@@ -360,13 +353,21 @@ class DetectionModule(nn.Module):
 
 class COOLANT_Official(MultimodalModel):
     """
-    Official COOLANT Implementation
+    Official COOLANT implementation (ACM MM '23).
 
-    This follows the official repository architecture with:
-    - SimilarityModule (Task 1: Similarity learning)
-    - CLIP module (Task 1: Additional contrastive learning)
-    - DetectionModule (Task 2: Detection with ambiguity learning)
-    - Separate training tasks and optimizers
+    Modules:
+      SimilarityModule  — consistency learning; produces e_s^t, e_s^v (§3.2.1)
+      CLIPModule        — contrastive learning;  produces m^t,   m^v   (§3.2.2, use_itc=True)
+      DetectionModule   — detection + ambiguity;  consumes m^t,  m^v   (§3.3–3.4)
+
+    Loss notation (paper §3.2):
+      L_ITM  — CosineEmbeddingLoss on shared embeddings  (SimilarityModule)
+      L_ITC  — symmetric InfoNCE                         (CLIPModule, use_itc=True)
+      L_SEM  — soft distillation ITM→ITC (Eq. 6)        (use_itc=True)
+      L_DET  — L_CE + 0.5·L_KL                          (DetectionModule)
+      L_CL   — L_ITC + λ·L_SEM                          (total Task-1 contrastive)
+
+    Modification vs paper: GatedMLP (SwiGLU) replaces all standard MLPs.
     """
 
     def __init__(self, config: Dict[str, Any]):
@@ -384,11 +385,14 @@ class COOLANT_Official(MultimodalModel):
             image_input_dim=image_input_dim,
         )
 
-        self.clip_module = CLIP(
-            embed_dim=config.get("clip_embed_dim", 64),
-            text_input_dim=text_input_dim,
-            image_input_dim=image_input_dim,
-        )
+        # Optional InfoNCE contrastive module (use_itc=True to enable)
+        self.use_itc = config.get("use_itc", False)
+        if self.use_itc:
+            self.clip_module = CLIPModule(
+                embed_dim=config.get("clip_embed_dim", 64),
+                text_input_dim=text_input_dim,
+                image_input_dim=image_input_dim,
+            )
 
         self.detection_module = DetectionModule(
             feature_dim=config.get("feature_dim", 96),  # 64 + 16 + 16
@@ -398,39 +402,46 @@ class COOLANT_Official(MultimodalModel):
         )
 
         # Loss weights
-        self.contrastive_weight = config.get("contrastive_weight", 1.0)
         self.classification_weight = config.get("classification_weight", 1.0)
-        self.similarity_weight = config.get("similarity_weight", 0.5)
-        self.clip_weight = config.get("clip_weight", 0.2)
-
-        # Temperature for contrastive learning
-        self.temperature = config.get("temperature", 0.07)
+        self.itm_weight = config.get("itm_weight", 0.5)  # weight for L_ITM
+        self.sem_weight = config.get("sem_weight", 1.0)  # λ in L_CL = L_ITC + λ·L_SEM
 
     def forward(
         self, text_raw: torch.Tensor, image_raw: torch.Tensor, return_all: bool = False
     ) -> Dict[str, torch.Tensor]:
         """
-        Forward pass following official repository architecture.
+        Forward pass following official COOLANT architecture (§3).
 
         Args:
-            text_raw: Raw text features (B, 30, 200)
-            image_raw: Raw image features (B, 512)
-            return_all: Whether to return all intermediate outputs
+            text_raw:   Raw text  features (B, embed_dim, seq_len) for Conv1d
+            image_raw:  Raw image features (B, image_input_dim)
+            return_all: Include intermediate shared embeddings e_s_t, e_s_v in output.
 
-        Returns:
-            Dictionary containing model outputs
+        Returns dict keys (always):
+            similarity_pred     — ITM classifier logits from SimilarityModule
+            detection_logits    — fake/real classification logits
+            attention_weights   — SE attention over [text, image, cross] features
+            ambiguity_weights   — VAE-based ambiguity scores (for L_KL guidance)
+            m_t, m_v            — aligned representations fed to CrossModule
+                                  (CLIPModule output if use_itc, else SimilarityModule output)
+
+        Additional keys when return_all=True:
+            e_s_t, e_s_v        — shared embeddings from SimilarityModule
+                                  (used to build soft targets for L_SEM, §3.2.3)
         """
-        # Task 1: Similarity learning
-        text_aligned_sim, image_aligned_sim, similarity_pred = self.similarity_module(
-            text_raw, image_raw
-        )
+        # §3.2.1 Consistency Learning — shared embeddings e_s^t, e_s^v
+        e_s_t, e_s_v, similarity_pred = self.similarity_module(text_raw, image_raw)
 
-        # Task 1: CLIP contrastive learning
-        image_aligned_clip, text_aligned_clip = self.clip_module(image_raw, text_raw)
+        # §3.2.2 Contrastive Learning — aligned m^t, m^v for CrossModule
+        if self.use_itc:
+            m_t, m_v = self.clip_module(text_raw, image_raw)
+        else:
+            # Ablation / simplified: use shared embeddings directly
+            m_t, m_v = e_s_t, e_s_v
 
-        # Task 2: Detection (uses CLIP-aligned features)
+        # §3.3–3.4 Cross-modal Fusion + Aggregation + Detection
         detection_logits, attention_weights, ambiguity_weights = self.detection_module(
-            text_raw, image_raw, text_aligned_clip, image_aligned_clip
+            text_raw, image_raw, m_t, m_v
         )
 
         outputs = {
@@ -438,70 +449,81 @@ class COOLANT_Official(MultimodalModel):
             "detection_logits": detection_logits,
             "attention_weights": attention_weights,
             "ambiguity_weights": ambiguity_weights,
-            "text_aligned_clip": text_aligned_clip,
-            "image_aligned_clip": image_aligned_clip,
+            "m_t": m_t,
+            "m_v": m_v,
         }
-
         if return_all:
-            outputs.update(
-                {
-                    "text_aligned_sim": text_aligned_sim,
-                    "image_aligned_sim": image_aligned_sim,
-                    "text_raw": text_raw,
-                    "image_raw": image_raw,
-                }
-            )
+            outputs.update({"e_s_t": e_s_t, "e_s_v": e_s_v})
 
         return outputs
 
-    def compute_similarity_loss(
+    # ── Loss helpers (paper §3.2 notation) ─────────────────────────────────
+
+    def compute_loss_itm(
         self,
-        text_aligned: torch.Tensor,
-        image_aligned: torch.Tensor,
-        similarity_labels: torch.Tensor,
+        e_s_t: torch.Tensor,
+        e_s_v: torch.Tensor,
+        labels: torch.Tensor,
     ) -> torch.Tensor:
-        """Compute similarity learning loss."""
-        # Cosine embedding loss
-        loss_func_similarity = torch.nn.CosineEmbeddingLoss(margin=0.2)
-        return loss_func_similarity(text_aligned, image_aligned, similarity_labels)
+        """L_ITM (§3.2.1): CosineEmbeddingLoss on shared embeddings.
 
-    def compute_clip_loss(
-        self, text_features: torch.Tensor, image_features: torch.Tensor
+        labels: +1 for matched pairs, -1 for unmatched pairs.
+        """
+        return F.cosine_embedding_loss(e_s_t, e_s_v, labels, margin=0.2)
+
+    def compute_loss_itc(self, m_t: torch.Tensor, m_v: torch.Tensor) -> torch.Tensor:
+        """L_ITC (§3.2.2): symmetric InfoNCE (use_itc=True only).
+
+        Hard one-hot targets: diagonal = positive pair.
+        """
+        temp = torch.exp(self.clip_module.temperature)
+        logits = torch.matmul(m_v, m_t.T) * temp
+        labels = torch.arange(m_t.size(0), device=m_t.device)
+        return (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels)) / 2
+
+    def compute_loss_sem(
+        self,
+        m_t: torch.Tensor,
+        m_v: torch.Tensor,
+        e_s_t: torch.Tensor,
+        e_s_v: torch.Tensor,
     ) -> torch.Tensor:
-        """Compute CLIP contrastive loss using the CLIP module's temperature."""
-        # Compute similarity matrix using the CLIP module's learned temperature
-        logits = torch.matmul(image_features, text_features.T) * torch.exp(
-            self.clip_module.temperature
-        )
+        """L_SEM (§3.2.4, Eq. 6): soft distillation from SimilarityModule → CLIPModule.
 
-        # Create labels (positive pairs are on the diagonal)
-        batch_size = text_features.size(0)
-        labels = torch.arange(batch_size, device=text_features.device)
+        Builds soft targets S from shared embeddings (e_s_t, e_s_v),
+        then computes cross-entropy against ITC predictions (m_t, m_v).
+        use_itc=True required.
+        """
+        temp = torch.exp(self.clip_module.temperature)
+        # Soft targets from SimilarityModule (detached — teacher signal)
+        with torch.no_grad():
+            soft_v2t = F.softmax(torch.matmul(e_s_v, e_s_t.T) * temp, dim=1)
+            soft_t2v = F.softmax(torch.matmul(e_s_t, e_s_v.T) * temp, dim=1)
+        # Log-predictions from CLIPModule (student)
+        log_v2t = F.log_softmax(torch.matmul(m_v, m_t.T) * temp, dim=1)
+        log_t2v = F.log_softmax(torch.matmul(m_t, m_v.T) * temp, dim=1)
+        l_v2t = -(soft_v2t * log_v2t).sum(dim=1).mean()
+        l_t2v = -(soft_t2v * log_t2v).sum(dim=1).mean()
+        return (l_v2t + l_t2v) / 2
 
-        # Compute contrastive loss
-        loss_image_to_text = F.cross_entropy(logits, labels)
-        loss_text_to_image = F.cross_entropy(logits.T, labels)
-
-        return (loss_image_to_text + loss_text_to_image) / 2
-
-    def compute_detection_loss(
+    def compute_loss_det(
         self,
         detection_logits: torch.Tensor,
         labels: torch.Tensor,
         attention_weights: torch.Tensor,
         ambiguity_weights: torch.Tensor,
     ) -> torch.Tensor:
-        """Compute detection loss with ambiguity learning."""
+        """L_DET = L_CE + 0.5 * L_KL (detection + ambiguity, Task 2)."""
         # Classification loss
-        classification_loss = F.cross_entropy(detection_logits, labels)
+        l_ce = F.cross_entropy(detection_logits, labels)
 
-        # Ambiguity loss (KL divergence)
+        # Ambiguity loss (symmetric KL divergence)
         loss_func_skl = torch.nn.KLDivLoss(reduction="batchmean")
-        ambiguity_loss = loss_func_skl(
+        l_kl = loss_func_skl(
             F.log_softmax(attention_weights, dim=1), F.softmax(ambiguity_weights, dim=1)
         )
 
-        return classification_loss + 0.5 * ambiguity_loss
+        return l_ce + 0.5 * l_kl
 
     def predict(self, text_raw: torch.Tensor, image_raw: torch.Tensor) -> torch.Tensor:
         """Make predictions for fake news detection."""

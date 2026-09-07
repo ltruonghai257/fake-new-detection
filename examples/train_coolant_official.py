@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """
-Official COOLANT Training Script
+Official COOLANT Training Script (ACM MM '23, arXiv:2302.14057)
 
-This script follows the official repository's training approach with:
-- Separate tasks with individual optimizers
-- Task 1: Similarity learning + CLIP contrastive learning
-- Task 2: Detection with ambiguity learning
-- Proper data preparation and loss computation
+Loss schedule per paper §3.2:
+  Task 1a — Consistency:   L_ITM  = CosineEmbeddingLoss(e_s_t, e_s_v, ±1)   (§3.2.1)
+  Task 1b — Contrastive:   L_ITC  = symmetric InfoNCE(m_t, m_v)               (§3.2.2)
+  Task 1c — Soft distill:  L_SEM  = soft-CE(S_ITM → P_ITC)                   (§3.2.4)
+            Combined:       L_CL   = L_ITC + λ·L_SEM                          (Eq. 7)
+  Task 2  — Detection:     L_DET  = L_CE + 0.5·L_KL                          (§3.4.3)
+
+GatedMLP (SwiGLU) replaces all standard MLPs — the only modification vs paper.
 
 Based on: https://github.com/wishever/COOLANT/blob/main/twitter/twitter.py
 """
@@ -17,7 +20,6 @@ import numpy as np
 from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from tqdm import tqdm
-import math
 import torch.nn.functional as F
 import random
 import logging
@@ -63,30 +65,6 @@ def prepare_data(
     return fixed_text, matched_image, unmatched_image
 
 
-def get_soft_label(label: torch.Tensor) -> torch.Tensor:
-    """
-    Generate soft labels for contrastive learning following official repository.
-    """
-    soft_label = []
-    bs = len(label)
-    for i, l in enumerate(label):
-        if l == 0:  # Real news
-            true_label = [0 for _ in range(bs)]
-            true_label[i] = 1
-            soft_label.append(true_label)
-        else:  # Fake news
-            soft_label.append([1.0 / bs for _ in range(bs)])
-    return torch.tensor(soft_label)
-
-
-def soft_loss(input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-    """
-    Soft loss function from official repository.
-    """
-    logprobs = torch.nn.functional.log_softmax(input, dim=1)
-    return -(target * logprobs).sum() / input.shape[0]
-
-
 class COOLANTTrainer:
     """Trainer for official COOLANT implementation."""
 
@@ -107,16 +85,18 @@ class COOLANTTrainer:
         # Initialize model
         self.model = COOLANT_Official(config).to(self.device)
 
-        # Initialize optimizers (separate for each task like official)
+        # Optimizers — one per module (paper approach)
         self.optim_similarity = torch.optim.Adam(
             self.model.similarity_module.parameters(),
             lr=config.get("lr", 1e-3),
             weight_decay=config.get("l2", 0),
         )
 
-        self.optim_clip = torch.optim.AdamW(
-            self.model.clip_module.parameters(), lr=0.001, weight_decay=5e-4
-        )
+        if self.model.use_itc:
+            # CLIPModule trained jointly with L_ITC + λ·L_SEM
+            self.optim_itc = torch.optim.AdamW(
+                self.model.clip_module.parameters(), lr=0.001, weight_decay=5e-4
+            )
 
         self.optim_detection = torch.optim.Adam(
             self.model.detection_module.parameters(),
@@ -124,11 +104,14 @@ class COOLANTTrainer:
             weight_decay=config.get("l2", 0),
         )
 
-        # Loss functions
-        self.loss_func_similarity = torch.nn.CosineEmbeddingLoss(margin=0.2)
-        self.loss_func_clip = torch.nn.CrossEntropyLoss()
-        self.loss_func_detection = torch.nn.CrossEntropyLoss()
-        self.loss_func_skl = torch.nn.KLDivLoss(reduction="batchmean")
+        # Loss functions — paper §3.2 notation
+        # L_ITM handled via model.compute_loss_itm()
+        # L_ITC handled via model.compute_loss_itc()
+        # L_SEM handled via model.compute_loss_sem()
+        self.loss_func_ce = torch.nn.CrossEntropyLoss()  # for L_CE in L_DET
+        self.loss_func_kl = torch.nn.KLDivLoss(
+            reduction="batchmean"
+        )  # for L_KL in L_DET
 
         # Training state
         self.best_acc = 0
@@ -137,15 +120,17 @@ class COOLANTTrainer:
     def train_epoch(self, train_loader: DataLoader) -> Dict[str, float]:
         """Train one epoch following official repository approach."""
         self.model.similarity_module.train()
-        self.model.clip_module.train()
+        if self.model.use_itc:
+            self.model.clip_module.train()
         self.model.detection_module.train()
 
         # Metrics tracking
         corrects_similarity = 0
         corrects_detection = 0
-        loss_similarity_total = 0
-        loss_clip_total = 0
-        loss_detection_total = 0
+        loss_itm_total = 0  # L_ITM (§3.2.1)
+        loss_itc_total = 0  # L_ITC (§3.2.2)
+        loss_sem_total = 0  # L_SEM (§3.2.4, soft distillation)
+        loss_det_total = 0  # L_DET (§3.4.3)
         similarity_count = 0
         detection_count = 0
 
@@ -165,124 +150,117 @@ class COOLANTTrainer:
             matched_image = matched_image.to(self.device)
             unmatched_image = unmatched_image.to(self.device)
 
-            # === TASK 1: Similarity Learning ===
-            text_aligned_match, image_aligned_match, pred_similarity_match = (
-                self.model.similarity_module(fixed_text, matched_image)
+            # ── TASK 1a: Consistency Learning (L_ITM, §3.2.1) ─────────────────
+            # SimilarityModule → shared embeddings e_s^t, e_s^v
+            e_s_t_m, e_s_v_m, pred_sim_m = self.model.similarity_module(
+                fixed_text, matched_image
             )
-            text_aligned_unmatch, image_aligned_unmatch, pred_similarity_unmatch = (
-                self.model.similarity_module(fixed_text, unmatched_image)
+            e_s_t_u, e_s_v_u, pred_sim_u = self.model.similarity_module(
+                fixed_text, unmatched_image
             )
 
-            # Prepare similarity labels
             similarity_pred = torch.cat(
-                [pred_similarity_match.argmax(1), pred_similarity_unmatch.argmax(1)],
-                dim=0,
+                [pred_sim_m.argmax(1), pred_sim_u.argmax(1)], dim=0
             )
-            similarity_label_0 = torch.cat(
+            # classifier labels: 1=matched, 0=unmatched (for accuracy)
+            sim_cls_lbl = torch.cat(
                 [
-                    torch.ones(pred_similarity_match.shape[0]),
-                    torch.zeros(pred_similarity_unmatch.shape[0]),
-                ],
-                dim=0,
+                    torch.ones(pred_sim_m.shape[0]),
+                    torch.zeros(pred_sim_u.shape[0]),
+                ]
             ).to(self.device)
-            similarity_label_1 = torch.cat(
+            # cosine loss labels: +1=matched, -1=unmatched
+            sim_cos_lbl = torch.cat(
                 [
-                    torch.ones(pred_similarity_match.shape[0]),
-                    -1 * torch.ones(pred_similarity_unmatch.shape[0]),
-                ],
-                dim=0,
+                    torch.ones(e_s_t_m.shape[0]),
+                    -torch.ones(e_s_t_u.shape[0]),
+                ]
             ).to(self.device)
 
-            # Concatenate for similarity loss
-            text_aligned_4_task1 = torch.cat(
-                [text_aligned_match, text_aligned_unmatch], dim=0
-            )
-            image_aligned_4_task1 = torch.cat(
-                [image_aligned_match, image_aligned_unmatch], dim=0
-            )
+            e_s_t_all = torch.cat([e_s_t_m, e_s_t_u], dim=0)
+            e_s_v_all = torch.cat([e_s_v_m, e_s_v_u], dim=0)
 
-            # Compute and backpropagate similarity loss
-            loss_similarity = self.loss_func_similarity(
-                text_aligned_4_task1, image_aligned_4_task1, similarity_label_1
-            )
+            l_itm = self.model.compute_loss_itm(e_s_t_all, e_s_v_all, sim_cos_lbl)
 
             self.optim_similarity.zero_grad()
-            loss_similarity.backward()
+            l_itm.backward()
             self.optim_similarity.step()
 
-            corrects_similarity += similarity_pred.eq(similarity_label_0).sum().item()
+            corrects_similarity += similarity_pred.eq(sim_cls_lbl).sum().item()
+            loss_itm_total += l_itm.item() * e_s_t_all.shape[0]
 
-            # === TASK 1: CLIP Contrastive Learning ===
-            image_aligned, text_aligned = self.model.clip_module(image, text)
-            # Use model's temperature from CLIP module
-            temperature = self.model.clip_module.temperature.item()
-            logits = torch.matmul(image_aligned, text_aligned.T) * math.exp(temperature)
-            labels = torch.arange(text.size(0)).to(self.device)
+            # ── TASK 1b+c: Contrastive + Soft Distillation (L_ITC + λ·L_SEM, §3.2.2+4) ──
+            if self.model.use_itc:
+                # Forward CLIPModule → m^t, m^v
+                m_t_itc, m_v_itc = self.model.clip_module(text, image)
 
-            # Get soft labels from similarity module
-            text_sim, image_sim, _ = self.model.similarity_module(text, image)
-            # Use model's temperature from CLIP module
-            temperature = self.model.clip_module.temperature.item()
-            soft_label = torch.matmul(image_sim, text_sim.T) * math.exp(temperature)
-            soft_label = soft_label.to(self.device)
+                # L_ITC: symmetric InfoNCE (§3.2.2)
+                l_itc = self.model.compute_loss_itc(m_t_itc, m_v_itc)
 
-            # Compute CLIP losses
-            self.optim_clip.zero_grad()
-            loss_clip_i = self.loss_func_clip(logits, labels)
-            loss_clip_t = self.loss_func_clip(logits.T, labels)
-            loss_clip = (loss_clip_i + loss_clip_t) / 2.0
+                # L_SEM: soft distillation from SimilarityModule → CLIPModule (§3.2.4)
+                # Need e_s^t, e_s^v for this batch (full batch, not pair-subset)
+                with torch.no_grad():
+                    e_s_t_full, e_s_v_full, _ = self.model.similarity_module(
+                        text, image
+                    )
+                l_sem = self.model.compute_loss_sem(
+                    m_t_itc, m_v_itc, e_s_t_full, e_s_v_full
+                )
 
-            image_loss = soft_loss(logits, F.softmax(soft_label, 1))
-            caption_loss = soft_loss(logits.T, F.softmax(soft_label.T, 1))
-            loss_soft = (image_loss + caption_loss) / 2.0
+                # L_CL = L_ITC + λ·L_SEM (Eq. 7)
+                l_cl = l_itc + self.model.sem_weight * l_sem
 
-            all_loss = loss_clip + 0.2 * loss_soft
-            all_loss.backward()
-            self.optim_clip.step()
+                self.optim_itc.zero_grad()
+                l_cl.backward()
+                self.optim_itc.step()
 
-            # === TASK 2: Detection ===
-            # Use CLIP-aligned features for detection
-            detection_logits, attention_score, skl_score = self.model.detection_module(
-                text, image, text_aligned, image_aligned
+                loss_itc_total += l_itc.item() * text.shape[0]
+                loss_sem_total += l_sem.item() * text.shape[0]
+
+            # ── TASK 2: Detection (L_DET = L_CE + 0.5·L_KL, §3.4.3) ────────────
+            # m^t, m^v fed to CrossModule: from CLIPModule if use_itc, else from ITM module
+            with torch.no_grad():
+                out = self.model(text, image)
+
+            detection_logits = out["detection_logits"]
+            attention_score = out["attention_weights"]
+            skl_score = out["ambiguity_weights"]
+
+            l_ce = self.loss_func_ce(detection_logits, label)
+            l_kl = self.loss_func_kl(
+                F.log_softmax(attention_score.clamp(-10, 10), dim=1),
+                F.softmax(skl_score.clamp(-10, 10), dim=1),
             )
-
-            # Compute detection loss
-            loss_detection = self.loss_func_detection(
-                detection_logits, label
-            ) + 0.5 * self.loss_func_skl(attention_score, skl_score)
+            l_det = l_ce + 0.5 * l_kl
 
             self.optim_detection.zero_grad()
-            loss_detection.backward()
+            l_det.backward()
             self.optim_detection.step()
 
-            # Update metrics with division by zero protection
             pre_label_detection = detection_logits.argmax(1)
             corrects_detection += (
                 pre_label_detection.eq(label.view_as(pre_label_detection)).sum().item()
             )
-
-            loss_clip_total += loss_soft.item()
-            loss_detection_total += loss_detection.item() * text.shape[0]
-            similarity_count += 2 * fixed_text.shape[0] * 2
+            loss_det_total += l_det.item() * text.shape[0]
             detection_count += text.shape[0]
+            similarity_count += e_s_t_all.shape[0]
             self.step += 1
 
-        # Compute averages with division by zero protection
-        loss_detection_train = loss_detection_total / max(detection_count, 1)
-        acc_detection_train = corrects_detection / max(detection_count, 1)
-        acc_similarity_train = corrects_similarity / max(similarity_count, 1)
-
-        return {
-            "loss_detection": loss_detection_train,
-            "acc_detection": acc_detection_train,
-            "acc_similarity": acc_similarity_train,
-            "loss_clip": loss_clip_total / self.step,
+        metrics = {
+            "loss_itm": loss_itm_total / max(similarity_count, 1),
+            "loss_itc": loss_itc_total / max(detection_count, 1),
+            "loss_sem": loss_sem_total / max(detection_count, 1),
+            "loss_det": loss_det_total / max(detection_count, 1),
+            "acc_detection": corrects_detection / max(detection_count, 1),
+            "acc_similarity": corrects_similarity / max(similarity_count, 1),
         }
+        return metrics
 
     def evaluate(self, test_loader: DataLoader) -> Dict[str, float]:
         """Evaluate model following official repository approach."""
         self.model.similarity_module.eval()
-        self.model.clip_module.eval()
+        if self.model.use_itc:
+            self.model.clip_module.eval()
         self.model.detection_module.eval()
 
         detection_count = 0
@@ -300,8 +278,8 @@ class COOLANTTrainer:
                 outputs = self.model(text, image)
                 detection_logits = outputs["detection_logits"]
 
-                # Compute detection loss
-                loss_detection = self.loss_func_detection(detection_logits, label)
+                # Compute L_CE for tracking
+                loss_detection = self.loss_func_ce(detection_logits, label)
                 loss_detection_total += loss_detection.item() * text.shape[0]
                 detection_count += text.shape[0]
 
@@ -337,10 +315,15 @@ class COOLANTTrainer:
             test_metrics = self.evaluate(test_loader)
 
             # Print results (following official format)
-            logger.info(f"--- TASK1 CLIP ---")
-            logger.info(f'[Epoch: {epoch}], losses: {train_metrics["loss_clip"]:.4f}')
+            logger.info(f"--- TASK1 Consistency (L_ITM) + Contrastive (L_ITC) ---")
+            logger.info(
+                f"[Epoch: {epoch}] "
+                f'L_ITM={train_metrics["loss_itm"]:.4f}  '
+                f'L_ITC={train_metrics["loss_itc"]:.4f}  '
+                f'L_SEM={train_metrics["loss_sem"]:.4f}'
+            )
 
-            logger.info(f"--- TASK2 Detection ---")
+            logger.info(f"--- TASK2 Detection (L_DET) ---")
             if test_metrics["acc_detection"] > self.best_acc:
                 self.best_acc = test_metrics["acc_detection"]
                 logger.info(
@@ -352,8 +335,8 @@ class COOLANTTrainer:
                 save_dir.mkdir(exist_ok=True)
 
                 torch.save(
-                    self.model.clip_module.state_dict(),
-                    save_dir / "best_clip_module.pth",
+                    self.model.similarity_module.state_dict(),
+                    save_dir / "best_similarity_module.pth",
                 )
                 torch.save(
                     self.model.detection_module.state_dict(),
@@ -366,8 +349,8 @@ class COOLANTTrainer:
                 f"acc_detection_train = {train_metrics['acc_detection']:.3f}\n"
                 f"acc_detection_test = {test_metrics['acc_detection']:.3f}\n"
                 f"best_acc = {self.best_acc:.3f}\n"
-                f"loss_detection_train = {train_metrics['loss_detection']:.3f}\n"
-                f"loss_detection_test = {test_metrics['loss_detection']:.3f}\n"
+                f"loss_det_train = {train_metrics['loss_det']:.3f}\n"
+                f"loss_det_test = {test_metrics['loss_detection']:.3f}\n"
             )
 
             logger.info(
@@ -391,7 +374,6 @@ def main():
         # Model configuration
         "shared_dim": 128,
         "sim_dim": 64,
-        "clip_embed_dim": 64,
         "feature_dim": 96,  # 64 + 16 + 16
         "h_dim": 64,
         # Data configuration
