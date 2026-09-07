@@ -3,99 +3,25 @@ import StageIndicator from './components/StageIndicator';
 import DebateTranscript from './components/DebateTranscript';
 import VerdictCard from './components/VerdictCard';
 import EvidencePanel from './components/EvidencePanel';
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-export interface VerdictExplanation {
-    model_summary: string;
-    debate_winner: string;
-    evidence_summary: string;
-    confidence_breakdown: {
-        phobert: number;
-        coolant: number;
-        evidence: number;
-        debate: number;
-    };
-}
-
-export interface Verdict {
-    label: string;
-    verdict_binary: 'REAL' | 'FAKE' | 'NEI';
-    verdict_label_vi: 'Thật' | 'Giả' | 'Chưa xác thực';
-    confidence: number;
-    rationale: string;
-    citations: string[];
-    recommendation: string;
-    explanation?: VerdictExplanation | null;
-    model_detail?: Record<string, { label: string; confidence: number; probabilities: Record<string, number> }> | null;
-}
-
-export interface ArgumentScore {
-    agent: string;
-    round: number;
-    factuality: number;
-    rebuttal_engagement: number;
-    evidence_grounding: number;
-}
-
-export interface EvidenceBreakdown {
-    tier_score: number;
-    count_score: number;
-    consistency_score: number;
-    trusted_count: number;
-    total_real: number;
-    total_fake: number;
-    total_evidence: number;
-}
-
-export interface WeightBreakdown {
-    phobert: number;
-    coolant: number;
-    evidence: number;
-    argument_scores: ArgumentScore[];
-    phobert_label?: string | null;
-    phobert_probabilities?: Record<string, number> | null;
-    coolant_label?: string | null;
-    coolant_probabilities?: Record<string, number> | null;
-    evidence_breakdown?: EvidenceBreakdown | null;
-}
-
-export interface Evidence {
-    title: string;
-    url: string;
-    snippet: string;
-    source_tier: 'trusted' | 'flagged' | 'social' | 'unknown';
-}
-
-export interface DebateTurn {
-    agent: 'real_advocate' | 'fake_advocate';
-    round: number;
-    text: string;
-    timestamp: string;
-    verdict?: 'REAL' | 'FAKE' | null;
-    confidence?: number | null;
-    concession?: string | null;
-    error?: string;
-}
-
-// ── Stage constants (D-10) ────────────────────────────────────────────────────
-
-export const STAGES = [
-    'evidence_retrieval',
-    'reranking',
-    'verification',
-    'debate',
-    'verdict',
-] as const;
-export type StageName = (typeof STAGES)[number];
-
-export const STAGE_LABELS: Record<StageName, string> = {
-    evidence_retrieval: 'Tìm bằng chứng',
-    reranking: 'Xếp hạng bằng chứng',
-    verification: 'Kiểm định mô hình',
-    debate: 'Tranh luận',
-    verdict: 'Phán quyết',
-};
+import type {
+    Verdict,
+    WeightBreakdown,
+    Evidence,
+    DebateTurn,
+    StageName,
+} from './types';
+export { STAGES, STAGE_LABELS } from './types';
+export type {
+    StageName,
+    Verdict,
+    WeightBreakdown,
+    Evidence,
+    DebateTurn,
+    ArgumentScore,
+    EvidenceBreakdown,
+    VerdictExplanation,
+} from './types';
+import { STAGES } from './types';
 
 // ── App ───────────────────────────────────────────────────────────────────────
 
@@ -148,13 +74,24 @@ export default function App() {
     const [currentTurnAgent, setCurrentTurnAgent] = useState<string | null>(
         null
     );
-    const [currentTurnRound, setCurrentTurnRound] = useState<number>(0);
     const currentTurnTextRef = useRef('');
     const [currentTurnText, setCurrentTurnText] = useState('');
 
     // Debate convergence state
     const [debateConverged, setDebateConverged] = useState(false);
-    const [debateAgreedVerdict, setDebateAgreedVerdict] = useState<string | null>(null);
+    const [debateAgreedVerdict, setDebateAgreedVerdict] = useState<
+        string | null
+    >(null);
+
+    // Model verification results (PhoBERT / COOLANT) — shown as they arrive
+    const [modelResults, setModelResults] = useState<
+        Array<{
+            model: string;
+            label: string;
+            confidence: number;
+            probabilities: Record<string, number>;
+        }>
+    >([]);
 
     // Verdict + evidence state (revealed together at verdict event, D-05/D-07)
     const [verdict, setVerdict] = useState<Verdict | null>(null);
@@ -218,7 +155,6 @@ export default function App() {
                 round: number;
             };
             setCurrentTurnAgent(data.agent);
-            setCurrentTurnRound(data.round);
             currentTurnTextRef.current = '';
             setCurrentTurnText('');
         });
@@ -252,7 +188,6 @@ export default function App() {
                 },
             ]);
             setCurrentTurnAgent(null);
-            setCurrentTurnRound(0);
             currentTurnTextRef.current = '';
             setCurrentTurnText('');
         });
@@ -302,7 +237,6 @@ export default function App() {
         setCompletedStages([]);
         setAllTurns([]);
         setCurrentTurnAgent(null);
-        setCurrentTurnRound(0);
         currentTurnTextRef.current = '';
         setCurrentTurnText('');
         setVerdict(null);
@@ -314,6 +248,7 @@ export default function App() {
         setStageLogs([]);
         setDebateConverged(false);
         setDebateAgreedVerdict(null);
+        setModelResults([]);
 
         const fd = new FormData();
         fd.append('statement', statement);
@@ -396,7 +331,9 @@ export default function App() {
                 )}
                 {/* Ablation toggles */}
                 <div className="flex items-center gap-6 mb-4">
-                    <span className="text-sm font-medium text-gray-600">Mô hình:</span>
+                    <span className="text-sm font-medium text-gray-600">
+                        Mô hình:
+                    </span>
                     <label className="flex items-center gap-2 cursor-pointer select-none">
                         <input
                             type="checkbox"
@@ -426,17 +363,25 @@ export default function App() {
                             disabled={isStreaming}
                             className="w-4 h-4 accent-amber-500"
                         />
-                        <span className="text-sm text-gray-700">Bằng chứng</span>
+                        <span className="text-sm text-gray-700">
+                            Bằng chứng
+                        </span>
                     </label>
                     {!usePhobert && !useCoolant && !useEvidence && (
-                        <span className="text-xs text-amber-600">⚠ Cần ít nhất 1 thành phần</span>
+                        <span className="text-xs text-amber-600">
+                            ⚠ Cần ít nhất 1 thành phần
+                        </span>
                     )}
                 </div>
 
                 <button
                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
                     onClick={handleSubmit}
-                    disabled={isStreaming || !statement.trim() || (!usePhobert && !useCoolant && !useEvidence)}>
+                    disabled={
+                        isStreaming ||
+                        !statement.trim() ||
+                        (!usePhobert && !useCoolant && !useEvidence)
+                    }>
                     {isStreaming ? 'Đang kiểm tra...' : 'Kiểm tra'}
                 </button>
             </div>
@@ -482,6 +427,45 @@ export default function App() {
                             </li>
                         ))}
                     </ul>
+                </div>
+            )}
+
+            {/* Model verification results (PhoBERT / COOLANT) */}
+            {modelResults.length > 0 && (
+                <div className="bg-white rounded-xl shadow p-4 mb-6">
+                    <div className="text-sm font-semibold text-gray-700 mb-3">
+                        Kết quả kiểm định mô hình
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                        {modelResults.map(r => {
+                            const isReal = r.label === 'REAL';
+                            return (
+                                <div
+                                    key={r.model}
+                                    className={[
+                                        'flex-1 min-w-[140px] rounded-lg border px-4 py-3',
+                                        isReal
+                                            ? 'border-green-300 bg-green-50'
+                                            : 'border-red-300 bg-red-50',
+                                    ].join(' ')}>
+                                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                                        {r.model}
+                                    </div>
+                                    <div
+                                        className={`text-base font-bold ${
+                                            isReal
+                                                ? 'text-green-700'
+                                                : 'text-red-700'
+                                        }`}>
+                                        {isReal ? 'THẬT' : 'GIẢ'}
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-0.5">
+                                        {Math.round(r.confidence * 100)}% tự tin
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
 

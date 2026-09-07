@@ -45,6 +45,23 @@ app.add_middleware(
 _pending: dict[str, dict] = {}
 
 
+@app.on_event("startup")
+async def _warmup_models() -> None:
+    """Eagerly load PhoBERT and COOLANT weights so the first request isn't slow."""
+    import asyncio
+    import concurrent.futures
+
+    def _load():
+        from factcheck_agents.agents.verify_agent import _coolant, _phobert
+
+        _phobert().load()
+        _coolant().load()
+
+    loop = asyncio.get_running_loop()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        await loop.run_in_executor(pool, _load)
+
+
 async def _download_image(url: str) -> str | None:
     """Download image URL to a temp file; return local path or None on failure.
 
