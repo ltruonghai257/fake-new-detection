@@ -55,6 +55,21 @@ class GatedMLP(nn.Module):
         return self.down_proj(x)
 
 
+class FastCNNEmbedFirst(FastCNN):
+    """FastCNN variant for data already in (B, embed_dim, seq_len) format.
+
+    CoolantPairDataset returns caption as (B, embed, seq) — the base
+    FastCNN.forward would permute it back to (B, seq, embed) and break
+    Conv1d channel order. This subclass skips the permute.
+    """
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x_out = []
+        for module in self.fast_cnn:
+            x_out.append(module(x).squeeze(-1))
+        return torch.cat(x_out, 1)
+
+
 class EncodingPart(nn.Module):
     """Shared encoding module for text and image features."""
 
@@ -69,8 +84,8 @@ class EncodingPart(nn.Module):
     ):
         super(EncodingPart, self).__init__()
 
-        # Text encoding
-        self.shared_text_encoding = FastCNN(
+        # Text encoding — input is (B, embed_dim, seq_len), no permute needed
+        self.shared_text_encoding = FastCNNEmbedFirst(
             input_dim=text_input_dim, channel=cnn_channel, kernel_size=cnn_kernel_size
         )
         self.shared_text_linear = nn.Sequential(
@@ -374,8 +389,11 @@ class COOLANT_Official(MultimodalModel):
         super(COOLANT_Official, self).__init__(config)
 
         # Get input dimensions from config
-        text_input_dim = config.get("text_input_dim", 200)
-        image_input_dim = config.get("image_input_dim", 512)
+        self.text_input_dim = config.get("text_input_dim", 200)
+        self.image_input_dim = config.get("image_input_dim", 512)
+        self.text_seq_len = config.get("text_seq_len", 30)
+        text_input_dim = self.text_input_dim
+        image_input_dim = self.image_input_dim
 
         # Model components
         self.similarity_module = SimilarityModule(
@@ -405,6 +423,28 @@ class COOLANT_Official(MultimodalModel):
         self.classification_weight = config.get("classification_weight", 1.0)
         self.itm_weight = config.get("itm_weight", 0.5)  # weight for L_ITM
         self.sem_weight = config.get("sem_weight", 1.0)  # λ in L_CL = L_ITC + λ·L_SEM
+
+    def encode_text(self, text: torch.Tensor) -> torch.Tensor:
+        """Encode text to shared space via SimilarityModule encoder."""
+        dummy_image = torch.zeros(
+            text.size(0), self.image_input_dim, device=text.device
+        )
+        text_shared, _ = self.similarity_module.encoding(text, dummy_image)
+        return text_shared
+
+    def encode_image(self, image: torch.Tensor) -> torch.Tensor:
+        """Encode image to shared space via SimilarityModule encoder."""
+        dummy_text = torch.zeros(
+            image.size(0), self.text_input_dim, self.text_seq_len, device=image.device
+        )
+        _, image_shared = self.similarity_module.encoding(dummy_text, image)
+        return image_shared
+
+    def fuse_modalities(
+        self, text_features: torch.Tensor, image_features: torch.Tensor
+    ) -> torch.Tensor:
+        """Fuse via concatenation."""
+        return torch.cat([text_features, image_features], dim=-1)
 
     def forward(
         self, text_raw: torch.Tensor, image_raw: torch.Tensor, return_all: bool = False
