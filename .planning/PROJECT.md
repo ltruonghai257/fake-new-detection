@@ -41,8 +41,13 @@ split into single-turn `real_advocate`/`fake_advocate` services.
 `a2a_client.py` over A2A HTTP (sync `httpx.Client` bridge, `AgentUnavailableError`
 → per-agent degrade diffs, partial-debate semantics in `debate_node`). Verified
 end-to-end: CLI smoke test produced a live verdict in 58s with all servers up,
-and a graceful UNVERIFIED degrade with all servers down. Phase 5 (Demo App +
-Tests) is next.
+and a graceful UNVERIFIED degrade with all servers down.
+
+**Phase 5 complete (2026-09-08):** Demo app SSE bridge updated with `stage_error`
+detection (A2A-06/A2A-06b). 10 per-agent HTTP integration tests + A2A graph
+integration test fixture added (A2A-07/A2A-07b). `run_fact_check()` + `mcp_server.py`
+thread_id crash fixed (A2A-08). All 5 v3.1 phases complete — milestone v3.1 ready
+to close.
 
 -   All 10 agents wrapped as A2A `TaskHandler`s (`a2a-sdk[http-server,fastapi]`): `search_agent`, `evaluate_agent`, `real_source_agent`, `fake_source_agent`, `social_loop_agent`, `agreement_gate`, `real_advocate`, `fake_advocate`, `judge_agent`, `conclusion_agent`
 -   Each agent served by its own uvicorn HTTP server on a dedicated port (9001–9010) in local dev; `scripts/start_agents.sh` starts all; `scripts/stop_agents.sh` stops all
@@ -74,14 +79,15 @@ Tests) is next.
 -   ✓ **A2A-04**: `factcheck_agents/a2a_client.py` wraps `A2AClient` calls; LangGraph nodes import this module instead of agent functions; state passing uses A2A `Task` messages — v3.1 Phase 4, validated 2026-08-17
 -   ✓ **A2A-05**: LangGraph `graph.py` updated — `build_debate_graph()` and `build_graph()` call A2A clients; conditional routing edges unchanged — v3.1 Phase 4, validated 2026-08-17
 -   ✓ **A2A-05b**: `debate_node` handles per-advocate `AgentUnavailableError` with partial-debate semantics (available advocate continues; both down → `agent_unavailable`) — v3.1 Phase 4, validated 2026-08-17
+-   ✓ **A2A-06**: `demo_app/backend/streaming.py` updated — `stage_error` SSE event emitted with Vietnamese message when A2A agent unavailable; stream closes cleanly with HTTP 200 — v3.1 Phase 5, validated 2026-09-08
+-   ✓ **A2A-06b**: `stage_error` detection block scans `node_output["messages"]` for "unavailable"; calls `done.set()` + `break` to terminate stream — v3.1 Phase 5, validated 2026-09-08
+-   ✓ **A2A-07**: `test_agent_http.py` (10 `@pytest.mark.integration` tests, one per TaskHandler); `test_a2a_integration.py` (session fixture with 8 graph-path agents, 2 integration tests) — v3.1 Phase 5, validated 2026-09-08
+-   ✓ **A2A-07b**: `test_a2a_integration.py` session-scoped fixture starts 8 graph-path uvicorn agents; 2 Vietnamese claim integration tests — v3.1 Phase 5, validated 2026-09-08
+-   ✓ **A2A-08**: `run_fact_check()` (`factcheck_agents/__init__.py`) and `mcp_server.py` both fixed: `import uuid` + `config={"configurable": {"thread_id": str(uuid.uuid4())}}` passed to `graph.invoke()` — v3.1 Phase 5, validated 2026-09-08
 
 ### Active
 
-<!-- v3.1 scope — A2A Protocol Integration -->
-
--   [ ] **A2A-06**: `demo_app/backend/streaming.py` updated to call A2A agent HTTP endpoints; SSE `turn_start`/`chunk`/`turn_end` events unchanged for the React frontend
--   [ ] **A2A-07**: Unit tests updated: each agent tested via its A2A HTTP interface (spin up in-process uvicorn); existing graph integration tests adapted for A2A client calls
--   [ ] **A2A-08**: CLI (`cli.py`), Python API (`run_fact_check()`), and MCP server (`mcp_server.py`) remain externally unchanged; they call `build_debate_graph()` as before
+<!-- v3.1 scope — A2A Protocol Integration — All requirements validated -->
 
 ### Out of Scope
 
@@ -148,4 +154,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-08-18 — v3.1 Phase 4 (LangGraph → A2A Client Wiring) UAT verified (5/5) and complete_
+_Last updated: 2026-09-08 — v3.1 Phase 5 (Demo App + Tests) verified (9/9) and complete — all 3 phases done, milestone v3.1 ready to close_
