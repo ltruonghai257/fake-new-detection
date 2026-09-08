@@ -178,7 +178,7 @@ def expert_agent(state: FactCheckState) -> dict:
     user = (
         f"===== HỒ SƠ KIỂM TRA THÔNG TIN =====\n\n"
         f"TUYÊN BỐ CẦN KIỂM TRA:\n{statement}\n\n"
-        f"----- KẾT QUẢ PHÂN TÍCH MODEL (PhoBERT + COOLANT) -----\n"
+        f"----- KẾT QUẢ PHÂN TÍCH MODEL (các model khả dụng) -----\n"
         f"{_format_expert_models(model_results)}\n\n"
         f"----- BẰNG CHỨNG TỪ NGUỒN CHÍNH THỐNG -----\n"
         f"{_fmt_ev(evidence_real, 'chính thống')}\n\n"

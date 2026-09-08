@@ -214,7 +214,7 @@ def judge_agent(state: FactCheckState) -> dict:
         )
     user = (
         f"CLAIM:\n{statement}\n\n"
-        f"MODEL PREDICTIONS (PhoBERT + COOLANT with probabilities):\n{_format_models(model_results)}\n\n"
+        f"MODEL PREDICTIONS (các model khả dụng, kèm xác suất):\n{_format_models(model_results)}\n\n"
         f"EVIDENCE (TRUSTED):\n{_format_evidence(evidence_real)}\n\n"
         f"EVIDENCE (FLAGGED/FACT-CHECK):\n{_format_evidence(evidence_fake)}\n\n"
         f"DEBATE TRANSCRIPT:\n{_format_debate_turns(debate_turns)}\n"
