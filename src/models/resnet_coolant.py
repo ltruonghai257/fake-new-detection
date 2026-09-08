@@ -70,6 +70,10 @@ class PatchedCOOLANT(COOLANT_Official):
         """
         _PATCH_KEYS = {"image_dim", "text_embed_dim", "text_dim", "variant"}
         inner_cfg = {k: v for k, v in model_cfg.items() if k not in _PATCH_KEYS}
+        # The patch chain below always touches clip_module, so it must exist.
+        # Checkpoints that trained without ITC simply won't load its weights
+        # (load_state_dict is called with strict=False downstream).
+        inner_cfg.setdefault("use_itc", True)
         model = cls(inner_cfg)
         _apply_all_patches(
             model,
