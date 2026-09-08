@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: milestone
 status: complete
-stopped_at: Phase 05.1 executed — 05.1-01 verified, 162 non-integration tests passed
-last_updated: '2026-09-08T16:45:00.000Z'
-last_activity: 2026-09-08 — Phase 05.1 executed (model ablation toggles, COOLANT+evidence default, prompt hooks)
+stopped_at: Post-05.1 change — agreement_gate converted to evidence-only gate; models are debate evidence, not gate inputs
+last_updated: '2026-09-09T00:00:00.000Z'
+last_activity: 2026-09-09 — agreement_gate evidence-only refactor + PatchedCOOLANT use_itc fix; 163 non-integration tests passed
 progress:
     total_phases: 5
     completed_phases: 5
@@ -23,7 +23,7 @@ current_phase_name: address-tech-debt-serialization-hardening-fixture-coverage
 Phase: 05.1
 Plan: 05.1-01
 Status: Complete (executed + verified)
-Last activity: 2026-09-08 — Phase 05.1 executed (model ablation toggles, COOLANT+evidence default, prompt hooks)
+Last activity: 2026-09-09 — agreement_gate evidence-only refactor + PatchedCOOLANT use_itc fix; 163 non-integration tests passed
 
 ## Milestone v3.1 Requirements Index
 
@@ -41,7 +41,8 @@ Last activity: 2026-09-08 — Phase 05.1 executed (model ablation toggles, COOLA
 ## Tunable Defaults (carry-over from v3.0)
 
 -   `FACTCHECK_AGREEMENT_THRESHOLD` = 0.8
--   Debate weights: PhoBERT 30% / COOLANT 30% / evidence-credibility 40%
+-   agreement_gate is evidence-only (tier 40% / count 30% / consistency 30%);
+    model confidences reported in weight_breakdown for observability only
 -   `max_debate_rounds` = 2
 -   A2A agent ports: search=9001, evaluate=9002, real_source=9003, fake_source=9004,
     social_loop=9005, agreement_gate=9006, real_advocate=9007, fake_advocate=9008,
