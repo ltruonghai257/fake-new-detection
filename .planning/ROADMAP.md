@@ -98,6 +98,23 @@ Phase 4 must be complete and the A2A client stable before Phase 5 begins.
 | ----- | ---------------------- | ----- | -------- |
 | 3     | A2A Agent Wrappers     | 4/4   | Complete |
 | 4     | LangGraph → A2A Wiring | 2/2   | Complete |
-| 5     | Demo App + Tests       | 2/2   | Complete    |
+| 5     | Demo App + Tests       | 2/2   | Complete |
 
 _Created: 2026-08-13_
+
+### Phase 05.1: Model ablation toggles, COOLANT+evidence defaults, and prompt hooks (INSERTED)
+
+**Goal:** Add runtime toggles for PhoBERT / COOLANT / evidence so the pipeline can run with either or both models and still keep all A2A agents operational. Change the default debate configuration to use COOLANT results and evidence. Lay the extension points so any agent system prompt can be overridden from config / files in the future without touching agent code.
+**Requirements**: FND-05.1-01, FND-05.1-02, FND-05.1-03
+**Depends on:** Phase 5
+**Success Criteria** (what must be TRUE):
+
+1. `use_phobert`, `use_coolant`, `use_evidence` state toggles default from env/config and are respected by `evaluate_agent.py` and `initial_state()`
+2. With the default config (`use_phobert=False`, `use_coolant=True`, `use_evidence=True`) the debate graph completes a verdict without crashing and the debate prompts are built from COOLANT + evidence
+3. All 10 A2A agent servers still start, respond to `/.well-known/agent.json`, and pass their existing HTTP tests; `a2a_client.py` needs no structural changes
+4. `Settings` exposes at least `real_advocate_prompt`, `fake_advocate_prompt`, and a pattern for future `judge_prompt`/`conclusion_prompt` overrides; prompts are loaded through `factcheck_agents/prompts.py` or per-agent settings
+5. Unit / HTTP tests cover toggled runs and custom prompt overrides; non-integration suite stays green
+
+**Plans:**
+
+-   [ ] 05.1-01: Wave 1 — Implement PhoBERT/COOLANT/evidence toggles in `evaluate_agent.py`, `graph.py` `initial_state()`, and config; default debate uses COOLANT + evidence; update `debate_utils.py` to format only available models

@@ -2,29 +2,28 @@
 gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: milestone
-current_phase: 05
-status: completed
-stopped_at: Phase 5 plan 05-02 complete — all v3.1 plans done
-last_updated: '2026-09-07T19:04:09.553Z'
-last_activity: 2026-09-08
-last_activity_desc: Phase 05 complete — all v3.1 requirements satisfied
+status: planning
+stopped_at: Phase 05.1 context + PLAN.md created — ready to execute
+last_updated: '2026-09-08T16:45:00.000Z'
+last_activity: 2026-09-08 — Phase 05.1 planned (model ablation toggles, COOLANT+evidence default, prompt hooks)
 progress:
-    total_phases: 3
+    total_phases: 4
     completed_phases: 3
-    total_plans: 5
+    total_plans: 6
     completed_plans: 5
-    percent: 100
-current_phase_name: demo-app-tests
+    percent: 75
+current_phase: 05.1
+current_phase_name: address-tech-debt-serialization-hardening-fixture-coverage
 ---
 
 # Project State
 
 ## Current Position
 
-Phase: 05
-Plan: Not started
-Status: All phases complete
-Last activity: 2026-09-08 — Phase 05 complete
+Phase: 05.1
+Plan: 05.1-01
+Status: Planned (context + PLAN.md committed)
+Last activity: 2026-09-08 — Phase 05.1 planned (model ablation toggles, COOLANT+evidence default, prompt hooks)
 
 ## Milestone v3.1 Requirements Index
 
@@ -50,9 +49,9 @@ Last activity: 2026-09-08 — Phase 05 complete
 
 ## Session
 
-**Last session:** 2026-08-22
-**Stopped at:** Phase 5 plan 05-02 complete — all v3.1 plans done
-**Resume file:** (none — milestone complete)
+**Last session:** 2026-09-08
+**Stopped at:** Phase 05.1 context + PLAN.md created — ready to execute
+**Resume file:** `.planning/phases/FND-05.1-address-tech-debt-serialization-hardening-fixture-coverage/05.1-PLAN.md`
 
 ## Performance Metrics
 
