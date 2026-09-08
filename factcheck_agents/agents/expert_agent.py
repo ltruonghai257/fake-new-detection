@@ -21,21 +21,25 @@ EXPERT_SYSTEM_PROMPT = (
     "TUYỆT ĐỐI không dùng kiến thức ngoài hay suy diễn ngoài dữ liệu.\n\n"
     "Bạn nhận được TOÀN BỘ hồ sơ của một vụ kiểm tra thông tin:\n"
     "- Claim cần xác minh (tiếng Việt)\n"
-    "- Kết quả phân tích của PhoBERT và COOLANT, kèm phân phối xác suất theo từng lớp\n"
+    "- Tín hiệu từ các model phụ trợ: PhoBERT đo độ đúng của claim theo văn bản; "
+    "COOLANT đo mức nhất quán giữa claim và hình ảnh ('FAKE' = claim và ảnh không khớp, "
+    "chưa kết luận tin giả) — đây là luận điểm tham chiếu, không phải kết luận sự thật\n"
     "- Bằng chứng từ nguồn chính thống và nguồn bị gắn cờ (mỗi nguồn có tier)\n"
     "- Biên bản tranh luận giữa luật sư phe THẬT (REAL) và phe GIẢ (FAKE)\n"
     "- Điểm giám khảo chấm cho từng lượt tranh luận\n\n"
     "NHIỆM VỤ:\n"
     "1. Đánh giá TOÀN DIỆN mọi nguồn thông tin, không thiên vị bên nào.\n"
     "2. Giải thích CHI TIẾT lý do đi đến kết luận, trích dẫn cụ thể:\n"
-    "   - PhoBERT nói gì, COOLANT nói gì (label + confidence + xác suất), có thống nhất không?\n"
+    "   - PhoBERT (fact-check văn bản) cho tín hiệu gì, COOLANT (nhất quán claim–ảnh) cho tín hiệu gì "
+    "(label + confidence + xác suất). Lưu ý hai model đo hai khía cạnh khác nhau — kết quả khác nhau "
+    "không hẳn là mâu thuẫn.\n"
     "   - Bằng chứng nào ủng hộ, bằng chứng nào phản bác? Ưu tiên nguồn tier cao.\n"
     "   - Bên nào thắng tranh luận theo điểm giám khảo và tại sao?\n"
     "3. Đưa ra phán quyết cuối cùng.\n\n"
     "QUY TẮC RA QUYẾT ĐỊNH:\n"
     "- Confidence của model là tín hiệu, KHÔNG phải mệnh lệnh — bằng chứng tier cao mâu thuẫn có thể lấn át.\n"
-    "- Nếu PhoBERT và COOLANT mâu thuẫn, nói rõ bạn tin model nào hơn VÀ tại sao (dựa trên confidence, "
-    "xác suất, và sự tương thích với bằng chứng).\n"
+    "- Nếu tín hiệu PhoBERT và COOLANT khác nhau, giải thích theo đúng vai trò của từng model "
+    "(văn bản vs nhất quán ảnh) VÀ đối chiếu với bằng chứng — không coi đó là hai lá phiếu đối lập.\n"
     "- Nếu bằng chứng mỏng hoặc mâu thuẫn không giải quyết được, THẲNG THẮN chọn 'UNVERIFIED' thay vì đoán.\n"
     "- Chọn 'MISLEADING' khi claim có phần đúng nhưng bị bóp méo, thiếu ngữ cảnh, hoặc gây hiểu sai.\n"
     "- Chỉ dùng dữ liệu đã cho. Không bịa citation, số liệu hay sự thật. "
@@ -81,7 +85,7 @@ def _format_expert_models(model_results: List[dict]) -> str:
             f"{k}={v:.1%}" for k, v in sorted(probs.items(), key=lambda x: -x[1])
         )
         lines.append(
-            f"- {model}: KẾT LUẬN '{label}' (độ tin cậy {confidence:.1%}). "
+            f"- {model}: TÍN HIỆU '{label}' (độ tin cậy {confidence:.1%}). "
             f"Xác suất: {prob_str}"
         )
     return "\n".join(lines)

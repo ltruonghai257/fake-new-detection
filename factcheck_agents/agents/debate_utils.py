@@ -20,7 +20,9 @@ REAL_ADVOCATE_PROMPT = (
     "Đây là TRANH LUẬN THẬT SỰ: mỗi lượt phải đẩy cuộc tranh luận tiến lên, không dậm chân.\n\n"
     "ĐẦU VÀO (trong tin nhắn user):\n"
     "- CLAIM: nội dung cần xác minh.\n"
-    "- MODEL PREDICTIONS (PhoBERT + COOLANT): label, confidence, phân phối xác suất từng model.\n"
+    "- TÍN HIỆU MODEL: PhoBERT đo độ đúng của claim theo văn bản; COOLANT đo mức nhất quán "
+    "giữa claim và ảnh (FAKE = ảnh và claim không khớp, chưa kết luận tin giả). "
+    "Đây là luận điểm tham chiếu, không phải kết luận sự thật.\n"
     "- TOÀN BỘ BẰNG CHỨNG: các nguồn kèm tier.\n"
     "- LẬP LUẬN ĐỐI THỦ: lượt phát biểu GẦN NHẤT của phe FAKE.\n"
     "- LỊCH SỬ TRANH LUẬN: tất cả các lượt trước của cả hai bên.\n\n"
@@ -37,7 +39,7 @@ REAL_ADVOCATE_PROMPT = (
     "4. Nếu đối thủ đã phản bác được một điểm của bạn, hoặc đưa ra điểm bạn không bác nổi: "
     "thừa nhận trong 'concession', đừng lặp lại điểm đã chết.\n\n"
     "QUY TẮC:\n"
-    "- Chỉ dùng thông tin trong đầu vào. Dùng đúng con số trong MODEL PREDICTIONS, KHÔNG bịa. "
+    "- Chỉ dùng thông tin trong đầu vào. Dùng đúng con số trong TÍN HIỆU MODEL, KHÔNG bịa. "
     "Model 'không khả dụng' thì nói rõ và không viện dẫn.\n"
     "- Bạn ĐƯỢC PHÉP đổi verdict sang FAKE nếu không còn phản bác được — nêu lý do trong 'concession'. "
     "Mục tiêu là kết luận đúng, không phải thắng bằng mọi giá.\n"
@@ -59,7 +61,9 @@ FAKE_ADVOCATE_PROMPT = (
     "Đây là TRANH LUẬN THẬT SỰ: mỗi lượt phải đẩy cuộc tranh luận tiến lên, không dậm chân.\n\n"
     "ĐẦU VÀO (trong tin nhắn user):\n"
     "- CLAIM: nội dung cần xác minh.\n"
-    "- MODEL PREDICTIONS (PhoBERT + COOLANT): label, confidence, phân phối xác suất từng model.\n"
+    "- TÍN HIỆU MODEL: PhoBERT đo độ đúng của claim theo văn bản; COOLANT đo mức nhất quán "
+    "giữa claim và ảnh (FAKE = ảnh và claim không khớp, chưa kết luận tin giả). "
+    "Đây là luận điểm tham chiếu, không phải kết luận sự thật.\n"
     "- TOÀN BỘ BẰNG CHỨNG: các nguồn kèm tier.\n"
     "- LẬP LUẬN ĐỐI THỦ: lượt phát biểu GẦN NHẤT của phe REAL.\n"
     "- LỊCH SỬ TRANH LUẬN: tất cả các lượt trước của cả hai bên.\n\n"
@@ -76,7 +80,7 @@ FAKE_ADVOCATE_PROMPT = (
     "4. Nếu đối thủ đã phản bác được một điểm của bạn, hoặc đưa ra điểm bạn không bác nổi: "
     "thừa nhận trong 'concession', đừng lặp lại điểm đã chết.\n\n"
     "QUY TẮC:\n"
-    "- Chỉ dùng thông tin trong đầu vào. Dùng đúng con số trong MODEL PREDICTIONS, KHÔNG bịa. "
+    "- Chỉ dùng thông tin trong đầu vào. Dùng đúng con số trong TÍN HIỆU MODEL, KHÔNG bịa. "
     "Model 'không khả dụng' thì nói rõ và không viện dẫn.\n"
     "- Bạn ĐƯỢC PHÉP đổi verdict sang REAL nếu không còn phản bác được — nêu lý do trong 'concession'. "
     "Mục tiêu là kết luận đúng, không phải thắng bằng mọi giá.\n"
@@ -130,16 +134,32 @@ def _format_model_results(results: List[dict]) -> str:
     return "\n".join(lines) if lines else "(no model predictions available)"
 
 
+_MODEL_ROLES = {
+    "phobert_vifactcheck": (
+        "tín hiệu fact-check VĂN BẢN — đánh giá claim có đúng sự thật theo dữ liệu đã học"
+    ),
+    "coolant": (
+        "đo mức độ NHẤT QUÁN giữa claim và hình ảnh — 'FAKE' nghĩa là claim và ảnh "
+        "không khớp nhau, CHƯA phải kết luận tin giả"
+    ),
+}
+
+
 def _format_model_results_verdict(results: List[dict]) -> str:
-    """Format model results as a directive: each model's verdict + full probabilities."""
+    """Format model results as signals/arguments, not truth verdicts."""
     if not results:
-        return "(Không có kết quả model — không thể tranh luận)"
+        return "(Không có tín hiệu model — tranh luận chỉ dựa trên bằng chứng)"
     available_models = [r for r in results if r.get("available")]
     if not available_models:
-        lines = ["KHÔNG CÓ KẾT QUẢ MODEL KHẢ DỤNG — LUẬN CHỈ DỰA TRÊN BẰNG CHỨNG."]
+        lines = ["KHÔNG CÓ TÍN HIỆU MODEL KHẢ DỤNG — LUẬN CHỈ DỰA TRÊN BẰNG CHỨNG."]
     else:
-        names = " + ".join(r.get("model", "unknown").upper() for r in available_models)
-        lines = [f"KẾT QUẢ PHÂN TÍCH CỦA {names} (BẮT BUỘC DÙNG):"]
+        lines = [
+            "TÍN HIỆU TỪ CÁC MODEL PHỤ TRỢ (đây là luận điểm/tín hiệu tham chiếu, "
+            "KHÔNG phải kết luận sự thật — mỗi model đo một khía cạnh khác nhau):"
+        ]
+        for r in available_models:
+            role = _MODEL_ROLES.get(r.get("model", ""), "tín hiệu tham chiếu")
+            lines.append(f"  • {r.get('model', 'unknown').upper()}: {role}")
         if len(available_models) == 1:
             lines.append(
                 "LƯU Ý: Chỉ có MỘT model khả dụng — kết quả nó là TÍN HIỆU YẾU, "
@@ -158,7 +178,7 @@ def _format_model_results_verdict(results: List[dict]) -> str:
             f"{k}: {v:.1%}" for k, v in sorted(probs.items(), key=lambda x: -x[1])
         )
         lines.append(
-            f"- {model}: KHẲNG ĐỊNH '{label}' với confidence={confidence:.1%}. "
+            f"- {model}: TÍN HIỆU '{label}' với confidence={confidence:.1%}. "
             f"Phân phối xác suất: {prob_str}"
         )
     lines.append("")

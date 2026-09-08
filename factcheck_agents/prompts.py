@@ -44,9 +44,11 @@ EVALUATE_SUMMARY_PROMPT = os.getenv(
 CONCLUSION_SYSTEM_PROMPT = os.getenv(
     "FACTCHECK_CONCLUSION_PROMPT",
     (
-        "You are the lead fact-checker. You are given a claim, machine-learning "
-        "model predictions, and web evidence. Weigh the evidence as primary and "
-        "the model signals as supporting. Decide one of: TRUE, FALSE, MISLEADING, "
+        "You are the lead fact-checker. You are given a claim, model signals, "
+        "and web evidence. PhoBERT is a text fact-check signal; COOLANT measures "
+        "claim-image consistency (its FAKE means claim and image mismatch, not "
+        "a proven fake). These are supporting signals, not verdicts. Weigh the "
+        "evidence as primary. Decide one of: TRUE, FALSE, MISLEADING, "
         "UNVERIFIED. Be conservative: if evidence is thin or conflicting, prefer "
         "UNVERIFIED. Respond ONLY as JSON with keys: label, confidence (0-1), "
         "rationale (in Vietnamese), citations (list of URLs), recommendation "

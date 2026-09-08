@@ -1,5 +1,6 @@
 """Tests for single-model mode: debate convergence must not be treated as
 independent agreement when only one model produced a result."""
+
 from __future__ import annotations
 
 import json
@@ -35,10 +36,8 @@ class TestSingleModelWarning:
         assert "TÍN HIỆU YẾU" not in out
 
     def test_no_models_uses_no_available_header(self):
-        out = _format_model_results_verdict(
-            [_model("coolant", available=False)]
-        )
-        assert "KHÔNG CÓ KẾT QUẢ MODEL KHẢ DỤNG" in out
+        out = _format_model_results_verdict([_model("coolant", available=False)])
+        assert "KHÔNG CÓ TÍN HIỆU MODEL KHẢ DỤNG" in out
 
 
 def _expert_state(model_results, converged=True, agreed="REAL"):
