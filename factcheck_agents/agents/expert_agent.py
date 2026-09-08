@@ -154,11 +154,25 @@ def expert_agent(state: FactCheckState) -> dict:
             ],
         }
 
+    n_available_models = sum(1 for m in model_results if m.get("available"))
+
     convergence_note = ""
     if debate_converged and debate_agreed_verdict:
-        convergence_note = (
-            f"\nTRANH LUẬN ĐÃ ĐỒNG THUẬN: Cả hai bên đồng ý verdict={debate_agreed_verdict}. "
-            "Đây là tín hiệu mạnh — cân nhắc kỹ trước khi bác bỏ.\n"
+        if n_available_models >= 2:
+            convergence_note = (
+                f"\nTRANH LUẬN ĐÃ ĐỒNG THUẬN: Cả hai bên đồng ý verdict={debate_agreed_verdict}. "
+                "Đây là tín hiệu mạnh — cân nhắc kỹ trước khi bác bỏ.\n"
+            )
+        else:
+            convergence_note = (
+                f"\nTRANH LUẬN ĐÃ ĐỒNG THUẬN: Cả hai bên đồng ý verdict={debate_agreed_verdict}. "
+                "THẬN TRỌNG: chỉ có MỘT model khả dụng nên cả hai bên có thể neo vào cùng một "
+                "tín hiệu — đồng thuận này KHÔNG phải bằng chứng độc lập.\n"
+            )
+    if n_available_models == 1:
+        convergence_note += (
+            "\nCHẾ ĐỘ SINGLE-MODEL: chỉ một model cho kết quả — coi nó là tín hiệu yếu. "
+            "Phán quyết phải dựa chủ yếu vào bằng chứng; nếu bằng chứng mỏng, chọn UNVERIFIED.\n"
         )
 
     user = (
@@ -201,9 +215,14 @@ def expert_agent(state: FactCheckState) -> dict:
         existing_verdict.get("confidence") or data.get("confidence", 0.5) or 0.5
     )
 
-    # Convergence override: boost confidence when debate converged and expert agrees
+    # Convergence override: boost confidence when debate converged and expert agrees.
+    # Only counts as independent agreement when ≥2 model signals were available —
+    # with a single model both advocates may have anchored on the same signal.
     if debate_converged and debate_agreed_verdict and binary == debate_agreed_verdict:
-        confidence = max(confidence, 0.85)
+        if n_available_models >= 2:
+            confidence = max(confidence, 0.85)
+        else:
+            confidence = min(confidence, 0.7)
 
     verdict = Verdict(
         label=label,

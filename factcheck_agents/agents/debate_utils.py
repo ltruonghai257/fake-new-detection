@@ -140,6 +140,12 @@ def _format_model_results_verdict(results: List[dict]) -> str:
     else:
         names = " + ".join(r.get("model", "unknown").upper() for r in available_models)
         lines = [f"KẾT QUẢ PHÂN TÍCH CỦA {names} (BẮT BUỘC DÙNG):"]
+        if len(available_models) == 1:
+            lines.append(
+                "LƯU Ý: Chỉ có MỘT model khả dụng — kết quả nó là TÍN HIỆU YẾU, "
+                "không phải bằng chứng quyết định. Bắt buộc đối chiếu bằng chứng web "
+                "trước khi dựa vào model."
+            )
     for r in results:
         model = r.get("model", "unknown").upper()
         if not r.get("available"):

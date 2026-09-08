@@ -196,9 +196,21 @@ def judge_agent(state: FactCheckState) -> dict:
 
     convergence_note = ""
     if debate_converged and debate_agreed_verdict:
-        convergence_note = (
-            f"\nDEBATE CONVERGENCE: Both advocates agreed on verdict={debate_agreed_verdict}. "
-            "Treat this as a strong prior.\n"
+        if len(model_detail) >= 2:
+            convergence_note = (
+                f"\nDEBATE CONVERGENCE: Both advocates agreed on verdict={debate_agreed_verdict}. "
+                "Treat this as a strong prior.\n"
+            )
+        else:
+            convergence_note = (
+                f"\nDEBATE CONVERGENCE: Both advocates agreed on verdict={debate_agreed_verdict}. "
+                "CAUTION: only one model was available, so both sides may have anchored on the "
+                "same single signal — do NOT treat this convergence as independent agreement.\n"
+            )
+    if len(model_detail) == 1:
+        convergence_note += (
+            "\nSINGLE-MODEL MODE: chỉ có một model khả dụng — kết quả nó là tín hiệu yếu, "
+            "không phải prior mạnh. Ưu tiên bằng chứng khi chấm điểm evidence_grounding.\n"
         )
     user = (
         f"CLAIM:\n{statement}\n\n"
