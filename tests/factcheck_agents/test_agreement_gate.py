@@ -1,128 +1,126 @@
-"""Unit tests for agreement_gate."""
-from __future__ import annotations
+"""Unit tests for agreement_gate (evidence-credibility gate).
 
-import pytest
+Models are no longer gate inputs — agreement_score is derived purely from
+retrieved evidence credibility. Model confidences are still reported in
+``weight_breakdown`` for observability.
+"""
+
+from __future__ import annotations
 
 from factcheck_agents.agents.agreement_gate import agreement_gate, route_after_agreement
 
 
-def _make_state(ph_conf, co_conf, evidence_real, consistency_score, ph_available=True, co_available=True, ph_label=None, co_label=None):
-    """Helper to create test state for agreement_gate."""
-    model_results = []
-    if ph_available:
-        model_results.append({
-            "model": "phobert_vifactcheck",
-            "available": True,
-            "confidence": ph_conf,
-            "label": ph_label or "SUPPORTED",
-        })
-    else:
-        model_results.append({
-            "model": "phobert_vifactcheck",
-            "available": False,
-        })
-
-    if co_available:
-        model_results.append({
-            "model": "coolant",
-            "available": True,
-            "confidence": co_conf,
-            "label": co_label or "SUPPORTED",
-        })
-    else:
-        model_results.append({
-            "model": "coolant",
-            "available": False,
-        })
-
+def _make_state(
+    evidence_real, evidence_fake=None, consistency_score=0.5, model_results=None
+):
     return {
-        "model_results": model_results,
+        "model_results": model_results or [],
         "evidence_real": evidence_real,
-        "evidence_fake": [],
+        "evidence_fake": evidence_fake or [],
         "consistency_score": consistency_score,
         "request_id": "test-123",
     }
 
 
-def test_agreement_formula_weighted():
-    """AGREE-01: Test weighted formula with both models available."""
+def test_agreement_score_is_evidence_only():
+    """High-trust, high-count, high-consistency evidence scores high."""
     evidence_real = [
         {"source_tier": "trusted"},
         {"source_tier": "trusted"},
         {"source_tier": "unknown"},
     ]
-    state = _make_state(ph_conf=0.8, co_conf=0.8, evidence_real=evidence_real, consistency_score=0.7)
+    evidence_fake = [{"source_tier": "flagged"}, {"source_tier": "unknown"}]
+    state = _make_state(evidence_real, evidence_fake, consistency_score=0.7)
 
     result = agreement_gate(state)
 
-    # With high confidences and decent evidence, agreement should be moderately high
-    assert 0.6 < result["agreement_score"] < 0.9
-    assert result["weight_breakdown"]["phobert"] == 0.8
-    assert result["weight_breakdown"]["coolant"] == 0.8
+    # cred = 0.4*(2/3) + 0.3*(5/5) + 0.3*0.7 = 0.2667 + 0.3 + 0.21 ≈ 0.7767
+    assert 0.7 < result["agreement_score"] < 0.8
     assert "evidence" in result["weight_breakdown"]
 
 
-def test_agreement_nei_forces_zero():
-    """AGREE-01: Test that NEI label forces agreement_score to 0.0."""
-    evidence_real = [{"source_tier": "trusted"}]
-    state = _make_state(
-        ph_conf=0.99,
-        co_conf=0.99,
-        evidence_real=evidence_real,
-        consistency_score=0.9,
-        ph_label="NEI",
-    )
-
-    result = agreement_gate(state)
-
-    assert result["agreement_score"] == 0.0
-
-
-def test_agreement_credibility_floor():
-    """AGREE-02: Test that consistency_score has floor at 0.1."""
-    evidence_real = [{"source_tier": "trusted"}]
-    # State without consistency_score key should use floor of 0.1
-    state = _make_state(
-        ph_conf=0.5,
-        co_conf=0.5,
-        evidence_real=evidence_real,
-        consistency_score=0.1,
-    )
-
-    result = agreement_gate(state)
-
-    # Evidence credibility should be at least 0.04 (floor from 0.1 consistency)
-    assert result["weight_breakdown"]["evidence"] >= 0.04
-
-
-def test_agreement_unavailable_model_treated_as_zero():
-    """AGREE-01: Test that unavailable model is treated as zero confidence."""
-    evidence_real = [{"source_tier": "trusted"}]
-    state = _make_state(
-        ph_conf=0.0,
-        co_conf=0.8,
-        evidence_real=evidence_real,
+def test_model_confidence_does_not_affect_score():
+    """Model results are observability-only: identical evidence gives identical score."""
+    evidence = [{"source_tier": "trusted"}]
+    with_models = _make_state(
+        evidence,
         consistency_score=0.7,
-        ph_available=False,
+        model_results=[
+            {
+                "model": "phobert_vifactcheck",
+                "available": True,
+                "confidence": 0.99,
+                "label": "FAKE",
+            },
+            {
+                "model": "coolant",
+                "available": True,
+                "confidence": 0.01,
+                "label": "REAL",
+            },
+        ],
+    )
+    without_models = _make_state(evidence, consistency_score=0.7)
+
+    a = agreement_gate(with_models)
+    b = agreement_gate(without_models)
+
+    assert a["agreement_score"] == b["agreement_score"]
+    # confidences still surfaced for observability
+    assert a["weight_breakdown"]["phobert"] == 0.99
+    assert a["weight_breakdown"]["coolant"] == 0.01
+    assert b["weight_breakdown"]["phobert"] == 0.0
+
+
+def test_nei_label_no_longer_forces_zero():
+    """NEI from a model does not force the gate — evidence decides."""
+    evidence = [{"source_tier": "trusted"}, {"source_tier": "trusted"}]
+    state = _make_state(
+        evidence,
+        consistency_score=0.9,
+        model_results=[
+            {
+                "model": "phobert_vifactcheck",
+                "available": True,
+                "confidence": 0.9,
+                "label": "NEI",
+            },
+        ],
     )
 
     result = agreement_gate(state)
 
-    # Should still have positive agreement from coolant + evidence
     assert result["agreement_score"] > 0
-    assert result["weight_breakdown"]["phobert"] == 0.0
-    assert result["weight_breakdown"]["coolant"] == 0.8
+
+
+def test_empty_evidence_scores_near_zero():
+    """No evidence → only the consistency floor contributes."""
+    state = _make_state([], consistency_score=0.1)
+
+    result = agreement_gate(state)
+
+    # cred = 0.4*0 + 0.3*0 + 0.3*0.1 = 0.03
+    assert result["agreement_score"] == 0.03
+    assert result["weight_breakdown"]["evidence"] == 0.03
+
+
+def test_consistency_floor_at_point_one():
+    """D-07: missing/negative consistency_score floors at 0.1."""
+    state = _make_state([{"source_tier": "trusted"}], consistency_score=-5.0)
+
+    result = agreement_gate(state)
+
+    # cred = 0.4*1.0 + 0.3*0.2 + 0.3*0.1 = 0.4 + 0.06 + 0.03 = 0.49
+    assert abs(result["agreement_score"] - 0.49) < 1e-4
 
 
 def test_route_skips_debate_above_threshold():
-    """AGREE-03: Test that route_after_agreement returns 'judge' above threshold."""
+    """AGREE-03: route_after_agreement returns 'judge' above threshold."""
     state = {"agreement_score": 0.9}
-    result = route_after_agreement(state)
-    assert result == "judge"
+    assert route_after_agreement(state) == "judge"
 
 
 def test_route_to_debate_below_threshold():
-    """AGREE-03: Test that route_after_agreement returns 'debate' below threshold."""
+    """AGREE-03: route_after_agreement returns 'debate' below threshold."""
     state = {"agreement_score": 0.3}
-    result = route_after_agreement(state)
-    assert result == "debate"
+    assert route_after_agreement(state) == "debate"

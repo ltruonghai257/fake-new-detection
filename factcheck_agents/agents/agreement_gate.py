@@ -1,8 +1,13 @@
-"""Agreement gate: compute weighted agreement score, optionally skip debate."""
+"""Agreement gate: evidence-credibility gate that optionally skips debate.
+
+Models (PhoBERT/COOLANT) are no longer inputs to this gate — they are
+evidence-grade signals consumed by the advocates and judge, not a gateway.
+The gate scores only the retrieved evidence; model confidences are reported
+in ``weight_breakdown`` for observability but do not affect the score.
+"""
 
 from __future__ import annotations
 
-import os
 from datetime import datetime
 from pathlib import Path
 
@@ -11,39 +16,17 @@ from ..state import FactCheckState
 
 
 def agreement_gate(state: FactCheckState) -> dict:
-    """Compute weighted agreement score (AGREE-01/02). Skip debate if above threshold (AGREE-03)."""
-    model_results = state.get("model_results", [])
-
-    # Extract model confidences
+    """Compute evidence-credibility score. Skip debate if above threshold (AGREE-03)."""
+    # Model results are reported for observability only — they never gate.
     ph_conf = 0.0
     co_conf = 0.0
-    ph_available = False
-    co_available = False
-
-    # AGREE-01: NEI forces agreement_score = 0.0 immediately
-    ph_label = ""
-    co_label = ""
-
-    for result in model_results:
-        if result.get("available") and result.get("label") == "NEI":
-            # Force zero agreement if any available model returns NEI
-            return {
-                "agreement_score": 0.0,
-                "weight_breakdown": {"phobert": 0.0, "coolant": 0.0, "evidence": 0.0},
-                "debate_exit_reason": "",
-            }
-
+    for result in state.get("model_results", []):
+        if not result.get("available"):
+            continue
         if result.get("model") == "phobert_vifactcheck":
-            ph_available = result.get("available", False)
-            if ph_available:
-                ph_conf = result.get("confidence", 0.0)
-                ph_label = result.get("label", "")
-
-        if result.get("model") == "coolant":
-            co_available = result.get("available", False)
-            if co_available:
-                co_conf = result.get("confidence", 0.0)
-                co_label = result.get("label", "")
+            ph_conf = result.get("confidence", 0.0)
+        elif result.get("model") == "coolant":
+            co_conf = result.get("confidence", 0.0)
 
     # AGREE-02: Evidence credibility score
     evidence_real = state.get("evidence_real") or []
@@ -63,34 +46,7 @@ def agreement_gate(state: FactCheckState) -> dict:
 
     cred = 0.40 * tier_score + 0.30 * count_score + 0.30 * consistency_score
 
-    # AGREE-01: Weighted agreement score, normalized over available signals
-    w_ph = (
-        float(os.getenv("FACTCHECK_AGREE_PHOBERT_WEIGHT", "0.40"))
-        if ph_available
-        else 0.0
-    )
-    w_co = (
-        float(os.getenv("FACTCHECK_AGREE_COOLANT_WEIGHT", "0.40"))
-        if co_available
-        else 0.0
-    )
-    w_ev = float(
-        os.getenv("FACTCHECK_AGREE_EVIDENCE_WEIGHT", "0.20")
-    )  # Always included
-
-    total_weight = w_ph + w_co + w_ev
-    if total_weight == 0:
-        agreement_score = 0.0
-    else:
-        agreement_score = (w_ph * ph_conf + w_co * co_conf + w_ev * cred) / total_weight
-
-    # AGREE-01c: Both available but disagree on binary label → force debate
-    if ph_available and co_available and ph_label and co_label:
-        _REAL_LABELS = {"REAL", "SUPPORTED", "TRUE"}
-        ph_binary = "REAL" if ph_label.upper() in _REAL_LABELS else "FAKE"
-        co_binary = "REAL" if co_label.upper() in _REAL_LABELS else "FAKE"
-        if ph_binary != co_binary:
-            agreement_score = 0.0  # disagreement → always debate
+    agreement_score = cred
 
     # AGREE-03: Log skipped debates to logs/debates/<request_id>.jsonl
     if agreement_score >= settings.agreement_threshold:
@@ -143,13 +99,13 @@ class AgreementGateHandler(BaseTaskHandler):
 
     agent_card_config = AgentCardConfig(
         name="agreement_gate",
-        description="Computes weighted agreement score; decides whether to skip debate",
+        description="Computes evidence-credibility score; decides whether to skip debate",
         version="1.0",
         skills=[
             {
                 "id": "agreement",
                 "name": "Agreement Scoring",
-                "description": "Weighted model+evidence agreement computation",
+                "description": "Evidence-credibility scoring (models are not gate inputs)",
             }
         ],
         port=settings.a2a_port_agreement_gate,
