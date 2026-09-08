@@ -134,7 +134,12 @@ def _format_model_results_verdict(results: List[dict]) -> str:
     """Format model results as a directive: each model's verdict + full probabilities."""
     if not results:
         return "(Không có kết quả model — không thể tranh luận)"
-    lines = ["KẾT QUẢ PHÂN TÍCH CỦA PHOBERT VÀ COOLANT (BẮT BUỘC DÙNG):"]
+    available_models = [r for r in results if r.get("available")]
+    if not available_models:
+        lines = ["KHÔNG CÓ KẾT QUẢ MODEL KHẢ DỤNG — LUẬN CHỈ DỰA TRÊN BẰNG CHỨNG."]
+    else:
+        names = " + ".join(r.get("model", "unknown").upper() for r in available_models)
+        lines = [f"KẾT QUẢ PHÂN TÍCH CỦA {names} (BẮT BUỘC DÙNG):"]
     for r in results:
         model = r.get("model", "unknown").upper()
         if not r.get("available"):
@@ -214,7 +219,7 @@ def _build_advocate_user_message(
     )
     return (
         f"CLAIM:\n{statement}\n\n"
-        f"MODEL PREDICTIONS (PhoBERT + COOLANT):\n{model_output_text}\n\n"
+        f"MODEL PREDICTIONS (các model khả dụng):\n{model_output_text}\n\n"
         f"TOÀN BỘ BẰNG CHỨNG:\n{all_evidence_text}\n\n"
         f"LẬP LUẬN ĐỐI THỦ (phải phản bác trực tiếp):\n{last_opponent_arg}\n\n"
         f"LỊCH SỬ TRANH LUẬN:\n{history_text}\n"

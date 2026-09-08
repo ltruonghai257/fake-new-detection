@@ -117,4 +117,4 @@ _Created: 2026-08-13_
 
 **Plans:**
 
--   [ ] 05.1-01: Wave 1 — Implement PhoBERT/COOLANT/evidence toggles in `evaluate_agent.py`, `graph.py` `initial_state()`, and config; default debate uses COOLANT + evidence; update `debate_utils.py` to format only available models
+-   [x] 05.1-01: Wave 1 — Implement PhoBERT/COOLANT/evidence toggles in `evaluate_agent.py`, `graph.py` `initial_state()`, and config; default debate uses COOLANT + evidence; update `debate_utils.py` to format only available models

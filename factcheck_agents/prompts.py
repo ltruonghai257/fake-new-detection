@@ -5,7 +5,9 @@ describes its role, constraints, and expected output format. Centralising
 them here makes it easy to tune behaviour without touching agent logic.
 
 To customise: edit the strings below, or set environment variables
-``FACTCHECK_SEARCH_PROMPT``, ``FACTCHECK_CONCLUSION_PROMPT`` to override.
+``FACTCHECK_SEARCH_PROMPT``, ``FACTCHECK_EVALUATE_PROMPT``, ``FACTCHECK_CONCLUSION_PROMPT``,
+``FACTCHECK_JUDGE_PROMPT``, ``FACTCHECK_DEBATE_PROMPT``, ``FACTCHECK_CLAIM_MUTATION_PROMPT``,
+``FACTCHECK_REAL_ADVOCATE_PROMPT`` or ``FACTCHECK_FAKE_ADVOCATE_PROMPT`` to override.
 """
 
 from __future__ import annotations

@@ -118,6 +118,26 @@ class Settings:
         default_factory=lambda: os.getenv("FACTCHECK_FAKE_ADVOCATE_PROMPT", "")
     )
 
+    # ── Ablation toggles (default: COOLANT+evidence on, PhoBERT off) ──────────
+    use_phobert: bool = field(
+        default_factory=lambda: os.getenv("FACTCHECK_USE_PHOBERT", "").lower()
+        in ("1", "true", "yes")
+    )
+    use_coolant: bool = field(
+        default_factory=lambda: os.getenv("FACTCHECK_USE_COOLANT", "1").lower()
+        not in ("0", "false", "no", "")
+    )
+    use_evidence: bool = field(
+        default_factory=lambda: os.getenv("FACTCHECK_USE_EVIDENCE", "1").lower()
+        not in ("0", "false", "no", "")
+    )
+    judge_prompt: str = field(
+        default_factory=lambda: os.getenv("FACTCHECK_JUDGE_PROMPT", "")
+    )
+    conclusion_prompt: str = field(
+        default_factory=lambda: os.getenv("FACTCHECK_CONCLUSION_PROMPT", "")
+    )
+
     # ── LangGraph checkpoint ─────────────────────────────────────────────────
     checkpoint_db: str = field(
         default_factory=lambda: os.getenv(

@@ -41,10 +41,30 @@ def evaluate_agent(state: FactCheckState) -> dict:
     evidence_text = build_evidence_text(evidence, statement)
     evidence_count = len(evidence)
 
-    results = [
-        _phobert().predict(statement, evidence_text, evidence_count),
-        _coolant().predict(statement, image_path),
-    ]
+    use_phobert = state.get("use_phobert", True)
+    use_coolant = state.get("use_coolant", True)
+
+    results = []
+    if use_phobert:
+        results.append(_phobert().predict(statement, evidence_text, evidence_count))
+    else:
+        results.append(
+            {
+                "model": "phobert_vifactcheck",
+                "available": False,
+                "note": "disabled by ablation toggle",
+            }
+        )
+    if use_coolant:
+        results.append(_coolant().predict(statement, image_path))
+    else:
+        results.append(
+            {
+                "model": "coolant",
+                "available": False,
+                "note": "disabled by ablation toggle",
+            }
+        )
 
     summary = ", ".join(
         f"{r['model']}={r.get('label', 'n/a')}"

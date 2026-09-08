@@ -69,13 +69,13 @@ def _format_debate_turns(debate_turns: List[dict]) -> str:
     return "\n".join(lines)
 
 
-JUDGE_SYSTEM_PROMPT = (
+_JUDGE_SYSTEM_PROMPT_DEFAULT = (
     "Bạn là GIÁM KHẢO tranh luận, trung lập, trong một phiên xác minh tin tức tiếng Việt. "
     "Bạn KHÔNG ra phán quyết cuối về claim — nhiệm vụ của bạn là chấm điểm màn tranh luận. "
     "Chỉ đánh giá dựa trên dữ liệu được cung cấp, TUYỆT ĐỐI không dùng kiến thức ngoài.\n\n"
     "Bạn được cung cấp:\n"
     "- Claim cần xác minh (tiếng Việt)\n"
-    "- Kết quả dự đoán của PhoBERT và COOLANT kèm phân phối xác suất đầy đủ theo từng lớp\n"
+    "- Kết quả dự đoán của các model (PhoBERT, COOLANT nếu có) kèm phân phối xác suất đầy đủ theo từng lớp\n"
     "- Bằng chứng web từ nguồn tin cậy và nguồn bị gắn cờ (mỗi nguồn có tier)\n"
     "- Biên bản tranh luận giữa luật sư phe REAL và luật sư phe FAKE\n"
     "- Việc tranh luận có hội tụ hay không và verdict được đồng thuận (nếu có)\n\n"
@@ -87,10 +87,10 @@ JUDGE_SYSTEM_PROMPT = (
     "   Trừ điểm mạnh mọi lượt trích số liệu không có trong kết quả model, hoặc bịa nguồn.\n"
     "2. Xác định bên thắng dựa trên điểm số: 'real_advocate', 'fake_advocate', hoặc 'tie'.\n"
     "3. Viết explanation gồm các mục:\n"
-    "   - model_summary: PhoBERT và COOLANT nói gì, kèm phân phối xác suất, có thống nhất không.\n"
+    "   - model_summary: các model (PhoBERT, COOLANT nếu có) nói gì, kèm phân phối xác suất, có thống nhất không.\n"
     "   - debate_winner: bên nào thắng và tại sao (dựa trên điểm số).\n"
     "   - evidence_summary: tóm tắt bằng chứng then chốt.\n"
-    "   - confidence_breakdown: mức đóng góp của PhoBERT, COOLANT, bằng chứng và tranh luận "
+    "   - confidence_breakdown: mức đóng góp của các model (phobert, coolant), bằng chứng và tranh luận "
     "(bốn trọng số là số thực, PHẢI cộng lại bằng 1.0).\n\n"
     "Nếu debate_converged=true, coi agreed_verdict là tiên nghiệm mạnh khi cân nhắc, "
     "nhưng việc chấm điểm phải phản ánh chất lượng lập luận thực tế của từng lượt.\n\n"
@@ -103,7 +103,7 @@ JUDGE_SYSTEM_PROMPT = (
     '    {"agent": "real_advocate", "round": 0, "factuality": 4, "rebuttal_engagement": 3, "evidence_grounding": 5}\n'
     "  ],\n"
     '  "explanation": {\n'
-    '    "model_summary": "PhoBERT/COOLANT nói gì, kèm phân phối xác suất.",\n'
+    '    "model_summary": "các model (PhoBERT, COOLANT nếu có) nói gì, kèm phân phối xác suất.",\n'
     '    "debate_winner": "real_advocate | fake_advocate | tie",\n'
     '    "evidence_summary": "Tóm tắt bằng chứng then chốt.",\n'
     '    "confidence_breakdown": {"phobert": 0.3, "coolant": 0.3, "evidence": 0.2, "debate": 0.2}\n'
@@ -111,6 +111,8 @@ JUDGE_SYSTEM_PROMPT = (
     "}\n"
     "Không thêm giải thích ngoài JSON."
 )
+
+JUDGE_SYSTEM_PROMPT = settings.judge_prompt or _JUDGE_SYSTEM_PROMPT_DEFAULT
 
 
 def _write_verdict_log(request_id: str, data: dict) -> None:

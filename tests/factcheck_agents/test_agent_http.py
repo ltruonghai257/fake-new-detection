@@ -343,3 +343,26 @@ def test_conclusion_agent_http():
         assert "verdict" in diff
     finally:
         server.should_exit = True
+
+
+@pytest.mark.integration
+def test_evaluate_agent_disabled_phobert_http():
+    """A2A evaluate_agent honours use_phobert=False and returns an unavailable marker."""
+    port = a2a_ports()["evaluate_agent"]
+    if _port_in_use(port):
+        pytest.skip(
+            f"Port {port} already in use — skip to avoid conflict with running agent server"
+        )
+    server = _start_agent_server(EvaluateAgentHandler, port)
+    try:
+        state = {**_EVALUATE_STATE, "use_phobert": False, "use_coolant": False}
+        resp = _send_task(port, state)
+        task = resp.get("task") or resp
+        assert task["status"]["state"] == "TASK_STATE_COMPLETED"
+        diff = task["artifacts"][0]["parts"][0]["data"]
+        assert isinstance(diff, dict)
+        models = {m["model"]: m for m in diff["model_results"]}
+        assert models["phobert_vifactcheck"]["available"] is False
+        assert models["phobert_vifactcheck"]["note"] == "disabled by ablation toggle"
+    finally:
+        server.should_exit = True

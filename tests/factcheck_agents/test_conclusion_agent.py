@@ -98,7 +98,9 @@ class TestFallbackVerdict:
 
     @patch("factcheck_agents.agents.conclusion_agent.get_llm", return_value=None)
     def test_fallback_supported_maps_to_real(self, _mock_llm):
-        state = _make_state(model_results=[_make_model("phobert_vifactcheck", "SUPPORTED")])
+        state = _make_state(
+            model_results=[_make_model("phobert_vifactcheck", "SUPPORTED")]
+        )
         result = conclusion_agent(state)
         verdict = result["verdict"]
         assert verdict["label"] == "TRUE"
@@ -107,7 +109,9 @@ class TestFallbackVerdict:
 
     @patch("factcheck_agents.agents.conclusion_agent.get_llm", return_value=None)
     def test_fallback_refuted_maps_to_fake(self, _mock_llm):
-        state = _make_state(model_results=[_make_model("phobert_vifactcheck", "REFUTED")])
+        state = _make_state(
+            model_results=[_make_model("phobert_vifactcheck", "REFUTED")]
+        )
         result = conclusion_agent(state)
         verdict = result["verdict"]
         assert verdict["label"] == "FALSE"
@@ -198,4 +202,31 @@ class TestPrompt:
         assert "in Vietnamese" in CONCLUSION_SYSTEM_PROMPT
         assert "Thật" in CONCLUSION_SYSTEM_PROMPT
         assert "Giả" in CONCLUSION_SYSTEM_PROMPT
-        assert "4-class" in CONCLUSION_SYSTEM_PROMPT or "original 4-class label" in CONCLUSION_SYSTEM_PROMPT
+        assert (
+            "4-class" in CONCLUSION_SYSTEM_PROMPT
+            or "original 4-class label" in CONCLUSION_SYSTEM_PROMPT
+        )
+
+    def test_conclusion_prompt_override(self, monkeypatch):
+        import json as _json
+        import sys
+        from factcheck_agents.config import settings
+
+        monkeypatch.setattr(settings, "conclusion_prompt", "CUSTOM CONCLUSION PROMPT")
+        ca = sys.modules["factcheck_agents.agents.conclusion_agent"]
+        mock_llm = MagicMock()
+        mock_llm.invoke.return_value = MagicMock(
+            content=_json.dumps(
+                {
+                    "label": "UNVERIFIED",
+                    "confidence": 0.5,
+                    "rationale": "x",
+                    "citations": [],
+                    "recommendation": "y",
+                }
+            )
+        )
+        monkeypatch.setattr(ca, "get_llm", lambda: mock_llm)
+        ca.conclusion_agent(_make_state())
+        messages = mock_llm.invoke.call_args[0][0]
+        assert messages[0] == ("system", "CUSTOM CONCLUSION PROMPT")

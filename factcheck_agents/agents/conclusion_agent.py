@@ -172,7 +172,12 @@ def conclusion_agent(state: FactCheckState) -> dict:
             f"Phản bác: {debate['refute']}\n"
         )
     try:
-        resp = llm.invoke([("system", CONCLUSION_SYSTEM_PROMPT), ("user", user)])
+        resp = llm.invoke(
+            [
+                ("system", settings.conclusion_prompt or CONCLUSION_SYSTEM_PROMPT),
+                ("user", user),
+            ]
+        )
         data = parse_json(getattr(resp, "content", "") or "") or {}
     except Exception as exc:
         verdict = _fallback_verdict(model_results, evidence, evidence_graph)

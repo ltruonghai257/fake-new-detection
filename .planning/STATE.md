@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: milestone
-status: planning
-stopped_at: Phase 05.1 context + PLAN.md created — ready to execute
+status: complete
+stopped_at: Phase 05.1 executed — 05.1-01 verified, 162 non-integration tests passed
 last_updated: '2026-09-08T16:45:00.000Z'
-last_activity: 2026-09-08 — Phase 05.1 planned (model ablation toggles, COOLANT+evidence default, prompt hooks)
+last_activity: 2026-09-08 — Phase 05.1 executed (model ablation toggles, COOLANT+evidence default, prompt hooks)
 progress:
-    total_phases: 4
-    completed_phases: 3
-    total_plans: 6
-    completed_plans: 5
-    percent: 75
+    total_phases: 5
+    completed_phases: 5
+    total_plans: 7
+    completed_plans: 7
+    percent: 100
 current_phase: 05.1
 current_phase_name: address-tech-debt-serialization-hardening-fixture-coverage
 ---
@@ -22,8 +22,8 @@ current_phase_name: address-tech-debt-serialization-hardening-fixture-coverage
 
 Phase: 05.1
 Plan: 05.1-01
-Status: Planned (context + PLAN.md committed)
-Last activity: 2026-09-08 — Phase 05.1 planned (model ablation toggles, COOLANT+evidence default, prompt hooks)
+Status: Complete (executed + verified)
+Last activity: 2026-09-08 — Phase 05.1 executed (model ablation toggles, COOLANT+evidence default, prompt hooks)
 
 ## Milestone v3.1 Requirements Index
 

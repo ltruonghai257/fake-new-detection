@@ -286,7 +286,7 @@ def initial_state(
         debate_turns=[],
         debate_converged=False,
         debate_agreed_verdict=None,
-        use_phobert=True,
-        use_coolant=True,
-        use_evidence=True,
+        use_phobert=settings.use_phobert,
+        use_coolant=settings.use_coolant,
+        use_evidence=settings.use_evidence,
     )
