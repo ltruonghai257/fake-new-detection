@@ -218,13 +218,16 @@ class COOLANTTrainer:
                 loss_sem_total += l_sem.item() * text.shape[0]
 
             # ── TASK 2: Detection (L_DET = L_CE + 0.5·L_KL, §3.4.3) ────────────
-            # m^t, m^v fed to CrossModule: from CLIPModule if use_itc, else from ITM module
+            # m^t, m^v for CrossModule — detached: Task 2 chỉ train DetectionModule
             with torch.no_grad():
-                out = self.model(text, image)
+                if self.model.use_itc:
+                    m_t, m_v = self.model.clip_module(text, image)
+                else:
+                    m_t, m_v, _ = self.model.similarity_module(text, image)
 
-            detection_logits = out["detection_logits"]
-            attention_score = out["attention_weights"]
-            skl_score = out["ambiguity_weights"]
+            detection_logits, attention_score, skl_score = self.model.detection_module(
+                text, image, m_t, m_v
+            )
 
             l_ce = self.loss_func_ce(detection_logits, label)
             l_kl = self.loss_func_kl(
