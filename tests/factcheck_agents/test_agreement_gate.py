@@ -124,3 +124,118 @@ def test_route_to_debate_below_threshold():
     """AGREE-03: route_after_agreement returns 'debate' below threshold."""
     state = {"agreement_score": 0.3}
     assert route_after_agreement(state) == "debate"
+
+
+def test_route_coolant_real_high_confidence_forces_debate():
+    """COOLANT REAL + conf >= threshold + PhoBERT available + evidence → debate."""
+    state = {
+        "agreement_score": 0.9,
+        "model_results": [
+            {
+                "model": "coolant",
+                "available": True,
+                "label": "REAL",
+                "confidence": 0.85,
+            },
+            {
+                "model": "phobert_vifactcheck",
+                "available": True,
+                "label": "FAKE",
+                "confidence": 0.9,
+            },
+        ],
+        "evidence_real": [{"source_tier": "trusted"}],
+    }
+    assert route_after_agreement(state) == "debate"
+
+
+def test_route_coolant_real_low_confidence_skips_debate():
+    """COOLANT REAL with confidence below threshold goes straight to judge."""
+    state = {
+        "agreement_score": 0.3,
+        "model_results": [
+            {"model": "coolant", "available": True, "label": "REAL", "confidence": 0.5},
+            {
+                "model": "phobert_vifactcheck",
+                "available": True,
+                "label": "FAKE",
+                "confidence": 0.9,
+            },
+        ],
+        "evidence_real": [{"source_tier": "trusted"}],
+    }
+    assert route_after_agreement(state) == "judge"
+
+
+def test_route_coolant_fake_skips_debate():
+    """COOLANT FAKE goes straight to judge (verdict with evidence + PhoBERT)."""
+    state = {
+        "agreement_score": 0.3,
+        "model_results": [
+            {
+                "model": "coolant",
+                "available": True,
+                "label": "FAKE",
+                "confidence": 0.95,
+            },
+            {
+                "model": "phobert_vifactcheck",
+                "available": True,
+                "label": "REAL",
+                "confidence": 0.9,
+            },
+        ],
+        "evidence_real": [{"source_tier": "trusted"}],
+    }
+    assert route_after_agreement(state) == "judge"
+
+
+def test_route_coolant_real_missing_phobert_skips_debate():
+    """Debate requires PhoBERT to be available."""
+    state = {
+        "agreement_score": 0.3,
+        "model_results": [
+            {
+                "model": "coolant",
+                "available": True,
+                "label": "REAL",
+                "confidence": 0.95,
+            },
+            {"model": "phobert_vifactcheck", "available": False, "label": "N/A"},
+        ],
+        "evidence_real": [{"source_tier": "trusted"}],
+    }
+    assert route_after_agreement(state) == "judge"
+
+
+def test_route_coolant_real_missing_evidence_skips_debate():
+    """Debate requires retrieved evidence."""
+    state = {
+        "agreement_score": 0.3,
+        "model_results": [
+            {
+                "model": "coolant",
+                "available": True,
+                "label": "REAL",
+                "confidence": 0.95,
+            },
+            {
+                "model": "phobert_vifactcheck",
+                "available": True,
+                "label": "FAKE",
+                "confidence": 0.9,
+            },
+        ],
+        "evidence_real": [],
+        "evidence_fake": [],
+    }
+    assert route_after_agreement(state) == "judge"
+
+
+def test_route_no_coolant_falls_back_to_agreement_score():
+    """If COOLANT is unavailable, routing falls back to evidence-credibility score."""
+    state = {"agreement_score": 0.9, "model_results": []}
+    assert route_after_agreement(state) == "judge"
+
+    state = {"agreement_score": 0.3, "model_results": []}
+    assert route_after_agreement(state) == "debate"

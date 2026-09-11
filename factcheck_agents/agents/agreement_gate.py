@@ -83,11 +83,45 @@ def agreement_gate(state: FactCheckState) -> dict:
 
 
 def route_after_agreement(state: FactCheckState) -> str:
-    """Route after agreement gate: skip to judge if agreement >= threshold (AGREE-03)."""
-    agreement_score = state.get("agreement_score", 0.0)
-    if agreement_score >= settings.agreement_threshold:
+    """Route after agreement gate.
+
+    Debate is only meaningful when all three reference signals are present:
+    - COOLANT says the claim is REAL with high confidence (>= threshold).
+    - PhoBERT is available to cross-check the textual claim.
+    - Evidence has been retrieved.
+
+    If any of these is missing, or COOLANT is FAKE / low-confidence REAL, route
+    straight to judge (verdict with evidence + PhoBERT).
+    """
+    model_results = state.get("model_results", [])
+    coolant = None
+    phobert_available = False
+    for m in model_results:
+        if m.get("model") == "coolant" and m.get("available"):
+            coolant = m
+        elif m.get("model") == "phobert_vifactcheck" and m.get("available"):
+            phobert_available = True
+
+    evidence_real = state.get("evidence_real") or []
+    evidence_fake = state.get("evidence_fake") or []
+    has_evidence = bool(evidence_real or evidence_fake)
+
+    if coolant is not None:
+        label = str(coolant.get("label", "")).upper()
+        conf = coolant.get("confidence", 0.0)
+        if (
+            label == "REAL"
+            and conf >= settings.coolant_debate_threshold
+            and phobert_available
+            and has_evidence
+        ):
+            return "debate"
+        # COOLANT FAKE / low-confidence / missing PhoBERT or evidence
         return "judge"
-    return "debate"
+
+    # No COOLANT signal — use the evidence-credibility gate
+    agreement_score = state.get("agreement_score", 0.0)
+    return "judge" if agreement_score >= settings.agreement_threshold else "debate"
 
 
 # ── A2A service wrapper ─────────────────────────────────────────────────────

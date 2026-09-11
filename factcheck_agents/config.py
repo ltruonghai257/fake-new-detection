@@ -95,6 +95,11 @@ class Settings:
     agreement_threshold: float = field(
         default_factory=lambda: float(os.getenv("FACTCHECK_AGREEMENT_THRESHOLD", "0.7"))
     )
+    coolant_debate_threshold: float = field(
+        default_factory=lambda: float(
+            os.getenv("FACTCHECK_COOLANT_DEBATE_THRESHOLD", "0.8")
+        )
+    )
     max_debate_rounds: int = field(
         default_factory=lambda: int(os.getenv("FACTCHECK_MAX_DEBATE_ROUNDS", "10"))
     )
