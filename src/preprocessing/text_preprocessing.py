@@ -51,13 +51,68 @@ class TextCleaningOptions(TypedDict, total=False):
 
 
 VIETNAMESE_STOPWORDS = {
-    "là", "và", "của", "có", "được", "trong", "với", "cho", "không",
-    "một", "các", "những", "này", "đó", "từ", "theo", "trên", "như",
-    "khi", "đã", "về", "bị", "vì", "nên", "cũng", "thì", "mà", "hay",
-    "hoặc", "nhưng", "vào", "ra", "lên", "xuống", "đến", "qua", "tại",
-    "ở", "sau", "trước", "để", "rất", "còn", "đang", "sẽ", "đây", "kia",
-    "hơn", "nhất", "nào", "ai", "gì", "sao", "thế", "vậy", "đều",
-    "cả", "chỉ", "mới", "lại", "thêm", "cần",
+    "là",
+    "và",
+    "của",
+    "có",
+    "được",
+    "trong",
+    "với",
+    "cho",
+    "không",
+    "một",
+    "các",
+    "những",
+    "này",
+    "đó",
+    "từ",
+    "theo",
+    "trên",
+    "như",
+    "khi",
+    "đã",
+    "về",
+    "bị",
+    "vì",
+    "nên",
+    "cũng",
+    "thì",
+    "mà",
+    "hay",
+    "hoặc",
+    "nhưng",
+    "vào",
+    "ra",
+    "lên",
+    "xuống",
+    "đến",
+    "qua",
+    "tại",
+    "ở",
+    "sau",
+    "trước",
+    "để",
+    "rất",
+    "còn",
+    "đang",
+    "sẽ",
+    "đây",
+    "kia",
+    "hơn",
+    "nhất",
+    "nào",
+    "ai",
+    "gì",
+    "sao",
+    "thế",
+    "vậy",
+    "đều",
+    "cả",
+    "chỉ",
+    "mới",
+    "lại",
+    "thêm",
+    "cần",
 }
 
 
@@ -80,24 +135,24 @@ _TEXT_MODEL_ALIASES = {
 # --- Additional Vietnamese caption artifact patterns (extend TextPreprocessor.clean_text) ---
 # 1. Parenthesized photo credits, slash separator, and Photo: variant not covered by existing pattern
 _TP_PHOTO_CREDIT_EXT = re.compile(
-    r'\s*\(\s*(?:Ảnh|Photo)\s*[:/／]\s*[^).\n]*\)'
-    r'|\s*(?:Ảnh|Photo)\s*[/／]\s*[^).\n]*'
-    r'|\s*Photo\s*:\s*[^).\n]*',
+    r"\s*\(\s*(?:Ảnh|Photo)\s*[:/／]\s*[^).\n]*\)"
+    r"|\s*(?:Ảnh|Photo)\s*[/／]\s*[^).\n]*"
+    r"|\s*Photo\s*:\s*[^).\n]*",
     re.IGNORECASE,
 )
 # 2a. Dash/em-dash agency attribution at end of string
 _TP_AGENCY_DASH = re.compile(
-    r'\s*[-\u2013\u2014]\s*(?:TTXVN(?:\s+phát)?|VNA|AFP|Reuters|AP)\s*$',
+    r"\s*[-\u2013\u2014]\s*(?:TTXVN(?:\s+phát)?|VNA|AFP|Reuters|AP)\s*$",
     re.IGNORECASE,
 )
 # 2b. Parenthesized agency attribution at end of string
 _TP_AGENCY_PAREN = re.compile(
-    r'\s*\((?:TTXVN(?:\s+phát)?|VNA|AFP|Reuters|AP)\)\s*$',
+    r"\s*\((?:TTXVN(?:\s+phát)?|VNA|AFP|Reuters|AP)\)\s*$",
     re.IGNORECASE,
 )
 # 3. Standalone Vietnamese caption suffixes without colon (tư liệu, chụp màn hình, uncredited minh họa)
 _TP_VN_CAPTION_SUFFIX = re.compile(
-    r'\bẢnh\s+(?:minh\s+họa|tư\s+liệu|chụp\s+màn\s+hình)[.,]?\s*',
+    r"\bẢnh\s+(?:minh\s+họa|tư\s+liệu|chụp\s+màn\s+hình)[.,]?\s*",
     re.IGNORECASE,
 )
 
@@ -164,8 +219,8 @@ class TextPreprocessor:
         outer_function: Optional[Callable[[str], str]] = None,
         field_cleaning: Union[TextCleaningOptions, Callable[[str], str]] = {
             "urls": True,
-            "punctuation": True,
-            "numbers": True,
+            "punctuation": False,
+            "numbers": False,
             "whitespace": True,
         },
     ) -> str:
@@ -192,12 +247,14 @@ class TextPreprocessor:
         field_cleaning = {**default_field_cleaning, **field_cleaning}
 
         # Remove HTML tags
-        text = re.sub(r'<[^>]+>', '', text)
+        text = re.sub(r"<[^>]+>", "", text)
 
         # Vietnamese text cleaning
         if field_cleaning.get("photo_credits", True):
             # Matches: "- Ảnh: TTXVN phát", "Ảnh minh họa: VnExpress", "Nguồn ảnh: Reuters"
-            text = re.sub(r"[-–]?\s*(Ảnh(\s+minh\s+họa)?|Nguồn\s+ảnh)\s*:[^.!?\n]*", "", text)
+            text = re.sub(
+                r"[-–]?\s*(Ảnh(\s+minh\s+họa)?|Nguồn\s+ảnh)\s*:[^.!?\n]*", "", text
+            )
             text = _TP_PHOTO_CREDIT_EXT.sub("", text)
             text = _TP_AGENCY_DASH.sub("", text)
             text = _TP_AGENCY_PAREN.sub("", text)
@@ -217,7 +274,7 @@ class TextPreprocessor:
             text = re.sub(r"\s+", " ", text)
 
         # Remove leading/trailing whitespace and convert to lowercase
-        text = text.strip().lower()
+        text = text.strip()
 
         if field_cleaning.get("stopwords", False):
             text = " ".join(w for w in text.split() if w not in VIETNAMESE_STOPWORDS)
