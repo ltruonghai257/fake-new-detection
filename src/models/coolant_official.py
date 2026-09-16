@@ -516,7 +516,10 @@ class COOLANT_Official(MultimodalModel):
 
         Hard one-hot targets: diagonal = positive pair.
         """
-        temp = torch.exp(self.clip_module.temperature)
+        # Clamp logit scale to CLIP's standard range (exp(temperature) <= 100) to
+        # prevent unbounded temperature growth from destabilizing L_ITC/L_SEM and,
+        # transitively, the m_t/m_v features consumed by DetectionModule.
+        temp = torch.exp(torch.clamp(self.clip_module.temperature, max=math.log(100)))
         logits = torch.matmul(m_v, m_t.T) * temp
         labels = torch.arange(m_t.size(0), device=m_t.device)
         return (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels)) / 2
@@ -534,7 +537,7 @@ class COOLANT_Official(MultimodalModel):
         then computes cross-entropy against ITC predictions (m_t, m_v).
         use_itc=True required.
         """
-        temp = torch.exp(self.clip_module.temperature)
+        temp = torch.exp(torch.clamp(self.clip_module.temperature, max=math.log(100)))
         # Soft targets from SimilarityModule (detached — teacher signal)
         with torch.no_grad():
             soft_v2t = F.softmax(torch.matmul(e_s_v, e_s_t.T) * temp, dim=1)
