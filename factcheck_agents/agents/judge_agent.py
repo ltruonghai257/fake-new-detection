@@ -76,7 +76,7 @@ _JUDGE_SYSTEM_PROMPT_DEFAULT = (
     "Chỉ đánh giá trên dữ liệu được cung cấp, không dùng kiến thức ngoài.\n\n"
     "ĐẦU VÀO (trong tin nhắn user):\n"
     "- CLAIM cần xác minh\n"
-    "- TÍN HIỆU MODEL: PhoBERT đo độ đúng của claim theo văn bản; COOLANT đo mức nhất quán "
+    "- TÍN HIỆU MODEL: PhoBERT chỉ là tham khảo YẾU (độ tin cậy thấp) — đừng dùng nó làm trụ cột; ưu tiên BẰNG CHỨNG và COOLANT. PhoBERT đo độ đúng của claim theo văn bản; COOLANT đo mức nhất quán "
     "giữa claim và ảnh ('FAKE' = ảnh và claim không khớp, chưa kết luận tin giả). "
     "Luận điểm tham chiếu, không phải kết luận sự thật.\n"
     "- BẰNG CHỨNG web kèm tier; BIÊN BẢN TRANH LUẬN hai phe; trạng thái hội tụ (nếu có)\n\n"
@@ -292,13 +292,17 @@ def judge_agent(state: FactCheckState) -> dict:
             model_signal += ph_conf
         elif ph_label in FAKE_MODEL_LABELS:
             model_signal -= ph_conf
-    # COOLANT measures image-caption CONSISTENCY, not veracity, so it does not
-    # vote REAL/FAKE. A mismatch only lowers confidence in the text-based signal;
-    # a match leaves it unchanged (a matching image does not prove the claim).
+    # PhoBERT is only a weak reference (low weight below). COOLANT gets its own
+    # signed signal: +1 = image fully consistent with the claim, -1 = clear
+    # mismatch. It measures consistency, so it is weighted below evidence.
+    coolant_signal = 0.0
     if co_avail:
-        co_label = str(model_detail.get("coolant", {}).get("label", "")).upper()
-        if co_label in FAKE_MODEL_LABELS:
-            model_signal *= 1.0 - 0.3 * co_conf
+        co_probs = model_detail.get("coolant", {}).get("probabilities") or {}
+        p_real = co_probs.get("REAL")
+        if p_real is None:
+            co_label = str(model_detail.get("coolant", {}).get("label", "")).upper()
+            p_real = 1.0 if co_label in REAL_MODEL_LABELS else 0.0
+        coolant_signal = 2.0 * float(p_real) - 1.0
     model_signal = max(-1.0, min(1.0, model_signal))
 
     # Debate signal
@@ -311,20 +315,21 @@ def judge_agent(state: FactCheckState) -> dict:
             debate_direction = -1.0
         debate_conf = 0.7 if debate_converged else 0.4
 
-    _jw_ph = float(os.getenv("FACTCHECK_JUDGE_PHOBERT_WEIGHT", "0.35"))
-    _jw_co = float(os.getenv("FACTCHECK_JUDGE_COOLANT_WEIGHT", "0.35"))
-    _jw_ev = float(os.getenv("FACTCHECK_JUDGE_EVIDENCE_WEIGHT", "0.15"))
-    _jw_db = float(os.getenv("FACTCHECK_JUDGE_DEBATE_WEIGHT", "0.15"))
+    _jw_ph = float(os.getenv("FACTCHECK_JUDGE_PHOBERT_WEIGHT", "0.10"))
+    _jw_co = float(os.getenv("FACTCHECK_JUDGE_COOLANT_WEIGHT", "0.30"))
+    _jw_ev = float(os.getenv("FACTCHECK_JUDGE_EVIDENCE_WEIGHT", "0.35"))
+    _jw_db = float(os.getenv("FACTCHECK_JUDGE_DEBATE_WEIGHT", "0.25"))
     # Deterministic fusion: this score decides the final binary verdict
     # (expert_agent enforces it), so debate/models/evidence truly count.
     n_ev = len(evidence_real) + len(evidence_fake)
     evidence_signal = (len(evidence_real) - len(evidence_fake)) / n_ev if n_ev else 0.0
-    w_model = (_jw_ph if ph_avail else 0.0) + (_jw_co if co_avail else 0.0)
+    w_ph = _jw_ph if ph_avail else 0.0
+    w_co = _jw_co if co_avail else 0.0
     w_ev = _jw_ev if n_ev else 0.0
     w_db = _jw_db if debate_direction != 0.0 else 0.0
-    denom = w_model + w_ev + w_db
+    denom = w_ph + w_co + w_ev + w_db
     fused_score = (
-        (w_model * model_signal + w_ev * evidence_signal + w_db * debate_direction * debate_conf / 0.7)
+        (w_ph * model_signal + w_co * coolant_signal + w_ev * evidence_signal + w_db * debate_direction * debate_conf / 0.7)
         / denom
         if denom
         else 0.0
@@ -338,6 +343,7 @@ def judge_agent(state: FactCheckState) -> dict:
         "fused_score": round(fused_score, 4),
         "fused_verdict": fused_verdict,
         "evidence_signal": round(evidence_signal, 4),
+        "coolant_signal": round(coolant_signal, 4),
         "phobert": _jw_ph if ph_avail else 0.0,
         "coolant": _jw_co if co_avail else 0.0,
         "evidence": _jw_ev,

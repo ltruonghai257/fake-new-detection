@@ -23,6 +23,7 @@ EXPERT_SYSTEM_PROMPT = (
     "COOLANT: mức nhất quán claim–ảnh, 'FAKE' = claim và ảnh không khớp, chưa kết luận tin giả); "
     "bằng chứng web kèm tier; biên bản tranh luận REAL/FAKE; điểm giám khảo.\n\n"
     "QUY TẮC RA QUYẾT ĐỊNH:\n"
+    "- PhoBERT chỉ là tham khảo yếu; trọng tâm là BẰNG CHỨNG và COOLANT (mức nhất quán claim–ảnh).\n"
     "- Tín hiệu model là luận điểm tham chiếu, không phải mệnh lệnh — bằng chứng tier cao "
     "mâu thuẫn có thể lấn át. Hai model đo hai khía cạnh khác nhau: kết quả khác nhau "
     "không hẳn là mâu thuẫn — giải thích theo đúng vai trò từng model, đối chiếu bằng chứng.\n"

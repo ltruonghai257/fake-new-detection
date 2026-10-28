@@ -120,8 +120,8 @@ export default function VerdictCard({
                     </button>
                 </div>
                 <p className="text-[11px] text-gray-400 mt-1">
-                    Điểm cuối = 0.35 × PhoBERT + 0.35 × COOLANT + 0.15 × Bằng
-                    chứng + 0.15 × Tranh luận
+                    Điểm cuối = 0.10 × PhoBERT (tham khảo) + 0.30 × COOLANT + 0.35 × Bằng
+                    chứng + 0.25 × Tranh luận
                 </p>
 
                 {/* ── Detail panels ──────────────────────────────────────────── */}
@@ -606,7 +606,7 @@ function CoolantDetail({
 
             <p className="text-xs text-gray-400 mt-3">
                 Nhãn REAL khi similarity ≥ {THRESHOLD}, ngược lại FAKE · Đóng
-                góp 35% vào điểm cuối và là vũ khí lập luận cho cả hai phe
+                góp 30% vào điểm cuối và là vũ khí lập luận cho cả hai phe
                 trong tranh luận.
             </p>
         </div>
