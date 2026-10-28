@@ -34,7 +34,7 @@ class Settings:
         default_factory=lambda: os.getenv("OPENAI_API_KEY")
     )
     llm_model: str = field(
-        default_factory=lambda: os.getenv("FACTCHECK_LLM_MODEL", "gpt-4o-mini")
+        default_factory=lambda: os.getenv("FACTCHECK_LLM_MODEL", "gpt-4.1-mini")
     )
     llm_temperature: float = field(
         default_factory=lambda: float(os.getenv("FACTCHECK_LLM_TEMPERATURE", "0.1"))
