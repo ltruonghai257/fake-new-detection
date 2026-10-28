@@ -127,33 +127,34 @@ def _write_verdict_log(request_id: str, data: dict) -> None:
         pass
 
 
-JUDGE_INTERJECT_PROMPT = (
-    "Bạn là GIÁM KHẢO đang theo dõi một cuộc tranh luận REAL vs FAKE về một claim. "
-    "Bạn có quyền chen vào KẾT LUẬN bất cứ lúc nào. Kết luận sớm khi: một bên đã thắng rõ "
-    "(đối thủ nhượng bộ hoặc bị bằng chứng bác), hai bên đã đồng thuận, hoặc tranh luận bắt đầu "
-    "lặp / không thêm thông tin mới. Nếu vẫn còn điểm mấu chốt chưa được giải quyết thì để tiếp tục.\n"
-    'Trả về DUY NHẤT JSON: {"conclude": true|false, "reason": "một câu tiếng Việt"}'
+JUDGE_MODERATOR_PROMPT = (
+    "Bạn là GIÁM KHẢO điều phối một cuộc tranh luận tự do REAL vs FAKE về một claim. "
+    "Không có thứ tự lượt cố định. Sau mỗi phát biểu, chọn ai nói tiếp:\n"
+    '- "real" hoặc "fake": bên có điểm cần phản bác/làm rõ nhất; một bên CÓ THỂ nói liên tiếp '
+    "hoặc xen ngang nếu bên kia chưa trả lời được luận điểm quan trọng.\n"
+    '- "conclude": CHỈ khi một bên thắng rõ, hai bên đồng thuận, hoặc tranh luận đã lặp, '
+    "không còn ý mới.\n"
+    'Trả về DUY NHẤT JSON: {"next": "real|fake|conclude", "reason": "một câu tiếng Việt"}'
 )
 
 
-def judge_should_conclude(state: FactCheckState, turns: list) -> tuple[bool, str]:
-    """Cheap per-turn check: should the judge cut in and end the debate now?"""
+def judge_pick_next(state: FactCheckState, turns: list) -> tuple[str | None, str]:
+    """Moderator: pick next speaker ('real'|'fake') or 'conclude'. None = no decision."""
     llm = get_llm()
-    if llm is None or len(turns) < 2:
-        return False, ""
+    if llm is None or not turns:
+        return None, ""
     user = (
         f"CLAIM:\n{state.get('statement', '')}\n\n"
         f"TRANH LUẬN ĐẾN NAY:\n{_format_debate_turns(turns)}\n"
     )
     try:
-        resp = llm.invoke([("system", JUDGE_INTERJECT_PROMPT), ("user", user)])
+        resp = llm.invoke([("system", JUDGE_MODERATOR_PROMPT), ("user", user)])
         data = parse_json(getattr(resp, "content", "") or "") or {}
-        return bool(data.get("conclude")), str(data.get("reason", ""))
-    except Exception:
-        return False, ""
-
-
-FUSED_MARGIN = float(os.getenv("FACTCHECK_FUSED_MARGIN", "0.15"))
+        nxt = str(data.get("next", "")).lower()
+        return (nxt if nxt in {"real", "fake", "conclude"} else None), str(data.get("reason", ""))
+    except Exception as exc:
+        logger.error("[Judge] moderator failed, alternating: %s", exc)
+        return None, ""
 
 
 def judge_agent(state: FactCheckState) -> dict:
