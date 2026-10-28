@@ -7,12 +7,36 @@ function returns an empty list and the pipeline continues on model output only.
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
+from email.utils import parsedate_to_datetime
 from typing import List
 
 import requests
 
 from ..config import settings
 from ..state import Evidence
+
+
+def _is_recent(published: str | None) -> bool:
+    """False only when a parseable date is older than the window.
+
+    Results without a date are kept: the provider-side filter already
+    restricted them, and many pages simply expose no date.
+    """
+    days = settings.search_max_age_days
+    if days <= 0 or not published:
+        return True
+    dt = None
+    try:
+        dt = datetime.fromisoformat(published.replace("Z", "+00:00"))
+    except ValueError:
+        try:
+            dt = parsedate_to_datetime(published)
+        except (TypeError, ValueError):
+            return True
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt >= datetime.now(timezone.utc) - timedelta(days=days)
 
 
 def _search_tavily(
@@ -27,6 +51,11 @@ def _search_tavily(
     }
     if include_domains:
         payload["include_domains"] = include_domains
+    days = settings.search_max_age_days
+    if days > 0:
+        payload["time_range"] = (
+            "day" if days <= 1 else "week" if days <= 7 else "month" if days <= 31 else "year"
+        )
     try:
         resp = requests.post(
             "https://api.tavily.com/search",
@@ -40,6 +69,8 @@ def _search_tavily(
 
     out: List[Evidence] = []
     for r in data.get("results", []):
+        if not _is_recent(r.get("published_date")):
+            continue
         out.append(
             Evidence(
                 title=r.get("title", ""),
@@ -48,6 +79,7 @@ def _search_tavily(
                 source="tavily",
                 score=float(r.get("score", 0.0) or 0.0),
                 content=r.get("content", ""),  # Keep original content field
+                published_date=r.get("published_date"),
             )
         )
     return out
@@ -60,15 +92,18 @@ def _search_google_cse(
     if include_domains:
         site_filter = " OR ".join(f"site:{d}" for d in include_domains)
         effective_query = f"{query} {site_filter}"
+    params = {
+        "key": settings.google_cse_api_key,
+        "cx": settings.google_cse_id,
+        "q": effective_query,
+        "num": min(max_results, 10),
+    }
+    if settings.search_max_age_days > 0:
+        params["dateRestrict"] = f"d{settings.search_max_age_days}"
     try:
         resp = requests.get(
             "https://www.googleapis.com/customsearch/v1",
-            params={
-                "key": settings.google_cse_api_key,
-                "cx": settings.google_cse_id,
-                "q": effective_query,
-                "num": min(max_results, 10),
-            },
+            params=params,
             timeout=30,
         )
         resp.raise_for_status()

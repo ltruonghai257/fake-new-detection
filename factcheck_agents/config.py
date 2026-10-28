@@ -95,6 +95,10 @@ class Settings:
     agreement_threshold: float = field(
         default_factory=lambda: float(os.getenv("FACTCHECK_AGREEMENT_THRESHOLD", "0.7"))
     )
+    # Only keep web evidence published within this many days (0 = no limit).
+    search_max_age_days: int = field(
+        default_factory=lambda: int(os.getenv("FACTCHECK_SEARCH_MAX_AGE_DAYS", "7"))
+    )
     coolant_debate_threshold: float = field(
         default_factory=lambda: float(
             os.getenv("FACTCHECK_COOLANT_DEBATE_THRESHOLD", "0.7")

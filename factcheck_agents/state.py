@@ -79,6 +79,7 @@ class Evidence(TypedDict, total=False):
     content: str  # Full content from search API
     source: str  # search provider that returned it (tavily/google_cse)
     score: float  # provider relevance score, if any
+    published_date: Optional[str]  # ISO date from the provider, if any
     source_tier: Literal["trusted", "flagged", "social", "unknown"]
     image_path: Optional[str]  # local path to downloaded page image, if any
     image_caption: Optional[str]  # caption / alt text for the page image, if any
