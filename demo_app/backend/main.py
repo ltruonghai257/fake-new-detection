@@ -12,12 +12,18 @@ CORS: allows only http://localhost:5173 (Vite dev server) per DEMO-04.
 from __future__ import annotations
 
 import asyncio
+import logging
 import sys
 import tempfile
 import urllib.request
 import uuid
 from pathlib import Path
 from typing import Annotated
+
+logging.basicConfig(level=logging.WARNING, format="%(message)s")
+# Show what text COOLANT/PhoBERT actually receive (raw -> cleaned -> segmented -> tokens)
+logging.getLogger("src.preprocessing.text_preprocessing").setLevel(logging.INFO)
+logging.getLogger("preprocessing.text_preprocessing").setLevel(logging.INFO)
 
 # Project root on path so factcheck_agents is importable
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))

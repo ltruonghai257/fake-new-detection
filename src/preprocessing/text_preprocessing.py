@@ -4,6 +4,7 @@ Vietnamese Language Support
 Based on the COOLANT repository: https://github.com/wishever/COOLANT
 """
 
+import logging
 import re
 import pickle
 import numpy as np
@@ -13,6 +14,8 @@ from transformers import BertTokenizer, BertModel, AutoTokenizer, AutoModel
 from typing import List, Dict, Tuple, Optional, Union, TypedDict, Callable
 import os
 from tqdm import tqdm
+
+logger = logging.getLogger(__name__)
 
 # Import centralized device detection
 import sys
@@ -337,6 +340,7 @@ class TextPreprocessor:
             Dictionary with tokenized inputs
         """
         cleaned_text = self.clean_text(text)
+        clean_only = cleaned_text
         if self.use_word_segmentation:
             cleaned_text = self.segment_words(cleaned_text)
 
@@ -347,6 +351,18 @@ class TextPreprocessor:
             truncation=True,
             return_tensors="pt",
         )
+
+        if logger.isEnabledFor(logging.INFO):
+            n_tok = int(encoded["attention_mask"].sum())
+            logger.info(
+                "[text-preprocess] raw=%r | cleaned=%r | segmented=%r | tokens=%d/%d%s",
+                text,
+                clean_only,
+                cleaned_text if self.use_word_segmentation else None,
+                n_tok,
+                self.max_length,
+                " (TRUNCATED)" if n_tok >= self.max_length else "",
+            )
 
         return {k: v.to(self.device) for k, v in encoded.items()}
 
