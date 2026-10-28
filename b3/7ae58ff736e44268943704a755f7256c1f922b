@@ -1,0 +1,41 @@
+tests/factcheck_agents/test_agreement_gate.py
+  s_817458cc35f52a::t_52774e2142f44b 170-171,190
+factcheck_agents/agents/expert_agent.py
+  s_817458cc35f52a::t_fc1a83af2ce3b9 16,173
+factcheck_agents/agents/fake_advocate.py
+  s_817458cc35f52a::t_fc1a83af2ce3b9 52-53
+factcheck_agents/agents/real_advocate.py
+  s_817458cc35f52a::t_fc1a83af2ce3b9 52-53
+factcheck_agents/models/coolant_checker.py
+  s_817458cc35f52a::t_52774e2142f44b 81-111,245,295
+factcheck_agents/agents/judge_agent.py
+  s_817458cc35f52a::t_fc1a83af2ce3b9 22,214
+tests/factcheck_agents/test_source_unanimity.py
+  s_817458cc35f52a::t_a460b46327671b 1-39
+factcheck_agents/agents/debate_utils.py
+  s_817458cc35f52a::t_27383feca4f88e 6-12,24-25,35-36,40-53,63,76-77,81-94,104,109-110,241-301,303,306-353,356-445,508-509,519-525,532-533,539-546,550,552-555
+  s_817458cc35f52a::t_fc1a83af2ce3b9 37-39,78-80,446-507,516-517,527-530
+  s_817458cc35f52a::t_1a0d6cb689b6e3 302,304-305,354-355,515,534-537
+factcheck_agents/agents/agreement_gate.py
+  s_817458cc35f52a::t_52774e2142f44b 89-91,95-96,115,121
+demo_app/backend/streaming.py
+  s_817458cc35f52a::t_267f1aa0ecd879 247-249
+factcheck_agents/state.py
+  s_817458cc35f52a::t_52774e2142f44b 99-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b37ae58ff736e44268943704a755f7256c1f922b",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-opus-5-5[1m]"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
