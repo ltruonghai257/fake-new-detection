@@ -252,10 +252,12 @@ class TextPreprocessor:
         # Vietnamese text cleaning
         if field_cleaning.get("photo_credits", True):
             # Matches: "- Ảnh: TTXVN phát", "Ảnh minh họa: VnExpress", "Nguồn ảnh: Reuters"
+            # Parenthesized credits first: "(Ảnh: AFP)" must be removed whole, otherwise
+            # the generic pattern below eats everything up to the next .!? and leaves "(".
+            text = _TP_PHOTO_CREDIT_EXT.sub("", text)
             text = re.sub(
                 r"[-–]?\s*(Ảnh(\s+minh\s+họa)?|Nguồn\s+ảnh)\s*:[^.!?\n]*", "", text
             )
-            text = _TP_PHOTO_CREDIT_EXT.sub("", text)
             text = _TP_AGENCY_DASH.sub("", text)
             text = _TP_AGENCY_PAREN.sub("", text)
             text = _TP_VN_CAPTION_SUFFIX.sub("", text)
@@ -273,7 +275,7 @@ class TextPreprocessor:
         if field_cleaning.get("whitespace", True):
             text = re.sub(r"\s+", " ", text)
 
-        # Remove leading/trailing whitespace and convert to lowercase
+        # Remove leading/trailing whitespace (case is preserved)
         text = text.strip()
 
         if field_cleaning.get("stopwords", False):
