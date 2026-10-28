@@ -10,6 +10,7 @@ Decision mapping:
 
 from __future__ import annotations
 
+import logging
 import asyncio
 import json
 import sys
@@ -340,6 +341,7 @@ async def sse_stream(
                 }
             )
         except Exception as exc:
+            logging.getLogger("factcheck_agents.stream").exception("pipeline failed: %s", exc)
             _post({"type": "error", "error": str(exc)})
         finally:
             _post({"type": "_done"})

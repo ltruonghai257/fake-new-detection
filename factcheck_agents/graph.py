@@ -7,6 +7,7 @@ the shared-state design used by TradingAgents.
 from __future__ import annotations
 
 import logging
+import os
 import uuid
 
 from langgraph.graph import END, START, StateGraph
