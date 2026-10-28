@@ -7,6 +7,7 @@ This node only scores the debate and computes component signals for downstream.
 from __future__ import annotations
 
 import json
+import logging
 import os
 from pathlib import Path
 from typing import Any, List, Optional
@@ -21,6 +22,8 @@ from ..state import (
 )
 from .debate_utils import _assess_source_unanimity
 from .llm import get_llm, parse_json
+
+logger = logging.getLogger(__name__)
 
 _BINARY_REAL_LABELS = {"SUPPORTED", "REAL", "TRUE"}
 _BINARY_NEI_LABELS = {"NEI", "UNVERIFIED"}
@@ -177,45 +180,14 @@ def judge_agent(state: FactCheckState) -> dict:
                 "probabilities": m.get("probabilities"),
             }
 
-    # No debate → no scores, minimal breakdown
-    if not debate_turns:
-        return {
-            "weight_breakdown": {
-                "phobert": 0.0,
-                "coolant": 0.0,
-                "evidence": 0.0,
-                "debate": 0.0,
-                "phobert_conf": 0.0,
-                "coolant_conf": 0.0,
-                "debate_conf": 0.0,
-                "debate_direction": 0.0,
-                "argument_scores": [],
-                "debate_winner": "none",
-                "model_signal": 0.0,
-            },
-            "messages": [("assistant", "[Judge] No debate — skipping scoring")],
-        }
-
     Path("logs/verdicts").mkdir(parents=True, exist_ok=True)
 
     llm = get_llm()
+    llm_failed = None  # reason string when the judge LLM cannot score the debate
     if llm is None:
-        return {
-            "weight_breakdown": {
-                "phobert": 0.0,
-                "coolant": 0.0,
-                "evidence": 0.0,
-                "debate": 0.0,
-                "phobert_conf": 0.0,
-                "coolant_conf": 0.0,
-                "debate_conf": 0.0,
-                "debate_direction": 0.0,
-                "argument_scores": [],
-                "debate_winner": "none (no LLM)",
-                "model_signal": 0.0,
-            },
-            "messages": [("assistant", "[Judge] No LLM — skipping debate scoring")],
-        }
+        llm_failed = "không có LLM"
+    elif not debate_turns or all(t.get("error") for t in debate_turns):
+        llm_failed = "tranh luận không diễn ra"
 
     convergence_note = ""
     if debate_converged and debate_agreed_verdict:
@@ -235,6 +207,11 @@ def judge_agent(state: FactCheckState) -> dict:
             "\nSINGLE-MODEL MODE: chỉ có một model khả dụng — kết quả nó là tín hiệu yếu, "
             "không phải prior mạnh. Ưu tiên bằng chứng khi chấm điểm evidence_grounding.\n"
         )
+    if any(t.get("error") for t in debate_turns) and not llm_failed:
+        convergence_note += (
+            "\nTRANH LUẬN BỊ NGẮT GIỮA CHỪNG (lỗi LLM/hạn mức). Chỉ chấm các lượt hợp lệ; "
+            "nếu chưa đủ để phân thắng bại thì debate_winner=tie và dựa vào bằng chứng + model.\n"
+        )
     user = (
         f"CLAIM:\n{statement}\n\n"
         f"MODEL PREDICTIONS (các model khả dụng, kèm xác suất):\n{_format_models(model_results)}\n\n"
@@ -245,30 +222,20 @@ def judge_agent(state: FactCheckState) -> dict:
         f"{convergence_note}"
     )
 
-    try:
-        resp = llm.invoke([("system", JUDGE_SYSTEM_PROMPT), ("user", user)])
-        data = parse_json(getattr(resp, "content", "") or "") or {}
-    except Exception:
-        return {
-            "weight_breakdown": {
-                "phobert": 0.0,
-                "coolant": 0.0,
-                "evidence": 0.0,
-                "debate": 0.0,
-                "phobert_conf": 0.0,
-                "coolant_conf": 0.0,
-                "debate_conf": 0.0,
-                "debate_direction": 0.0,
-                "argument_scores": [],
-                "debate_winner": "unknown (LLM error)",
-                "model_signal": 0.0,
-            },
-            "messages": [("assistant", "[Judge] LLM error — skipping debate scoring")],
-        }
+    data: dict = {}
+    if llm is not None and not llm_failed:
+        try:
+            resp = llm.invoke([("system", JUDGE_SYSTEM_PROMPT), ("user", user)])
+            data = parse_json(getattr(resp, "content", "") or "") or {}
+        except Exception as exc:
+            logger.exception("[judge_agent] LLM failed, falling back to model+evidence fusion: %s", exc)
+            llm_failed = str(exc)[:200]
 
     turn_scores = data.get("turn_scores", [])
     explanation_data = data.get("explanation", {})
     debate_winner = explanation_data.get("debate_winner", "unknown")
+    if llm_failed:
+        debate_winner = "unscored (LLM unavailable)"
 
     # Compute model signal direction
     ph_conf = 0.0
@@ -308,7 +275,7 @@ def judge_agent(state: FactCheckState) -> dict:
     # Debate signal
     debate_direction = 0.0
     debate_conf = 0.0
-    if debate_turns:
+    if debate_turns and not llm_failed:
         if debate_winner == "real_advocate":
             debate_direction = 1.0
         elif debate_winner == "fake_advocate":
@@ -371,6 +338,7 @@ def judge_agent(state: FactCheckState) -> dict:
         "argument_scores": turn_scores,
         "debate_winner": debate_winner,
         "model_signal": model_signal,
+        "judge_fallback": llm_failed,
         "phobert_label": model_detail.get("phobert_vifactcheck", {}).get("label"),
         "phobert_probabilities": model_detail.get("phobert_vifactcheck", {}).get(
             "probabilities"
@@ -389,7 +357,12 @@ def judge_agent(state: FactCheckState) -> dict:
         "messages": [
             (
                 "assistant",
-                f"[Judge] {len(turn_scores)} turns scored, winner={debate_winner}",
+                (
+                    f"[Judge] LLM không dùng được ({llm_failed}) — tự kết luận từ COOLANT + bằng chứng + PhoBERT: "
+                    f"{fused_verdict} (điểm {fused_score:+.2f})"
+                    if llm_failed
+                    else f"[Judge] {len(turn_scores)} turns scored, winner={debate_winner}"
+                ),
             )
         ],
     }

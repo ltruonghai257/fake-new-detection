@@ -209,9 +209,37 @@ def expert_agent(state: FactCheckState) -> dict:
         data = parse_json(getattr(resp, "content", "") or "") or {}
     except Exception as exc:
         logger.exception("[expert_agent] failed: %s", exc)
-        # LLM error — preserve the judge verdict unchanged (graceful degrade)
+        # LLM error — conclude from the judge's deterministic fusion, never leave
+        # the user without a verdict.
+        fv = judge_breakdown.get("fused_verdict")
+        if fv not in _FUSED_TO_LABEL or state.get("verdict"):
+            return {"messages": [("assistant", f"[Expert] Lỗi LLM: {exc}")]}
+        score = float(judge_breakdown.get("fused_score", 0.0))
+        verdict = Verdict(
+            label=_FUSED_TO_LABEL[fv],
+            verdict_binary=fv,
+            verdict_label_vi=binary_to_vi(fv),
+            confidence=round(min(0.9, 0.5 + abs(score) / 2), 3),
+            rationale=(
+                "⚠️ Quá trình tranh luận / LLM bị gián đoạn (ví dụ hết hạn mức API) nên giám khảo "
+                f"tự kết luận từ tín hiệu có sẵn. Điểm tổng hợp {score:+.2f}: "
+                f"COOLANT (nhất quán ảnh–văn bản) {judge_breakdown.get('coolant_signal', 0):+.2f}, "
+                f"bằng chứng {judge_breakdown.get('evidence_signal', 0):+.2f}, "
+                f"PhoBERT {judge_breakdown.get('model_signal', 0):+.2f}. "
+                f"Lỗi: {str(exc)[:160]}"
+            ),
+            citations=[x.get("url", "") for x in all_evidence if x.get("url")][:5],
+            recommendation="Chạy lại khi LLM khả dụng để có phân tích tranh luận đầy đủ.",
+            explanation={
+                "model_summary": _format_expert_models(model_results),
+                "evidence_quality": "unknown",
+                "model_agreement": "none",
+                "expert_name": "giám khảo (chế độ dự phòng)",
+            },
+        )
         return {
-            "messages": [("assistant", f"[Expert] Lỗi LLM: {exc}")],
+            "verdict": verdict,
+            "messages": [("assistant", f"[Expert] LLM lỗi — giám khảo tự kết luận: {fv}")],
         }
 
     # Preserve judge's authoritative binary verdict — expert only augments rationale

@@ -81,7 +81,7 @@ def _summarize_node(node_name: str, node_output: dict, accumulated: dict) -> str
         agreed = node_output.get("debate_agreed_verdict")
         reason_vi = {
             "no_llm": "không có LLM",
-            "llm_error": "lỗi LLM",
+            "llm_error": "bị ngắt do lỗi LLM — giám khảo tự kết luận",
             "max_rounds": "đạt số vòng tối đa",
             "converged": "hai bên đồng thuận",
         }.get(exit_reason, exit_reason)

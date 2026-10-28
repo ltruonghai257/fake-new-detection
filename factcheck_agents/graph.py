@@ -208,6 +208,7 @@ def debate_node(state: FactCheckState) -> dict:
             (
                 "assistant",
                 f"[Debate] {len(turns)} turns ({exit_reason or 'max_rounds'})"
+                + (" — BỊ NGẮT do lỗi LLM, giám khảo sẽ tự kết luận" if exit_reason in {"llm_error", "no_llm", "agent_unavailable"} else "")
                 + (f" → agreed={agreed_verdict}" if converged else ""),
             )
         ],
