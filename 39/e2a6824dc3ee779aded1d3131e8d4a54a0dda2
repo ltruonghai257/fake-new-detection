@@ -1,0 +1,19 @@
+factcheck_agents/agents/judge_agent.py
+  s_817458cc35f52a::t_7b5567fe105741 160-162
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "39e2a6824dc3ee779aded1d3131e8d4a54a0dda2",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
