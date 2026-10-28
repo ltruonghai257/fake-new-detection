@@ -314,11 +314,27 @@ def judge_agent(state: FactCheckState) -> dict:
         elif debate_winner == "fake_advocate":
             debate_direction = -1.0
         debate_conf = 0.7 if debate_converged else 0.4
+        # Strength of the win: gap between the sides' judge scores (evidence-
+        # grounded argument quality), so a clear win counts more than a narrow one.
+        side = {"real_advocate": [], "fake_advocate": []}
+        for sc in turn_scores:
+            try:
+                side[sc.get("agent")].append(
+                    (sc["factuality"] + sc["rebuttal_engagement"] + sc["evidence_grounding"]) / 15
+                )
+            except (KeyError, TypeError):
+                pass
+        if side["real_advocate"] and side["fake_advocate"]:
+            gap = abs(
+                sum(side["real_advocate"]) / len(side["real_advocate"])
+                - sum(side["fake_advocate"]) / len(side["fake_advocate"])
+            )
+            debate_conf = min(1.0, max(debate_conf, 0.4 + gap))
 
-    _jw_ph = float(os.getenv("FACTCHECK_JUDGE_PHOBERT_WEIGHT", "0.10"))
+    _jw_ph = float(os.getenv("FACTCHECK_JUDGE_PHOBERT_WEIGHT", "0.05"))
     _jw_co = float(os.getenv("FACTCHECK_JUDGE_COOLANT_WEIGHT", "0.30"))
-    _jw_ev = float(os.getenv("FACTCHECK_JUDGE_EVIDENCE_WEIGHT", "0.35"))
-    _jw_db = float(os.getenv("FACTCHECK_JUDGE_DEBATE_WEIGHT", "0.25"))
+    _jw_ev = float(os.getenv("FACTCHECK_JUDGE_EVIDENCE_WEIGHT", "0.15"))
+    _jw_db = float(os.getenv("FACTCHECK_JUDGE_DEBATE_WEIGHT", "0.50"))
     # Deterministic fusion: this score decides the final binary verdict
     # (expert_agent enforces it), so debate/models/evidence truly count.
     n_ev = len(evidence_real) + len(evidence_fake)
@@ -329,7 +345,7 @@ def judge_agent(state: FactCheckState) -> dict:
     w_db = _jw_db if debate_direction != 0.0 else 0.0
     denom = w_ph + w_co + w_ev + w_db
     fused_score = (
-        (w_ph * model_signal + w_co * coolant_signal + w_ev * evidence_signal + w_db * debate_direction * debate_conf / 0.7)
+        (w_ph * model_signal + w_co * coolant_signal + w_ev * evidence_signal + w_db * debate_direction * min(1.0, debate_conf / 0.7))
         / denom
         if denom
         else 0.0

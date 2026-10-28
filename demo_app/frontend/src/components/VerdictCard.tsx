@@ -120,8 +120,8 @@ export default function VerdictCard({
                     </button>
                 </div>
                 <p className="text-[11px] text-gray-400 mt-1">
-                    Điểm cuối = 0.10 × PhoBERT (tham khảo) + 0.30 × COOLANT + 0.35 × Bằng
-                    chứng + 0.25 × Tranh luận
+                    Điểm cuối = 0.05 × PhoBERT (tham khảo) + 0.30 × COOLANT + 0.15 × Bằng
+                    chứng + 0.50 × Tranh luận (dựa trên bằng chứng)
                 </p>
 
                 {/* ── Detail panels ──────────────────────────────────────────── */}
