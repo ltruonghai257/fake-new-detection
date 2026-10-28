@@ -1,0 +1,20 @@
+factcheck_agents/models/coolant_checker.py
+  s_817458cc35f52a::t_37c23818d00c66 33-45,172-192
+  s_817458cc35f52a::t_aab33b2f8776af 208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e62c2ced5cac93d2b7d7641171c027aaf4e1487c",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
