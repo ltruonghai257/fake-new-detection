@@ -1,0 +1,22 @@
+factcheck_agents/agents/judge_agent.py
+  s_817458cc35f52a::t_8de22133b1129c 127-129,292-310,312-314
+factcheck_agents/agents/expert_agent.py
+  s_817458cc35f52a::t_8de22133b1129c 92-105,194-195,220-227
+  s_817458cc35f52a::t_d7c8aa90cbcaed 228
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4fc1c51ae0598f2c40f5d5adbfd8e5ec1f5540eb",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
