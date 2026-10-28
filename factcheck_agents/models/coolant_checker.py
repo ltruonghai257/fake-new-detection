@@ -38,21 +38,6 @@ _SIM_THRESHOLD = float(os.getenv("FACTCHECK_COOLANT_SIM_THRESHOLD", "0.25"))
 _SIM_SCALE = float(os.getenv("FACTCHECK_COOLANT_SIM_SCALE", "0.08"))
 
 
-def _training_clean(text: str) -> str:
-    """Clean text the way the training features were built.
-
-    The checkpoint was trained on features from the OLD cleaning (punctuation
-    and digits removed, lowercased). TextPreprocessor defaults changed in
-    b5ca5d4 (case/punctuation/digits kept), which no longer matches training.
-    """
-    from src.preprocessing.text_preprocessing import TextPreprocessor
-
-    cleaned = TextPreprocessor.clean_text(
-        text, field_cleaning={"punctuation": True, "numbers": True}
-    )
-    return cleaned.lower()
-
-
 # Training config of notebooks/pipeline/official_document_thesis.ipynb
 # (PhoBERT 768-d text, ResNet50 2048-d image).
 _OFFICIAL_CFG = {
@@ -273,7 +258,7 @@ class CoolantChecker:
 
             self._ensure_preprocessor()
             text_feat, image_feat = self._preprocessor.preprocess_sample(
-                _training_clean(statement), image_path
+                statement, image_path
             )
 
             # Fix based on notebook inference pattern:
