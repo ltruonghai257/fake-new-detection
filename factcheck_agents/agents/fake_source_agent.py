@@ -6,6 +6,8 @@ API for evidence refuting or casting doubt on the claim.
 
 from __future__ import annotations
 
+import os
+import re
 import requests
 from typing import List
 from dateutil import parser as date_parser
@@ -18,8 +20,26 @@ from ..tools.web_search import web_search
 from ..tools.article_crawler import crawl_article, is_within_days
 
 
+# Words that steer a search toward debunking/fact-check articles.
+_REFUTE_SUFFIXES = ("tin giả", "bác bỏ", "sai sự thật")
+_MIN_RELEVANCE = float(os.getenv("FACTCHECK_FAKE_RELEVANCE", "0.3"))
+_TOKEN_RE = re.compile(r"\w+", re.UNICODE)
+
+
+def _tokens(text: str) -> set:
+    return {t for t in _TOKEN_RE.findall((text or "").lower()) if len(t) >= 3}
+
+
+def _relevance(claim: str, text: str) -> float:
+    """Fraction of the claim's content words found in the result text."""
+    ct = _tokens(claim)
+    if not ct:
+        return 1.0
+    return len(ct & _tokens(text)) / len(ct)
+
+
 def _search_and_crawl(
-    query: str, include_domains: list | None, seen: set
+    query: str, include_domains: list | None, seen: set, claim: str = ""
 ) -> List[Evidence]:
     """Run web search, crawl article content, filter by 7 days, deduplicate."""
     try:
@@ -36,6 +56,11 @@ def _search_and_crawl(
             continue
         if url:
             seen.add(url)
+
+        if claim and _relevance(
+            claim, f"{e.get('title', '')} {e.get('snippet', '')}"
+        ) < _MIN_RELEVANCE:
+            continue
 
         full_content, publish_date = crawl_article(url)
         if not is_within_days(publish_date, days=7):
@@ -62,11 +87,22 @@ def fake_source_agent(state: FactCheckState) -> dict:
     Returns {"evidence_fake": results, "messages": [...]}.
     Never raises; returns empty list on all failures (EVRET-03).
     """
-    queries = state.get("search_queries") or [state["statement"]]
+    queries = state.get("search_queries")
     claim_variants = state.get("claim_variants") or []
+    if not queries:  # debate graph has no search_agent: build keyword queries here
+        from .search_agent import build_queries
+
+        queries, variants = build_queries(state["statement"])
+        queries, claim_variants = list(queries), list(variants)
     queries = list(
         dict.fromkeys(queries + claim_variants)
     )  # deduplicate, preserve order
+
+    claim = state["statement"]
+    # Refutation-oriented queries: otherwise the open-web search just returns the
+    # same supporting articles as the real-source branch.
+    refute_queries = [f"{q} {suf}" for q in queries[:2] for suf in _REFUTE_SUFFIXES]
+    queries = refute_queries + queries
 
     flagged_list = [d.strip() for d in settings.flagged_domains.split(",") if d.strip()]
     results: List[Evidence] = []
@@ -75,10 +111,10 @@ def fake_source_agent(state: FactCheckState) -> dict:
     for q in queries:
         # 1) flagged domains (kenh14.vn, etc.)
         if flagged_list:
-            results.extend(_search_and_crawl(q, flagged_list, seen))
+            results.extend(_search_and_crawl(q, flagged_list, seen, claim))
 
         # 2) open web (no domain filter) — catches non-official sources
-        results.extend(_search_and_crawl(q, None, seen))
+        results.extend(_search_and_crawl(q, None, seen, claim))
 
         # 3) Google Fact Check API
         if settings.google_factcheck_api_key is not None:
@@ -122,6 +158,8 @@ def fake_source_agent(state: FactCheckState) -> dict:
                     except Exception:
                         pass
 
+                    if _relevance(claim, f"{claim_text} {title}") < _MIN_RELEVANCE:
+                        continue
                     if url and url in seen:
                         continue
                     if url:

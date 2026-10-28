@@ -7,8 +7,10 @@ the results into the shared state.
 
 from __future__ import annotations
 
+import re
 from concurrent.futures import ThreadPoolExecutor
-from typing import List
+from functools import lru_cache
+from typing import List, Tuple
 
 from ..config import settings
 from ..graph_utils import EvidenceGraph
@@ -34,8 +36,26 @@ def _draft_queries(statement: str) -> List[str]:
                     return qs[: settings.max_queries]
         except Exception:
             pass
-    # heuristic fallback: use the statement itself
-    return [statement.strip()]
+    return [_keyword_fallback(statement)]
+
+
+_STOP = {
+    "và", "là", "của", "có", "cho", "các", "những", "một", "được", "trong", "với",
+    "này", "đã", "sẽ", "đang", "để", "từ", "khi", "thì", "mà", "rằng", "như", "theo",
+}
+
+
+def _keyword_fallback(statement: str) -> str:
+    """No-LLM fallback: first ~10 non-stopword tokens (keeps numbers/entities)."""
+    toks = [w for w in re.findall(r"\w+", statement, re.UNICODE) if w.lower() not in _STOP]
+    return " ".join(toks[:10]) or statement.strip()[:100]
+
+
+@lru_cache(maxsize=64)
+def build_queries(statement: str) -> Tuple[Tuple[str, ...], Tuple[str, ...]]:
+    """Keyword queries + variants for a claim (cached: real/fake source agents
+    run in parallel and would otherwise each call the LLM)."""
+    return tuple(_draft_queries(statement)), tuple(_mutate_claims(statement))
 
 
 def _mutate_claims(statement: str) -> List[str]:

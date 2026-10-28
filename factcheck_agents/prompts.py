@@ -18,9 +18,12 @@ import os
 SEARCH_QUERY_PROMPT = os.getenv(
     "FACTCHECK_SEARCH_PROMPT",
     (
-        "You are a fact-checking research assistant. Given a claim, produce up to "
-        "{n} short, diverse web-search queries that would surface authoritative "
-        "evidence for or against it. Generate all queries in Vietnamese. "
+        "You are a fact-checking research assistant. Turn the claim into up to {n} "
+        "KEYWORD search queries for a news search engine (NOT full sentences). "
+        "Each query: 3-8 words, Vietnamese, built from the claim's named entities "
+        "(people, organisations, places), key numbers/dates and the core event. "
+        "Drop filler words and opinions. Query 1 = the core event with the most "
+        "distinctive entities; the others vary the angle (who/where/how many). "
         'Respond as JSON: {{"queries": ["...", "..."]}}\n\nClaim: {statement}'
     ),
 )

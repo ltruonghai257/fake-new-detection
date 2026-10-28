@@ -32,8 +32,13 @@ def real_source_agent(state: FactCheckState) -> dict:
     Returns {"evidence_real": results, "messages": [...], "evidence_workflow_steps": [...]}.
     Never raises; returns empty list on all failures (EVRET-03).
     """
-    queries = state.get("search_queries") or [state["statement"]]
+    queries = state.get("search_queries")
     claim_variants = state.get("claim_variants") or []
+    if not queries:  # debate graph has no search_agent: build keyword queries here
+        from .search_agent import build_queries
+
+        queries, variants = build_queries(state["statement"])
+        queries, claim_variants = list(queries), list(variants)
     queries = list(
         dict.fromkeys(queries + claim_variants)
     )  # deduplicate, preserve order
