@@ -52,12 +52,7 @@ dependencies = [
     "newspaper3k>=0.2.8",
     "python-dateutil>=2.9.0.post0",
     "umap-learn>=0.5.12",
-]
-
-[project.optional-dependencies]
-# factcheck_agents — standalone multi-agent fact-checking module.
-# Install with:  uv sync --extra agents
-agents = [
+    # factcheck_agents (multi-agent pipeline) — required by the app
     "langgraph>=0.2.28",
     "langchain-core>=0.3.0",
     "langchain-openai>=0.2.0",
@@ -66,13 +61,13 @@ agents = [
     "openai>=1.40.0",
     "rank_bm25>=0.2.2",
     "a2a-sdk[http-server,fastapi]>=1.0.1,<2",
-]
-# demo_app backend (FastAPI + SSE). Install with:  uv sync --extra agents --extra demo
-demo = [
+    # demo_app backend (FastAPI + SSE)
     "fastapi>=0.111.0",
     "uvicorn[standard]>=0.29.0",
     "python-multipart>=0.0.9",
 ]
+
+[project.optional-dependencies]
 dev = [
     "pytest>=8.0",
 ]

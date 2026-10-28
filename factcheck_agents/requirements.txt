@@ -1,3 +1,3 @@
 # Dependencies for this module are managed by uv via pyproject.toml.
-# Install with:  uv sync --extra agents
+# Now part of core deps in pyproject.toml:  uv sync
 # (torch, transformers, requests, python-dotenv are in the base project deps)
