@@ -1,0 +1,19 @@
+factcheck_agents/agents/debate_utils.py
+  s_817458cc35f52a::t_0c9efc59539ab6 65-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a026093f7ee026adadd64b15751560c1a3b72bc6",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
