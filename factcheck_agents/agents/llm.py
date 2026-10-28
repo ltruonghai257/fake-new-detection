@@ -21,6 +21,8 @@ def get_llm():
         model=settings.llm_model,
         temperature=settings.llm_temperature,
         api_key=settings.openai_api_key,
+        max_retries=5,  # backoff on 429/5xx: long debates burst many calls
+        timeout=90,
     )
 
 
