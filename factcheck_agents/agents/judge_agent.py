@@ -124,6 +124,32 @@ def _write_verdict_log(request_id: str, data: dict) -> None:
         pass
 
 
+JUDGE_INTERJECT_PROMPT = (
+    "Bạn là GIÁM KHẢO đang theo dõi một cuộc tranh luận REAL vs FAKE về một claim. "
+    "Bạn có quyền chen vào KẾT LUẬN bất cứ lúc nào. Kết luận sớm khi: một bên đã thắng rõ "
+    "(đối thủ nhượng bộ hoặc bị bằng chứng bác), hai bên đã đồng thuận, hoặc tranh luận bắt đầu "
+    "lặp / không thêm thông tin mới. Nếu vẫn còn điểm mấu chốt chưa được giải quyết thì để tiếp tục.\n"
+    'Trả về DUY NHẤT JSON: {"conclude": true|false, "reason": "một câu tiếng Việt"}'
+)
+
+
+def judge_should_conclude(state: FactCheckState, turns: list) -> tuple[bool, str]:
+    """Cheap per-turn check: should the judge cut in and end the debate now?"""
+    llm = get_llm()
+    if llm is None or len(turns) < 2:
+        return False, ""
+    user = (
+        f"CLAIM:\n{state.get('statement', '')}\n\n"
+        f"TRANH LUẬN ĐẾN NAY:\n{_format_debate_turns(turns)}\n"
+    )
+    try:
+        resp = llm.invoke([("system", JUDGE_INTERJECT_PROMPT), ("user", user)])
+        data = parse_json(getattr(resp, "content", "") or "") or {}
+        return bool(data.get("conclude")), str(data.get("reason", ""))
+    except Exception:
+        return False, ""
+
+
 FUSED_MARGIN = float(os.getenv("FACTCHECK_FUSED_MARGIN", "0.15"))
 
 

@@ -68,6 +68,7 @@ def real_advocate(state: FactCheckState) -> dict:
             "confidence": float(data.get("confidence", 0.5)),
             "argument": data.get("argument", content[:500]),
             "concession": data.get("concession"),
+            "passed": bool(data.get("pass")) and not data.get("argument"),
         }
         msg = f"[RealAdvocate] round {round_num} → {turn['verdict']} ({turn['confidence']:.2f})"
     except Exception as exc:

@@ -60,8 +60,11 @@ REAL_ADVOCATE_PROMPT = (
     '  "confidence": 0.0,             // số thực 0.0-1.0\n'
     '  "argument": "phản bác lập luận mới của đối thủ + ít nhất một luận điểm mới; '
     'tự chứa, tối đa 250 từ",\n'
-    '  "concession": "chuỗi nêu điểm nhượng bộ, hoặc null — BẮT BUỘC nếu đối thủ có luận điểm hợp lệ"\n'
-    "}"
+    '  "concession": "chuỗi nêu điểm nhượng bộ, hoặc null — BẮT BUỘC nếu đối thủ có luận điểm hợp lệ",\n'
+    '  "pass": false                  // true nếu KHÔNG còn luận điểm mới đáng nói (khi đó để argument rỗng)\n'
+    "}\n"
+    "Bạn KHÔNG bắt buộc phải nói mỗi lượt: nếu không có ý mới, không cần phản bác thêm, hoặc đối thủ "
+    "đã đúng, hãy đặt \"pass\": true thay vì nhắc lại. Không kéo dài tranh luận cho có."
 )
 
 FAKE_ADVOCATE_PROMPT = (
@@ -101,8 +104,11 @@ FAKE_ADVOCATE_PROMPT = (
     '  "confidence": 0.0,             // số thực 0.0-1.0\n'
     '  "argument": "phản bác lập luận mới của đối thủ + ít nhất một luận điểm mới; '
     'tự chứa, tối đa 250 từ",\n'
-    '  "concession": "chuỗi nêu điểm nhượng bộ, hoặc null — BẮT BUỘC nếu đối thủ có luận điểm hợp lệ"\n'
-    "}"
+    '  "concession": "chuỗi nêu điểm nhượng bộ, hoặc null — BẮT BUỘC nếu đối thủ có luận điểm hợp lệ",\n'
+    '  "pass": false                  // true nếu KHÔNG còn luận điểm mới đáng nói (khi đó để argument rỗng)\n'
+    "}\n"
+    "Bạn KHÔNG bắt buộc phải nói mỗi lượt: nếu không có ý mới, không cần phản bác thêm, hoặc đối thủ "
+    "đã đúng, hãy đặt \"pass\": true thay vì nhắc lại. Không kéo dài tranh luận cho có."
 )
 
 

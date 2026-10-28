@@ -7,6 +7,7 @@ the shared-state design used by TradingAgents.
 from __future__ import annotations
 
 import logging
+import os
 import uuid
 
 from langgraph.graph import END, START, StateGraph
@@ -128,66 +129,70 @@ def debate_node(state: FactCheckState) -> dict:
     exit_reason = None
     converged = False
     agreed_verdict = None
-    real_down = False
-    fake_down = False
+    down = {"real": False, "fake": False}
+    agents = {"real": real_advocate, "fake": fake_advocate}
+    last_verdict: dict = {}
+    passes = 0  # consecutive passes; both sides passing ends the debate
+    max_turns = max(2, 2 * settings.max_debate_rounds)
+    judge_interject = os.getenv("FACTCHECK_JUDGE_INTERJECT", "1") != "0"
+    speaker = "real"
+    judge_reason = ""
 
-    for round_num in range(settings.max_debate_rounds):
-        # Real advocate turn (D-05: partial debate — mark side down on first failure)
-        if not real_down:
-            try:
-                real_out = real_advocate(
-                    {**state, "debate_turns": turns, "debate_role": "real"}
-                )
-            except AgentUnavailableError:
-                real_down = True
-                turns.append({"agent": "real_advocate", "error": "agent_unavailable"})
-                logger.warning("[Debate] real_advocate unavailable — partial debate")
-            else:
-                real_turn = real_out.get("debate_turn")
-                if real_turn is not None:  # IN-07: only append non-None turns
-                    turns.append(real_turn)
-                if real_turn is None or real_turn.get("error"):
-                    exit_reason = "llm_error" if real_turn else "no_llm"
-                    break
-        else:
-            turns.append({"agent": "real_advocate", "error": "agent_unavailable"})
-
-        # Fake advocate turn
-        if not fake_down:
-            try:
-                fake_out = fake_advocate(
-                    {**state, "debate_turns": turns, "debate_role": "fake"}
-                )
-            except AgentUnavailableError:
-                fake_down = True
-                turns.append({"agent": "fake_advocate", "error": "agent_unavailable"})
-                logger.warning("[Debate] fake_advocate unavailable — partial debate")
-            else:
-                fake_turn = fake_out.get("debate_turn")
-                if fake_turn is not None:  # IN-07: only append non-None turns
-                    turns.append(fake_turn)
-                if fake_turn is None or fake_turn.get("error"):
-                    exit_reason = "llm_error" if fake_turn else "no_llm"
-                    break
-        else:
-            turns.append({"agent": "fake_advocate", "error": "agent_unavailable"})
-
-        # Both sides down → debate cannot proceed
-        if real_down and fake_down:
+    # Free-floor debate: no fixed alternation. A side may pass (nothing new to
+    # say) and then the other side keeps the floor; two passes in a row end the
+    # debate. The judge may cut in after any turn and conclude early.
+    while len(turns) < max_turns:
+        if down["real"] and down["fake"]:
             exit_reason = "agent_unavailable"
             break
+        if down[speaker]:
+            speaker = "fake" if speaker == "real" else "real"
+        try:
+            out = agents[speaker]({**state, "debate_turns": turns, "debate_role": speaker})
+        except AgentUnavailableError:
+            down[speaker] = True
+            turns.append({"agent": f"{speaker}_advocate", "error": "agent_unavailable"})
+            logger.warning("[Debate] %s_advocate unavailable — partial debate", speaker)
+            continue
+        turn = out.get("debate_turn")
+        if turn is None or turn.get("error"):
+            if turn is not None:
+                turns.append(turn)
+            exit_reason = "llm_error" if turn else "no_llm"
+            break
 
-        # One-sided debate cannot converge — skip the convergence check
-        if real_down or fake_down:
+        if turn.get("passed"):
+            passes += 1
+            logger.info("[Debate] %s_advocate passes", speaker)
+            if passes >= 2 or (down["real"] or down["fake"]):
+                exit_reason = "both_passed"
+                break
+            speaker = "fake" if speaker == "real" else "real"
             continue
 
-        real_v = str(real_turn.get("verdict", "")).upper()
-        fake_v = str(fake_turn.get("verdict", "")).upper()
-        if real_v == fake_v and real_v in {"REAL", "FAKE"}:
+        passes = 0
+        turns.append(turn)
+        last_verdict[speaker] = str(turn.get("verdict", "")).upper()
+
+        rv, fv = last_verdict.get("real"), last_verdict.get("fake")
+        if rv and rv == fv and rv in {"REAL", "FAKE"}:
             converged = True
-            agreed_verdict = real_v
+            agreed_verdict = rv
             exit_reason = "converged"
             break
+
+        if judge_interject:
+            from .agents.judge_agent import judge_should_conclude
+
+            stop, reason = judge_should_conclude(state, turns)
+            if stop:
+                exit_reason = "judge_concluded"
+                judge_reason = reason
+                logger.info("[Debate] judge concluded early: %s", reason)
+                break
+
+        # The opponent normally answers, but may be skipped if it just passed.
+        speaker = "fake" if speaker == "real" else "real"
 
     return {
         "debate_turns": turns,
@@ -198,7 +203,8 @@ def debate_node(state: FactCheckState) -> dict:
             (
                 "assistant",
                 f"[Debate] {len(turns)} turns ({exit_reason or 'max_rounds'})"
-                + (f" → agreed={agreed_verdict}" if converged else ""),
+                + (f" → agreed={agreed_verdict}" if converged else "")
+                + (f" — judge: {judge_reason}" if judge_reason else ""),
             )
         ],
     }
