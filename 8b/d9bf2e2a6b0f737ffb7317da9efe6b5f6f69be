@@ -1,0 +1,23 @@
+demo_app/frontend/src/components/VerdictCard.tsx
+  s_817458cc35f52a::t_06844c7f931e30 123-124
+factcheck_agents/agents/debate_utils.py
+  s_817458cc35f52a::t_06844c7f931e30 54-55,100-101
+factcheck_agents/agents/judge_agent.py
+  s_817458cc35f52a::t_06844c7f931e30 317-332,334,336-337,348
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8bd9bf2e2a6b0f737ffb7317da9efe6b5f6f69be",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
