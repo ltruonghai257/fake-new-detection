@@ -157,6 +157,9 @@ def judge_pick_next(state: FactCheckState, turns: list) -> tuple[str | None, str
         return None, ""
 
 
+FUSED_MARGIN = float(os.getenv("FACTCHECK_FUSED_MARGIN", "0.15"))
+
+
 def judge_agent(state: FactCheckState) -> dict:
     """Score debate turns and compute weight breakdown for downstream expert.
 
