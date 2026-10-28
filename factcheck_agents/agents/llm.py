@@ -17,9 +17,13 @@ def get_llm():
         return None
     from langchain_openai import ChatOpenAI
 
+    kwargs = {}
+    # gpt-5*/o* reasoning models only accept the default temperature.
+    if not settings.llm_model.startswith(("gpt-5", "o1", "o3", "o4")):
+        kwargs["temperature"] = settings.llm_temperature
     return ChatOpenAI(
         model=settings.llm_model,
-        temperature=settings.llm_temperature,
+        **kwargs,
         api_key=settings.openai_api_key,
         max_retries=5,  # backoff on 429/5xx: long debates burst many calls
         timeout=90,
