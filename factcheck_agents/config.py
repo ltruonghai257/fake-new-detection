@@ -97,7 +97,7 @@ class Settings:
     )
     coolant_debate_threshold: float = field(
         default_factory=lambda: float(
-            os.getenv("FACTCHECK_COOLANT_DEBATE_THRESHOLD", "0.8")
+            os.getenv("FACTCHECK_COOLANT_DEBATE_THRESHOLD", "0.7")
         )
     )
     max_debate_rounds: int = field(
