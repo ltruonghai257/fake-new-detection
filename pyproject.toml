@@ -67,6 +67,12 @@ agents = [
     "rank_bm25>=0.2.2",
     "a2a-sdk[http-server,fastapi]>=1.0.1,<2",
 ]
+# demo_app backend (FastAPI + SSE). Install with:  uv sync --extra agents --extra demo
+demo = [
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.29.0",
+    "python-multipart>=0.0.9",
+]
 dev = [
     "pytest>=8.0",
 ]
