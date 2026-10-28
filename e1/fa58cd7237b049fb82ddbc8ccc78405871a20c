@@ -1,0 +1,21 @@
+demo_app/backend/main.py
+  s_817458cc35f52a::t_9134872e7d51eb 25
+factcheck_agents/graph.py
+  s_817458cc35f52a::t_520fd01c07f45f 161-164
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e1fa58cd7237b049fb82ddbc8ccc78405871a20c",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
