@@ -19,6 +19,8 @@ from typing import Optional
 
 import warnings
 
+import threading
+
 from ..config import settings
 from ..state import ModelResult
 
@@ -109,6 +111,8 @@ def _extract_internals(out: dict) -> dict:
     return res
 
 
+_LOAD_LOCK = threading.Lock()
+
 class CoolantChecker:
     def __init__(self) -> None:
         self._loaded = False
@@ -119,6 +123,12 @@ class CoolantChecker:
         self._load_error: Optional[str] = None
 
     def load(self) -> bool:
+        if self._loaded:
+            return True
+        with _LOAD_LOCK:  # warmup thread and a request may race
+            return self._load_locked()
+
+    def _load_locked(self) -> bool:
         if self._loaded:
             return True
         if self._load_error is not None:

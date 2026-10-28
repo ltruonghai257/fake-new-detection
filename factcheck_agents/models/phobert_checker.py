@@ -21,6 +21,8 @@ import torch
 import torch.nn as nn
 from transformers import AutoModel, AutoTokenizer
 
+import threading
+
 from ..config import settings
 from ..state import ModelResult
 
@@ -30,6 +32,8 @@ _LABELS_2 = {0: "SUPPORTED", 1: "REFUTED"}
 
 _TIER_ORDER = {"trusted": 0, "flagged": 1, "social": 2, "unknown": 3}
 
+
+_LOAD_LOCK = threading.Lock()
 
 class PhoBERTClassifier(nn.Module):
     """PhoBERT fine-tuned text classifier for Vietnamese fake-news detection."""
@@ -204,6 +208,12 @@ class PhoBERTChecker:
         return _PoolerClassifier(backbone, num_classes, dropout)
 
     def load(self) -> bool:
+        if self._loaded:
+            return True
+        with _LOAD_LOCK:  # warmup thread and a request may race
+            return self._load_locked()
+
+    def _load_locked(self) -> bool:
         if self._loaded:
             return True
         if self._load_error is not None:
