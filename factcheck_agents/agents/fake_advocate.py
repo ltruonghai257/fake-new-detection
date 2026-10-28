@@ -9,6 +9,8 @@ call this service over A2A instead.
 
 from __future__ import annotations
 
+import logging
+
 from datetime import datetime
 from typing import List, Optional
 
@@ -22,6 +24,8 @@ from .debate_utils import (
     _invoke_advocate_with_novelty,
 )
 from .llm import get_llm
+
+logger = logging.getLogger(__name__)
 
 
 def fake_advocate(state: FactCheckState) -> dict:
@@ -72,6 +76,7 @@ def fake_advocate(state: FactCheckState) -> dict:
         }
         msg = f"[FakeAdvocate] round {round_num} → {turn['verdict']} ({turn['confidence']:.2f})"
     except Exception as exc:
+        logger.exception("[fake_advocate] failed: %s", exc)
         turn = {
             "agent": "fake_advocate",
             "round": round_num,

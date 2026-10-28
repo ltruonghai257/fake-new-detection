@@ -7,6 +7,8 @@ on the available model outputs so the pipeline still produces a verdict.
 
 from __future__ import annotations
 
+import logging
+
 import json
 from typing import Any, List, Optional, Tuple
 
@@ -15,6 +17,8 @@ from ..state import Evidence, FactCheckState, ModelResult, Verdict
 from .llm import get_llm, parse_json
 from ..config import settings
 from ..prompts import CONCLUSION_SYSTEM_PROMPT, DEBATE_SYSTEM_PROMPT
+
+logger = logging.getLogger(__name__)
 
 
 _BINARY_REAL_LABELS = {"SUPPORTED", "REAL", "TRUE"}
@@ -180,6 +184,7 @@ def conclusion_agent(state: FactCheckState) -> dict:
         )
         data = parse_json(getattr(resp, "content", "") or "") or {}
     except Exception as exc:
+        logger.exception("[conclusion_agent] failed: %s", exc)
         verdict = _fallback_verdict(model_results, evidence, evidence_graph)
         verdict["rationale"] += f" (LLM error: {exc})"
         return {

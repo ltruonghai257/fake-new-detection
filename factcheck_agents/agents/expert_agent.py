@@ -8,6 +8,8 @@ and delivers the final yes/no/unverifiable decision.
 
 from __future__ import annotations
 
+import logging
+
 import json
 from pathlib import Path
 from typing import List
@@ -15,6 +17,8 @@ from typing import List
 from ..state import Evidence, FactCheckState, Verdict, binary_to_vi, canonicalize_binary
 from .debate_utils import _assess_source_unanimity
 from .llm import get_llm, parse_json
+
+logger = logging.getLogger(__name__)
 
 EXPERT_SYSTEM_PROMPT = (
     "Bạn là CHUYÊN GIA KIỂM DUYỆT THÔNG TIN, người ra phán quyết CUỐI CÙNG. "
@@ -204,6 +208,7 @@ def expert_agent(state: FactCheckState) -> dict:
         resp = llm.invoke([("system", EXPERT_SYSTEM_PROMPT), ("user", user)])
         data = parse_json(getattr(resp, "content", "") or "") or {}
     except Exception as exc:
+        logger.exception("[expert_agent] failed: %s", exc)
         # LLM error — preserve the judge verdict unchanged (graceful degrade)
         return {
             "messages": [("assistant", f"[Expert] Lỗi LLM: {exc}")],

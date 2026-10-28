@@ -11,6 +11,8 @@ is True only when at least one model is available, confident, and not NEI.
 
 from __future__ import annotations
 
+import logging
+
 import os
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
@@ -20,6 +22,8 @@ from ..config import settings
 from ..models import CoolantChecker, PhoBERTChecker
 from ..models.phobert_checker import build_evidence_text
 from ..state import FactCheckState, ModelResult
+
+logger = logging.getLogger(__name__)
 
 _PHOBERT_WEIGHT = float(os.getenv("FACTCHECK_PHOBERT_WEIGHT", "0.4"))
 _COOLANT_WEIGHT = float(os.getenv("FACTCHECK_COOLANT_WEIGHT", "0.6"))
@@ -41,6 +45,7 @@ def _run_phobert(
     try:
         return _phobert().predict(statement, evidence_text, evidence_count)
     except Exception as exc:
+        logger.exception("[verify_agent] failed: %s", exc)
         return ModelResult(model="phobert_vifactcheck", available=False, note=str(exc))
 
 
@@ -59,6 +64,7 @@ def _run_coolant(statement: str, image_path: Optional[str]) -> ModelResult:
             )
         return result
     except Exception as exc:
+        logger.exception("[verify_agent] failed: %s", exc)
         import warnings
 
         warnings.warn(
