@@ -263,12 +263,13 @@ def judge_agent(state: FactCheckState) -> dict:
             model_signal += ph_conf
         elif ph_label in FAKE_MODEL_LABELS:
             model_signal -= ph_conf
+    # COOLANT measures image-caption CONSISTENCY, not veracity, so it does not
+    # vote REAL/FAKE. A mismatch only lowers confidence in the text-based signal;
+    # a match leaves it unchanged (a matching image does not prove the claim).
     if co_avail:
         co_label = str(model_detail.get("coolant", {}).get("label", "")).upper()
-        if co_label in REAL_MODEL_LABELS:
-            model_signal += co_conf
-        elif co_label in FAKE_MODEL_LABELS:
-            model_signal -= co_conf
+        if co_label in FAKE_MODEL_LABELS:
+            model_signal *= 1.0 - 0.3 * co_conf
     model_signal = max(-1.0, min(1.0, model_signal))
 
     # Debate signal
@@ -301,6 +302,7 @@ def judge_agent(state: FactCheckState) -> dict:
         "phobert_probabilities": model_detail.get("phobert_vifactcheck", {}).get(
             "probabilities"
         ),
+        "coolant_similarity": model_detail.get("coolant", {}).get("similarity_score"),
         "coolant_label": model_detail.get("coolant", {}).get("label"),
         "coolant_probabilities": model_detail.get("coolant", {}).get("probabilities"),
     }

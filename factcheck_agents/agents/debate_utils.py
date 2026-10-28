@@ -315,6 +315,19 @@ def _format_coolant_for_role(
         amb_label = "CAO — model không chắc chắn" if amb_weight > 0.6 else "THẤP — model tự tin"
         internals += f"- Độ mơ hồ cross-modal (ambiguity): {amb_weight:.2f} ({amb_label})\n"
     internals += attn_text
+    # similarity_score separates matched/mismatched pairs better than the label
+    # (matched pairs ~0.3-0.5, mismatched <~0.15); the label is biased to FAKE.
+    if sim_score is not None:
+        if sim_score >= 0.3 and label == "FAKE":
+            internals += (
+                f"- LƯU Ý: similarity cao ({sim_score:.2f}) nhưng nhãn FAKE — nhãn COOLANT "
+                "có xu hướng nghiêng về FAKE, tin similarity hơn nhãn.\n"
+            )
+        elif sim_score < 0.15:
+            internals += (
+                f"- LƯU Ý: similarity thấp ({sim_score:.2f}) — ảnh và caption thực sự "
+                "ít liên quan.\n"
+            )
 
     if role == "real":
         # Real advocate: wield COOLANT when it says REAL, counter when it says FAKE

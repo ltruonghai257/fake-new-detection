@@ -13,6 +13,8 @@ mismatch (expected while the model is still being validated), it returns an
 from __future__ import annotations
 
 import json as _json
+import math
+import os
 import sys
 from pathlib import Path
 from typing import Optional
@@ -29,6 +31,12 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 _LABELS = {0: "REAL", 1: "FAKE"}
+
+# Label decision threshold on cosine similarity (calibrated on 9 hand-made
+# pairs: matched 0.33-0.48, mismatched <=0.13). Override via env.
+_SIM_THRESHOLD = float(os.getenv("FACTCHECK_COOLANT_SIM_THRESHOLD", "0.25"))
+_SIM_SCALE = float(os.getenv("FACTCHECK_COOLANT_SIM_SCALE", "0.08"))
+
 
 def _training_clean(text: str) -> str:
     """Clean text the way the training features were built.
@@ -298,6 +306,19 @@ class CoolantChecker:
                 internals = _extract_internals(out) if isinstance(out, dict) else {}
 
             label_id = int(max(range(len(probs)), key=lambda i: probs[i]))
+            raw_note = ""
+            sim = internals.get("similarity_score")
+            if sim is not None:
+                # The classifier head is biased to FAKE (matched pairs often get
+                # P(REAL)<0.2) while similarity separates matched (~0.3-0.5) from
+                # mismatched (<~0.15). Decide by similarity; keep raw output in note.
+                raw_note = (
+                    f" [raw head: {_LABELS.get(label_id)} "
+                    f"P(REAL)={probs[0]:.2f}]"
+                )
+                p_real = 1.0 / (1.0 + math.exp(-(sim - _SIM_THRESHOLD) / _SIM_SCALE))
+                probs = [p_real, 1.0 - p_real]
+                label_id = 0 if sim >= _SIM_THRESHOLD else 1
             prob_map = {
                 _LABELS.get(i, str(i)): round(p, 4) for i, p in enumerate(probs)
             }
@@ -343,7 +364,7 @@ class CoolantChecker:
                 label_id=label_id,
                 probabilities=prob_map,
                 confidence=round(probs[label_id], 4),
-                note="multimodal (statement + image) prediction",
+                note="multimodal (statement + image) prediction" + raw_note,
                 workflow_steps=workflow_steps,
                 **internals,
             )
