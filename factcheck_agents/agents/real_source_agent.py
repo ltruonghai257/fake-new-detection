@@ -42,74 +42,18 @@ def real_source_agent(state: FactCheckState) -> dict:
     queries = list(
         dict.fromkeys(queries + claim_variants)
     )  # deduplicate, preserve order
-    results: List[Evidence] = []
     seen: set = set()
-    workflow_steps = []
+    from .source_utils import parallel_search_and_crawl
 
-    for q in queries:
-        try:
-            workflow_steps.append(
-                {
-                    "step": f"Search query: {q[:50]}...",
-                    "description": f"Search Tavily/Google CSE with include_domains={REAL_DOMAINS[:2]}",
-                    "input": f"max_results={settings.max_results}",
-                    "output": "",
-                }
-            )
-
-            q_results = web_search(
-                q, max_results=settings.max_results, include_domains=REAL_DOMAINS
-            )
-            workflow_steps[-1]["output"] = f"{len(q_results)} results found"
-
-            crawled_count = 0
-            filtered_count = 0
-            for e in q_results:
-                url = e.get("url", "")
-                if url and url in seen:
-                    continue
-                if url:
-                    seen.add(url)
-
-                # Crawl full article content
-                full_content, publish_date = crawl_article(url)
-                crawled_count += 1
-
-                # Filter: only include if within last 7 days
-                if not is_within_days(publish_date, days=7):
-                    filtered_count += 1
-                    continue
-
-                e["source_tier"] = classify_domain(url) if url else "unknown"
-                e["image_path"], e["image_caption"] = (
-                    _fetch_evidence_image(url) if url else (None, None)
-                )
-
-                # Use full content if available, otherwise snippet
-                if full_content:
-                    e["content"] = full_content
-                    e["snippet"] = (
-                        full_content[:500] + "..."
-                        if len(full_content) > 500
-                        else full_content
-                    )
-                    e["publish_date"] = (
-                        publish_date.isoformat() if publish_date else None
-                    )
-
-                results.append(e)
-
-            workflow_steps.append(
-                {
-                    "step": f"Crawl & filter for query: {q[:50]}...",
-                    "description": "Crawl full article content + filter by last 7 days",
-                    "input": f"{crawled_count} URLs crawled",
-                    "output": f"{len(results) - (len(results) - crawled_count + filtered_count)} passed 7-day filter (filtered: {filtered_count})",
-                }
-            )
-        except Exception as exc:
-            errors = state.get("errors", [])
-            errors.append(f"[RealSource] Query '{q}' failed: {exc}")
+    results: List[Evidence] = parallel_search_and_crawl(queries, [REAL_DOMAINS], seen)
+    workflow_steps = [
+        {
+            "step": f"Search {len(queries)} queries in parallel",
+            "description": f"Tavily/Google CSE with include_domains={REAL_DOMAINS[:2]}, crawl + {settings.search_max_age_days or 7}-day filter",
+            "input": f"queries={[q[:40] for q in queries]}",
+            "output": f"{len(results)} items kept",
+        }
+    ]
 
     msg = f"[RealSource] {len(results)} items from {REAL_DOMAINS[:2]}... (last 7 days)"
     return {

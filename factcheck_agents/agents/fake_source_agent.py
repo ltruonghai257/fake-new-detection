@@ -38,49 +38,6 @@ def _relevance(claim: str, text: str) -> float:
     return len(ct & _tokens(text)) / len(ct)
 
 
-def _search_and_crawl(
-    query: str, include_domains: list | None, seen: set, claim: str = ""
-) -> List[Evidence]:
-    """Run web search, crawl article content, filter by 7 days, deduplicate."""
-    try:
-        q_results = web_search(
-            query, max_results=settings.max_results, include_domains=include_domains
-        )
-    except Exception:
-        return []
-
-    out: List[Evidence] = []
-    for e in q_results:
-        url = e.get("url", "")
-        if url and url in seen:
-            continue
-        if url:
-            seen.add(url)
-
-        if claim and _relevance(
-            claim, f"{e.get('title', '')} {e.get('snippet', '')}"
-        ) < _MIN_RELEVANCE:
-            continue
-
-        full_content, publish_date = crawl_article(url)
-        if not is_within_days(publish_date, days=7):
-            continue
-
-        e["source_tier"] = classify_domain(url) if url else "unknown"
-        e["image_path"], e["image_caption"] = (
-            _fetch_evidence_image(url) if url else (None, None)
-        )
-        if full_content:
-            e["content"] = full_content
-            e["snippet"] = (
-                full_content[:500] + "..." if len(full_content) > 500 else full_content
-            )
-            e["publish_date"] = publish_date.isoformat() if publish_date else None
-
-        out.append(e)
-    return out
-
-
 def fake_source_agent(state: FactCheckState) -> dict:
     """Search flagged/non-official sources for evidence against the claim.
 
@@ -101,6 +58,7 @@ def fake_source_agent(state: FactCheckState) -> dict:
     claim = state["statement"]
     # Refutation-oriented queries: otherwise the open-web search just returns the
     # same supporting articles as the real-source branch.
+    plain_queries = list(queries)
     refute_queries = [f"{q} {suf}" for q in queries[:2] for suf in _REFUTE_SUFFIXES]
     queries = refute_queries + queries
 
@@ -108,14 +66,17 @@ def fake_source_agent(state: FactCheckState) -> dict:
     results: List[Evidence] = []
     seen: set = set()
 
-    for q in queries:
-        # 1) flagged domains (kenh14.vn, etc.)
-        if flagged_list:
-            results.extend(_search_and_crawl(q, flagged_list, seen, claim))
+    from .source_utils import parallel_search_and_crawl
 
-        # 2) open web (no domain filter) — catches non-official sources
-        results.extend(_search_and_crawl(q, None, seen, claim))
+    def _relevant(e: Evidence) -> bool:
+        return _relevance(claim, f"{e.get('title', '')} {e.get('snippet', '')}") >= _MIN_RELEVANCE
 
+    domain_sets = ([flagged_list] if flagged_list else []) + [None]
+    results.extend(
+        parallel_search_and_crawl(queries, domain_sets, seen, keep=_relevant)
+    )
+
+    for q in plain_queries:
         # 3) Google Fact Check API
         if settings.google_factcheck_api_key is not None:
             try:
@@ -129,23 +90,23 @@ def fake_source_agent(state: FactCheckState) -> dict:
                 resp.raise_for_status()
                 data = resp.json()
                 claims = data.get("claims", [])
-                for claim in claims:
-                    claim_text = claim.get("text", "")
-                    claimant = claim.get("claimant", "")
-                    review_date = claim.get("claimReview", [{}])[0].get(
+                for item in claims:
+                    claim_text = item.get("text", "")
+                    claimant = item.get("claimant", "")
+                    review_date = item.get("claimReview", [{}])[0].get(
                         "reviewDate", ""
                     )
                     publisher = (
-                        claim.get("claimReview", [{}])[0]
+                        item.get("claimReview", [{}])[0]
                         .get("publisher", {})
                         .get("name", "")
                     )
                     url = (
-                        claim.get("claimReview", [{}])[0]
+                        item.get("claimReview", [{}])[0]
                         .get("publisher", {})
                         .get("site", "")
                     )
-                    textual_rating = claim.get("claimReview", [{}])[0].get(
+                    textual_rating = item.get("claimReview", [{}])[0].get(
                         "textualRating", ""
                     )
                     title = f"{publisher}: {textual_rating}"
