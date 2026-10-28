@@ -89,6 +89,20 @@ def _format_expert_judge_scores(turn_scores: List[dict]) -> str:
     return "\n".join(lines)
 
 
+_FUSED_TO_LABEL = {"REAL": "TRUE", "FAKE": "FALSE", "NEI": "UNVERIFIED"}
+
+
+def _fused_note(bd: dict) -> str:
+    fv = bd.get("fused_verdict")
+    if not fv:
+        return ""
+    return (
+        f"ĐIỂM HỢP NHẤT (model + bằng chứng + tranh luận, đã tính trọng số): "
+        f"{bd.get('fused_score')} → {fv}. Đây là KẾT LUẬN BẮT BUỘC của hệ thống; "
+        f"rationale phải giải thích vì sao dẫn tới {fv}."
+    )
+
+
 def expert_agent(state: FactCheckState) -> dict:
     statement = state["statement"]
     model_results = state.get("model_results") or []
@@ -177,7 +191,8 @@ def expert_agent(state: FactCheckState) -> dict:
         f"----- ĐIỂM GIÁM KHẢO -----\n"
         f"{_format_expert_judge_scores(judge_turn_scores)}\n"
         f"Debate winner: {judge_breakdown.get('debate_winner', 'unknown')}\n"
-        f"Debate direction: {judge_breakdown.get('debate_direction', 0.0)}\n\n"
+        f"Debate direction: {judge_breakdown.get('debate_direction', 0.0)}\n"
+        f"{_fused_note(judge_breakdown)}\n"
         f"===== YÊU CẦU =====\n"
         f"Hãy đưa ra kết luận cuối cùng với giải thích CHI TIẾT. "
         f"Rationale phải ≥ 200 từ, chia mục rõ ràng. "
@@ -201,6 +216,15 @@ def expert_agent(state: FactCheckState) -> dict:
     confidence = float(
         existing_verdict.get("confidence") or data.get("confidence", 0.5) or 0.5
     )
+
+    # Judge's fused score is authoritative: it overrides the LLM's own label.
+    fv = judge_breakdown.get("fused_verdict")
+    if fv in _FUSED_TO_LABEL and not existing_verdict:
+        binary = fv
+        label_vi = binary_to_vi(binary)
+        llm_label = str(data.get("label", "")).upper()
+        label = llm_label if canonicalize_binary(llm_label) == fv else _FUSED_TO_LABEL[fv]
+        confidence = min(0.95, 0.5 + abs(float(judge_breakdown.get("fused_score", 0.0))) / 2)
 
     # Convergence override: boost confidence when debate converged and expert agrees.
     # Only counts as independent agreement when ≥2 model signals were available —

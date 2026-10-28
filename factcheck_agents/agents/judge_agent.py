@@ -124,6 +124,9 @@ def _write_verdict_log(request_id: str, data: dict) -> None:
         pass
 
 
+FUSED_MARGIN = float(os.getenv("FACTCHECK_FUSED_MARGIN", "0.15"))
+
+
 def judge_agent(state: FactCheckState) -> dict:
     """Score debate turns and compute weight breakdown for downstream expert.
 
@@ -286,7 +289,29 @@ def judge_agent(state: FactCheckState) -> dict:
     _jw_co = float(os.getenv("FACTCHECK_JUDGE_COOLANT_WEIGHT", "0.35"))
     _jw_ev = float(os.getenv("FACTCHECK_JUDGE_EVIDENCE_WEIGHT", "0.15"))
     _jw_db = float(os.getenv("FACTCHECK_JUDGE_DEBATE_WEIGHT", "0.15"))
+    # Deterministic fusion: this score decides the final binary verdict
+    # (expert_agent enforces it), so debate/models/evidence truly count.
+    n_ev = len(evidence_real) + len(evidence_fake)
+    evidence_signal = (len(evidence_real) - len(evidence_fake)) / n_ev if n_ev else 0.0
+    w_model = (_jw_ph if ph_avail else 0.0) + (_jw_co if co_avail else 0.0)
+    w_ev = _jw_ev if n_ev else 0.0
+    w_db = _jw_db if debate_direction != 0.0 else 0.0
+    denom = w_model + w_ev + w_db
+    fused_score = (
+        (w_model * model_signal + w_ev * evidence_signal + w_db * debate_direction * debate_conf / 0.7)
+        / denom
+        if denom
+        else 0.0
+    )
+    fused_score = max(-1.0, min(1.0, fused_score))
+    fused_verdict = (
+        "REAL" if fused_score > FUSED_MARGIN else "FAKE" if fused_score < -FUSED_MARGIN else "NEI"
+    )
+
     weight_breakdown = {
+        "fused_score": round(fused_score, 4),
+        "fused_verdict": fused_verdict,
+        "evidence_signal": round(evidence_signal, 4),
         "phobert": _jw_ph if ph_avail else 0.0,
         "coolant": _jw_co if co_avail else 0.0,
         "evidence": _jw_ev,

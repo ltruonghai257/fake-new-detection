@@ -1,7 +1,3 @@
-                COOLANT là mô hình đa phương thức: nhận claim (text) + hình ảnh,
-                đánh giá mức <b>nhất quán ảnh–caption</b> (2 lớp). REAL = ảnh
-                khớp với nội dung; FAKE = ảnh không khớp (có thể bị ghép/dùng
-                sai ngữ cảnh). Đây chưa phải kết luận về độ đúng của tin.
 import { useState } from 'react';
 import {
     Verdict,
