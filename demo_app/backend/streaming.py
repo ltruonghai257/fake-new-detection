@@ -303,6 +303,14 @@ async def sse_stream(
             weight_breakdown["coolant_probabilities"] = (
                 coolant_result.get("probabilities") if coolant_result else None
             )
+            for k_out, k_in in (
+                ("coolant_similarity", "similarity_score"),
+                ("coolant_ambiguity", "ambiguity_weight"),
+                ("coolant_attention", "attention_weights"),
+            ):
+                weight_breakdown[k_out] = (
+                    coolant_result.get(k_in) if coolant_result else None
+                )
             weight_breakdown["coolant_workflow_steps"] = (
                 coolant_result.get("workflow_steps") if coolant_result else None
             )

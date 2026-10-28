@@ -141,6 +141,9 @@ export default function VerdictCard({
                         confidence={weightBreakdown.coolant}
                         label={weightBreakdown.coolant_label}
                         probabilities={weightBreakdown.coolant_probabilities}
+                        similarity={weightBreakdown.coolant_similarity}
+                        ambiguity={weightBreakdown.coolant_ambiguity}
+                        attention={weightBreakdown.coolant_attention}
                     />
                 )}
                 {openPanel === 'evidence' && (
@@ -480,26 +483,65 @@ function CoolantDetail({
     confidence,
     label,
     probabilities,
+    similarity,
+    ambiguity,
+    attention,
 }: {
     confidence: number;
     label?: string | null;
     probabilities?: Record<string, number> | null;
+    similarity?: number | null;
+    ambiguity?: number | null;
+    attention?: { text: number; image: number; cross: number } | null;
 }) {
+    const THRESHOLD = 0.25;
+    // map cosine similarity [-1, 1] -> [0, 100]%
+    const pos = (v: number) => `${Math.max(0, Math.min(100, ((v + 1) / 2) * 100))}%`;
     return (
         <div className="mt-3 bg-teal-50 border border-teal-200 rounded-lg p-4 text-sm">
             <div className="font-medium text-teal-800 mb-2">
                 COOLANT — chi tiết điểm {Math.round(confidence * 100)}%
             </div>
             <p className="text-gray-600 mb-3">
-                COOLANT là mô hình đa phương thức: nhận claim (text) + hình ảnh,
-                xuất ra 3 logit cho SUPPORTED / REFUTED / NEI. Áp dụng{' '}
-                <code className="bg-teal-100 px-1 rounded">softmax</code> để
-                được xác suất, nhãn cao nhất được chọn.
+                COOLANT là mô hình đa phương thức duy nhất nhìn vào{' '}
+                <b>hình ảnh</b>: nó đo ảnh có khớp với nội dung claim hay không.
+                Tin giả thường dùng ảnh cũ/ghép/sai ngữ cảnh — PhoBERT và nguồn
+                văn bản không thấy được điều này. Kết quả được đưa vào cả{' '}
+                <b>tranh luận</b> (phe REAL/FAKE dùng làm lập luận) lẫn điểm
+                cuối.
             </p>
+
+            {similarity != null && (
+                <div className="mb-3">
+                    <div className="text-xs font-medium text-gray-500 mb-1">
+                        Độ khớp text–ảnh (cosine similarity):{' '}
+                        <span className="text-teal-700">
+                            {similarity.toFixed(2)}
+                        </span>
+                    </div>
+                    <div className="relative h-4 rounded-full bg-gradient-to-r from-red-300 via-gray-200 to-green-300">
+                        <div
+                            className="absolute top-0 h-4 w-0.5 bg-gray-700"
+                            style={{ left: pos(THRESHOLD) }}
+                            title={`Ngưỡng ${THRESHOLD}`}
+                        />
+                        <div
+                            className="absolute -top-1 h-6 w-2 rounded bg-teal-700"
+                            style={{ left: pos(similarity) }}
+                        />
+                    </div>
+                    <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+                        <span>-1 (ngược nghĩa)</span>
+                        <span>vạch đen = ngưỡng {THRESHOLD}</span>
+                        <span>+1 (khớp)</span>
+                    </div>
+                </div>
+            )}
+
             {probabilities && (
-                <div className="space-y-2">
+                <div className="space-y-2 mb-3">
                     <div className="text-xs font-medium text-gray-500">
-                        Phân phối xác suất:
+                        Khả năng ảnh khớp (REAL) / không khớp (FAKE):
                     </div>
                     {Object.entries(probabilities)
                         .sort(([, a], [, b]) => b - a)
@@ -527,9 +569,49 @@ function CoolantDetail({
                         ))}
                 </div>
             )}
+
+            {ambiguity != null && (
+                <div className="text-xs text-gray-600 mb-2">
+                    Độ mơ hồ cross-modal:{' '}
+                    <b>{ambiguity.toFixed(2)}</b>{' '}
+                    {ambiguity > 0.6
+                        ? '(cao — model không chắc, nên cẩn trọng)'
+                        : '(thấp — model khá tự tin)'}
+                </div>
+            )}
+
+            {attention && (
+                <div className="space-y-1 mb-2">
+                    <div className="text-xs font-medium text-gray-500">
+                        Model chú ý vào:
+                    </div>
+                    {(['text', 'image', 'cross'] as const).map(k => (
+                        <div key={k} className="flex items-center gap-2">
+                            <span className="w-14 text-xs text-gray-500">
+                                {k === 'text'
+                                    ? 'Văn bản'
+                                    : k === 'image'
+                                      ? 'Hình ảnh'
+                                      : 'Tương tác'}
+                            </span>
+                            <div className="flex-1 bg-teal-100 rounded-full h-2 overflow-hidden">
+                                <div
+                                    className="bg-teal-600 h-2 rounded-full"
+                                    style={{ width: `${attention[k] * 100}%` }}
+                                />
+                            </div>
+                            <span className="text-xs text-gray-600 w-10 text-right">
+                                {(attention[k] * 100).toFixed(0)}%
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             <p className="text-xs text-gray-400 mt-3">
-                Công thức: confidence = max(softmax(detection_logits)) · Đóng
-                góp 30% vào điểm cuối.
+                Nhãn REAL khi similarity ≥ {THRESHOLD}, ngược lại FAKE · Đóng
+                góp 35% vào điểm cuối và là vũ khí lập luận cho cả hai phe
+                trong tranh luận.
             </p>
         </div>
     );

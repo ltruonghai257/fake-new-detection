@@ -51,6 +51,9 @@ export interface WeightBreakdown {
     phobert_probabilities?: Record<string, number> | null;
     coolant_label?: string | null;
     coolant_probabilities?: Record<string, number> | null;
+    coolant_similarity?: number | null;
+    coolant_ambiguity?: number | null;
+    coolant_attention?: { text: number; image: number; cross: number } | null;
     evidence_breakdown?: EvidenceBreakdown | null;
 }
 
