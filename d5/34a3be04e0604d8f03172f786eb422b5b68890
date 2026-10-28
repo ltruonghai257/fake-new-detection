@@ -1,0 +1,23 @@
+pyproject.toml
+  s_817458cc35f52a::t_b2f4435951d3b5 55,64,69-70
+factcheck_agents/requirements.txt
+  s_817458cc35f52a::t_02f8737f72cbd1 2
+uv.lock
+  s_817458cc35f52a::t_6d9af9b01d6eea 1137,1140,1151-1153,1157,1160-1161,1166,1175-1176,1190,1200,1203,1214-1216,1220,1223,1226,1236-1237,1250,1252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d534a3be04e0604d8f03172f786eb422b5b68890",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
