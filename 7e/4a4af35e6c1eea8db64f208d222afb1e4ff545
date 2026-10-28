@@ -1,0 +1,21 @@
+pyproject.toml
+  s_817458cc35f52a::t_047343fdc16793 70-75
+uv.lock
+  s_817458cc35f52a::t_c73f4b648889e2 2,1193-1197,1207,1240,1254,1256,1906-2017,7040-7106,7116-7158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7e4a4af35e6c1eea8db64f208d222afb1e4ff545",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-opus-5-5[1m]"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
