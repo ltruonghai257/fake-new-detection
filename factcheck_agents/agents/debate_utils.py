@@ -3,6 +3,13 @@
 Extracted from the former ``debate_node.py``: advocate prompt templates,
 evidence/model/history formatting helpers, JSON parsing, and the JSONL
 turn logger. Both ``real_advocate`` and ``fake_advocate`` import from here.
+
+D-09: COOLANT is injected as a ROLE-SPECIFIC debate weapon — each advocate
+sees tailored guidance on how to wield or counter COOLANT's findings.
+D-10: Anti-repetition — prior claims from history are extracted and listed
+as forbidden territory, forcing advocates to produce genuinely new arguments.
+D-11: Interaction enforcement — opponent arguments are presented in a
+structured format requiring explicit citation → rebuttal → new point flow.
 """
 
 from __future__ import annotations
@@ -14,6 +21,8 @@ from typing import List, Optional
 
 from ..state import Evidence
 
+# ── Advocate prompts ─────────────────────────────────────────────────────────
+
 REAL_ADVOCATE_PROMPT = (
     "Bạn là LUẬT SƯ BÀO CHỮA trong phiên tranh biện đối kháng xác minh tin tức tiếng Việt. "
     "Vị trí bảo vệ: claim là REAL. Đối thủ bảo vệ FAKE. "
@@ -23,17 +32,25 @@ REAL_ADVOCATE_PROMPT = (
     "- TÍN HIỆU MODEL: PhoBERT đo độ đúng của claim theo văn bản; COOLANT đo mức nhất quán "
     "giữa claim và ảnh ('FAKE' = ảnh và claim không khớp, chưa kết luận tin giả). "
     "Luận điểm tham chiếu, không phải kết luận sự thật.\n"
-    "- TOÀN BỘ BẰNG CHỨNG: các nguồn kèm tier.\n"
-    "- LẬP LUẬN ĐỐI THỦ: lượt phát biểu GẦN NHẤT của phe FAKE.\n"
-    "- LỊCH SỬ TRANH LUẬN: tất cả các lượt trước.\n\n"
-    "CÁCH TRANH LUẬN:\n"
-    "- Trích ý cụ thể đối thủ vừa nêu, rồi phản bác bằng SUY LUẬN của bạn — chỉ ra mối liên hệ, "
-    "hệ quả logic, hoặc mâu thuẫn nội tại của họ. Đừng đọc lại số liệu.\n"
-    "- Mỗi lượt phải có ÍT NHẤT MỘT luận điểm mới hoặc góc phản bác mới; không lặp nguyên văn "
-    "luận điểm đã nêu trong lịch sử. Chỉ nhắc số liệu model khi phục vụ lập luận mới.\n"
-    "- Nếu đối thủ phản bác được điểm của bạn, thừa nhận trong 'concession' — đừng lặp điểm đã chết.\n"
-    "- Được phép đổi verdict sang FAKE khi không còn phản bác được — ghi lý do trong 'concession'. "
-    "Mục tiêu là kết luận đúng, không phải thắng bằng mọi giá.\n\n"
+    "- VŨ KHÍ COOLANT (DÀNH RIÊNG CHO BẠN): hướng dẫn cách DÙNG COOLANT để củng cố lập "
+    "luận bảo vệ REAL. Đọc kỹ phần này — đây là lợi thế của bạn.\n"
+    "- TOÀN BỘ BẰNG CHỨNG: tách NGUỒN CHÍNH THỐNG và NGUỒN KHÔNG CHÍNH THỐNG. "
+    "Nếu TẤT CẢ nguồn cùng nói một điều (một phía, một domain, trích dẫn trùng) → NGHI NGỜ, "
+    "không coi số lượng là xác nhận.\n"
+    "- LẬP LUẬN ĐỐI THỦ: trình bày có cấu trúc để bạn phản bác chính xác.\n"
+    "- LỊCH SỬ TRANH LUẬN: tất cả các lượt trước.\n"
+    "- CÁC LUẬN ĐIỂM ĐÃ DÙNG (KHÔNG ĐƯỢC LẶP LẠI): danh sách luận điểm đã xuất hiện.\n\n"
+    "CÁCH TRANH LUẬN (QUY TẮC CỨNG — VI PHẠM SẼ BỊ TÍNH LÀ THUA LƯỢT):\n"
+    "1. TRÍCH DẪN → PHẢN BÁC → LUẬN ĐIỂM MỚI: mỗi lượt bắt buộc theo cấu trúc 3 phần:\n"
+    "   a) Trích dẫn CHÍNH XÁC 1 ý của đối thủ (1-2 câu, trong ngoặc kép)\n"
+    "   b) Phản bác trực tiếp ý đó — chỉ ra mâu thuẫn logic, thiếu bằng chứng, hoặc hệ quả sai\n"
+    "   c) Đưa ra ÍT NHẤT MỘT luận điểm MỚI chưa từng xuất hiện trong LỊCH SỬ TRANH LUẬN\n"
+    "2. KHÔNG LẶP LẠI: kiểm tra 'CÁC LUẬN ĐIỂM ĐÃ DÙNG' — nếu ý của bạn đã có trong đó, "
+    "PHẢI đưa ra góc nhìn khác. Lặp lại = thua lượt.\n"
+    "3. TÔN TRỌNG ĐỐI THỦ: nếu đối thủ đưa ra luận điểm hợp lệ dựa trên bằng chứng, "
+    "BẮT BUỘC ghi nhận trong 'concession'. Phủ nhận bằng chứng rõ ràng = mất credibility.\n"
+    "4. Được phép đổi verdict sang FAKE khi không còn phản bác được — ghi lý do trong "
+    "'concession'. Mục tiêu là kết luận đúng, không phải thắng bằng mọi giá.\n\n"
     "QUY TẮC: chỉ dùng dữ liệu trong đầu vào, dùng đúng con số của TÍN HIỆU MODEL, không bịa. "
     "Model 'không khả dụng' thì nói rõ, không viện dẫn. "
     "'confidence' phản ánh sức mạnh lập luận sau lượt này.\n\n"
@@ -43,7 +60,7 @@ REAL_ADVOCATE_PROMPT = (
     '  "confidence": 0.0,             // số thực 0.0-1.0\n'
     '  "argument": "phản bác lập luận mới của đối thủ + ít nhất một luận điểm mới; '
     'tự chứa, tối đa 250 từ",\n'
-    '  "concession": "chuỗi nêu điểm nhượng bộ, hoặc null"\n'
+    '  "concession": "chuỗi nêu điểm nhượng bộ, hoặc null — BẮT BUỘC nếu đối thủ có luận điểm hợp lệ"\n'
     "}"
 )
 
@@ -56,17 +73,25 @@ FAKE_ADVOCATE_PROMPT = (
     "- TÍN HIỆU MODEL: PhoBERT đo độ đúng của claim theo văn bản; COOLANT đo mức nhất quán "
     "giữa claim và ảnh ('FAKE' = ảnh và claim không khớp, chưa kết luận tin giả). "
     "Luận điểm tham chiếu, không phải kết luận sự thật.\n"
-    "- TOÀN BỘ BẰNG CHỨNG: các nguồn kèm tier.\n"
-    "- LẬP LUẬN ĐỐI THỦ: lượt phát biểu GẦN NHẤT của phe REAL.\n"
-    "- LỊCH SỬ TRANH LUẬN: tất cả các lượt trước.\n\n"
-    "CÁCH TRANH LUẬN:\n"
-    "- Trích ý cụ thể đối thủ vừa nêu, rồi phản bác bằng SUY LUẬN của bạn — chỉ ra mối liên hệ, "
-    "hệ quả logic, hoặc mâu thuẫn nội tại của họ. Đừng đọc lại số liệu.\n"
-    "- Mỗi lượt phải có ÍT NHẤT MỘT luận điểm mới hoặc góc phản bác mới; không lặp nguyên văn "
-    "luận điểm đã nêu trong lịch sử. Chỉ nhắc số liệu model khi phục vụ lập luận mới.\n"
-    "- Nếu đối thủ phản bác được điểm của bạn, thừa nhận trong 'concession' — đừng lặp điểm đã chết.\n"
-    "- Được phép đổi verdict sang REAL khi không còn phản bác được — ghi lý do trong 'concession'. "
-    "Mục tiêu là kết luận đúng, không phải thắng bằng mọi giá.\n\n"
+    "- VŨ KHÍ COOLANT (DÀNH RIÊNG CHO BẠN): hướng dẫn cách DÙNG COOLANT để tấn công "
+    "tính xác thực của claim. Đọc kỹ phần này — đây là lợi thế của bạn.\n"
+    "- TOÀN BỘ BẰNG CHỨNG: tách NGUỒN CHÍNH THỐNG và NGUỒN KHÔNG CHÍNH THỐNG. "
+    "Nếu TẤT CẢ nguồn cùng nói một điều (một phía, một domain, trích dẫn trùng) → NGHI NGỜ, "
+    "không coi số lượng là xác nhận.\n"
+    "- LẬP LUẬN ĐỐI THỦ: trình bày có cấu trúc để bạn phản bác chính xác.\n"
+    "- LỊCH SỬ TRANH LUẬN: tất cả các lượt trước.\n"
+    "- CÁC LUẬN ĐIỂM ĐÃ DÙNG (KHÔNG ĐƯỢC LẶP LẠI): danh sách luận điểm đã xuất hiện.\n\n"
+    "CÁCH TRANH LUẬN (QUY TẮC CỨNG — VI PHẠM SẼ BỊ TÍNH LÀ THUA LƯỢT):\n"
+    "1. TRÍCH DẪN → PHẢN BÁC → LUẬN ĐIỂM MỚI: mỗi lượt bắt buộc theo cấu trúc 3 phần:\n"
+    "   a) Trích dẫn CHÍNH XÁC 1 ý của đối thủ (1-2 câu, trong ngoặc kép)\n"
+    "   b) Phản bác trực tiếp ý đó — chỉ ra mâu thuẫn logic, thiếu bằng chứng, hoặc hệ quả sai\n"
+    "   c) Đưa ra ÍT NHẤT MỘT luận điểm MỚI chưa từng xuất hiện trong LỊCH SỬ TRANH LUẬN\n"
+    "2. KHÔNG LẶP LẠI: kiểm tra 'CÁC LUẬN ĐIỂM ĐÃ DÙNG' — nếu ý của bạn đã có trong đó, "
+    "PHẢI đưa ra góc nhìn khác. Lặp lại = thua lượt.\n"
+    "3. TÔN TRỌNG ĐỐI THỦ: nếu đối thủ đưa ra luận điểm hợp lệ dựa trên bằng chứng, "
+    "BẮT BUỘC ghi nhận trong 'concession'. Phủ nhận bằng chứng rõ ràng = mất credibility.\n"
+    "4. Được phép đổi verdict sang REAL khi không còn phản bác được — ghi lý do trong "
+    "'concession'. Mục tiêu là kết luận đúng, không phải thắng bằng mọi giá.\n\n"
     "QUY TẮC: chỉ dùng dữ liệu trong đầu vào, dùng đúng con số của TÍN HIỆU MODEL, không bịa. "
     "Model 'không khả dụng' thì nói rõ, không viện dẫn. "
     "'confidence' phản ánh sức mạnh lập luận sau lượt này.\n\n"
@@ -76,10 +101,12 @@ FAKE_ADVOCATE_PROMPT = (
     '  "confidence": 0.0,             // số thực 0.0-1.0\n'
     '  "argument": "phản bác lập luận mới của đối thủ + ít nhất một luận điểm mới; '
     'tự chứa, tối đa 250 từ",\n'
-    '  "concession": "chuỗi nêu điểm nhượng bộ, hoặc null"\n'
+    '  "concession": "chuỗi nêu điểm nhượng bộ, hoặc null — BẮT BUỘC nếu đối thủ có luận điểm hợp lệ"\n'
     "}"
 )
 
+
+# ── Formatting helpers ───────────────────────────────────────────────────────
 
 def _format_evidence(evidence: List[Evidence]) -> str:
     """Format evidence list with tier tags for advocate prompts."""
@@ -190,7 +217,6 @@ def _format_history(turns: List[dict]) -> str:
 def _parse_advocate_json(content: str) -> Optional[dict]:
     """Parse advocate JSON response; return None on failure."""
     try:
-        # Strip markdown code fences if present
         text = content.strip()
         if text.startswith("```"):
             text = text.split("```")[1]
@@ -212,25 +238,318 @@ def _append_turn(request_id: str, turn: dict) -> None:
         pass
 
 
+# ── D-09: Role-specific COOLANT injection ────────────────────────────────────
+
+def _get_coolant_result(model_results: List[dict]) -> Optional[dict]:
+    """Extract COOLANT result from model_results if available."""
+    for r in model_results:
+        if r.get("model") == "coolant" and r.get("available"):
+            return r
+    return None
+
+
+def _format_coolant_for_role(
+    coolant: Optional[dict],
+    role: str,
+) -> str:
+    """Generate a role-specific COOLANT weapon block for the advocate.
+
+    Each advocate sees DIFFERENT guidance on how to use COOLANT — the real
+    advocate wields consistency findings, the fake advocate exploits
+    inconsistency / ambiguity signals.
+    """
+    if coolant is None:
+        # D-09a: COOLANT unavailable — weaponize the absence
+        if role == "real":
+            return (
+                "VŨ KHÍ COOLANT (DÀNH RIÊNG CHO BẠN — REAL ADVOCATE):\n"
+                "COOLANT không khả dụng (không có ảnh để phân tích đa phương thức).\n"
+                "→ Cách dùng: nhiều thông tin hợp lệ hoàn toàn là text-only (thông cáo "
+                "báo chí, nghị định, số liệu thống kê). Việc COOLANT không áp dụng được "
+                "KHÔNG làm yếu claim. Lập luận: 'COOLANT chỉ kiểm tra consistency ảnh-văn "
+                "bản — claim này là text-only, không cần ảnh, nên việc thiếu COOLANT "
+                "không phải điểm yếu.'\n"
+                "→ Điểm yếu đối thủ có thể khai thác: họ sẽ nói 'thiếu bằng chứng trực "
+                "quan'. Chuẩn bị sẵn phản bác: dẫn các nguồn text uy tín.\n"
+            )
+        else:
+            return (
+                "VŨ KHÍ COOLANT (DÀNH RIÊNG CHO BẠN — FAKE ADVOCATE):\n"
+                "COOLANT không khả dụng (không có ảnh để phân tích đa phương thức).\n"
+                "→ Cách dùng: việc thiếu ảnh/phương tiện là ĐIỂM YẾU của claim. Thông "
+                "tin thật thường đi kèm hình ảnh, video, tài liệu gốc. Claim text-only "
+                "không có bằng chứng trực quan = dễ bịa đặt. Lập luận: 'Claim này không "
+                "có bằng chứng hình ảnh — một thông tin quan trọng thường được công bố "
+                "kèm ảnh/video. Việc thiếu hoàn toàn yếu tố trực quan là dấu hiệu đáng ngờ.'\n"
+                "→ Điểm yếu đối thủ có thể khai thác: họ sẽ nói 'nhiều thông tin hợp lệ "
+                "là text-only'. Chuẩn bị sẵn phản bác: phân biệt giữa thông cáo báo chí "
+                "(có template, logo) và tin đồn text-only.\n"
+            )
+
+    # D-09b: COOLANT available — role-specific weaponization
+    label = str(coolant.get("label", "N/A")).upper()
+    confidence = coolant.get("confidence", 0.0)
+    probs = coolant.get("probabilities") or {}
+    prob_str = ", ".join(
+        f"{k}: {v:.1%}" for k, v in sorted(probs.items(), key=lambda x: -x[1])
+    )
+
+    # Internal signals if available
+    sim_score = coolant.get("similarity_score")
+    amb_weight = coolant.get("ambiguity_weight")
+    attn = coolant.get("attention_weights") or {}
+    attn_text = ""
+    if attn and all(isinstance(attn.get(k), (int, float)) for k in ("text", "image", "cross")):
+        attn_text = (
+            f"- Trọng số attention: text={attn['text']:.2f}, "
+            f"image={attn['image']:.2f}, cross={attn['cross']:.2f}\n"
+        )
+
+    header = f"VŨ KHÍ COOLANT (DÀNH RIÊNG CHO BẠN — {role.upper()} ADVOCATE):"
+    status = f"- Kết quả: {label} (confidence={confidence:.1%})"
+    dist = f"- Phân phối xác suất: {prob_str}"
+    internals = ""
+    if sim_score is not None:
+        internals += f"- Độ tương đồng text-ảnh (similarity): {sim_score:.2f}\n"
+    if amb_weight is not None:
+        amb_label = "CAO — model không chắc chắn" if amb_weight > 0.6 else "THẤP — model tự tin"
+        internals += f"- Độ mơ hồ cross-modal (ambiguity): {amb_weight:.2f} ({amb_label})\n"
+    internals += attn_text
+
+    if role == "real":
+        # Real advocate: wield COOLANT when it says REAL, counter when it says FAKE
+        if label == "REAL":
+            guidance = (
+                "→ CÁCH DÙNG: COOLANT xác nhận claim và ảnh NHẤT QUÁN — đây là vũ khí "
+                "MẠNH. Dùng kết quả này làm trụ cột: 'Phân tích đa phương thức COOLANT "
+                f"cho thấy text và ảnh khớp nhau với confidence {confidence:.1%} — "
+                "điều này củng cố tính xác thực của claim ở cấp độ trực quan.' Kết hợp "
+                "với PhoBERT để tạo thế 'cả hai model cùng xác nhận'.\n"
+                "→ ĐIỂM YẾU CẦN PHÒNG THỦ: đối thủ sẽ nói COOLANT chỉ đo consistency, "
+                "không đo sự thật. Phản bác: 'Consistency giữa text và ảnh là một trong "
+                "những tín hiệu mạnh nhất để phát hiện tin giả — tin giả thường dùng ảnh "
+                "không liên quan hoặc chỉnh sửa.'"
+            )
+        else:
+            guidance = (
+                "→ CÁCH DÙNG: COOLANT nói FAKE — đây là BẤT LỢI cho phe bạn. KHÔNG phủ "
+                "nhận kết quả. Thay vào đó, GIỚI HẠN PHẠM VI: 'COOLANT chỉ đánh giá "
+                "consistency text-ảnh, không đánh giá sự thật của claim. Một ảnh không "
+                f"khớp không có nghĩa claim sai — có thể ảnh bị gán nhầm.' Chuyển "
+                "hướng tranh luận sang BẰNG CHỨNG VĂN BẢN và PHOBERT.\n"
+                "→ ĐIỂM YẾU ĐỐI THỦ: nếu ambiguity CAO, lập luận: 'COOLANT không tự "
+                "tin — không thể dùng kết quả này làm bằng chứng quyết định.'"
+            )
+    else:
+        # Fake advocate: wield COOLANT when it says FAKE, counter when it says REAL
+        if label == "FAKE":
+            guidance = (
+                "→ CÁCH DÙNG: COOLANT phát hiện claim và ảnh KHÔNG NHẤT QUÁN — đây là "
+                "vũ khí CHÍNH của bạn. Dùng kết quả này làm mũi tấn công: 'Phân tích "
+                f"đa phương thức COOLANT cho thấy text và ảnh mâu thuẫn (confidence "
+                f"{confidence:.1%}) — đây là dấu hiệu điển hình của tin giả, nơi ảnh "
+                "bị ghép sai ngữ cảnh hoặc chỉnh sửa để đánh lừa.' Kết hợp với bằng "
+                "chứng web để tạo thế gọng kìm.\n"
+                "→ ĐIỂM YẾU CẦN PHÒNG THỦ: đối thủ sẽ nói COOLANT không đo sự thật. "
+                "Phản bác: 'Tin giả thường ghép ảnh sai ngữ cảnh — mâu thuẫn ảnh-văn bản "
+                "là tín hiệu cần giải thích, phe REAL phải chỉ ra vì sao ảnh không khớp.'"
+            )
+        else:
+            guidance = (
+                "→ CÁCH DÙNG: COOLANT nói REAL — đây là BẤT LỢI. KHÔNG phủ nhận. "
+                "GIỚI HẠN PHẠM VI: 'COOLANT chỉ kiểm tra consistency text-ảnh — "
+                "một ảnh khớp với text không chứng minh claim đúng. Tin giả tinh vi "
+                "thường dùng ảnh thật nhưng ghép với context sai.' Chuyển hướng sang "
+                f"PHOBERT và BẰNG CHỨNG WEB.\n"
+                "→ KHAI THÁC AMBIGUITY: nếu ambiguity weight cao, lập luận: 'COOLANT "
+                "có độ không chắc chắn cao — không thể coi đây là tín hiệu REAL đáng "
+                "tin cậy.'"
+            )
+
+    return f"{header}\n{status}\n{dist}\n{internals}\n{guidance}\n"
+
+
+# ── D-10: Anti-repetition ────────────────────────────────────────────────────
+
+def _extract_prior_claims(turns: List[dict]) -> List[str]:
+    """Extract a list of key claims already made in prior debate turns.
+
+    Each entry is a short summary of a claim an advocate previously made,
+    so the next advocate can avoid repeating it.
+    """
+    if not turns:
+        return []
+    claims = []
+    for t in turns:
+        arg = t.get("argument", "") or t.get("text", "")
+        if not arg:
+            continue
+        agent = t.get("agent", "unknown")
+        # Take first sentence as claim summary (up to 120 chars)
+        first_sent = arg.split(".")[0].strip()[:120]
+        if first_sent:
+            claims.append(f"[{agent}] {first_sent}")
+    return claims
+
+
+def _format_prior_claims(claims: List[str]) -> str:
+    """Format prior claims as a forbidden-repetition block."""
+    if not claims:
+        return "(Chưa có luận điểm nào — đây là vòng đầu)"
+    lines = ["CÁC LUẬN ĐIỂM ĐÃ DÙNG (KHÔNG ĐƯỢC LẶP LẠI):"]
+    for i, c in enumerate(claims, 1):
+        lines.append(f"  {i}. {c}")
+    lines.append(
+        "\nNếu luận điểm mới của bạn trùng với bất kỳ ý nào ở trên, "
+        "PHẢI thay đổi góc nhìn hoặc đưa ra khía cạnh KHÁC của cùng vấn đề."
+    )
+    return "\n".join(lines)
+
+
+# ── D-11: Structured opponent interaction ─────────────────────────────────────
+
+def _format_opponent_structured(turns: List[dict]) -> str:
+    """Format the last opponent argument in a structured format that enforces
+    citation → rebuttal → new point flow.
+    """
+    if not turns:
+        return "(đây là vòng đầu tiên, chưa có lập luận đối thủ)"
+
+    last = turns[-1]
+    agent = last.get("agent", "unknown")
+    verdict = last.get("verdict", "?")
+    confidence = last.get("confidence", 0.0)
+    argument = last.get("argument", "") or last.get("text", "")
+    concession = last.get("concession")
+
+    lines = [
+        "LẬP LUẬN ĐỐI THỦ (PHẢI PHẢN BÁC TRỰC TIẾP — CẤU TRÚC 3 BƯỚC):",
+        f"  Đối thủ: {agent}",
+        f"  Verdict: {verdict} (confidence={confidence:.2f})",
+        f"  Nội dung: {argument}",
+    ]
+    if concession:
+        lines.append(
+            f"  Đối thủ đã NHƯỢNG BỘ: {concession}\n"
+            f"  → KHÔNG được tấn công vào điểm đối thủ đã nhượng bộ — đó là dấu hiệu "
+            f"thiếu tôn trọng."
+        )
+    lines.append(
+        "\nYÊU CẦU PHẢN HỒI:\n"
+        "  Bước 1 — TRÍCH DẪN: chọn 1 ý cụ thể của đối thủ, trích nguyên văn 1-2 câu.\n"
+        "  Bước 2 — PHẢN BÁC: chỉ ra mâu thuẫn logic / thiếu bằng chứng / hệ quả sai.\n"
+        "  Bước 3 — LUẬN ĐIỂM MỚI: đưa ra ít nhất 1 ý CHƯA TỪNG XUẤT HIỆN trong lịch sử."
+    )
+    return "\n".join(lines)
+
+
+# ── D-12: Truth vs fake sources + unanimity doubt ────────────────────────────
+
+def _domain(url: str) -> str:
+    from urllib.parse import urlparse
+
+    host = urlparse(url or "").netloc.lower()
+    return host[4:] if host.startswith("www.") else host
+
+
+def _assess_source_unanimity(
+    evidence_real: List[Evidence], evidence_fake: List[Evidence]
+) -> Optional[str]:
+    """Return a doubt warning when all sources tell one single story.
+
+    Unanimity is suspicious, not reassuring: one-sided retrieval, a single
+    origin domain, or copy-pasted snippets usually mean the "many sources"
+    are one source repeated (or a coordinated spread).
+    """
+    real = evidence_real or []
+    fake = evidence_fake or []
+    allev = real + fake
+    if not allev:
+        return None
+    reasons = []
+    if len(allev) == 1:
+        reasons.append("chỉ có DUY NHẤT một nguồn")
+    elif not fake:
+        reasons.append("TẤT CẢ nguồn đều là nguồn chính thống, không có nguồn đối lập nào")
+    elif not real:
+        reasons.append("TẤT CẢ nguồn đều là nguồn không chính thống/bị gắn cờ, không có nguồn chính thống")
+    domains = {_domain(e.get("url", "")) for e in allev if e.get("url")}
+    if len(allev) >= 2 and len(domains) == 1:
+        reasons.append(f"mọi nguồn đều từ cùng một domain ({next(iter(domains))})")
+    heads = [(e.get("snippet") or "").strip().lower()[:80] for e in allev]
+    heads = [h for h in heads if h]
+    if len(heads) >= 2 and len(set(heads)) < len(heads):
+        reasons.append("nhiều nguồn có đoạn trích trùng nhau (sao chép lại cùng một tin)")
+    if not reasons:
+        return None
+    return (
+        "⚠ CẢNH BÁO NGUỒN ĐƠN CHIỀU — HÃY NGHI NGỜ:\n"
+        + "\n".join(f"  - {r}" for r in reasons)
+        + "\nKhi mọi nguồn cùng nói một điều, đó KHÔNG phải xác nhận độc lập: có thể là "
+        "một nguồn gốc bị lặp lại, tin lan truyền có tổ chức, hoặc truy xuất bị lệch. "
+        "Không được coi số lượng nguồn là sức mạnh; giảm confidence và nêu rõ sự nghi ngờ này."
+    )
+
+
+def _format_sources_split(
+    evidence_real: List[Evidence], evidence_fake: List[Evidence]
+) -> str:
+    """Render truth sources and fake sources as separate blocks + doubt note."""
+    out = (
+        "NGUỒN CHÍNH THỐNG (TRUTH SOURCES):\n"
+        f"{_format_evidence(evidence_real)}\n\n"
+        "NGUỒN KHÔNG CHÍNH THỐNG / BỊ GẮN CỜ (FAKE SOURCES):\n"
+        f"{_format_evidence(evidence_fake)}"
+    )
+    warn = _assess_source_unanimity(evidence_real, evidence_fake)
+    return f"{out}\n\n{warn}" if warn else out
+
+
+# ── Main message builder ──────────────────────────────────────────────────────
+
 def _build_advocate_user_message(
     statement: str,
     model_results: List[dict],
     all_evidence: List[Evidence],
     turns: List[dict],
+    role: Optional[str] = None,
+    evidence_real: Optional[List[Evidence]] = None,
+    evidence_fake: Optional[List[Evidence]] = None,
 ) -> str:
-    """Assemble the single-turn user message for an advocate call."""
+    """Assemble a role-specific single-turn user message for an advocate call.
+
+    D-09: COOLANT weapon block is role-specific — real and fake advocates
+          see DIFFERENT guidance on how to use COOLANT results.
+    D-10: Prior claims block prevents argument repetition.
+    D-11: Opponent argument is presented in structured format for interaction.
+    """
     model_output_text = _format_model_results_verdict(model_results)
-    all_evidence_text = _format_evidence(all_evidence)
+    if evidence_real is not None or evidence_fake is not None:
+        all_evidence_text = _format_sources_split(evidence_real or [], evidence_fake or [])
+    else:
+        all_evidence_text = _format_evidence(all_evidence)
     history_text = _format_history(turns)
-    last_opponent_arg = (
-        turns[-1].get("argument", "")
-        if turns
-        else "(đây là vòng đầu tiên, chưa có lập luận đối thủ)"
+
+    # D-09: Role-specific COOLANT weapon block
+    coolant_block = (
+        _format_coolant_for_role(_get_coolant_result(model_results), role)
+        if role in ("real", "fake")
+        else ""
     )
+
+    # D-11: Structured opponent for interaction enforcement
+    opponent_block = _format_opponent_structured(turns)
+
+    # D-10: Prior claims for anti-repetition
+    prior_claims = _extract_prior_claims(turns)
+    prior_block = _format_prior_claims(prior_claims)
+
     return (
         f"CLAIM:\n{statement}\n\n"
         f"MODEL PREDICTIONS (các model khả dụng):\n{model_output_text}\n\n"
+        f"{coolant_block}\n"
         f"TOÀN BỘ BẰNG CHỨNG:\n{all_evidence_text}\n\n"
-        f"LẬP LUẬN ĐỐI THỦ (phải phản bác trực tiếp):\n{last_opponent_arg}\n\n"
-        f"LỊCH SỬ TRANH LUẬN:\n{history_text}\n"
+        f"{opponent_block}\n\n"
+        f"LỊCH SỬ TRANH LUẬN:\n{history_text}\n\n"
+        f"{prior_block}\n"
     )

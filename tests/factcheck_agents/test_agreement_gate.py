@@ -167,8 +167,8 @@ def test_route_coolant_real_low_confidence_skips_debate():
     assert route_after_agreement(state) == "judge"
 
 
-def test_route_coolant_fake_skips_debate():
-    """COOLANT FAKE goes straight to judge (verdict with evidence + PhoBERT)."""
+def test_route_coolant_fake_high_confidence_forces_debate():
+    """Confident COOLANT FAKE + PhoBERT + evidence → debate (advocates argue the mismatch)."""
     state = {
         "agreement_score": 0.3,
         "model_results": [
@@ -187,7 +187,7 @@ def test_route_coolant_fake_skips_debate():
         ],
         "evidence_real": [{"source_tier": "trusted"}],
     }
-    assert route_after_agreement(state) == "judge"
+    assert route_after_agreement(state) == "debate"
 
 
 def test_route_coolant_real_missing_phobert_skips_debate():

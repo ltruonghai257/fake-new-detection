@@ -86,12 +86,14 @@ def route_after_agreement(state: FactCheckState) -> str:
     """Route after agreement gate.
 
     Debate is only meaningful when all three reference signals are present:
-    - COOLANT says the claim is REAL with high confidence (>= threshold).
+    - COOLANT gives a confident signal (REAL or FAKE, confidence >= threshold).
+      A confident FAKE (image-text mismatch) is exactly what advocates must
+      argue over, so it no longer skips debate.
     - PhoBERT is available to cross-check the textual claim.
     - Evidence has been retrieved.
 
-    If any of these is missing, or COOLANT is FAKE / low-confidence REAL, route
-    straight to judge (verdict with evidence + PhoBERT).
+    If any of these is missing, or COOLANT is low-confidence, route straight to
+    judge (verdict with evidence + PhoBERT).
     """
     model_results = state.get("model_results", [])
     coolant = None
@@ -110,13 +112,13 @@ def route_after_agreement(state: FactCheckState) -> str:
         label = str(coolant.get("label", "")).upper()
         conf = coolant.get("confidence", 0.0)
         if (
-            label == "REAL"
+            label in ("REAL", "FAKE")
             and conf >= settings.coolant_debate_threshold
             and phobert_available
             and has_evidence
         ):
             return "debate"
-        # COOLANT FAKE / low-confidence / missing PhoBERT or evidence
+        # Low-confidence COOLANT / missing PhoBERT or evidence
         return "judge"
 
     # No COOLANT signal — use the evidence-credibility gate

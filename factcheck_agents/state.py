@@ -96,6 +96,10 @@ class ModelResult(TypedDict, total=False):
     note: str  # why it was skipped, or extra context
     evidence_text: Optional[str]  # full evidence text used as context (PhoBERT)
     workflow_steps: Optional[List[dict]]  # [{step, description, input, output}]
+    # COOLANT internals (debate weapons)
+    similarity_score: Optional[float]  # cosine(m_t, m_v) text-image alignment, -1..1
+    ambiguity_weight: Optional[float]  # cross-modal ambiguity (skl), 0..1
+    attention_weights: Optional[dict]  # {text, image, cross} SE attention
 
 
 class Verdict(TypedDict, total=False):

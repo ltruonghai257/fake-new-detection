@@ -244,6 +244,9 @@ async def sse_stream(
                                 "label": r.get("label"),
                                 "confidence": r.get("confidence"),
                                 "probabilities": r.get("probabilities"),
+                                "similarity_score": r.get("similarity_score"),
+                                "ambiguity_weight": r.get("ambiguity_weight"),
+                                "attention_weights": r.get("attention_weights"),
                             }
                         )
                 if formatted_results:

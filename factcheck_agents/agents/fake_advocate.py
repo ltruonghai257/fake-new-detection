@@ -49,7 +49,8 @@ def fake_advocate(state: FactCheckState) -> dict:
     round_num = len(turns) // 2
 
     user_message = _build_advocate_user_message(
-        statement, model_results, all_evidence, turns
+        statement, model_results, all_evidence, turns, role="fake",
+        evidence_real=evidence_real, evidence_fake=evidence_fake
     )
     prompt = settings.fake_advocate_prompt or FAKE_ADVOCATE_PROMPT
 

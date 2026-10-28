@@ -19,6 +19,7 @@ from ..state import (
     FactCheckState,
     ModelResult,
 )
+from .debate_utils import _assess_source_unanimity
 from .llm import get_llm, parse_json
 
 _BINARY_REAL_LABELS = {"SUPPORTED", "REAL", "TRUE"}
@@ -210,6 +211,7 @@ def judge_agent(state: FactCheckState) -> dict:
         f"MODEL PREDICTIONS (các model khả dụng, kèm xác suất):\n{_format_models(model_results)}\n\n"
         f"EVIDENCE (TRUSTED):\n{_format_evidence(evidence_real)}\n\n"
         f"EVIDENCE (FLAGGED/FACT-CHECK):\n{_format_evidence(evidence_fake)}\n\n"
+        f"{_assess_source_unanimity(evidence_real, evidence_fake) or ''}\n\n"
         f"DEBATE TRANSCRIPT:\n{_format_debate_turns(debate_turns)}\n"
         f"{convergence_note}"
     )

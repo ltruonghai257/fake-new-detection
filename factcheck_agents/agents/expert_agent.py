@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import List
 
 from ..state import Evidence, FactCheckState, Verdict, binary_to_vi, canonicalize_binary
+from .debate_utils import _assess_source_unanimity
 from .llm import get_llm, parse_json
 
 EXPERT_SYSTEM_PROMPT = (
@@ -169,6 +170,7 @@ def expert_agent(state: FactCheckState) -> dict:
         f"{_fmt_ev(evidence_real, 'chính thống')}\n\n"
         f"----- BẰNG CHỨNG TỪ NGUỒN KHÔNG CHÍNH THỐNG -----\n"
         f"{_fmt_ev(evidence_fake, 'không chính thống')}\n\n"
+        f"{_assess_source_unanimity(evidence_real, evidence_fake) or ''}\n\n"
         f"----- BIÊN BẢN TRANH LUẬN -----\n"
         f"{_fmt_debate(debate_turns)}\n"
         f"{convergence_note}"

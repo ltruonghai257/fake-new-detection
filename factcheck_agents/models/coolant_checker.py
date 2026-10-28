@@ -78,6 +78,37 @@ def _resolve_ckpt() -> Optional[Path]:
     return newest / "best_model.pth"
 
 
+def _extract_internals(out: dict) -> dict:
+    """Pull debate-relevant internals from COOLANT forward output (sample 0).
+
+    Best-effort: missing keys are skipped so older checkpoints still work.
+    """
+    import torch.nn.functional as F
+
+    res: dict = {}
+    try:
+        m_t, m_v = out.get("m_t"), out.get("m_v")
+        if m_t is not None and m_v is not None:
+            res["similarity_score"] = round(
+                float(F.cosine_similarity(m_t[0:1], m_v[0:1]).item()), 4
+            )
+        amb = out.get("ambiguity_weights")
+        if amb is not None:
+            res["ambiguity_weight"] = round(float(amb[0, 2].item()), 4)
+        att = out.get("attention_weights")
+        if att is not None:
+            a = att[0].reshape(-1).tolist()
+            if len(a) >= 3:
+                res["attention_weights"] = {
+                    "text": round(a[0], 4),
+                    "image": round(a[1], 4),
+                    "cross": round(a[2], 4),
+                }
+    except Exception:
+        pass
+    return res
+
+
 class CoolantChecker:
     def __init__(self) -> None:
         self._loaded = False
@@ -211,6 +242,7 @@ class CoolantChecker:
                 # Take first sample since we duplicated for batch workaround
                 logits = logits[0]  # [2] -> [2] after model, take first sample
                 probs = F.softmax(logits, dim=-1).cpu().tolist()
+                internals = _extract_internals(out) if isinstance(out, dict) else {}
 
             label_id = int(max(range(len(probs)), key=lambda i: probs[i]))
             prob_map = {
@@ -260,6 +292,7 @@ class CoolantChecker:
                 confidence=round(probs[label_id], 4),
                 note="multimodal (statement + image) prediction",
                 workflow_steps=workflow_steps,
+                **internals,
             )
         except Exception as exc:  # pragma: no cover - defensive
             warnings.warn(
