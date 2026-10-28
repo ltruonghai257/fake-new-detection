@@ -1,0 +1,29 @@
+factcheck_agents/graph.py
+  s_817458cc35f52a::t_b994a1d051520f 10,132-138,140-145,148-162,164-170,173-178,180,184-189,191-195
+  s_817458cc35f52a::t_2956ecee8cd78b 139,190,206-207
+  s_817458cc35f52a::t_ffb5ed3dd0432e 196
+factcheck_agents/agents/debate_utils.py
+  s_817458cc35f52a::t_e0b8df53e01254 63-67,107-111
+factcheck_agents/agents/fake_advocate.py
+  s_817458cc35f52a::t_e0b8df53e01254 71
+factcheck_agents/agents/judge_agent.py
+  s_817458cc35f52a::t_e0b8df53e01254 127-152
+factcheck_agents/agents/real_advocate.py
+  s_817458cc35f52a::t_e0b8df53e01254 71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d78c3d65113aa43233f382de05b38e2ec35593c5",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
