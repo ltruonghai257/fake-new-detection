@@ -205,7 +205,7 @@ def _format_history(turns: List[dict]) -> str:
         agent = t.get("agent", "unknown")
         round_num = t.get("round", 0)
         verdict = t.get("verdict", "?")
-        argument = t.get("argument", t.get("text", ""))[:300]
+        argument = t.get("argument", t.get("text", ""))[:700]
         concession = t.get("concession")
         line = f"[Round {round_num}] {agent}: verdict={verdict}, argument={argument}"
         if concession:
@@ -371,25 +371,26 @@ def _format_coolant_for_role(
 
 # ── D-10: Anti-repetition ────────────────────────────────────────────────────
 
-def _extract_prior_claims(turns: List[dict]) -> List[str]:
-    """Extract a list of key claims already made in prior debate turns.
+def _sentences(text: str) -> List[str]:
+    import re
 
-    Each entry is a short summary of a claim an advocate previously made,
-    so the next advocate can avoid repeating it.
+    parts = re.split(r"(?<=[.!?;])\s+|\n+", text or "")
+    return [p.strip() for p in parts if len(p.strip()) > 15]
+
+
+def _extract_prior_claims(turns: List[dict]) -> List[str]:
+    """List every sentence already argued (both sides), tagged by agent.
+
+    The full argument is used, not just its first sentence, so the next
+    advocate can see exactly which points are already spent.
     """
-    if not turns:
-        return []
     claims = []
-    for t in turns:
+    for t in turns or []:
         arg = t.get("argument", "") or t.get("text", "")
-        if not arg:
-            continue
         agent = t.get("agent", "unknown")
-        # Take first sentence as claim summary (up to 120 chars)
-        first_sent = arg.split(".")[0].strip()[:120]
-        if first_sent:
-            claims.append(f"[{agent}] {first_sent}")
-    return claims
+        for sent in _sentences(arg):
+            claims.append(f"[{agent}] {sent[:160]}")
+    return claims[-30:]
 
 
 def _format_prior_claims(claims: List[str]) -> str:
@@ -503,6 +504,73 @@ def _format_sources_split(
     )
     warn = _assess_source_unanimity(evidence_real, evidence_fake)
     return f"{out}\n\n{warn}" if warn else out
+
+
+# ── D-13: Programmatic novelty guard ─────────────────────────────────────────
+
+_NOVELTY_MAX_OVERLAP = 0.35
+_NOVELTY_RETRIES = 2
+
+
+def _trigrams(text: str) -> set:
+    import re
+
+    w = re.findall(r"\w+", (text or "").lower())
+    return {tuple(w[i : i + 3]) for i in range(len(w) - 2)}
+
+
+def _repeat_report(new_arg: str, turns: List[dict]) -> tuple:
+    """Return (overlap_ratio, repeated_sentences) of ``new_arg`` vs prior turns.
+
+    overlap = share of the new argument's word-trigrams already used in ANY
+    earlier turn (own or opponent's). Repeated sentences are the new
+    sentences that are mostly made of already-used trigrams.
+    """
+    prior = set()
+    for t in turns or []:
+        prior |= _trigrams(t.get("argument", "") or t.get("text", ""))
+    new = _trigrams(new_arg)
+    if not new or not prior:
+        return 0.0, []
+    overlap = len(new & prior) / len(new)
+    repeated = []
+    for sent in _sentences(new_arg):
+        tri = _trigrams(sent)
+        if tri and len(tri & prior) / len(tri) >= 0.5:
+            repeated.append(sent)
+    return overlap, repeated
+
+
+def _invoke_advocate_with_novelty(
+    llm, system_prompt: str, user_message: str, turns: List[dict]
+):
+    """Call the advocate LLM; re-ask when the answer repeats earlier turns.
+
+    Returns (content, data_dict_or_None, attempts). If every retry still
+    repeats, the least-repetitive answer is returned.
+    """
+    best = None  # (overlap, content, data)
+    msg = user_message
+    for attempt in range(_NOVELTY_RETRIES + 1):
+        resp = llm.invoke([("system", system_prompt), ("user", msg)])
+        content = str(getattr(resp, "content", ""))
+        data = _parse_advocate_json(content)
+        arg = (data or {}).get("argument", content)
+        overlap, repeated = _repeat_report(arg, turns)
+        if best is None or overlap < best[0]:
+            best = (overlap, content, data)
+        if overlap <= _NOVELTY_MAX_OVERLAP or not turns:
+            return content, data, attempt + 1
+        quoted = "\n".join(f"  - {r[:200]}" for r in repeated[:5]) or "  (nhiều ý trùng)"
+        msg = (
+            user_message
+            + f"\n\n⛔ BẢN NHÁP TRƯỚC BỊ TỪ CHỐI VÌ LẶP LẠI ({overlap:.0%} nội dung đã được nói). "
+            "Các câu lặp:\n"
+            + quoted
+            + "\nViết lại HOÀN TOÀN: trích một ý KHÁC của đối thủ, phản bác bằng lý lẽ/bằng chứng "
+            "chưa dùng, và thêm luận điểm mới. Tuyệt đối không dùng lại các câu trên."
+        )
+    return best[1], best[2], _NOVELTY_RETRIES + 1
 
 
 # ── Main message builder ──────────────────────────────────────────────────────

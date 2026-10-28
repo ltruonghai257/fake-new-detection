@@ -1,3 +1,7 @@
+                COOLANT là mô hình đa phương thức: nhận claim (text) + hình ảnh,
+                đánh giá mức <b>nhất quán ảnh–caption</b> (2 lớp). REAL = ảnh
+                khớp với nội dung; FAKE = ảnh không khớp (có thể bị ghép/dùng
+                sai ngữ cảnh). Đây chưa phải kết luận về độ đúng của tin.
 import { useState } from 'react';
 import {
     Verdict,
@@ -120,8 +124,8 @@ export default function VerdictCard({
                     </button>
                 </div>
                 <p className="text-[11px] text-gray-400 mt-1">
-                    Điểm cuối = 0.30 × PhoBERT + 0.30 × COOLANT + 0.40 × Bằng
-                    chứng
+                    Điểm cuối = 0.35 × PhoBERT + 0.35 × COOLANT + 0.15 × Bằng
+                    chứng + 0.15 × Tranh luận
                 </p>
 
                 {/* ── Detail panels ──────────────────────────────────────────── */}

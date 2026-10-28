@@ -19,6 +19,7 @@ from .debate_utils import (
     _append_turn,
     _build_advocate_user_message,
     _parse_advocate_json,
+    _invoke_advocate_with_novelty,
 )
 from .llm import get_llm
 
@@ -55,9 +56,10 @@ def real_advocate(state: FactCheckState) -> dict:
     prompt = settings.real_advocate_prompt or REAL_ADVOCATE_PROMPT
 
     try:
-        resp = llm.invoke([("system", prompt), ("user", user_message)])
-        content = str(getattr(resp, "content", ""))
-        data = _parse_advocate_json(content) or {}
+        content, data, _attempts = _invoke_advocate_with_novelty(
+            llm, prompt, user_message, turns
+        )
+        data = data or {}
         turn = {
             "agent": "real_advocate",
             "round": round_num,
