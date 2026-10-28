@@ -41,7 +41,7 @@ function TurnBubble({
 }) {
     const isReal = turn.agent === 'real_advocate';
     const scores = showBadges
-        ? weightBreakdown?.argument_scores.find(
+        ? weightBreakdown?.argument_scores?.find(
               s => s.agent === turn.agent && s.round === turn.round
           )
         : undefined;
