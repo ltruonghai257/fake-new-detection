@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
+import os
 from typing import List, Optional
 
 from ..state import Evidence
@@ -120,10 +121,10 @@ def _format_evidence(evidence: List[Evidence]) -> str:
     if not evidence:
         return "(no supporting evidence available)"
     lines = []
-    for i, e in enumerate(evidence, 1):
+    for i, e in enumerate(evidence[:6], 1):
         tier = e.get("source_tier", "unknown").upper()
         lines.append(
-            f"[{tier}] [{i}] {e.get('title')} — {e.get('url')}\n    {e.get('snippet')}"
+            f"[{tier}] [{i}] {e.get('title')} — {e.get('url')}\n    {str(e.get('snippet') or '')[:220]}"
         )
     return "\n".join(lines)
 
@@ -208,11 +209,13 @@ def _format_history(turns: List[dict]) -> str:
     if not turns:
         return "(no prior turns)"
     lines = []
-    for t in turns:
+    # Older turns are already summarised in "CÁC LUẬN ĐIỂM ĐÃ DÙNG": send only the
+    # last two in full to save tokens.
+    for t in turns[-2:]:
         agent = t.get("agent", "unknown")
         round_num = t.get("round", 0)
         verdict = t.get("verdict", "?")
-        argument = t.get("argument", t.get("text", ""))[:700]
+        argument = t.get("argument", t.get("text", ""))[:350]
         concession = t.get("concession")
         line = f"[Round {round_num}] {agent}: verdict={verdict}, argument={argument}"
         if concession:
@@ -529,7 +532,13 @@ def _format_sources_split(
 # ── D-13: Programmatic novelty guard ─────────────────────────────────────────
 
 _NOVELTY_MAX_OVERLAP = 0.35
-_NOVELTY_RETRIES = 2
+_NOVELTY_RETRIES = 1
+_ADVOCATE_MAX_TOKENS = int(os.getenv("FACTCHECK_ADVOCATE_MAX_TOKENS", "350"))
+_BREVITY_RULE = (
+    "\n\nNGẮN GỌN (BẮT BUỘC): 'argument' tối đa 3 câu / ~70 từ, đi thẳng vào bằng chứng cụ thể "
+    "(ví dụ 'nguồn [2] nói...'). Không mở bài, không tóm tắt, không nhắc lại claim. "
+    "Soi từng bằng chứng: nguồn nào đáng tin, nguồn nào mâu thuẫn."
+)
 
 
 def _trigrams(text: str) -> set:
@@ -571,6 +580,11 @@ def _invoke_advocate_with_novelty(
     """
     best = None  # (overlap, content, data)
     msg = user_message
+    system_prompt = system_prompt + _BREVITY_RULE
+    try:
+        llm = llm.bind(max_tokens=_ADVOCATE_MAX_TOKENS)
+    except Exception:
+        pass
     for attempt in range(_NOVELTY_RETRIES + 1):
         resp = llm.invoke([("system", system_prompt), ("user", msg)])
         content = str(getattr(resp, "content", ""))

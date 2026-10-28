@@ -105,7 +105,7 @@ class Settings:
         )
     )
     max_debate_rounds: int = field(
-        default_factory=lambda: int(os.getenv("FACTCHECK_MAX_DEBATE_ROUNDS", "10"))
+        default_factory=lambda: int(os.getenv("FACTCHECK_MAX_DEBATE_ROUNDS", "3"))
     )
     google_factcheck_api_key: Optional[str] = field(
         default_factory=lambda: os.getenv("GOOGLE_FACTCHECK_API_KEY")
