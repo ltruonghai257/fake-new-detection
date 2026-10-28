@@ -30,6 +30,19 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 _LABELS = {0: "REAL", 1: "FAKE"}
 
+# Training config of notebooks/pipeline/official_document_thesis.ipynb
+# (PhoBERT 768-d text, ResNet50 2048-d image).
+_OFFICIAL_CFG = {
+    "text_input_dim": 768,
+    "image_input_dim": 2048,
+    "text_seq_len": 128,
+    "shared_dim": 128,
+    "sim_dim": 64,
+    "feature_dim": 96,
+    "h_dim": 64,
+    "clip_embed_dim": 64,
+}
+
 
 def _read_manifest_metric(run_dir: Path) -> float:
     """Extract the best validation metric from a run's checkpoint_manifest.json."""
@@ -156,13 +169,27 @@ class CoolantChecker:
             else:
                 self._device = "cpu"
             ckpt = torch.load(ckpt_path, map_location=self._device)
-            model_cfg = ckpt["config"]["model"]
-            self._image_model = (
-                ckpt["config"].get("data", {}).get("image_model", self._image_model)
-            )
+            if "config" in ckpt:
+                # Legacy checkpoint: carries its own config (PatchedCOOLANT)
+                model_cfg = ckpt["config"]["model"]
+                self._image_model = (
+                    ckpt["config"].get("data", {}).get("image_model", self._image_model)
+                )
+                model = PatchedCOOLANT.from_config(model_cfg, device=self._device)
+                model.load_state_dict(ckpt["model_state_dict"], strict=False)
+            else:
+                # Notebook checkpoint (official_document_thesis.ipynb): no config,
+                # saved from COOLANT_Official -> rebuild with the training config
+                # and load strictly so any architecture mismatch fails loudly.
+                from src.models.coolant_official import COOLANT_Official
 
-            model = PatchedCOOLANT.from_config(model_cfg, device=self._device)
-            model.load_state_dict(ckpt["model_state_dict"], strict=False)
+                model = COOLANT_Official(
+                    {
+                        **_OFFICIAL_CFG,
+                        "use_itc": bool(ckpt.get("use_itc", True)),
+                    }
+                ).to(self._device)
+                model.load_state_dict(ckpt["model_state_dict"], strict=True)
             model.eval()
             self._model = model
             self._loaded = True
@@ -178,6 +205,7 @@ class CoolantChecker:
 
         self._preprocessor = CombinedPreprocessor(
             text_model_name="vinai/phobert-base-v2",
+            max_text_length=128,  # match training (02_preprocessing MAX_LENGTH)
             image_model_name=self._image_model,
             device=self._device,
         )
