@@ -1,0 +1,23 @@
+demo_app/backend/main.py
+  s_817458cc35f52a::t_62306231a8d390 50-56,61-64,66
+factcheck_agents/models/phobert_checker.py
+  s_817458cc35f52a::t_1dace30e783e1f 24-25,36-37,211-216
+factcheck_agents/models/coolant_checker.py
+  s_817458cc35f52a::t_1dace30e783e1f 22-23,114-115,126-131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "752298d62d61d4e8b14b69c634b74ff7fa228350",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-opus-5-5[1m]"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
