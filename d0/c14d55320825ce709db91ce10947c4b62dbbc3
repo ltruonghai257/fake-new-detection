@@ -1,0 +1,27 @@
+factcheck_agents/agents/conclusion_agent.py
+  s_817458cc35f52a::t_6c532779718828 10-11,21-22,187
+factcheck_agents/agents/expert_agent.py
+  s_817458cc35f52a::t_4f95c52147464d 11-12,21-22,211
+factcheck_agents/agents/fake_advocate.py
+  s_817458cc35f52a::t_dc5ce8f35388b4 12-13,28-29,79
+factcheck_agents/agents/real_advocate.py
+  s_817458cc35f52a::t_50159e04ce9f60 12-13,28-29,79
+factcheck_agents/agents/verify_agent.py
+  s_817458cc35f52a::t_22e041d622e602 14-15,26-27,48,67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d0c14d55320825ce709db91ce10947c4b62dbbc3",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
