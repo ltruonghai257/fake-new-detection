@@ -1,0 +1,23 @@
+demo_app/backend/streaming.py
+  s_817458cc35f52a::t_4e14e8bd9c240a 306-313
+demo_app/frontend/src/components/VerdictCard.tsx
+  s_817458cc35f52a::t_31833fb766aa4e 144-146,486-488,493-495,497-499,506-511,513-540,542,544,572-610,612-614
+demo_app/frontend/src/types.ts
+  s_817458cc35f52a::t_afb72dbacfee78 54-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b1eec44ae10eabeb3111dda0e046fa6973f1ddc4",
+  "prompts": {},
+  "sessions": {
+    "s_817458cc35f52a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a18300-c4a9-734d-b8df-a040abf5092d",
+        "model": "databricks-claude-sonnet-5-5"
+      },
+      "human_author": "Hai La <hai.la.ud@renesas.com>"
+    }
+  }
+}
