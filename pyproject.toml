@@ -51,6 +51,7 @@ dependencies = [
     "papermill>=2.7.0",
     "newspaper3k>=0.2.8",
     "python-dateutil>=2.9.0.post0",
+    "umap-learn>=0.5.12",
 ]
 
 [project.optional-dependencies]
