@@ -257,9 +257,25 @@ def fake_advocate(state: FactCheckState) -> dict:
     return call_agent("fake_advocate", state)
 
 
-@degrade_on_unavailable("judge_agent", _DEGRADE_JUDGE)
 def judge_agent(state: FactCheckState) -> dict:
-    return call_agent("judge_agent", state)
+    """Judge via A2A; if the service is down, run it in-process instead of
+    returning an empty NEI verdict (the fusion needs no extra service)."""
+    try:
+        return call_agent("judge_agent", state)
+    except AgentUnavailableError as exc:
+        logger.warning(
+            "[judge_agent] service unavailable (port %s): %s — running in-process",
+            exc.port,
+            exc.cause,
+        )
+        try:
+            import importlib
+
+            local = importlib.import_module("factcheck_agents.agents.judge_agent")
+            return local.judge_agent(state)
+        except Exception:
+            logger.exception("[judge_agent] in-process fallback failed — degraded")
+            return dict(_DEGRADE_JUDGE)
 
 
 @degrade_on_unavailable("evaluate_agent", _DEGRADE_EVALUATE)
