@@ -158,6 +158,10 @@ def debate_node(state: FactCheckState) -> dict:
         if turn is None or turn.get("error"):
             if turn is not None:
                 turns.append(turn)
+                logger.error(
+                    "[Debate] %s_advocate LLM error at turn %d: %s",
+                    speaker, len(turns), turn.get("error"),
+                )
             exit_reason = "llm_error" if turn else "no_llm"
             break
 

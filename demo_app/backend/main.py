@@ -22,6 +22,7 @@ from typing import Annotated
 
 logging.basicConfig(level=logging.WARNING, format="%(message)s")
 # Show what text COOLANT/PhoBERT actually receive (raw -> cleaned -> segmented -> tokens)
+logging.getLogger("factcheck_agents").setLevel(logging.INFO)
 logging.getLogger("src.preprocessing.text_preprocessing").setLevel(logging.INFO)
 logging.getLogger("preprocessing.text_preprocessing").setLevel(logging.INFO)
 
